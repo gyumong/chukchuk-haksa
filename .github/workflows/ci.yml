@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Corepack
+        run: |
+          corepack enable
+          corepack prepare yarn@stable --activate
+
+      # Yarn Berry 캐시
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+      - name: Yarn Cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-cache-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            yarn-cache-
+
+      - name: Install Dependencies
+        run: yarn install --immutable
+
+      - name: ESLint
+        run: |
+          changed_files=$(git diff --name-only --diff-filter=ACMRUXB origin/main)
+          
+          if echo "$changed_files" | grep -q "^\.eslintrc\.json$"; then
+            yarn lint
+          else
+            echo "$changed_files" | grep -E "(.js$|.jsx$|.ts$|.tsx$)" | xargs -r yarn lint
+          fi
+
+      - name: Prettier
+        run: |
+          changed_files=$(git diff --name-only --diff-filter=ACMRUXB origin/main)
+          
+          if echo "$changed_files" | grep -q -E "^\.prettierrc$|^\.prettierignore$"; then
+            yarn prettier -c .
+          else
+            echo "$changed_files" | xargs -r yarn prettier -c --ignore-unknown
+          fi
+
+      - name: Type Check
+        run: yarn tsc --noEmit
