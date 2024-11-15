@@ -1,3 +1,70 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "no-implicit-coercion": "error",
+    "curly": ["error", "all"],
+    "eqeqeq": ["error", "always", { "null": "ignore" }],
+
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "format": ["camelCase", "UPPER_CASE", "PascalCase"],
+        "selector": "variable",
+        "leadingUnderscore": "allow"
+      },
+      {
+        "format": ["camelCase", "PascalCase"],
+        "selector": "function"
+      },
+      {
+        "format": ["PascalCase"],
+        "selector": "interface"
+      },
+      {
+        "format": ["PascalCase"],
+        "selector": "typeAlias"
+      }
+    ],
+    "@typescript-eslint/array-type": ["error", { "default": "array-simple" }],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "ignoreRestSiblings": true,
+        "caughtErrors": "none"
+      }
+    ],
+
+    "import/order": [
+      "error",
+      {
+        "groups": [["builtin", "external"], "internal", ["parent", "sibling"], "index"],
+        "newlines-between": "always",
+        "alphabetize": { "order": "asc" }
+      }
+    ],
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "CallExpression[callee.object.name='Object'][callee.property.name='entries']",
+        "message": "Object.entries 대신 Object.keys나 Object.values 사용을 고려하세요."
+      }
+    ]
+  },
+  "ignorePatterns": [
+    ".yarn/**",
+    ".pnp.*",
+    ".yarnrc.yml",
+    ".next/**",
+    "next-env.d.ts",
+    "node_modules/**",
+    "public/**",
+    "dist/**",
+    "coverage/**",
+    "*.config.js",
+    "*.config.ts",
+    "**/.DS_Store"
+  ]
 }
