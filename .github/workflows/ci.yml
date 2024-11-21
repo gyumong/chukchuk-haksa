@@ -49,7 +49,9 @@ jobs:
         run: |
           changed_files=$(git diff --name-only --diff-filter=ACMRUXB origin/main)
           
-          if echo "$changed_files" | grep -q "^\.eslintrc\.json$"; then
+          if [ -z "$changed_files" ]; then
+            echo "No changed files to lint."
+          elif echo "$changed_files" | grep -q "^\.eslintrc\.json$"; then
             yarn lint
           else
             echo "$changed_files" | grep -E "(.js$|.jsx$|.ts$|.tsx$)" | xargs -r yarn lint
@@ -59,7 +61,9 @@ jobs:
         run: |
           changed_files=$(git diff --name-only --diff-filter=ACMRUXB origin/main)
           
-          if echo "$changed_files" | grep -q -E "^\.prettierrc$|^\.prettierignore$"; then
+          if [ -z "$changed_files" ]; then
+            echo "No changed files to format."
+          elif echo "$changed_files" | grep -q -E "^\.prettierrc$|^\.prettierignore$"; then
             yarn prettier -c .
           else
             echo "$changed_files" | xargs -r yarn prettier -c --ignore-unknown
