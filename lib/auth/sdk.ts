@@ -15,5 +15,5 @@ export function cleanupKakao() {
 }
 
 export function isKakaoReady() {
-  return !!window.Kakao && window.Kakao.isInitialized();
+  return Boolean(window.Kakao) && window.Kakao.isInitialized();
 }
