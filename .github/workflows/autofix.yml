@@ -1,4 +1,4 @@
-name: CI
+name: autofix.ci  
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
       - main
 
 jobs:
-  verify:
-    name: Verify
+  autofix:
+    name: autofix
     runs-on: ubuntu-latest
 
     steps:
@@ -52,9 +52,9 @@ jobs:
           if [ -z "$changed_files" ]; then
             echo "No changed files to lint."
           elif echo "$changed_files" | grep -q "^\.eslintrc\.json$"; then
-            yarn lint
+            yarn lint:fix
           else
-            echo "$changed_files" | grep -E "(.js$|.jsx$|.ts$|.tsx$)" | xargs -r yarn lint
+            echo "$changed_files" | grep -E "(.js$|.jsx$|.ts$|.tsx$)" | xargs -r yarn lint:fix
           fi
 
       - name: Prettier
@@ -64,13 +64,15 @@ jobs:
           if [ -z "$changed_files" ]; then
             echo "No changed files to format."
           elif echo "$changed_files" | grep -q -E "^\.prettierrc$|^\.prettierignore$"; then
-            yarn prettier -c .
+            yarn prettier --write -c .
           else
-            echo "$changed_files" | xargs -r yarn prettier -c --ignore-unknown
+            echo "$changed_files" | xargs -r yarn prettier --write -c --ignore-unknown
           fi
 
       - name: Type Check
         run: yarn tsc --noEmit
         
-      - name: Auto Fix
+      - name: Apply fixes
         uses: autofix-ci/action@dd55f44df8f7cdb7a6bf74c78677eb8acd40cd0a
+        with:
+          commit-message: 'ci: apply automated fixes'
