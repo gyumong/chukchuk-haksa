@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+
 import { kakaoLogin } from '@/lib/auth';
 
 export default function LoginPage() {

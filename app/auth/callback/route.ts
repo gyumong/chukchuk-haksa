@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
 import { getKakaoToken } from '@/lib/auth/kakao';
 import { signInWithSupabase } from '@/lib/auth/supabase';
 import { AuthError } from '@/lib/error';
+import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
