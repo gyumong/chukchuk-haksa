@@ -1,10 +1,9 @@
 'use client';
 
 import React from 'react';
-
-import { cleanupKakao, initializeKakao } from '@/lib/auth';
 import localFont from 'next/font/local';
 import Script from 'next/script';
+import { cleanupKakao, initializeKakao } from '@/lib/auth';
 import './globals.css';
 
 const geistSans = localFont({
