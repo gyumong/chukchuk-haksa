@@ -2,6 +2,13 @@
   "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],
   "plugins": ["@typescript-eslint"],
   "rules": {
+    "@typescript-eslint/no-explicit-any": [
+      "warn",
+      {
+        // 경고로 변경
+        "ignoreRestArgs": true
+      }
+    ],
     "no-implicit-coercion": "error",
     "curly": ["error", "all"],
     "eqeqeq": ["error", "always", { "null": "ignore" }],
@@ -35,14 +42,6 @@
       }
     ],
 
-    "import/order": [
-      "error",
-      {
-        "groups": [["builtin", "external"], "internal", ["parent", "sibling"], "index"],
-        "newlines-between": "always",
-        "alphabetize": { "order": "asc" }
-      }
-    ],
     "no-console": ["warn", { "allow": ["warn", "error"] }],
     "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
     "no-restricted-syntax": [
