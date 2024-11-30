@@ -1,9 +1,6 @@
 name: autofix.ci  
 
 on:
-  push:
-    branches-ignore:
-      - main
   pull_request:
     branches:
       - main
@@ -44,14 +41,14 @@ jobs:
 
       - name: Install Dependencies
         run: yarn install --immutable
-
+        
       - name: ESLint
         run: |
           changed_files=$(git diff --name-only --diff-filter=ACMRUXB origin/main)
           
           if [ -z "$changed_files" ]; then
             echo "No changed files to lint."
-          elif echo "$changed_files" | grep -q "^\.eslintrc\.json$"; then
+          elif echo "$changed_files" | grep -q "^\.eslintrc\.json$|^\.eslintignore$"; then
             yarn lint:fix
           else
             echo "$changed_files" | grep -E "(.js$|.jsx$|.ts$|.tsx$)" | xargs -r yarn lint:fix
