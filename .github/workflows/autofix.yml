@@ -48,7 +48,7 @@ jobs:
           
           if [ -z "$changed_files" ]; then
             echo "No changed files to lint."
-          elif echo "$changed_files" | grep -q "^\.eslintrc\.json$"; then
+          elif echo "$changed_files" | grep -q "^\.eslintrc\.json$|^\.eslintignore$"; then
             yarn lint:fix
           else
             echo "$changed_files" | grep -E "(.js$|.jsx$|.ts$|.tsx$)" | xargs -r yarn lint:fix
