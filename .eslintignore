@@ -1,0 +1,8 @@
+.yarn/*
+.pnp.*
+.env*
+.cache/
+node_modules/
+.github/
+.vscode/
+public/
