@@ -2718,6 +2718,7 @@ __metadata:
     "@types/react-dom": "npm:^18"
     "@typescript-eslint/eslint-plugin": "npm:^8.14.0"
     "@typescript-eslint/parser": "npm:^8.14.0"
+    cookies-next: "npm:4.3.0"
     eslint: "npm:^8"
     eslint-config-next: "npm:14.2.10"
     eslint-config-prettier: "npm:^9.1.0"
@@ -2794,6 +2795,16 @@ __metadata:
   version: 0.7.2
   resolution: "cookie@npm:0.7.2"
   checksum: 10c0/9596e8ccdbf1a3a88ae02cf5ee80c1c50959423e1022e4e60b91dd87c622af1da309253d8abdb258fb5e3eacb4f08e579dc58b4897b8087574eee0fd35dfa5d2
+  languageName: node
+  linkType: hard
+
+"cookies-next@npm:4.3.0":
+  version: 4.3.0
+  resolution: "cookies-next@npm:4.3.0"
+  dependencies:
+    "@types/cookie": "npm:^0.6.0"
+    cookie: "npm:^0.7.0"
+  checksum: 10c0/091e2712340d595192e442c16d774fa9995a08b0425675a336527c7ee1941f5ea6cb8850cb5401a760e6c8d25bd846a3ce339d057d0c8f84e7b2ce5a4b31f939
   languageName: node
   linkType: hard
 
