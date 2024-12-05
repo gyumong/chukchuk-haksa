@@ -42,7 +42,6 @@ async function kakaoLogin(redirectUri?: string) {
     scope: 'account_email profile_image profile_nickname talk_message openid',
     state,
     nonce: hashedNonce,
-
   });
 }
 
