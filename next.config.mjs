@@ -1,6 +1,13 @@
+import path from 'path';
+
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
+  sassOptions: {
+    // import.meta.dirname는 node v20.11 이상 부터 가능
+    // @example https://nodejs.org/api/esm.html#importmetadirname
+    includePaths: [path.join(import.meta.dirname, 'styles')],
+  },
   webpack: config => {
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find(rule => rule.test?.test?.('.svg'));
