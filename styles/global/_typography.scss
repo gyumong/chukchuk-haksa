@@ -1,0 +1,62 @@
+@use '../typography';
+// font-size
+// title type
+
+.--title-lg-bold {
+  @include typography.title-lg;
+  @include typography.font-weight-bold;
+}
+.--title-lg-semibold {
+  @include typography.title-lg;
+  @include typography.font-weight-semibold;
+}
+.--title-lg-medium {
+  @include typography.title-lg;
+  @include typography.font-weight-medium;
+}
+.--title-lg-regular {
+  @include typography.title-lg;
+  @include typography.font-weight-regular;
+}
+
+// body type
+.test-typography {
+  font-family: var(--suit-font);
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
+.--body-lg-bold {
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+}
+.--body-lg-semibold {
+  @include typography.body-lg;
+  @include typography.font-weight-semibold;
+}
+.--body-lg-medium {
+  @include typography.body-lg;
+  @include typography.font-weight-medium;
+}
+.--body-lg-regular {
+  @include typography.body-lg;
+  @include typography.font-weight-regular;
+}
+
+.--body-md-bold {
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+}
+.--body-md-semibold {
+  @include typography.body-md;
+  @include typography.font-weight-semibold;
+}
+.--body-md-medium {
+  @include typography.body-md;
+  @include typography.font-weight-medium;
+}
+.--body-md-regular {
+  @include typography.body-md;
+  @include typography.font-weight-regular;
+}
