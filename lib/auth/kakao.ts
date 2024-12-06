@@ -38,7 +38,7 @@ async function kakaoLogin(redirectUri?: string) {
 
   window.Kakao.Auth.authorize({
     redirectUri: uri,
-    prompt: 'none',
+    prompt: 'login',
     scope: 'account_email profile_image profile_nickname talk_message openid',
     state,
     nonce: hashedNonce,
