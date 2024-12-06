@@ -1,0 +1,33 @@
+
+@mixin title-lg {
+  font-size: 1.5rem;
+  line-height: 1.5;
+}
+
+@mixin body-lg {
+  font-family: var(--suit-font);
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
+@mixin body-md {
+  font-family: var(--suit-font);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+@mixin font-weight-bold {
+  font-weight: 700;
+}
+
+@mixin font-weight-semibold {
+  font-weight: 600;
+}
+
+@mixin font-weight-medium {
+  font-weight: 500;
+}
+
+@mixin font-weight-regular {
+  font-weight: 400;
+}
