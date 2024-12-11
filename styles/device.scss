@@ -1,0 +1,32 @@
+$breakpoint-compact-medium: 600px;
+$breakpoint-medium-expanded: 840px;
+
+@mixin compact {
+  @media (max-width: $breakpoint-compact-medium) {
+    @content;
+  }
+}
+
+@mixin medium {
+  @media (min-width: $breakpoint-compact-medium) and (max-width: $breakpoint-medium-expanded) {
+    @content;
+  }
+}
+
+@mixin expanded {
+  @media (min-width: $breakpoint-medium-expanded) {
+    @content;
+  }
+}
+
+@mixin compact-medium {
+  @media (max-width: $breakpoint-medium-expanded) {
+    @content;
+  }
+}
+
+@mixin medium-expanded {
+  @media (min-width: $breakpoint-compact-medium) {
+    @content;
+  }
+}
