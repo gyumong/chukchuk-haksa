@@ -1,83 +1,70 @@
- 'use client';
+'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 
-export default function MergedScrapePage() {
+export default function ScrapePage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [status, setStatus] = useState(null);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
 
-  const [status, setStatus] = useState<string | null>(null);
-  const [mergedData, setMergedData] = useState<any[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const eventSourceRef = useRef<EventSource | null>(null);
-
-  const startMergedScrape = async () => {
+  const startScrape = async () => {
     setStatus(null);
-    setMergedData(null);
+    setData(null);
     setError(null);
 
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
-      eventSourceRef.current = null;
-    }
-
-    const res = await fetch('/api/start-merged-scrape', {
+    const res = await fetch('/api/suwon-scrape/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ username, password }),
     });
-
     if (!res.ok) {
       const result = await res.json();
       setError(result.error || 'Unknown error');
       return;
     }
-
     const { taskId } = await res.json();
 
-    const es = new EventSource(`/api/merged-status?taskId=${taskId}`);
-    eventSourceRef.current = es;
-
-    es.onmessage = (e) => {
-      const eventData = JSON.parse(e.data);
-      console.log('[onmessage]', eventData);
-    };
-
-    es.addEventListener('status', (e) => {
-      const eventData = JSON.parse(e.data);
-      console.log('[status event]', eventData);
-
-      if (eventData.status === 'in-progress') {
-        setStatus('작업 진행중...');
-      } else if (eventData.status === 'completed') {
-        setStatus('작업 완료');
-        setMergedData(eventData.data);
-        es.close();
-      } else if (eventData.status === 'failed') {
-        setError(eventData.data || '작업 실패');
-        es.close();
-      }
-    });
-
-    es.addEventListener('error', () => {
-      setError('SSE 오류 발생');
-      es.close();
-    });
+    pollProgress(taskId);
   };
 
-  useEffect(() => {
-    return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-        eventSourceRef.current = null;
+  const pollProgress = async (taskId: string) => {
+    let attempts = 0;
+    const maxAttempts = 60; // 60회 (ex. 2초 간격 -> 2분)
+    while (attempts < maxAttempts) {
+      await new Promise((r) => setTimeout(r, 2000));
+      try {
+        const res = await fetch(`/api/suwon-scrape/progress?taskId=${taskId}`);
+        if (!res.ok) {
+          setError('Fail to check progress');
+          break;
+        }
+        const { status, data } = await res.json();
+        if (status === 'in-progress') {
+          setStatus('작업 진행중...');
+        } else if (status === 'completed') {
+          setStatus('작업 완료');
+          setData(data);
+          break;
+        } else if (status === 'failed') {
+          setError(data?.message || '작업 실패');
+          break;
+        }
+      } catch (err) {
+        setError((err).message);
+        break;
       }
-    };
-  }, []);
+      attempts++;
+    }
+    if (attempts === maxAttempts) {
+      setError('최대 시도 횟수를 초과했어요.');
+    }
+  };
 
   return (
     <div>
-      <h2>EventSource with useRef</h2>
+      <h2>폴링 방식 크롤링 예시</h2>
       <input
         type="text"
         placeholder="학번"
@@ -90,27 +77,15 @@ export default function MergedScrapePage() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button onClick={startMergedScrape}>크롤링 시작</button>
+      <button onClick={startScrape}>크롤링 시작</button>
 
-      {status && <p>상태: {status}</p>}
+      {status && <p>{status}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {mergedData && (
+      {data && (
         <div>
           <h3>크롤링 결과</h3>
-          {mergedData.map((sem, i) => (
-            <div key={i}>
-              <h4>{sem.semester}</h4>
-              <ul>
-                {sem.courses.map((course: any, j: number) => (
-                  <li key={j}>
-                    {course.courseName}
-                    {course.grade ? ` (${course.grade}점)` : ''}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <pre>{JSON.stringify(data, null, 2)}</pre>
         </div>
       )}
     </div>
