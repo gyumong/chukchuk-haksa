@@ -44,7 +44,7 @@ export async function scrapeSuwonAll(username: string, password: string): Promis
     await page.waitForTimeout(3000);
 
     if (loginError) {
-      throw new Error('Invalid credentials'); // 로그인 에러 발생 시 명시적 throw
+      throw new Error('아이디 비밀번호가 올바르지 않습니다.'); // 로그인 에러 발생 시 명시적 throw
     }
 
     // 로그인 성공한 경우 → 학사시스템 페이지 이동
