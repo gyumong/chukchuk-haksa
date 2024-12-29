@@ -7,6 +7,8 @@ import { chromium } from 'playwright';
  */
 export async function scrapeSuwonAll(username: string, password: string): Promise<any[]> {
   const browser = await chromium.launch({ headless: true });
+  let loginError = false;
+  
   try {
     const page = await browser.newPage();
 
@@ -16,8 +18,10 @@ export async function scrapeSuwonAll(username: string, password: string): Promis
         const msg = dialog.message();
         // 로그인 실패 시 뜨는 "아이디 또는 비밀번호를 잘못 입력하셨습니다." 등 문구 확인
         if (msg.includes('아이디 또는 비밀번호를 잘못 입력하셨습니다')) {
+          //  dialog 이벤트 핸들러는 비동기로 동작합니다. 이 핸들러 내부에서 throw된 에러는 Playwright의 이벤트 처리 체계에 따라 처리되므로, 호출 스택에 다시 반영되지 않습니다. 그래서 아래와 같이 처리했습니다.
+          loginError = true; 
           await dialog.dismiss();
-          throw new Error('Invalid credentials');
+          return;
         } else {
           await dialog.dismiss();
         }
@@ -36,9 +40,12 @@ export async function scrapeSuwonAll(username: string, password: string): Promis
     await frame.fill('input[name="pwd"]', password);
     await frame.click('button.mainbtn_login');
 
-    // 로그인 에러 alert가 뜨면 위 dialog 이벤트에서 'throw'로 처리
     // 여기서 추가 대기
     await page.waitForTimeout(3000);
+
+    if (loginError) {
+      throw new Error('Invalid credentials'); // 로그인 에러 발생 시 명시적 throw
+    }
 
     // 로그인 성공한 경우 → 학사시스템 페이지 이동
     await page.goto('https://info.suwon.ac.kr/sso_security_check', { waitUntil: 'domcontentloaded' });
