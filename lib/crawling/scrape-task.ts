@@ -1,4 +1,3 @@
-
 type TaskStatus = 'in-progress' | 'completed' | 'failed';
 
 interface TaskInfo {
@@ -7,12 +6,13 @@ interface TaskInfo {
 }
 
 declare global {
-  var taskMap: Map<string, TaskInfo>;
+  // TypeScript에서 global 객체 확장을 위해 반드시 선언이 필요
+  let taskMap: Map<string, TaskInfo> | undefined;
 }
-// Node.js에서는 import 또는 require로 모듈을 불러올 때, 해당 모듈은 단일 인스턴스로 캐시됩니다.
-// 그러나 각 HTTP 요청은 서버의 별도 실행 컨텍스트에서 처리되기 때문에, 모듈 내에 선언된 상태(taskMap)가 항상 공유된다고 보장할 수는 없습니다.
-const globalTaskMap = global.taskMap || new Map<string, TaskInfo>();
-global.taskMap = globalTaskMap;
+
+// `globalThis`를 사용해 글로벌 변수 관리 
+const globalTaskMap = (globalThis as any).taskMap || new Map<string, TaskInfo>();
+(globalThis as any).taskMap = globalTaskMap;
 
 export const taskMap = globalTaskMap;
 
