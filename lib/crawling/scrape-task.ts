@@ -10,7 +10,7 @@ declare global {
   let taskMap: Map<string, TaskInfo> | undefined;
 }
 
-// `globalThis`를 사용해 글로벌 변수 관리 
+// `globalThis`를 사용해 글로벌 변수 관리
 const globalTaskMap = (globalThis as any).taskMap || new Map<string, TaskInfo>();
 (globalThis as any).taskMap = globalTaskMap;
 

@@ -1,6 +1,6 @@
 // app/api/suwon-scrape/progress/route.ts
-import { getTask } from '@/lib/crawling/scrape-task';
 import { NextResponse } from 'next/server';
+import { getTask } from '@/lib/crawling/scrape-task';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);

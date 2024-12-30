@@ -1,5 +1,6 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+
+import React, { useEffect, useState } from 'react';
 
 const SuwonScrapePage: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -39,7 +40,9 @@ const SuwonScrapePage: React.FC = () => {
     }
 
     return () => {
-      if (intervalId) {clearInterval(intervalId);}
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
     };
   }, [isPolling, taskId]);
 
@@ -78,7 +81,7 @@ const SuwonScrapePage: React.FC = () => {
           <input
             type="text"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={e => setUsername(e.target.value)}
             style={{ marginLeft: '10px' }}
           />
         </label>
@@ -89,7 +92,7 @@ const SuwonScrapePage: React.FC = () => {
           <input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={e => setPassword(e.target.value)}
             style={{ marginLeft: '10px' }}
           />
         </label>

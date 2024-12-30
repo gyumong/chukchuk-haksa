@@ -1,7 +1,8 @@
 // lib/crawling/suwon-scrape-all.ts
-import type { Course, CourseDTO, Credit, CreditDTO, MergedSemester } from '@/types';
-import type { Page } from 'playwright'; // import type을 사용
+import type { Page } from 'playwright';
+// import type을 사용
 import { chromium } from 'playwright';
+import type { Course, CourseDTO, Credit, CreditDTO, MergedSemester } from '@/types';
 import { mapCourseDTOToDomain, mapCreditDTOToDomain } from './suwon-dto';
 
 /**
@@ -36,7 +37,9 @@ export async function scrapeSuwonAll(username: string, password: string): Promis
     });
 
     const frame = page.frame({ name: 'mainFrame' });
-    if (!frame) {throw new Error('mainFrame not found');}
+    if (!frame) {
+      throw new Error('mainFrame not found');
+    }
 
     await frame.fill('input[name="userId"]', username);
     await frame.fill('input[name="pwd"]', password);

@@ -1,5 +1,5 @@
-import type { CreditDTO, CourseDTO } from '@/types/dto';
-import type { Credit, Course } from '@/types/domain';
+import type { Course, Credit } from '@/types/domain';
+import type { CourseDTO, CreditDTO } from '@/types/dto';
 
 /** CreditDTO → Credit 변환 */
 function mapCreditDTOToDomain(dto: CreditDTO): Credit {
@@ -37,7 +37,4 @@ function mapCourseDTOToDomain(dto: CourseDTO): Course {
   };
 }
 
-export  {
-    mapCreditDTOToDomain,
-    mapCourseDTOToDomain,
-}
+export { mapCreditDTOToDomain, mapCourseDTOToDomain };
