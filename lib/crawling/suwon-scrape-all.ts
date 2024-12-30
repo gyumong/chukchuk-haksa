@@ -1,8 +1,7 @@
 // lib/crawling/suwon-scrape-all.ts
-import type { Page } from 'playwright';
-// import type을 사용
-import { chromium } from 'playwright';
 import type { Course, CourseDTO, Credit, CreditDTO, MergedSemester } from '@/types';
+import type { Page } from 'playwright'; // import type을 사용
+import { chromium } from 'playwright';
 import { mapCourseDTOToDomain, mapCreditDTOToDomain } from './suwon-dto';
 
 /**
@@ -37,9 +36,7 @@ export async function scrapeSuwonAll(username: string, password: string): Promis
     });
 
     const frame = page.frame({ name: 'mainFrame' });
-    if (!frame) {
-      throw new Error('mainFrame not found');
-    }
+    if (!frame) {throw new Error('mainFrame not found');}
 
     await frame.fill('input[name="userId"]', username);
     await frame.fill('input[name="pwd"]', password);
@@ -99,7 +96,7 @@ async function doCreditScrape(page: Page, username: string): Promise<Credit[]> {
     });
     const data2 = await response2.json();
     detailedData.push(
-      ...(data2.listSmrCretSumTabSubjt || []).map((entry: any) => ({
+      ...(data2.listSmrCretSumTabSubjt || []).map((entry: Credit) => ({
         ...entry,
         cretGainYear: item.cretGainYear, // 상위 항목에서 가져옴
         cretSmrCd: item.cretSmrCd, // 상위 항목에서 가져옴
