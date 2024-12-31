@@ -18,10 +18,11 @@ if (!userId) {
 }
 
   // 학과 및 주/복수전공 ID 확인 또는 생성
-  const departmentId = await getOrCreateDepartment(student.departmentName);
-  const majorId = await getOrCreateDepartment(student.majorName);
-  const secondaryMajorId = student.secondaryMajorName
-    ? await getOrCreateDepartment(student.secondaryMajorName)
+  const departmentId = await getOrCreateDepartment(student.departmentId, student.departmentName);
+  const majorId = await getOrCreateDepartment(student.majorId ,student.majorName);
+  const secondaryMajorId = student.secondaryMajorName 
+  && student.secondaryMajorId
+    ? await getOrCreateDepartment(student.secondaryMajorId,student.secondaryMajorName)
     : null;
 
 
@@ -57,29 +58,35 @@ if (!userId) {
   return studentData.student_id; // 학생 ID 반환
 }
 
-  /** 학과 ID 확인 또는 생성 */
-async function getOrCreateDepartment(departmentName: string): Promise<number> {
-    const supabase = createClient();
-    const { data, error } = await supabase
+/** 학과 ID 확인 또는 생성 */
+async function getOrCreateDepartment(departmentCode: number, departmentName: string): Promise<number> {
+  const supabase = createClient();
+
+  // 학과 코드 기준으로 확인
+  const { data, error } = await supabase
       .from('departments')
       .select('id')
-      .eq('established_department_name', departmentName)
+      .eq('department_code', departmentCode) // department_code로 확인
       .single();
-  
-    if (error || !data) {
+
+  if (error || !data) {
       // 학과가 없으면 생성
       const { data: newDepartment, error: createError } = await supabase
-        .from('departments')
-        .insert({ established_department_name: departmentName })
-        .select('id')
-        .single();
-  
+          .from('departments')
+          .insert({
+              department_code: departmentCode, // 학과 코드 추가
+              established_department_name: departmentName, // 학과 이름 추가
+          })
+          .select('id')
+          .single();
+
       if (createError || !newDepartment) {
-        throw new Error('Failed to create department.');
+          console.error('Failed to create department.', createError);
+          throw new Error('Failed to create department.');
       }
-  
-      return newDepartment.id;
-    }
-  
-    return data.id;
+
+      return newDepartment.id; // 새로 생성된 ID 반환
   }
+
+  return data.id; // 기존 학과 ID 반환
+}
