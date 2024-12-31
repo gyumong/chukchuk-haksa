@@ -18,7 +18,6 @@ interface Student {
   gradeLevel: number; // 학년 (예: 1, 2, 3, 4)
 }
 
-
 // 도메인 모델: Credit (성적)
 interface Credit {
   studentNumber: string;

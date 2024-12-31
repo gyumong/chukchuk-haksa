@@ -11,7 +11,7 @@ function mapStudentDTOToDomain(dto: StudentDTO): Student {
     departmentName: dto.dpmjNm, // 학과 이름
     majorId: parseInt(dto.mjorCd, 10), // 전공 ID
     majorName: dto.mjorNm, // 전공 이름
-    secondaryMajorId: dto.the2MjorCd ? parseInt(dto.the2MjorCd, 10) : undefined , // 복수전공 ID (없으면 undefined)
+    secondaryMajorId: dto.the2MjorCd ? parseInt(dto.the2MjorCd, 10) : undefined, // 복수전공 ID (없으면 undefined)
     secondaryMajorName: dto.the2MjorNm || '', // 복수전공 이름, 없으면 빈 문자열
     admissionYear: parseInt(dto.enscYear, 10), // 입학 연도
     semesterEnrolled: parseInt(dto.enscYear + dto.enscSmrCd, 10), // 예: 201710
@@ -59,4 +59,4 @@ function mapCourseDTOToDomain(dto: CourseDTO): Course {
   };
 }
 
-export { mapStudentDTOToDomain,mapCreditDTOToDomain, mapCourseDTOToDomain };
+export { mapStudentDTOToDomain, mapCreditDTOToDomain, mapCourseDTOToDomain };

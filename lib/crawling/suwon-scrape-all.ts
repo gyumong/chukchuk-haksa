@@ -1,13 +1,17 @@
 // lib/crawling/suwon-scrape-all.ts
-import type { Course, CourseDTO, Credit, CreditDTO, MergedSemester, Student, StudentDTO } from '@/types';
-import type { Page } from 'playwright'; // import type을 사용
+import type { Page } from 'playwright';
+// import type을 사용
 import { chromium } from 'playwright';
+import type { Course, CourseDTO, Credit, CreditDTO, MergedSemester, Student, StudentDTO } from '@/types';
 import { mapCourseDTOToDomain, mapCreditDTOToDomain, mapStudentDTOToDomain } from './suwon-dto';
 
 /**
  * 로그인(공통) → 학생 정보 크롤링 → 성적 크롤링 → 수강 크롤링 → Merge
  */
-export async function scrapeSuwonAll(username: string, password: string): Promise<{student: Student; mergedData: MergedSemester[] }> {
+export async function scrapeSuwonAll(
+  username: string,
+  password: string
+): Promise<{ student: Student; mergedData: MergedSemester[] }> {
   const browser = await chromium.launch({ headless: true });
   let loginError = false;
 
@@ -36,7 +40,9 @@ export async function scrapeSuwonAll(username: string, password: string): Promis
     });
 
     const frame = page.frame({ name: 'mainFrame' });
-    if (!frame) {throw new Error('mainFrame not found');}
+    if (!frame) {
+      throw new Error('mainFrame not found');
+    }
 
     await frame.fill('input[name="userId"]', username);
     await frame.fill('input[name="pwd"]', password);
@@ -51,7 +57,6 @@ export async function scrapeSuwonAll(username: string, password: string): Promis
 
     // 로그인 성공한 경우 → 학사시스템 페이지 이동
     await page.goto('https://info.suwon.ac.kr/sso_security_check', { waitUntil: 'domcontentloaded' });
-
 
     // 학생 정보 크롤링
     const student: Student = await doStudentScrape(page, username);

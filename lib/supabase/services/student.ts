@@ -1,21 +1,21 @@
-import type {  Student } from '@/types';
+import type { Student } from '@/types';
 import { createClient } from '../server';
 
 /** 학생 초기화 로직 */
-export async function initializeStudent(student:Student): Promise<string> {
-const supabase = createClient();
+export async function initializeStudent(student: Student): Promise<string> {
+  const supabase = createClient();
 
-const { data: userData, error } = await supabase.auth.getUser();
+  const { data: userData, error } = await supabase.auth.getUser();
 
-if (error || !userData?.user) {
-  throw new Error('User is not authenticated');
-}
+  if (error || !userData?.user) {
+    throw new Error('User is not authenticated');
+  }
 
-const userId = userData.user.id;
+  const userId = userData.user.id;
 
-if (!userId) {
-  throw new Error('User is not authenticated');
-}
+  if (!userId) {
+    throw new Error('User is not authenticated');
+  }
 
   // 학과 및 주/복수전공 ID 확인 또는 생성
   const departmentId = await getOrCreateDepartment(student.departmentId, student.departmentName);
@@ -62,12 +62,12 @@ if (!userId) {
 async function getOrCreateDepartment(departmentCode: number, departmentName: string): Promise<number> {
   const supabase = createClient();
 
-  // 학과 코드 기준으로 확인
-  const { data, error } = await supabase
-      .from('departments')
-      .select('id')
-      .eq('department_code', departmentCode) // department_code로 확인
-      .single();
+    // 학과 코드 기준으로 확인
+    const { data, error } = await supabase
+        .from('departments')
+        .select('id')
+        .eq('department_code', departmentCode) // department_code로 확인
+        .single();
 
   if (error || !data) {
       // 학과가 없으면 생성
