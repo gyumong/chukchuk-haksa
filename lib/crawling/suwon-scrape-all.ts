@@ -1,13 +1,13 @@
 // lib/crawling/suwon-scrape-all.ts
-import type { Course, CourseDTO, Credit, CreditDTO, MergedSemester } from '@/types';
+import type { Course, CourseDTO, Credit, CreditDTO, MergedSemester, Student, StudentDTO } from '@/types';
 import type { Page } from 'playwright'; // import type을 사용
 import { chromium } from 'playwright';
-import { mapCourseDTOToDomain, mapCreditDTOToDomain } from './suwon-dto';
+import { mapCourseDTOToDomain, mapCreditDTOToDomain, mapStudentDTOToDomain } from './suwon-dto';
 
 /**
- * 로그인(공통) → 성적 크롤링 → 수강 크롤링 → Merge
+ * 로그인(공통) → 학생 정보 크롤링 → 성적 크롤링 → 수강 크롤링 → Merge
  */
-export async function scrapeSuwonAll(username: string, password: string): Promise<MergedSemester[]> {
+export async function scrapeSuwonAll(username: string, password: string): Promise<{student: Student; mergedData: MergedSemester[] }> {
   const browser = await chromium.launch({ headless: true });
   let loginError = false;
 
@@ -52,6 +52,10 @@ export async function scrapeSuwonAll(username: string, password: string): Promis
     // 로그인 성공한 경우 → 학사시스템 페이지 이동
     await page.goto('https://info.suwon.ac.kr/sso_security_check', { waitUntil: 'domcontentloaded' });
 
+
+    // 학생 정보 크롤링
+    const student: Student = await doStudentScrape(page, username);
+
     // 성적 크롤링 + DTO 변환
     const creditData: Credit[] = await doCreditScrape(page, username);
 
@@ -59,11 +63,44 @@ export async function scrapeSuwonAll(username: string, password: string): Promis
     const courseData: Course[] = await doCourseScrape(page, username);
 
     // 병합
-    const merged = mergeCreditCourse(creditData, courseData);
-    return merged;
+    const mergedData = mergeCreditCourse(creditData, courseData);
+    return { student, mergedData };
   } finally {
     await browser.close();
   }
+}
+/** 학생 정보 크롤링 로직 */
+async function doStudentScrape(page: Page, username: string): Promise<Student> {
+  const headers = {
+    'Content-Type': 'application/json;charset=UTF-8',
+    Accept: 'application/json',
+    'User-Agent': 'Mozilla/5.0',
+    Referer:
+      'https://info.suwon.ac.kr/websquare/websquare_mobile.html?' +
+      'w2xPath=/views/usw/sa/hj/SA_HJ_1230.xml&menuSeq=3818&progSeq=1117',
+  };
+
+  // POST 요청으로 학생 정보를 가져옴
+  const response = await page.request.post('https://info.suwon.ac.kr/scrgBas/selectScrgBas.do', {
+    headers,
+    data: { sno: username }, // 학번을 요청 데이터로 전달
+  });
+
+  if (!response.ok()) {
+    throw new Error(`Failed to fetch student info: ${response.status()}`);
+  }
+
+  const responseData = await response.json();
+  const studentInfo: StudentDTO = responseData?.studentInfo;
+
+  if (!studentInfo) {
+    throw new Error('No studentInfo found in response.');
+  }
+
+  // DTO를 도메인 객체로 변환
+  const student: Student = mapStudentDTOToDomain(studentInfo);
+
+  return student;
 }
 
 /** 성적 크롤링 로직 */

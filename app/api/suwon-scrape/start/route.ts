@@ -3,7 +3,8 @@ import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import { setTask } from '@/lib/crawling/scrape-task';
 import { scrapeSuwonAll } from '@/lib/crawling/suwon-scrape-all';
-import type { MergedSemester } from '@/types';
+import type { MergedSemester, Student } from '@/types';
+import { initializeStudent } from '@/lib/supabase/services/student';
 
 export async function POST(req: Request) {
   const { username, password } = await req.json();
@@ -18,9 +19,18 @@ export async function POST(req: Request) {
   // 비동기로 크롤링 시작
   (async () => {
     try {
-      const result: MergedSemester[] = await scrapeSuwonAll(username, password);
+      const {student, mergedData}: {
+        student: Student;
+        mergedData: MergedSemester[];
+      } = await scrapeSuwonAll(username, password);
+        // students 테이블 초기화
+        const studentId = await initializeStudent(student);
+        console.log('studentId',studentId);
       // 작업 완료 후 상태를 completed로
-      setTask(taskId, 'completed', result);
+      setTask(taskId, 'completed', {
+        student,
+        mergedData
+      });
     } catch (err: any) {
       setTask(taskId, 'failed', { message: err.message });
     }
@@ -28,3 +38,4 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ taskId }, { status: 202 });
 }
+
