@@ -1,4 +1,4 @@
-import { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '../server';
 
 export class DepartmentService {
@@ -39,8 +39,10 @@ export class DepartmentService {
 
   async getOrCreateDepartment(departmentCode: number, departmentName: string): Promise<number> {
     const existingId = await this.getDepartmentById(departmentCode);
-    if (existingId) return existingId;
-    
+    if (existingId) {
+      return existingId;
+    }
+
     return this.createDepartment(departmentCode, departmentName);
   }
 }

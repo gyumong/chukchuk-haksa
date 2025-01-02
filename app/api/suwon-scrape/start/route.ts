@@ -29,8 +29,8 @@ export async function POST(req: Request) {
       // students 테이블 초기화
       const studentService = new StudentService();
       const studentId = await studentService.initializeStudent(student);
-      
-      console.log('studentId', studentId);  
+
+      console.log('studentId', studentId);
       // 작업 완료 후 상태를 completed로
       setTask(taskId, 'completed', {
         student,

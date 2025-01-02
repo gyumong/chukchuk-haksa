@@ -1,7 +1,7 @@
-import { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Student } from '@/types';
 import { createClient } from '../server';
 import { DepartmentService } from './department-service';
-import type { Student } from '@/types';
 
 export class StudentService {
   private readonly departmentService: DepartmentService;
@@ -38,17 +38,12 @@ export class StudentService {
       student.departmentName
     );
 
-    const majorId = await this.departmentService.getOrCreateDepartment(
-      student.majorId,
-      student.majorName
-    );
+    const majorId = await this.departmentService.getOrCreateDepartment(student.majorId, student.majorName);
 
-    const secondaryMajorId = student.secondaryMajorId && student.secondaryMajorName
-      ? await this.departmentService.getOrCreateDepartment(
-          student.secondaryMajorId,
-          student.secondaryMajorName
-        )
-      : null;
+    const secondaryMajorId =
+      student.secondaryMajorId && student.secondaryMajorName
+        ? await this.departmentService.getOrCreateDepartment(student.secondaryMajorId, student.secondaryMajorName)
+        : null;
 
     // 학생 정보 저장
     const { data: studentData, error: studentError } = await this.supabase
