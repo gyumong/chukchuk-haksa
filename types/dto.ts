@@ -28,7 +28,7 @@ interface CreditDTO {
   gainPoint: number; // 취득 학점
   subjtCd: string; // 과목 코드
   cretSmrNm: string; // 학기
-  gainPont: number; // 총점
+  totalPoint: number; // 총점
   cretGainYear: string; // 학년 (추가)
   cretSmrCd: string; // 학기 코드 (추가)
 }

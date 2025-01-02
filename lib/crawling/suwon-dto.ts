@@ -34,7 +34,7 @@ function mapCreditDTOToDomain(dto: CreditDTO): Credit {
     facultyDivisionName: dto.facDvnm,
     points: dto.gainPoint,
     courseCode: dto.subjtCd,
-    totalScore: dto.gainPont,
+    totalScore: dto.totalPoint,
   };
 }
 
