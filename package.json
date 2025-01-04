@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "gen": "dotenv -e .env -- bash -c 'npx supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" > types/supabase.ts'"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
@@ -30,6 +31,7 @@
     "@typescript-eslint/eslint-plugin": "^8.14.0",
     "@typescript-eslint/parser": "^8.14.0",
     "autoprefixer": "^10.4.20",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.10",
     "eslint-config-prettier": "^9.1.0",
