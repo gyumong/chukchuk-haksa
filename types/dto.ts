@@ -1,4 +1,4 @@
-import { StudentStatus } from "./enums";
+import type { StudentStatus } from './enums';
 
 // Student DTO: 크롤링된 학생 데이터 타입
 interface StudentDTO {

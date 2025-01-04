@@ -1,4 +1,4 @@
-import { StudentStatus } from './enums';
+import type { StudentStatus } from './enums';
 
 // 도메인 모델: Student (학생)
 interface Student {
