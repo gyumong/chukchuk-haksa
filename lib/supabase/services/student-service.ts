@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Student } from '@/types';
+import type { Student } from '@/types/domain';
+import type { Database } from '@/types/supabase';
 import { createClient } from '../server';
 import { DepartmentService } from './department-service';
 
@@ -7,7 +8,7 @@ export class StudentService {
   private readonly departmentService: DepartmentService;
 
   constructor(
-    private readonly supabase: SupabaseClient = createClient(),
+    private readonly supabase: SupabaseClient<Database> = createClient(),
     departmentService?: DepartmentService
   ) {
     this.departmentService = departmentService || new DepartmentService(supabase);
@@ -29,43 +30,50 @@ export class StudentService {
     return userId;
   }
 
+  /**
+   * 학생 정보를 초기화(Upsert)하고, student_id(= userId)를 반환
+   */
   async initializeStudent(student: Student): Promise<string> {
     const userId = await this.getAuthenticatedUserId();
 
-    // 학과 및 전공 정보 처리
-    const departmentId = await this.departmentService.getOrCreateDepartment(
-      student.departmentId,
+    // 1) 학과 department_id(FK) 설정
+    const departmentPk = await this.departmentService.getOrCreateDepartment(
+      student.departmentCode, // 크롤링된 학과 코드
       student.departmentName
     );
 
-    const majorId = await this.departmentService.getOrCreateDepartment(student.majorId, student.majorName);
+    // 2) 주전공 major_id(FK) 설정
+    const majorPk = await this.departmentService.getOrCreateDepartment(
+      student.majorCode, // 크롤링된 전공 코드
+      student.majorName
+    );
 
-    const secondaryMajorId =
-      student.secondaryMajorId && student.secondaryMajorName
-        ? await this.departmentService.getOrCreateDepartment(student.secondaryMajorId, student.secondaryMajorName)
-        : null;
+    // 3) 복수전공 secondary_major_id(FK) 설정 (선택사항)
+    let secondaryMajorPk: number | null = null;
+    if (student.secondaryMajorCode && student.secondaryMajorName) {
+      secondaryMajorPk = await this.departmentService.getOrCreateDepartment(
+        student.secondaryMajorCode,
+        student.secondaryMajorName
+      );
+    }
 
-    // 학생 정보 저장
     const { data: studentData, error: studentError } = await this.supabase
       .from('students')
-      .upsert(
-        {
-          student_id: userId,
-          portal_username: student.portalUsername,
-          name: student.name,
-          department_id: departmentId,
-          major_id: majorId,
-          secondary_major_id: secondaryMajorId,
-          admission_year: student.admissionYear,
-          semester_enrolled: student.semesterEnrolled,
-          is_transfer_student: student.isTransferStudent,
-          is_graduated: student.isGraduated,
-          status: student.status,
-          grade_level: student.gradeLevel,
-          admission_type: student.admissionType,
-        },
-        { onConflict: 'student_id' }
-      )
+      .upsert({
+        student_id: userId,
+        student_code: student.studentCode,
+        name: student.name,
+        department_id: departmentPk,
+        major_id: majorPk,
+        secondary_major_id: secondaryMajorPk,
+        admission_year: student.admissionYear,
+        semester_enrolled: student.semesterEnrolled,
+        is_transfer_student: student.isTransferStudent,
+        is_graduated: student.isGraduated,
+        status: student.status,
+        grade_level: student.gradeLevel,
+        admission_type: student.admissionType,
+      })
       .select('student_id')
       .single();
 

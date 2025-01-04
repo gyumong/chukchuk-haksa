@@ -1,25 +1,32 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/supabase';
 import { createClient } from '../server';
 
 export class DepartmentService {
-  constructor(private readonly supabase: SupabaseClient = createClient()) {}
+  constructor(private readonly supabase: SupabaseClient<Database> = createClient()) {}
 
-  async getDepartmentById(departmentCode: number): Promise<number | null> {
+  /**
+   * department_code 컬럼으로 departments.id(PK) 조회
+   */
+  async getDepartmentByCode(departmentCode: string): Promise<number | null> {
     const { data, error } = await this.supabase
       .from('departments')
       .select('id')
       .eq('department_code', departmentCode)
       .single();
 
-    if (error) {
-      console.error('Failed to get department.', error);
+    if (error || !data) {
+      console.error('Failed to get department by code:', error);
       return null;
     }
 
-    return data?.id ?? null;
+    return data.id;
   }
 
-  async createDepartment(departmentCode: number, departmentName: string): Promise<number> {
+  /**
+   * departments 테이블에 새 레코드 생성 후 id(PK) 반환
+   */
+  async createDepartment(departmentCode: string, departmentName: string): Promise<number> {
     const { data, error } = await this.supabase
       .from('departments')
       .insert({
@@ -37,8 +44,11 @@ export class DepartmentService {
     return data.id;
   }
 
-  async getOrCreateDepartment(departmentCode: number, departmentName: string): Promise<number> {
-    const existingId = await this.getDepartmentById(departmentCode);
+  /**
+   * department_code로 먼저 조회하고, 없으면 새로 insert
+   */
+  async getOrCreateDepartment(departmentCode: string, departmentName: string): Promise<number> {
+    const existingId = await this.getDepartmentByCode(departmentCode);
     if (existingId) {
       return existingId;
     }
