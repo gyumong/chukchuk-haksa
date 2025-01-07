@@ -13,13 +13,30 @@ export class DepartmentService {
       .from('departments')
       .select('id')
       .eq('department_code', departmentCode)
-      .single();
+      .maybeSingle();
 
     if (error || !data) {
       console.error('Failed to get department by code:', error);
       return null;
     }
 
+    return data.id;
+  }
+
+  /**
+   * department_name으로 departments.id(PK) 조회
+   */
+  async getDepartmentByName(departmentName: string): Promise<number | null> {
+    const { data, error } = await this.supabase
+      .from('departments')
+      .select('id')
+      .eq('department_name', departmentName)
+      .maybeSingle();
+    if (error || !data) {
+      console.log('departmentName', departmentName);
+      console.error('Failed to get department by name:', error);
+      return null;
+    }
     return data.id;
   }
 

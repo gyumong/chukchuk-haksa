@@ -34,6 +34,7 @@ function mapCreditDTOToDomain(dto: CreditDTO): Credit {
     points: dto.gainPoint,
     courseCode: dto.subjtCd,
     totalScore: dto.totalPoint,
+    categoryCode: dto.cltTerrCd,
   };
 }
 

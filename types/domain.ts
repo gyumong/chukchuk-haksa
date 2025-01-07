@@ -31,6 +31,7 @@ interface Credit {
   courseCode: string;
   totalScore: number;
   semester?: string;
+  categoryCode?: number;
 }
 
 // 도메인 모델: Course (수강 정보)
@@ -42,7 +43,7 @@ interface Course {
   courseName: string;
   retakeYearSemester: string;
   isClosed: boolean;
-  facultyDivisionCode: string;
+  facultyDivisionCode: number;
   points: number;
   professorName: string;
   subjectEstablishmentYearSemester: string;
@@ -53,9 +54,11 @@ interface Course {
   semester?: string;
 }
 
+type PartialCourseData = Credit & Partial<Course>;
+
 interface MergedSemester {
   semester: string;
-  courses: Array<Credit & Partial<Course>>;
+  courses: PartialCourseData[];
 }
 
-export type { Credit, Course, MergedSemester, Student };
+export type { Credit, Course, MergedSemester, Student, PartialCourseData };

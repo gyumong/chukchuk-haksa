@@ -3,87 +3,110 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
-      courses: {
+      course_offerings: {
         Row: {
           category_code: number | null;
           class_section: string | null;
-          course_name: string;
+          course_id: number;
           created_at: string | null;
           deleted_at: string | null;
           department_id: number | null;
           evaluation_type_code: Database['public']['Enums']['evaluation_type'] | null;
           faculty_division_name: string | null;
+          host_department: string | null;
           id: number;
           is_video_lecture: boolean | null;
-          points: number;
+          points: number | null;
           professor_id: number | null;
           schedule_summary: string | null;
-          subject_code: string;
+          semester: number;
           subject_establishment_semester: number | null;
-          subject_establishment_year: number;
           updated_at: string | null;
+          year: number;
         };
         Insert: {
           category_code?: number | null;
           class_section?: string | null;
-          course_name: string;
+          course_id: number;
           created_at?: string | null;
           deleted_at?: string | null;
           department_id?: number | null;
           evaluation_type_code?: Database['public']['Enums']['evaluation_type'] | null;
           faculty_division_name?: string | null;
+          host_department?: string | null;
           id?: number;
           is_video_lecture?: boolean | null;
-          points: number;
+          points?: number | null;
           professor_id?: number | null;
           schedule_summary?: string | null;
-          subject_code: string;
+          semester: number;
           subject_establishment_semester?: number | null;
-          subject_establishment_year: number;
           updated_at?: string | null;
+          year: number;
         };
         Update: {
           category_code?: number | null;
           class_section?: string | null;
-          course_name?: string;
+          course_id?: number;
           created_at?: string | null;
           deleted_at?: string | null;
           department_id?: number | null;
           evaluation_type_code?: Database['public']['Enums']['evaluation_type'] | null;
           faculty_division_name?: string | null;
+          host_department?: string | null;
           id?: number;
           is_video_lecture?: boolean | null;
-          points?: number;
+          points?: number | null;
           professor_id?: number | null;
           schedule_summary?: string | null;
-          subject_code?: string;
+          semester?: number;
           subject_establishment_semester?: number | null;
-          subject_establishment_year?: number;
           updated_at?: string | null;
+          year?: number;
         };
         Relationships: [
           {
-            foreignKeyName: 'fk_category';
-            columns: ['category_code'];
+            foreignKeyName: 'course_offerings_course_id_fkey';
+            columns: ['course_id'];
             isOneToOne: false;
-            referencedRelation: 'missionary_category';
+            referencedRelation: 'courses';
             referencedColumns: ['id'];
           },
           {
-            foreignKeyName: 'fk_courses_department';
+            foreignKeyName: 'course_offerings_department_id_fkey';
             columns: ['department_id'];
             isOneToOne: false;
             referencedRelation: 'departments';
             referencedColumns: ['id'];
           },
-          {
-            foreignKeyName: 'fk_courses_professor';
-            columns: ['professor_id'];
-            isOneToOne: false;
-            referencedRelation: 'professor';
-            referencedColumns: ['id'];
-          },
         ];
+      };
+      courses: {
+        Row: {
+          course_code: string;
+          course_name: string | null;
+          created_at: string | null;
+          deleted_at: string | null;
+          id: number;
+          updated_at: string | null;
+        };
+        Insert: {
+          course_code: string;
+          course_name?: string | null;
+          created_at?: string | null;
+          deleted_at?: string | null;
+          id?: number;
+          updated_at?: string | null;
+        };
+        Update: {
+          course_code?: string;
+          course_name?: string | null;
+          created_at?: string | null;
+          deleted_at?: string | null;
+          id?: number;
+          updated_at?: string | null;
+        };
+        Relationships: [];
       };
       departments: {
         Row: {
@@ -188,26 +211,26 @@ export type Database = {
           created_at: string | null;
           department_id: number | null;
           id: number;
-          professor_code: string;
+          professor_code: string | null;
           professor_name: string;
         };
         Insert: {
           created_at?: string | null;
           department_id?: number | null;
           id?: never;
-          professor_code: string;
+          professor_code?: string | null;
           professor_name: string;
         };
         Update: {
           created_at?: string | null;
           department_id?: number | null;
           id?: never;
-          professor_code?: string;
+          professor_code?: string | null;
           professor_name?: string;
         };
         Relationships: [
           {
-            foreignKeyName: 'fk_professor_department';
+            foreignKeyName: 'fk_department';
             columns: ['department_id'];
             isOneToOne: false;
             referencedRelation: 'departments';
@@ -244,52 +267,46 @@ export type Database = {
       };
       student_courses: {
         Row: {
-          course_category: string | null;
-          course_id: number;
           created_at: string | null;
           grade: Database['public']['Enums']['grade_type'] | null;
           id: number;
           is_retake: boolean | null;
-          points: number;
-          semester: number;
+          offering_id: number;
+          points: number | null;
           student_id: string;
         };
         Insert: {
-          course_category?: string | null;
-          course_id: number;
           created_at?: string | null;
           grade?: Database['public']['Enums']['grade_type'] | null;
-          id?: never;
+          id?: number;
           is_retake?: boolean | null;
-          points: number;
-          semester: number;
+          offering_id: number;
+          points?: number | null;
           student_id: string;
         };
         Update: {
-          course_category?: string | null;
-          course_id?: number;
           created_at?: string | null;
           grade?: Database['public']['Enums']['grade_type'] | null;
-          id?: never;
+          id?: number;
           is_retake?: boolean | null;
-          points?: number;
-          semester?: number;
+          offering_id?: number;
+          points?: number | null;
           student_id?: string;
         };
         Relationships: [
           {
-            foreignKeyName: 'fk_student_courses_student';
+            foreignKeyName: 'fk_sc_offering';
+            columns: ['offering_id'];
+            isOneToOne: false;
+            referencedRelation: 'course_offerings';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'fk_sc_student';
             columns: ['student_id'];
             isOneToOne: false;
             referencedRelation: 'students';
             referencedColumns: ['student_id'];
-          },
-          {
-            foreignKeyName: 'student_courses_course_id_fkey';
-            columns: ['course_id'];
-            isOneToOne: false;
-            referencedRelation: 'courses';
-            referencedColumns: ['id'];
           },
         ];
       };
@@ -452,7 +469,7 @@ export type Database = {
     };
     Enums: {
       evaluation_type: 'absolute' | 'relative';
-      grade_type: 'A+' | 'A0' | 'B+' | 'B0' | 'C+' | 'C0' | 'D+' | 'D0' | 'F' | 'P' | 'NP';
+      grade_type: 'A+' | 'A0' | 'B+' | 'B0' | 'C+' | 'C0' | 'D+' | 'D0' | 'F' | 'P' | 'NP' | 'IP';
       graduation_status_type: '재학' | '수료' | '졸업';
       student_status: '재학' | '휴학' | '졸업' | '수료';
     };
