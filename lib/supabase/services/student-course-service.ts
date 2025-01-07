@@ -1,5 +1,5 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '@/types';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types';
 import { createClient } from '../server';
 
 interface StudentCourseInsert {
@@ -19,7 +19,9 @@ export class StudentCourseService {
    * - 이미 존재하면 UPDATE, 없으면 INSERT
    */
   async upsertStudentCourses(rows: StudentCourseInsert[]): Promise<void> {
-    if (!rows.length) return;
+    if (!rows.length) {
+      return;
+    }
 
     // Supabase upsert
     const { data, error } = await this.supabase

@@ -1,5 +1,5 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Database, PartialCourseData } from '@/types';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types';
 import { createClient } from '../server';
 
 /** 임시 과목 정보 */

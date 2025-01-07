@@ -58,7 +58,7 @@ type PartialCourseData = Credit & Partial<Course>;
 
 interface MergedSemester {
   semester: string;
-  courses: Array<PartialCourseData>;
+  courses: PartialCourseData[];
 }
 
 export type { Credit, Course, MergedSemester, Student, PartialCourseData };
