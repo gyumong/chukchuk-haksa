@@ -2,6 +2,13 @@
   font-family: var(--paperlogy-font);
   font-size: 1.5rem;
   line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+@mixin body-exlg {
+  font-family: var(--suit-font);
+  font-size: 1.5rem;
+  line-height: 1.6;
 }
 
 @mixin body-lg {
@@ -13,6 +20,12 @@
 @mixin body-md {
   font-family: var(--suit-font);
   font-size: 1rem;
+  line-height: 1.6;
+}
+
+@mixin body-sm {
+  font-family: var(--suit-font);
+  font-size: 0.875rem;
   line-height: 1.6;
 }
 
