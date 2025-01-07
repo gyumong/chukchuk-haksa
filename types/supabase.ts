@@ -17,11 +17,11 @@ export type Database = {
           created_at: string | null
           deleted_at: string | null
           department_id: number | null
-          department_name: string | null
           evaluation_type_code:
             | Database["public"]["Enums"]["evaluation_type"]
             | null
           faculty_division_name: string | null
+          host_department: string | null
           id: number
           is_video_lecture: boolean | null
           points: number | null
@@ -39,11 +39,11 @@ export type Database = {
           created_at?: string | null
           deleted_at?: string | null
           department_id?: number | null
-          department_name?: string | null
           evaluation_type_code?:
             | Database["public"]["Enums"]["evaluation_type"]
             | null
           faculty_division_name?: string | null
+          host_department?: string | null
           id?: number
           is_video_lecture?: boolean | null
           points?: number | null
@@ -61,11 +61,11 @@ export type Database = {
           created_at?: string | null
           deleted_at?: string | null
           department_id?: number | null
-          department_name?: string | null
           evaluation_type_code?:
             | Database["public"]["Enums"]["evaluation_type"]
             | null
           faculty_division_name?: string | null
+          host_department?: string | null
           id?: number
           is_video_lecture?: boolean | null
           points?: number | null

@@ -16,6 +16,7 @@ interface CourseOfferingInsert {
   faculty_division_name?: string;
   category_code?: number;
   points?: number; // 학점
+  host_department?: string;
 }
 
 /**

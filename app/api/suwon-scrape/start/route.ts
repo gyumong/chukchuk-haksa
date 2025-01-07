@@ -104,6 +104,7 @@ export async function POST(req: Request) {
             faculty_division_name: c.facultyDivisionName || undefined,
             category_code: c.categoryCode,
             points: c.points || 0,
+            host_department: c.departmentName || undefined,
           });
 
           // 성적(grade) 처리
