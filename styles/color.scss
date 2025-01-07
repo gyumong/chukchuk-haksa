@@ -1,0 +1,74 @@
+// Base Colors
+$black-100: #2B2B2B; 
+$white: #FFFFFF;
+
+// Gray Scale
+$gray-100: #A3A2B1; 
+$gray-200: #DFDFE6; 
+$gray-300: #EFF0F7; 
+$gray-400: #F4F4F7; 
+
+// Purple Scale
+$purple-100: #7F71FB; 
+$purple-200: #9F94FF; 
+$purple-300: #E5E5FC; 
+$purple-400: #ECEDFC; 
+
+// CSS Variables
+:root {
+  // Base Colors
+  --black-100: #{$black-100};
+  --white: #{$white};
+
+  // Gray Scale
+  --gray-100: #{$gray-100};
+  --gray-200: #{$gray-200};
+  --gray-300: #{$gray-300};
+  --gray-400: #{$gray-400};
+
+  // Purple Scale
+  --purple-100: #{$purple-100};
+  --purple-200: #{$purple-200};
+  --purple-300: #{$purple-300};
+  --purple-400: #{$purple-400};
+}
+
+// Text Color Utility Classes
+.text {
+  &-black-100 { color: var(--black-100); }
+  &-white { color: var(--white); }
+
+  &-gray {
+    &-100 { color: var(--gray-100); }
+    &-200 { color: var(--gray-200); }
+    &-300 { color: var(--gray-300); }
+    &-400 { color: var(--gray-400); }
+  }
+
+  &-purple {
+    &-100 { color: var(--purple-100); }
+    &-200 { color: var(--purple-200); }
+    &-300 { color: var(--purple-300); }
+    &-400 { color: var(--purple-400); }
+  }
+}
+
+// Background Color Utility Classes
+.bg {
+  &-black-100 { background-color: var(--black-100); }
+  &-white { background-color: var(--white); }
+
+  &-gray {
+    &-100 { background-color: var(--gray-100); }
+    &-200 { background-color: var(--gray-200); }
+    &-300 { background-color: var(--gray-300); }
+    &-400 { background-color: var(--gray-400); }
+  }
+
+  &-purple {
+    &-100 { background-color: var(--purple-100); }
+    &-200 { background-color: var(--purple-200); }
+    &-300 { background-color: var(--purple-300); }
+    &-400 { background-color: var(--purple-400); }
+  }
+}
