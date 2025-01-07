@@ -27,6 +27,11 @@
   line-height: 1.6;
 }
 
+.--body-exlg-bold {
+  @include typography.body-exlg;
+  @include typography.font-weight-bold;
+}
+
 .--body-lg-bold {
   @include typography.body-lg;
   @include typography.font-weight-bold;
@@ -59,4 +64,9 @@
 .--body-md-regular {
   @include typography.body-md;
   @include typography.font-weight-regular;
+}
+
+.--body-sm-medium {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
 }
