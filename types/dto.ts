@@ -33,6 +33,7 @@ interface CreditDTO {
   totalPoint: number; // 총점
   cretGainYear: string; // 학년 (추가)
   cretSmrCd: string; // 학기 코드 (추가)
+  cltTerrCd?: number; // 선택영역 코드
 }
 
 // Course DTO: 크롤링된 수강 데이터 타입
@@ -44,7 +45,7 @@ interface CourseDTO {
   subjtNm: string; // 과목명
   refacYearSmr: string; // 재수강 학기
   closeYn: boolean; // 수강 종료 여부
-  facDvcd: string; // 학부 코드
+  facDvcd: number; // 학부 코드
   point: number; // 학점
   ltrPrfsNm: string; // 담당 교수 이름
   subjtEstbYearSmr: string; // 과목 개설 학기
