@@ -2,8 +2,8 @@
 
 import { useRef, useState } from 'react';
 import SchoolCard from '@/components/SchoolCard/SchoolCard';
-import styles from './page.module.scss';
 import { Button, TextField } from '@/components/ui';
+import styles from './page.module.scss';
 
 export default function UITEST() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -25,7 +25,9 @@ export default function UITEST() {
         />
         <TextField placeholder="학번을 입력해주세요" state={'error'} type="password" />
       </div>
-      <Button width="full" disabled>버튼</Button>
+      <Button width="full" disabled>
+        버튼
+      </Button>
     </div>
   );
 }

@@ -2,73 +2,73 @@
 @use '/styles/color' as color;
 
 .base {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    border-radius: 10px;
-    @include typography.body-lg;
-    @include typography.font-weight-bold;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-  }
-  
-  // Variants
-  .variant-primary {
-    background-color: color.$black-100;
-    color: color.$white;
-  
-    &:hover:not(:disabled) {
-      background-color: darken(color.$black-100, 10%);
-    }
-  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 10px;
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
 
-  .variant-secondary {
-    background-color: color.$gray-200;
-    color: color.$gray-100;
-  
-    &:hover:not(:disabled) {
-      background-color: darken(#D9D9E3, 10%);
-    }
+// Variants
+.variant-primary {
+  background-color: color.$black-100;
+  color: color.$white;
+
+  &:hover:not(:disabled) {
+    background-color: darken(color.$black-100, 10%);
   }
-  
-  // Sizes
-  .size-sm {
-    height: 40px;
-    padding: 0 16px;
-    font-size: 14px;
-    line-height: 22.4px;
+}
+
+.variant-secondary {
+  background-color: color.$gray-200;
+  color: color.$gray-100;
+
+  &:hover:not(:disabled) {
+    background-color: darken(#d9d9e3, 10%);
   }
-  
-  .size-md {
-    height: 64px;
-    padding: 0 24px;
-    font-size: 18px;
-    line-height: 28.8px;
-  }
-  
-  .size-lg {
-    height: 72px;
-    padding: 0 32px;
-    font-size: 20px;
-    line-height: 32px;
-  }
-  
-  // Width
-  .width-default {
-    width: auto;
-  }
-  
-  .width-full {
-    width: 100%;
-  }
-  
-  // States
-  .state-default {
-    opacity: 1;
-  }
-  
-  .state-disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+}
+
+// Sizes
+.size-sm {
+  height: 40px;
+  padding: 0 16px;
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+.size-md {
+  height: 64px;
+  padding: 0 24px;
+  font-size: 18px;
+  line-height: 28.8px;
+}
+
+.size-lg {
+  height: 72px;
+  padding: 0 32px;
+  font-size: 20px;
+  line-height: 32px;
+}
+
+// Width
+.width-default {
+  width: auto;
+}
+
+.width-full {
+  width: 100%;
+}
+
+// States
+.state-default {
+  opacity: 1;
+}
+
+.state-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
