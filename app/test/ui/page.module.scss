@@ -1,0 +1,33 @@
+@use '@/styles/device.scss' as device;
+
+.container {
+  width: 100%;
+  padding: 24px;
+
+  @include device.compact {
+    max-width: 100%;
+    padding: 16px;
+  }
+
+  @include device.medium {
+    max-width: 840px;
+    padding: 20px;
+    margin: 0 auto;
+  }
+
+  @include device.expanded {
+    max-width: 1200px;
+    padding: 24px;
+    margin: 0 auto;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  @include device.compact {
+    gap: 16px;
+  }
+}
