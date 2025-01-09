@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import styles from './Button.module.scss';
 
@@ -41,7 +41,6 @@ export function Button({
   variant,
   size = 'md',
   width = 'default',
-  state = 'default',
   className = '',
   disabled,
   ...props
