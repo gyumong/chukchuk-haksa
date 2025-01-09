@@ -1,6 +1,6 @@
 import { DeleteIcon } from './icons';
-
-export type IconType = 'delete' | 'search' /* ... */;
+import { SchoolIcon } from './icons';
+export type IconType = 'delete' | 'school' 
 
 interface IconProps {
   name: IconType;
@@ -12,6 +12,7 @@ interface IconProps {
 export const Icon = ({ name, size = 24, color, className }: IconProps) => {
   const icons = {
     delete: DeleteIcon,
+    school: SchoolIcon,
   } as Record<IconType, React.FC<{ width: number; height: number; color?: string; className?: string }>>;
 
   const IconComponent = icons[name];
