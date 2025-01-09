@@ -10,7 +10,7 @@
     @include typography.body-lg;
     @include typography.font-weight-bold;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    transition: background-color 0.2s ease-in-out;
   }
   
   // Variants
@@ -28,7 +28,7 @@
     color: color.$gray-100;
   
     &:hover:not(:disabled) {
-      background-color: darken(#D9D9E3, 10%);
+      background-color: darken(color.$gray-200, 10%);
     }
   }
   
@@ -42,9 +42,9 @@
   
   .size-md {
     height: 64px;
-    padding: 0 24px;
-    font-size: 18px;
-    line-height: 28.8px;
+    padding: 0 18px;
+    @include typography.body-lg;
+    @include typography.font-weight-bold;
   }
   
   .size-lg {
