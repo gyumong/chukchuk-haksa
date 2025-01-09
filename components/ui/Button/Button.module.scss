@@ -31,13 +31,14 @@
       background-color: darken(color.$gray-200, 10%);
     }
   }
-  
-  // Sizes
-  .size-sm {
-    height: 40px;
-    padding: 0 16px;
-    font-size: 14px;
-    line-height: 22.4px;
+}
+
+.variant-secondary {
+  background-color: color.$gray-200;
+  color: color.$gray-100;
+
+  &:hover:not(:disabled) {
+    background-color: darken(#d9d9e3, 10%);
   }
   
   .size-md {
