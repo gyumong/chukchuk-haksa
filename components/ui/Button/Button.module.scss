@@ -2,78 +2,78 @@
 @use '/styles/color' as color;
 
 .base {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    border-radius: 10px;
-    @include typography.body-lg;
-    @include typography.font-weight-bold;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 10px;
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+// Variants
+.variant-primary {
+  background-color: color.$black-100;
+  color: color.$white;
+
+  &:hover:not(:disabled) {
+    background-color: darken(color.$black-100, 10%);
   }
-  
-  // Variants
-  .variant-primary {
-    background-color: color.$black-100;
-    color: color.$white;
-  
-    &:hover:not(:disabled) {
-      background-color: darken(color.$black-100, 10%);
-    }
+}
+
+.variant-secondary {
+  background-color: color.$gray-200;
+  color: color.$gray-100;
+
+  &:hover:not(:disabled) {
+    background-color: darken(color.$gray-200, 10%);
   }
-  
-  .variant-secondary {
-    background-color: color.$gray-200;
-    color: color.$gray-100;
-  
-    &:hover:not(:disabled) {
-      background-color: darken(color.$gray-200, 10%);
-    }
-  }
-  
-  // Sizes
-  .size-md {
-    height: 64px;
-    padding: 0 18px;
-    @include typography.body-lg;
-    @include typography.font-weight-bold;
-  }
-  
-  .size-lg {
-    height: 72px;
-    padding: 0 32px;
-    font-size: 20px;
-    line-height: 32px;
-  }
-  
-  // Width
-  .width-default {
-    width: auto;
-  }
-  
-  .width-full {
-    width: 100%;
-  }
-  
-  // States
-  .state-default {
-    opacity: 1;
-  }
-  
-  .state-disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
-  // Fixed position
-  .fixed {
-    position: fixed;
-    bottom: 36px; // 하단으로부터 36px 떨어지도록 수정
-    left: 20px; // 좌측 패딩 20px
-    right: 20px; // 우측 패딩 20px
-    border-radius: 10px; // 모서리 둥글게 복원
-    z-index: 100;
-    padding-bottom: env(safe-area-inset-bottom);
-    width: calc(100% - 40px);
-  }
+}
+
+// Sizes
+.size-md {
+  height: 64px;
+  padding: 0 18px;
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+}
+
+.size-lg {
+  height: 72px;
+  padding: 0 32px;
+  font-size: 20px;
+  line-height: 32px;
+}
+
+// Width
+.width-default {
+  width: auto;
+}
+
+.width-full {
+  width: 100%;
+}
+
+// States
+.state-default {
+  opacity: 1;
+}
+
+.state-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+// Fixed position
+.fixed {
+  position: fixed;
+  bottom: 36px; // 하단으로부터 36px 떨어지도록 수정
+  left: 20px; // 좌측 패딩 20px
+  right: 20px; // 우측 패딩 20px
+  border-radius: 10px; // 모서리 둥글게 복원
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+  width: calc(100% - 40px);
+}

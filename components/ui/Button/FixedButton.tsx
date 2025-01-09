@@ -7,20 +7,9 @@ interface FixedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary';
 }
 
-export function FixedButton({
-  children,
-  variant = 'primary',
-  className = '',
-  ...props
-}: FixedButtonProps) {
+export function FixedButton({ children, variant = 'primary', className = '', ...props }: FixedButtonProps) {
   return (
-    <Button
-      variant={variant}
-      width="full"
-      size="md"
-      className={`${styles.fixed} ${className}`}
-      {...props}
-    >
+    <Button variant={variant} width="full" size="md" className={`${styles.fixed} ${className}`} {...props}>
       {children}
     </Button>
   );
