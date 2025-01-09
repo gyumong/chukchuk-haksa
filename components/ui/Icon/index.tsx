@@ -1,5 +1,6 @@
 import { DeleteIcon, SchoolIcon } from './icons';
-export type IconType = 'delete' | 'school' 
+
+export type IconType = 'delete' | 'school';
 
 interface IconProps {
   name: IconType;
