@@ -1,0 +1,111 @@
+@use '../../../styles/typography' as typography;
+@use '../../../styles/color' as color;
+
+.base {
+  width: 100%;
+  min-height: 64px;
+  padding: 0 20px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  color: color.$white;
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+  letter-spacing: -0.02em;
+  color: color.$black-100;
+  transition: all 0.2s ease;
+
+  &::placeholder {
+    font-weight: 300;
+    color: color.$gray-100;
+  }
+}
+
+/* State variants */
+
+.state-error {
+  background: color.$white !important;
+  border: 1px solid #feafac !important;
+
+  &:focus {
+    border-color: #feafac !important;
+    background: color.$white !important;
+  }
+}
+
+.state-typing {
+  background: color.$white;
+  border: 1px solid color.$purple-100;
+
+  &:focus {
+    border-color: color.$purple-100;
+  }
+}
+
+/* Focus variants */
+.focus-before {
+  background: color.$gray-400;
+  border: none;
+
+  &:focus {
+    outline: none;
+    background: color.$white;
+    border: 1px solid color.$purple-100;
+  }
+}
+
+.focus-after {
+  background: color.$white;
+  border: 1px solid color.$purple-300;
+
+  &:focus {
+    outline: none;
+    border-color: color.$purple-300;
+  }
+}
+
+/* Container and helper elements */
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.label {
+  @include typography.body-md;
+  @include typography.font-weight-medium;
+  color: color.$black-100;
+}
+
+.errorMessage {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+  color: #feafac;
+  margin-top: 4px;
+}
+
+.helperText {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+  color: color.$gray-100;
+  margin-top: 4px;
+}
+
+/* Delete icon */
+.deleteIcon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
