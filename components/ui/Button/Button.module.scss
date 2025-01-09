@@ -22,7 +22,7 @@
       background-color: darken(color.$black-100, 10%);
     }
   }
-
+  
   .variant-secondary {
     background-color: color.$gray-200;
     color: color.$gray-100;
@@ -31,16 +31,8 @@
       background-color: darken(color.$gray-200, 10%);
     }
   }
-}
-
-.variant-secondary {
-  background-color: color.$gray-200;
-  color: color.$gray-100;
-
-  &:hover:not(:disabled) {
-    background-color: darken(#d9d9e3, 10%);
-  }
   
+  // Sizes
   .size-md {
     height: 64px;
     padding: 0 18px;
@@ -72,4 +64,16 @@
   .state-disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+  
+  // Fixed position
+  .fixed {
+    position: fixed;
+    bottom: 36px; // 하단으로부터 36px 떨어지도록 수정
+    left: 20px; // 좌측 패딩 20px
+    right: 20px; // 우측 패딩 20px
+    border-radius: 10px; // 모서리 둥글게 복원
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom);
+    width: calc(100% - 40px);
   }

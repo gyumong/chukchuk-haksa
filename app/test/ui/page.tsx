@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import SchoolCard from '@/components/SchoolCard/SchoolCard';
-import { Button, TextField } from '@/components/ui';
+import { Button, TextField, FixedButton } from '@/components/ui';
 import styles from './page.module.scss';
 
 export default function UITEST() {
@@ -28,6 +28,9 @@ export default function UITEST() {
       <Button width="full" disabled>
         버튼
       </Button>
+      <FixedButton>
+        학교 연동하기
+      </FixedButton>
     </div>
   );
 }
