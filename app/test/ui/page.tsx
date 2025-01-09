@@ -1,9 +1,9 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import SchoolCard from '@/components/SchoolCard/SchoolCard';
 import { TextField } from '@/components/ui/textfield';
 import styles from './page.module.scss';
-import SchoolCard from '@/components/SchoolCard/SchoolCard';
 
 export default function UITEST() {
   const inputRef = useRef<HTMLInputElement>(null);
