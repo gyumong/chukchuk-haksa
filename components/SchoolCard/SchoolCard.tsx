@@ -1,6 +1,7 @@
 import React from 'react';
-import styles from './SchoolCard.module.scss';
 import { Icon } from '../ui/Icon';
+import styles from './SchoolCard.module.scss';
+
 interface SchoolCardProps {
   schoolName: string;
 }

@@ -1,4 +1,4 @@
-import type { ChangeEvent, FocusEvent, InputHTMLAttributes} from 'react';
+import type { ChangeEvent, FocusEvent, InputHTMLAttributes } from 'react';
 import React, { forwardRef, useCallback, useMemo, useState } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Icon } from '../Icon';
@@ -90,12 +90,16 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     );
     // state, focus 결정 로직
     const inputState = useMemo(() => {
-      if (state) {return state;}
+      if (state) {
+        return state;
+      }
       return isFocused ? 'typing' : 'default';
     }, [state, isFocused]);
 
     const focusState = useMemo(() => {
-      if (isFocused) {return 'before';}
+      if (isFocused) {
+        return 'before';
+      }
       return propValue ? 'after' : 'before';
     }, [isFocused, propValue]);
 
