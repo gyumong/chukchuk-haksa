@@ -7,7 +7,6 @@
   padding: 0 20px;
   box-sizing: border-box;
   border-radius: 10px;
-  color: color.$white;
   @include typography.body-lg;
   @include typography.font-weight-bold;
   letter-spacing: -0.02em;
@@ -24,10 +23,10 @@
 
 .state-error {
   background: color.$white !important;
-  border: 1px solid #feafac !important;
+  border: 1px solid color.$red-200 !important;
 
   &:focus {
-    border-color: #feafac !important;
+    border-color: color.$red-200 !important;
     background: color.$white !important;
   }
 }
@@ -43,7 +42,7 @@
 
 /* Focus variants */
 .focus-before {
-  background: color.$gray-400;
+  background: color.$gray-300;
   border: none;
 
   &:focus {
@@ -85,7 +84,7 @@
 .errorMessage {
   @include typography.body-sm;
   @include typography.font-weight-medium;
-  color: #feafac;
+  color: color.$red-200;
   margin-top: 4px;
 }
 

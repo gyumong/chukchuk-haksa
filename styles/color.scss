@@ -4,15 +4,17 @@ $white: #ffffff;
 
 // Gray Scale
 $gray-100: #a3a2b1;
-$gray-200: #dfdfe6;
+$gray-200: #d9d9e3;
 $gray-300: #eff0f7;
-$gray-400: #f4f4f7;
 
 // Purple Scale
 $purple-100: #7f71fb;
 $purple-200: #9f94ff;
 $purple-300: #e5e5fc;
 $purple-400: #ecedfc;
+
+$red-100: #ff5751;
+$red-200: #feafac;
 
 // Text Color Utility Classes
 .text {
@@ -50,6 +52,15 @@ $purple-400: #ecedfc;
     }
     &-400 {
       color: var(--purple-400);
+    }
+  }
+
+  &-red {
+    &-100 {
+      color: var(--red-100);
+    }
+    &-200 {
+      color: var(--red-200);
     }
   }
 }
@@ -90,6 +101,15 @@ $purple-400: #ecedfc;
     }
     &-400 {
       background-color: var(--purple-400);
+    }
+  }
+
+  &-red {
+    &-100 {
+      background-color: var(--red-100);
+    }
+    &-200 {
+      background-color: var(--red-200);
     }
   }
 }
