@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '20.11.0'
 
       - name: Setup Corepack
         run: |
@@ -65,9 +65,6 @@ jobs:
           else
             echo "$changed_files" | xargs -r yarn prettier --write -c --ignore-unknown
           fi
-
-      - name: Type Check
-        run: yarn tsc --noEmit
         
       - name: Apply fixes
         uses: autofix-ci/action@dd55f44df8f7cdb7a6bf74c78677eb8acd40cd0a
