@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import SchoolCard from '@/components/SchoolCard/SchoolCard';
-import { TextField } from '@/components/ui/textfield';
+import { Button, FixedButton, TextField } from '@/components/ui';
 import styles from './page.module.scss';
 
 export default function UITEST() {
@@ -25,6 +25,10 @@ export default function UITEST() {
         />
         <TextField placeholder="학번을 입력해주세요" state={'error'} type="password" />
       </div>
+      <Button width="full" disabled>
+        버튼
+      </Button>
+      <FixedButton>학교 연동하기</FixedButton>
     </div>
   );
 }
