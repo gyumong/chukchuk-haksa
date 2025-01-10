@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
+    "type-check": "tsc --noEmit",
     "gen": "dotenv -e .env -- bash -c 'npx supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" > types/supabase.ts'"
   },
   "dependencies": {
@@ -16,6 +17,7 @@
     "@supabase/supabase-js": "^2.46.1",
     "class-variance-authority": "^0.7.1",
     "cookies-next": "4.3.0",
+    "iron-session": "^8.0.4",
     "next": "14.2.10",
     "playwright": "^1.49.1",
     "react": "18.3.1",
