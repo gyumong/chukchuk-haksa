@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getIronSession } from 'iron-session';
 import { chromium } from 'playwright';
-import { SessionData, sessionOptions } from '@/lib/auth/session';
+import type { SessionData } from '@/lib/auth/session';
+import { sessionOptions } from '@/lib/auth/session';
 
 export async function POST(req: Request) {
   const { username, password } = await req.json();
@@ -40,10 +41,7 @@ export async function POST(req: Request) {
     await page.waitForTimeout(3000);
 
     if (loginError) {
-      return NextResponse.json(
-        { error: '아이디 또는 비밀번호가 올바르지 않습니다.' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: '아이디 또는 비밀번호가 올바르지 않습니다.' }, { status: 401 });
     }
 
     // (2) 로그인 성공 처리

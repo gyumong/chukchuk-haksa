@@ -1,8 +1,8 @@
-import { SessionOptions } from 'iron-session';
+import type { SessionOptions } from 'iron-session';
 
-export interface SessionData { 
-    username: string;
-    password:string;
+export interface SessionData {
+  username: string;
+  password: string;
 }
 
 export const sessionOptions: SessionOptions = {
@@ -15,6 +15,6 @@ export const sessionOptions: SessionOptions = {
 };
 
 export const defaultSession: SessionData = {
-    username: '',
-    password: '',
+  username: '',
+  password: '',
 };

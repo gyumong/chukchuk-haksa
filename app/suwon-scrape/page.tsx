@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import SchoolCard from '@/components/SchoolCard/SchoolCard'; 
+import SchoolCard from '@/components/SchoolCard/SchoolCard';
 
 export default function SuwonScrapePage() {
   const [taskId, setTaskId] = useState<string | null>(null);
@@ -85,10 +85,10 @@ export default function SuwonScrapePage() {
   };
 
   return (
-    <div >
-      <div >
+    <div>
+      <div>
         <SchoolCard schoolName="수원대학교" />
-        
+
         {/* 에러 메시지 */}
         {error && <p>에러: {error}</p>}
 
