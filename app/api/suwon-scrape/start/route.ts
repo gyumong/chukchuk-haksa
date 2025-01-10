@@ -9,6 +9,8 @@ import { ProfessorService } from '@/lib/supabase/services/professor-service';
 import { StudentCourseService } from '@/lib/supabase/services/student-course-service';
 import { StudentService } from '@/lib/supabase/services/student-service';
 import type { Database, MergedSemester, Student } from '@/types';
+import { getIronSession } from 'iron-session';
+import { SessionData, sessionOptions } from '@/lib/auth';
 
 export async function POST(req: Request) {
   function parseSemesterString(semStr: string): { year: number; semester: number } {
@@ -21,10 +23,14 @@ export async function POST(req: Request) {
     return { year, semester };
   }
 
-  const { username, password } = await req.json();
+  const res = NextResponse.next();
+  const session = await getIronSession<SessionData>(req, res, sessionOptions);
+
+  const username = session.username;
+  const password = session.password;
 
   if (!username || !password) {
-    return NextResponse.json({ error: 'username, password required' }, { status: 400 });
+    return NextResponse.json({ error: '포털 로그인이 필요합니다.' }, { status: 401 });
   }
 
   const taskId = uuidv4();
@@ -126,6 +132,9 @@ export async function POST(req: Request) {
         student,
         mergedData,
       });
+            // **세션 만료 처리**
+            session.destroy(); // Iron Session에서 세션 데이터 삭제
+            console.log('Session destroyed after successful scrape');
     } catch (err: any) {
       setTask(taskId, 'failed', { message: err.message });
     }
