@@ -1,16 +1,25 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import SchoolCard from '@/components/SchoolCard/SchoolCard';
 
-const SuwonScrapePage: React.FC = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+export default function SuwonScrapePage() {
   const [taskId, setTaskId] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [data, setData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPolling, setIsPolling] = useState(false);
 
+  /**
+   * 첫 진입 시 자동으로 startScrape() 호출하여 크롤링 시작
+   */
+  useEffect(() => {
+    startScrape();
+  }, []);
+
+  /**
+   * 폴링 로직: taskId가 있고, isPolling이 true면 일정 주기로 진행 상태 조회
+   */
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
 
@@ -27,16 +36,16 @@ const SuwonScrapePage: React.FC = () => {
           setStatus(result.status);
           if (result.status === 'completed') {
             setData(result.data);
-            setIsPolling(false); // Stop polling when completed
+            setIsPolling(false); // 완료 시 폴링 중단
           } else if (result.status === 'failed') {
-            setError(result.data?.message || 'An error occurred during scraping');
+            setError(result.data?.message || '크롤링 중 오류가 발생했습니다.');
             setIsPolling(false);
           }
         } catch (err: any) {
           setError(err.message);
           setIsPolling(false);
         }
-      }, 2000); // Poll every 2 seconds
+      }, 2000); // 2초에 한 번씩
     }
 
     return () => {
@@ -46,6 +55,9 @@ const SuwonScrapePage: React.FC = () => {
     };
   }, [isPolling, taskId]);
 
+  /**
+   * /api/suwon-scrape/start 호출 → taskId 세팅 → 폴링 시작
+   */
   const startScrape = async () => {
     setError(null);
     setStatus(null);
@@ -57,51 +69,30 @@ const SuwonScrapePage: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        // 이제 세션에 로그인 정보(username, password)가 이미 있으므로 body는 필요 없음
       });
 
       const result = await response.json();
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to start scrape');
+        throw new Error(result.error || '크롤링 시작에 실패했습니다.');
       }
 
       setTaskId(result.taskId);
-      setIsPolling(true); // Start polling
+      setIsPolling(true);
     } catch (err: any) {
       setError(err.message);
     }
   };
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>수원대학교 크롤링 테스트</h1>
-      <div style={{ marginBottom: '20px' }}>
-        <label>
-          학번/ID:
-          <input
-            type="text"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            style={{ marginLeft: '10px' }}
-          />
-        </label>
-      </div>
-      <div style={{ marginBottom: '20px' }}>
-        <label>
-          비밀번호:
-          <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            style={{ marginLeft: '10px' }}
-          />
-        </label>
-      </div>
-      <button onClick={startScrape} style={{ marginRight: '10px' }}>
-        크롤링 시작
-      </button>
-      <div style={{ marginTop: '20px' }}>
-        {error && <p style={{ color: 'red' }}>에러: {error}</p>}
+    <div>
+      <div>
+        <SchoolCard schoolName="수원대학교" />
+
+        {/* 에러 메시지 */}
+        {error && <p>에러: {error}</p>}
+
+        {/* Task ID / 진행상태 / 결과 */}
         {taskId && <p>Task ID: {taskId}</p>}
         {status && <p>상태: {status}</p>}
         {data && (
@@ -113,6 +104,4 @@ const SuwonScrapePage: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default SuwonScrapePage;
+}

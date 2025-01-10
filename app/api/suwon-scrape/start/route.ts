@@ -1,6 +1,9 @@
 // app/api/suwon-scrape/start/route.ts
 import { NextResponse } from 'next/server';
+import { getIronSession } from 'iron-session';
 import { v4 as uuidv4 } from 'uuid';
+import type { SessionData } from '@/lib/auth';
+import { sessionOptions } from '@/lib/auth';
 import { setTask } from '@/lib/crawling/scrape-task';
 import { scrapeSuwonAll } from '@/lib/crawling/suwon-scrape-all';
 import { CourseOfferingService } from '@/lib/supabase/services/course-offering-service';
@@ -21,10 +24,14 @@ export async function POST(req: Request) {
     return { year, semester };
   }
 
-  const { username, password } = await req.json();
+  const res = NextResponse.next();
+  const session = await getIronSession<SessionData>(req, res, sessionOptions);
+
+  const username = session.username;
+  const password = session.password;
 
   if (!username || !password) {
-    return NextResponse.json({ error: 'username, password required' }, { status: 400 });
+    return NextResponse.json({ error: '포털 로그인이 필요합니다.' }, { status: 401 });
   }
 
   const taskId = uuidv4();
@@ -126,6 +133,9 @@ export async function POST(req: Request) {
         student,
         mergedData,
       });
+      // **세션 만료 처리**
+      session.destroy(); // Iron Session에서 세션 데이터 삭제
+      console.log('Session destroyed after successful scrape');
     } catch (err: any) {
       setTask(taskId, 'failed', { message: err.message });
     }
