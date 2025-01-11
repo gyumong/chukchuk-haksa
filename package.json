@@ -18,6 +18,7 @@
     "class-variance-authority": "^0.7.1",
     "cookies-next": "4.3.0",
     "iron-session": "^8.0.4",
+    "lottie-react": "^2.4.0",
     "next": "14.2.10",
     "playwright": "^1.49.1",
     "react": "18.3.1",
