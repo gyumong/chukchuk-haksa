@@ -1,4 +1,4 @@
-import { DeleteIcon, SchoolIcon } from './icons';
+import { ArrowRightIcon, CheckStatusOffIcon, CheckStatusOnIcon, DeleteIcon, SchoolIcon } from './icons';
 
 export type IconType = 'delete' | 'school';
 
@@ -13,6 +13,9 @@ export const Icon = ({ name, size = 24, color, className }: IconProps) => {
   const icons = {
     delete: DeleteIcon,
     school: SchoolIcon,
+    checkStatusOn: CheckStatusOnIcon,
+    checkStatusOff: CheckStatusOffIcon,
+    arrowRight: ArrowRightIcon,
   } as Record<IconType, React.FC<{ width: number; height: number; color?: string; className?: string }>>;
 
   const IconComponent = icons[name];
