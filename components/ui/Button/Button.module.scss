@@ -77,3 +77,16 @@
   padding-bottom: env(safe-area-inset-bottom);
   width: calc(100% - 40px);
 }
+
+.loadingWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.loadingAnimation {
+  width: 48px;
+  height: 48spx;
+}

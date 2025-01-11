@@ -1,5 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import Lottie from 'lottie-react';
+import loadingAnimation from '@/assets/lotties/loading.json';
 import styles from './Button.module.scss';
 
 const buttonVariants = cva(styles.base, {
@@ -30,8 +32,9 @@ const buttonVariants = cva(styles.base, {
   },
 });
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   children: ReactNode;
+  isLoading?: boolean;
 }
 
 export function Button({
@@ -41,6 +44,7 @@ export function Button({
   width = 'default',
   className = '',
   disabled,
+  isLoading = false,
   ...props
 }: ButtonProps) {
   return (
@@ -49,7 +53,13 @@ export function Button({
       disabled={disabled}
       {...props}
     >
-      {children}
+      {isLoading ? (
+        <div className={styles.loadingWrapper}>
+          <Lottie animationData={loadingAnimation} loop={true} className={styles.loadingAnimation} />
+        </div>
+      ) : (
+        children
+      )}
     </button>
   );
 }
