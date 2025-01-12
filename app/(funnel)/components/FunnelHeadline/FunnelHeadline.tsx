@@ -11,14 +11,14 @@ interface FunnelHeadlineProps {
   title: string;
 }
 
-    const splitTextWithLineBreaks = (text: string) => {
+const splitTextWithLineBreaks = (text: string) => {
   const lines = text.split('<br/>');
   return lines.map((line, index) => ({
     id: `${text}-line-${index}`,
     content: line,
     isLast: index === lines.length - 1,
   }));
-    };
+};
 
 export default function FunnelHeadline({ description, title }: FunnelHeadlineProps) {
   return (
