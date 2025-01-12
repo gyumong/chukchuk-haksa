@@ -1,5 +1,5 @@
 import styles from './FunnelHeadline.module.scss';
-
+import { useMemo } from 'react';
 /**
  * @interface FunnelHeadlineProps
  * @property {string} title - 제목 텍스트 (<br/> 태그로 줄바꿈 가능)
@@ -11,36 +11,37 @@ interface FunnelHeadlineProps {
   title: string;
 }
 
-const splitTextWithLineBreaks = (text: string) => {
+const useSplitTextWithLineBreaks = (text: string) => useMemo(() => {
   const lines = text.split('<br/>');
   return lines.map((line, index) => ({
     id: `${text}-line-${index}`,
     content: line,
-    isLast: index === lines.length - 1,
-  }));
-};
+      isLast: index === lines.length - 1,
+    }));
+  }, [text]);
 
-export default function FunnelHeadline({ description, title }: FunnelHeadlineProps) {
-  return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>
-        {splitTextWithLineBreaks(title).map(({ id, content, isLast }) => (
+  const TextWithLineBreaks = ({ text, className }: { text: string; className?: string }) => {
+    const lines = useSplitTextWithLineBreaks(text);
+    return (
+      <span className={className}>
+        {lines.map(({ id, content, isLast }) => (
           <span key={id}>
             {content}
             {!isLast && <br />}
           </span>
         ))}
-      </h1>
-      {description && (
-        <p className={styles.description}>
-          {splitTextWithLineBreaks(description).map(({ id, content, isLast }) => (
-            <span key={id}>
-              {content}
-              {!isLast && <br />}
-            </span>
-          ))}
-        </p>
-      )}
+      </span>
+    );
+  };
+    
+    
+    
+
+export default function FunnelHeadline({ description, title }: FunnelHeadlineProps) {
+  return (
+    <div className={styles.container}>
+      <h1 className={styles.title}><TextWithLineBreaks text={title} /></h1>
+      {description && <p className={styles.description}><TextWithLineBreaks text={description} /></p>}
     </div>
   );
 }
