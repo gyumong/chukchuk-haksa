@@ -1,6 +1,6 @@
 import { ArrowRightIcon, CheckStatusOffIcon, CheckStatusOnIcon, DeleteIcon, SchoolIcon } from './icons';
 
-export type IconType = 'delete' | 'school';
+export type IconType = 'delete' | 'school' | 'checkStatusOn' | 'checkStatusOff' | 'arrowRight';
 
 interface IconProps {
   name: IconType;
