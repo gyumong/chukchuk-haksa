@@ -10,7 +10,6 @@ const iconMapping = {
   arrowRight: ArrowRightIcon,
 } as const;
 
-
 interface IconProps {
   name: IconType;
   size?: number;
@@ -19,7 +18,10 @@ interface IconProps {
 }
 
 export const Icon = ({ name, size = 24, color, className }: IconProps) => {
-  const icons = iconMapping as Record<IconType, React.FC<{ width: number; height: number; color?: string; className?: string }>>;
+  const icons = iconMapping as Record<
+    IconType,
+    React.FC<{ width: number; height: number; color?: string; className?: string }>
+  >;
 
   const IconComponent = icons[name];
 
