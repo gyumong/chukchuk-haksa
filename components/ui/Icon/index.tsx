@@ -1,6 +1,14 @@
-import { DeleteIcon, SchoolIcon } from './icons';
+import { ArrowRightIcon, CheckStatusOffIcon, CheckStatusOnIcon, DeleteIcon, SchoolIcon } from './icons';
 
-export type IconType = 'delete' | 'school';
+export type IconType = 'delete' | 'school' | 'checkStatusOn' | 'checkStatusOff' | 'arrowRight';
+
+const iconMapping = {
+  delete: DeleteIcon,
+  school: SchoolIcon,
+  checkStatusOn: CheckStatusOnIcon,
+  checkStatusOff: CheckStatusOffIcon,
+  arrowRight: ArrowRightIcon,
+} as const;
 
 interface IconProps {
   name: IconType;
@@ -10,10 +18,10 @@ interface IconProps {
 }
 
 export const Icon = ({ name, size = 24, color, className }: IconProps) => {
-  const icons = {
-    delete: DeleteIcon,
-    school: SchoolIcon,
-  } as Record<IconType, React.FC<{ width: number; height: number; color?: string; className?: string }>>;
+  const icons = iconMapping as Record<
+    IconType,
+    React.FC<{ width: number; height: number; color?: string; className?: string }>
+  >;
 
   const IconComponent = icons[name];
 

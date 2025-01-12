@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '../ui/Icon';
+import { Icon } from '@/components/ui';
 import styles from './SchoolCard.module.scss';
 
 interface SchoolCardProps {

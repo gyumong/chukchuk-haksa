@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import SchoolCard from '@/components/SchoolCard/SchoolCard';
+import { SchoolCard } from '../(funnel)/components';
 
 export default function SuwonScrapePage() {
   const [taskId, setTaskId] = useState<string | null>(null);

@@ -1,10 +1,10 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Button } from './Button';
+import type { ButtonProps } from './Button';
 import styles from './Button.module.scss';
 
-interface FixedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface FixedButtonProps extends Omit<ButtonProps, 'width' | 'size'> {
   children: ReactNode;
-  variant?: 'primary' | 'secondary';
 }
 
 export function FixedButton({ children, variant = 'primary', className = '', ...props }: FixedButtonProps) {
