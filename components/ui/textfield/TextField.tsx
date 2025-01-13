@@ -26,6 +26,7 @@ interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement>, VariantP
   label?: string;
   helperText?: string;
   errorMessage?: string;
+  error?: boolean;
   showDeleteIcon?: boolean;
   onClear?: () => void; // 추가
 }
@@ -39,6 +40,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
       state,
       focus,
       className,
+      error,
       onFocus,
       onBlur,
       onChange,
@@ -90,11 +92,14 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     );
     // state, focus 결정 로직
     const inputState = useMemo(() => {
+      if (error) {
+        return 'error';
+      }
       if (state) {
         return state;
       }
       return isFocused ? 'typing' : 'default';
-    }, [state, isFocused]);
+    }, [state, isFocused, error]);
 
     const focusState = useMemo(() => {
       if (isFocused) {
@@ -139,7 +144,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           )}
         </div>
 
-        {errorMessage && inputState === 'error' && (
+        {errorMessage && (inputState === 'error' || error) && (
           <p id={`${props.id}-error`} className={styles.errorMessage}>
             {errorMessage}
           </p>

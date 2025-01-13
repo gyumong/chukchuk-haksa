@@ -41,7 +41,10 @@ export async function POST(req: Request) {
     await page.waitForTimeout(3000);
 
     if (loginError) {
-      return NextResponse.json({ error: '아이디 또는 비밀번호가 올바르지 않습니다.' }, { status: 401 });
+      return NextResponse.json(
+        { error: '아이디나 비밀번호가 일치하지 않습니다.\n학교 홈페이지에서 확인해주세요.' },
+        { status: 401 }
+      );
     }
 
     // (2) 로그인 성공 처리
