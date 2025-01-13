@@ -34,7 +34,8 @@ function mapCreditDTOToDomain(dto: CreditDTO): Credit {
     points: dto.gainPoint,
     courseCode: dto.subjtCd,
     totalScore: dto.totalPoint,
-    categoryCode: dto.cltTerrCd,
+    areaCode: dto.cltTerrNm ? parseInt(dto.cltTerrNm.replace(/[^0-9]/g, '')) : undefined,
+    originalAreaCode: dto.cltTerrCd,
   };
 }
 
