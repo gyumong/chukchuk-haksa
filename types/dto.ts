@@ -34,6 +34,7 @@ interface CreditDTO {
   cretGainYear: string; // 학년 (추가)
   cretSmrCd: string; // 학기 코드 (추가)
   cltTerrCd?: number; // 선택영역 코드
+  cltTerrNm?: string; // 선택영역 이름
 }
 
 // Course DTO: 크롤링된 수강 데이터 타입

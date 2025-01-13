@@ -103,7 +103,8 @@ export async function POST(req: Request) {
               ? parseInt(c.subjectEstablishmentSemesterCode, 10)
               : undefined,
             faculty_division_name: c.facultyDivisionName || undefined,
-            category_code: c.categoryCode,
+            area_code: c.areaCode,
+            original_area_code: c.originalAreaCode,
             points: c.points || 0,
             host_department: c.departmentName || undefined,
           });

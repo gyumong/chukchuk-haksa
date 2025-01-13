@@ -31,7 +31,8 @@ interface Credit {
   courseCode: string;
   totalScore: number;
   semester?: string;
-  categoryCode?: number;
+  areaCode?: number; // 정규화된 영역 코드 (1~7)
+  originalAreaCode?: number; // 학교 원본 코드 (33, 43 등)
 }
 
 // 도메인 모델: Course (수강 정보)

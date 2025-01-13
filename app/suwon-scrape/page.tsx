@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SchoolCard } from '../(funnel)/components';
 
 export default function SuwonScrapePage() {
@@ -9,12 +9,19 @@ export default function SuwonScrapePage() {
   const [data, setData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPolling, setIsPolling] = useState(false);
+  const isStarting = useRef(false); // 중복 시작 방지를 위한 ref
 
-  /**
-   * 첫 진입 시 자동으로 startScrape() 호출하여 크롤링 시작
-   */
   useEffect(() => {
-    startScrape();
+    // 이미 시작 중이면 추가 호출 방지
+    if (!isStarting.current) {
+      isStarting.current = true;
+      startScrape();
+    }
+
+    // cleanup
+    return () => {
+      isStarting.current = false;
+    };
   }, []);
 
   /**
@@ -59,6 +66,11 @@ export default function SuwonScrapePage() {
    * /api/suwon-scrape/start 호출 → taskId 세팅 → 폴링 시작
    */
   const startScrape = async () => {
+    // 이미 진행 중인 경우 중복 실행 방지
+    if (isPolling) {
+      return;
+    }
+
     setError(null);
     setStatus(null);
     setData(null);
@@ -69,7 +81,6 @@ export default function SuwonScrapePage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        // 이제 세션에 로그인 정보(username, password)가 이미 있으므로 body는 필요 없음
       });
 
       const result = await response.json();
@@ -81,6 +92,8 @@ export default function SuwonScrapePage() {
       setIsPolling(true);
     } catch (err: any) {
       setError(err.message);
+    } finally {
+      isStarting.current = false; // 시작 완료 후 플래그 리셋
     }
   };
 

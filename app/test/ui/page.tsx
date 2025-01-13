@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import SchoolCard from '@/components/SchoolCard/SchoolCard';
+import { SchoolCard } from '@/app/(funnel)/components';
 import { FixedButton, TextField } from '@/components/ui';
 import styles from './page.module.scss';
 

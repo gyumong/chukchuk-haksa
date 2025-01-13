@@ -5,17 +5,18 @@ export type Database = {
     Tables: {
       course_offerings: {
         Row: {
-          category_code: number | null;
+          area_code: number | null;
           class_section: string | null;
           course_id: number;
           created_at: string | null;
           deleted_at: string | null;
           department_id: number | null;
           evaluation_type_code: Database['public']['Enums']['evaluation_type'] | null;
-          faculty_division_name: string | null;
+          faculty_division_name: Database['public']['Enums']['course_area_type'] | null;
           host_department: string | null;
           id: number;
           is_video_lecture: boolean | null;
+          original_area_code: number | null;
           points: number | null;
           professor_id: number | null;
           schedule_summary: string | null;
@@ -25,17 +26,18 @@ export type Database = {
           year: number;
         };
         Insert: {
-          category_code?: number | null;
+          area_code?: number | null;
           class_section?: string | null;
           course_id: number;
           created_at?: string | null;
           deleted_at?: string | null;
           department_id?: number | null;
           evaluation_type_code?: Database['public']['Enums']['evaluation_type'] | null;
-          faculty_division_name?: string | null;
+          faculty_division_name?: Database['public']['Enums']['course_area_type'] | null;
           host_department?: string | null;
           id?: number;
           is_video_lecture?: boolean | null;
+          original_area_code?: number | null;
           points?: number | null;
           professor_id?: number | null;
           schedule_summary?: string | null;
@@ -45,17 +47,18 @@ export type Database = {
           year: number;
         };
         Update: {
-          category_code?: number | null;
+          area_code?: number | null;
           class_section?: string | null;
           course_id?: number;
           created_at?: string | null;
           deleted_at?: string | null;
           department_id?: number | null;
           evaluation_type_code?: Database['public']['Enums']['evaluation_type'] | null;
-          faculty_division_name?: string | null;
+          faculty_division_name?: Database['public']['Enums']['course_area_type'] | null;
           host_department?: string | null;
           id?: number;
           is_video_lecture?: boolean | null;
+          original_area_code?: number | null;
           points?: number | null;
           professor_id?: number | null;
           schedule_summary?: string | null;
@@ -78,6 +81,13 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'departments';
             referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'fk_area_code';
+            columns: ['area_code'];
+            isOneToOne: false;
+            referencedRelation: 'liberal_arts_area_codes';
+            referencedColumns: ['code'];
           },
         ];
       };
@@ -108,6 +118,97 @@ export type Database = {
         };
         Relationships: [];
       };
+      department_area_requirements: {
+        Row: {
+          admission_year: number;
+          area_type: Database['public']['Enums']['course_area_type'];
+          created_at: string | null;
+          department_id: number;
+          description: string | null;
+          id: string;
+          required_credits: number;
+          required_elective_courses: number | null;
+          total_elective_courses: number | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          admission_year: number;
+          area_type: Database['public']['Enums']['course_area_type'];
+          created_at?: string | null;
+          department_id: number;
+          description?: string | null;
+          id?: string;
+          required_credits: number;
+          required_elective_courses?: number | null;
+          total_elective_courses?: number | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          admission_year?: number;
+          area_type?: Database['public']['Enums']['course_area_type'];
+          created_at?: string | null;
+          department_id?: number;
+          description?: string | null;
+          id?: string;
+          required_credits?: number;
+          required_elective_courses?: number | null;
+          total_elective_courses?: number | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'department_area_requirements_department_id_fkey';
+            columns: ['department_id'];
+            isOneToOne: false;
+            referencedRelation: 'departments';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      department_language_requirements: {
+        Row: {
+          admission_year: number;
+          created_at: string | null;
+          department_id: number;
+          description: string | null;
+          id: string;
+          minimum_score: string;
+          requirement_group_id: string | null;
+          test_type_id: string;
+          updated_at: string | null;
+        };
+        Insert: {
+          admission_year: number;
+          created_at?: string | null;
+          department_id: number;
+          description?: string | null;
+          id?: string;
+          minimum_score: string;
+          requirement_group_id?: string | null;
+          test_type_id: string;
+          updated_at?: string | null;
+        };
+        Update: {
+          admission_year?: number;
+          created_at?: string | null;
+          department_id?: number;
+          description?: string | null;
+          id?: string;
+          minimum_score?: string;
+          requirement_group_id?: string | null;
+          test_type_id?: string;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'department_language_requirements_test_type_id_fkey';
+            columns: ['test_type_id'];
+            isOneToOne: false;
+            referencedRelation: 'language_test_types';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       departments: {
         Row: {
           created_at: string | null;
@@ -132,52 +233,44 @@ export type Database = {
         };
         Relationships: [];
       };
-      graduation_credit_distribution: {
+      graduation_requirements: {
         Row: {
-          admission_year: number;
-          basic_liberal_arts_required: number;
-          character_education_required: number;
-          department: string;
+          admission_year: number | null;
+          created_at: string | null;
           department_id: number | null;
-          general_electives_required: number;
-          id: number;
-          important_core_required: number;
-          major_core_required: number;
-          major_selection_required: number;
-          required_credits: number;
-          selective_liberal_arts_required: number;
+          id: string;
+          minimum_gpa: number | null;
+          total_credits: number;
+          updated_at: string | null;
         };
         Insert: {
-          admission_year: number;
-          basic_liberal_arts_required?: number;
-          character_education_required?: number;
-          department: string;
+          admission_year?: number | null;
+          created_at?: string | null;
           department_id?: number | null;
-          general_electives_required?: number;
-          id?: never;
-          important_core_required: number;
-          major_core_required: number;
-          major_selection_required: number;
-          required_credits: number;
-          selective_liberal_arts_required?: number;
+          id?: string;
+          minimum_gpa?: number | null;
+          total_credits: number;
+          updated_at?: string | null;
         };
         Update: {
-          admission_year?: number;
-          basic_liberal_arts_required?: number;
-          character_education_required?: number;
-          department?: string;
+          admission_year?: number | null;
+          created_at?: string | null;
           department_id?: number | null;
-          general_electives_required?: number;
-          id?: never;
-          important_core_required?: number;
-          major_core_required?: number;
-          major_selection_required?: number;
-          required_credits?: number;
-          selective_liberal_arts_required?: number;
+          id?: string;
+          minimum_gpa?: number | null;
+          total_credits?: number;
+          updated_at?: string | null;
         };
         Relationships: [
           {
-            foreignKeyName: 'fk_gcd_department';
+            foreignKeyName: 'fk_graduation_req_dept';
+            columns: ['department_id'];
+            isOneToOne: false;
+            referencedRelation: 'departments';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'graduation_requirements_department_id_fkey';
             columns: ['department_id'];
             isOneToOne: false;
             referencedRelation: 'departments';
@@ -185,24 +278,60 @@ export type Database = {
           },
         ];
       };
-      missionary_category: {
+      language_test_types: {
         Row: {
-          area: number | null;
-          code: number;
-          id: number;
-          name: string;
+          created_at: string | null;
+          description: string | null;
+          id: string;
+          is_active: boolean | null;
+          test_code: string | null;
+          test_name: string;
+          updated_at: string | null;
         };
         Insert: {
-          area?: number | null;
-          code: number;
-          id?: number;
-          name: string;
+          created_at?: string | null;
+          description?: string | null;
+          id?: string;
+          is_active?: boolean | null;
+          test_code?: string | null;
+          test_name: string;
+          updated_at?: string | null;
         };
         Update: {
-          area?: number | null;
+          created_at?: string | null;
+          description?: string | null;
+          id?: string;
+          is_active?: boolean | null;
+          test_code?: string | null;
+          test_name?: string;
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
+      liberal_arts_area_codes: {
+        Row: {
+          area_name: string;
+          code: number;
+          created_at: string | null;
+          description: string | null;
+          is_active: boolean | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          area_name: string;
+          code: number;
+          created_at?: string | null;
+          description?: string | null;
+          is_active?: boolean | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          area_name?: string;
           code?: number;
-          id?: number;
-          name?: string;
+          created_at?: string | null;
+          description?: string | null;
+          is_active?: boolean | null;
+          updated_at?: string | null;
         };
         Relationships: [];
       };
@@ -237,33 +366,6 @@ export type Database = {
             referencedColumns: ['id'];
           },
         ];
-      };
-      profiles: {
-        Row: {
-          created_at: string | null;
-          email: string | null;
-          id: string;
-          profile_image: string | null;
-          profile_nickname: string | null;
-          updated_at: string | null;
-        };
-        Insert: {
-          created_at?: string | null;
-          email?: string | null;
-          id: string;
-          profile_image?: string | null;
-          profile_nickname?: string | null;
-          updated_at?: string | null;
-        };
-        Update: {
-          created_at?: string | null;
-          email?: string | null;
-          id?: string;
-          profile_image?: string | null;
-          profile_nickname?: string | null;
-          updated_at?: string | null;
-        };
-        Relationships: [];
       };
       student_courses: {
         Row: {
@@ -310,56 +412,107 @@ export type Database = {
           },
         ];
       };
-      student_graduation_status: {
+      student_graduation_progress: {
         Row: {
+          area_requirements_fulfilled: boolean | null;
           checked_at: string | null;
           created_at: string | null;
           credits_fulfilled: boolean | null;
+          elective_courses_fulfilled: boolean | null;
           gpa_fulfilled: boolean | null;
-          graduation_criteria_id: string | null;
           graduation_status: Database['public']['Enums']['graduation_status_type'] | null;
-          id: number;
+          id: string;
           language_cert_fulfilled: boolean | null;
-          semesters_fulfilled: boolean | null;
-          student_id: string;
-          thesis_fulfilled: boolean | null;
+          student_id: string | null;
           updated_at: string | null;
         };
         Insert: {
+          area_requirements_fulfilled?: boolean | null;
           checked_at?: string | null;
           created_at?: string | null;
           credits_fulfilled?: boolean | null;
+          elective_courses_fulfilled?: boolean | null;
           gpa_fulfilled?: boolean | null;
-          graduation_criteria_id?: string | null;
           graduation_status?: Database['public']['Enums']['graduation_status_type'] | null;
-          id?: never;
+          id?: string;
           language_cert_fulfilled?: boolean | null;
-          semesters_fulfilled?: boolean | null;
-          student_id: string;
-          thesis_fulfilled?: boolean | null;
+          student_id?: string | null;
           updated_at?: string | null;
         };
         Update: {
+          area_requirements_fulfilled?: boolean | null;
           checked_at?: string | null;
           created_at?: string | null;
           credits_fulfilled?: boolean | null;
+          elective_courses_fulfilled?: boolean | null;
           gpa_fulfilled?: boolean | null;
-          graduation_criteria_id?: string | null;
           graduation_status?: Database['public']['Enums']['graduation_status_type'] | null;
-          id?: never;
+          id?: string;
           language_cert_fulfilled?: boolean | null;
-          semesters_fulfilled?: boolean | null;
-          student_id?: string;
-          thesis_fulfilled?: boolean | null;
+          student_id?: string | null;
           updated_at?: string | null;
         };
         Relationships: [
           {
-            foreignKeyName: 'fk_sgs_student';
+            foreignKeyName: 'student_graduation_progress_student_id_fkey';
+            columns: ['student_id'];
+            isOneToOne: true;
+            referencedRelation: 'students';
+            referencedColumns: ['student_id'];
+          },
+        ];
+      };
+      student_language_test_records: {
+        Row: {
+          created_at: string | null;
+          document_url: string | null;
+          id: string;
+          is_verified: boolean | null;
+          score: string;
+          student_id: string | null;
+          test_date: string;
+          test_type_id: string | null;
+          updated_at: string | null;
+          verification_date: string | null;
+        };
+        Insert: {
+          created_at?: string | null;
+          document_url?: string | null;
+          id?: string;
+          is_verified?: boolean | null;
+          score: string;
+          student_id?: string | null;
+          test_date: string;
+          test_type_id?: string | null;
+          updated_at?: string | null;
+          verification_date?: string | null;
+        };
+        Update: {
+          created_at?: string | null;
+          document_url?: string | null;
+          id?: string;
+          is_verified?: boolean | null;
+          score?: string;
+          student_id?: string | null;
+          test_date?: string;
+          test_type_id?: string | null;
+          updated_at?: string | null;
+          verification_date?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'student_language_test_records_student_id_fkey';
             columns: ['student_id'];
             isOneToOne: false;
             referencedRelation: 'students';
             referencedColumns: ['student_id'];
+          },
+          {
+            foreignKeyName: 'student_language_test_records_test_type_id_fkey';
+            columns: ['test_type_id'];
+            isOneToOne: false;
+            referencedRelation: 'language_test_types';
+            referencedColumns: ['id'];
           },
         ];
       };
@@ -438,13 +591,6 @@ export type Database = {
             referencedColumns: ['id'];
           },
           {
-            foreignKeyName: 'fk_students_department';
-            columns: ['department_id'];
-            isOneToOne: false;
-            referencedRelation: 'departments';
-            referencedColumns: ['id'];
-          },
-          {
             foreignKeyName: 'fk_students_major';
             columns: ['major_id'];
             isOneToOne: false;
@@ -460,14 +606,94 @@ export type Database = {
           },
         ];
       };
+      users: {
+        Row: {
+          connected_at: string | null;
+          created_at: string | null;
+          email: string | null;
+          id: string;
+          portal_connected: boolean | null;
+          profile_image: string | null;
+          profile_nickname: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          connected_at?: string | null;
+          created_at?: string | null;
+          email?: string | null;
+          id: string;
+          portal_connected?: boolean | null;
+          profile_image?: string | null;
+          profile_nickname?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          connected_at?: string | null;
+          created_at?: string | null;
+          email?: string | null;
+          id?: string;
+          portal_connected?: boolean | null;
+          profile_image?: string | null;
+          profile_nickname?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      check_area_requirements_fulfillment: {
+        Args: {
+          p_student_id: string;
+        };
+        Returns: Array<{
+          area_requirements_fulfilled: boolean;
+          elective_courses_fulfilled: boolean;
+        }>;
+      };
+      check_liberal_arts_fulfillment: {
+        Args: {
+          p_student_id: string;
+        };
+        Returns: boolean;
+      };
+      disconnect_portal: {
+        Args: {
+          p_user_id: string;
+        };
+        Returns: undefined;
+      };
+      get_student_area_progress: {
+        Args: {
+          p_department_id: number;
+          p_admission_year: number;
+        };
+        Returns: Array<{
+          area_type: Database['public']['Enums']['course_area_type'];
+          required_credits: number;
+          earned_credits: number;
+          required_elective_courses: number;
+          completed_elective_courses: number;
+          total_elective_courses: number;
+          courses: Json;
+        }>;
+      };
+      initialize_portal_connection: {
+        Args: {
+          p_user_id: string;
+          p_student_data: Json;
+        };
+        Returns: string;
+      };
+      update_graduation_progress: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
     };
     Enums: {
+      course_area_type: '중핵' | '기교' | '선교' | '소교' | '전교' | '전취' | '전핵' | '전선' | '일선';
       evaluation_type: 'absolute' | 'relative';
       grade_type: 'A+' | 'A0' | 'B+' | 'B0' | 'C+' | 'C0' | 'D+' | 'D0' | 'F' | 'P' | 'NP' | 'IP';
       graduation_status_type: '재학' | '수료' | '졸업';

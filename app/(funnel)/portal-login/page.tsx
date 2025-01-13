@@ -9,10 +9,12 @@ import styles from './page.module.scss';
 export default function PortalLogin() {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
   const handleLogin = async () => {
     try {
+      setIsLoading(true);
       const res = await fetch('/api/suwon-scrape/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -25,6 +27,8 @@ export default function PortalLogin() {
       router.push('/suwon-scrape');
     } catch (err: any) {
       // 에러 처리
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -48,7 +52,7 @@ export default function PortalLogin() {
         />
       </div>
 
-      <FixedButton onClick={handleLogin} disabled={!username || !password} isLoading={true}>
+      <FixedButton onClick={handleLogin} disabled={!username || !password} isLoading={isLoading}>
         학교 연동하기
       </FixedButton>
     </div>
