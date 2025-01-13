@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import type { FormEvent } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FixedButton, TextField } from '@/components/ui';
 import { FunnelHeadline, SchoolCard } from '../components';
@@ -15,18 +16,18 @@ export default function PortalLogin() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     try {
       setIsLoading(true);
       setErrorMessage('');
-      
+
       const res = await fetch('/api/suwon-scrape/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
       const data = await res.json();
-      
+
       if (!res.ok) {
         throw new Error(data.error || '로그인 실패');
       }
@@ -49,11 +50,11 @@ export default function PortalLogin() {
       <form onSubmit={handleSubmit} className={styles.formContainer}>
         <SchoolCard schoolName="수원대학교" />
 
-        <TextField 
-          placeholder="학번을 입력해주세요" 
-          value={username} 
+        <TextField
+          placeholder="학번을 입력해주세요"
+          value={username}
           onChange={e => setUsername(e.target.value)}
-          error={!!errorMessage}
+          error={Boolean(errorMessage)}
         />
 
         <TextField
@@ -61,9 +62,9 @@ export default function PortalLogin() {
           placeholder="비밀번호를 입력해주세요"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          error={!!errorMessage}
+          error={Boolean(errorMessage)}
         />
-        
+
         {errorMessage && (
           <div className={styles.errorMessage}>
             {errorMessage.split('\n').map((line, i) => (
@@ -72,11 +73,7 @@ export default function PortalLogin() {
           </div>
         )}
 
-        <FixedButton 
-          type="submit" 
-          disabled={!username || !password || isLoading} 
-          isLoading={isLoading}
-        >
+        <FixedButton type="submit" disabled={!username || !password || isLoading} isLoading={isLoading}>
           학교 연동하기
         </FixedButton>
       </form>
