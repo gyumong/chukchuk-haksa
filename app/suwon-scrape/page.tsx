@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SchoolCard } from '../(funnel)/components';
 
 export default function SuwonScrapePage() {
@@ -9,7 +9,7 @@ export default function SuwonScrapePage() {
   const [data, setData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPolling, setIsPolling] = useState(false);
-  const isStarting = useRef(false);  // 중복 시작 방지를 위한 ref
+  const isStarting = useRef(false); // 중복 시작 방지를 위한 ref
 
   useEffect(() => {
     // 이미 시작 중이면 추가 호출 방지
@@ -67,7 +67,9 @@ export default function SuwonScrapePage() {
    */
   const startScrape = async () => {
     // 이미 진행 중인 경우 중복 실행 방지
-    if (isPolling) {return;}
+    if (isPolling) {
+      return;
+    }
 
     setError(null);
     setStatus(null);
@@ -91,7 +93,7 @@ export default function SuwonScrapePage() {
     } catch (err: any) {
       setError(err.message);
     } finally {
-      isStarting.current = false;  // 시작 완료 후 플래그 리셋
+      isStarting.current = false; // 시작 완료 후 플래그 리셋
     }
   };
 

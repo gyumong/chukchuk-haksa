@@ -1,6 +1,6 @@
-import { createClient } from '../server';
-import type { Database } from '@/types/supabase';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/supabase';
+import { createClient } from '../server';
 
 interface AreaProgress {
   areaType: Database['public']['Enums']['course_area_type'];
@@ -9,31 +9,26 @@ interface AreaProgress {
   requiredElectiveCourses: number | null;
   completedElectiveCourses: number;
   totalElectiveCourses: number | null;
-  courses: {
+  courses: Array<{
     courseName: string;
     credits: number;
     grade: string;
     semester: string;
-  }[] | null;
+  }> | null;
 }
 
 export class GraduationProgressService {
-  constructor(
-    private readonly supabase: SupabaseClient<Database> = createClient()
-  ) {}
+  constructor(private readonly supabase: SupabaseClient<Database> = createClient()) {}
 
   async getStudentAreaProgress(
     studentId: string,
     departmentId: number,
     admissionYear: number
   ): Promise<AreaProgress[]> {
-    const { data, error } = await this.supabase.rpc(
-      'get_student_area_progress',
-      {
-        p_department_id: departmentId,
-        p_admission_year: admissionYear
-      }
-    );
+    const { data, error } = await this.supabase.rpc('get_student_area_progress', {
+      p_department_id: departmentId,
+      p_admission_year: admissionYear,
+    });
 
     if (error) {
       console.error('Failed to get area progress:', error);
@@ -47,12 +42,12 @@ export class GraduationProgressService {
       requiredElectiveCourses: row.required_elective_courses,
       completedElectiveCourses: row.completed_elective_courses,
       totalElectiveCourses: row.total_elective_courses,
-      courses: row.courses as {
+      courses: row.courses as Array<{
         courseName: string;
         credits: number;
         grade: string;
         semester: string;
-      }[] | null
+      }> | null,
     }));
   }
 

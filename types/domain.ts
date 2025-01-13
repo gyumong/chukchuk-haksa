@@ -31,7 +31,7 @@ interface Credit {
   courseCode: string;
   totalScore: number;
   semester?: string;
-  areaCode?: number;          // 정규화된 영역 코드 (1~7)
+  areaCode?: number; // 정규화된 영역 코드 (1~7)
   originalAreaCode?: number; // 학교 원본 코드 (33, 43 등)
 }
 

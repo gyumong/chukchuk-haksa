@@ -36,17 +36,13 @@ export class StudentService {
   async initializeStudent(student: Student): Promise<string> {
     const userId = await this.getAuthenticatedUserId();
 
-        // 1) 현재 사용자의 연동 상태 확인
-        const { data: user } = await this.supabase
-        .from('users')
-        .select('portal_connected')
-        .eq('id', userId)
-        .single();
-  
-      if (user?.portal_connected) {
-        throw new Error('이미 포털 계정과 연동된 사용자입니다.');
-      }
-  
+    // 1) 현재 사용자의 연동 상태 확인
+    const { data: user } = await this.supabase.from('users').select('portal_connected').eq('id', userId).single();
+
+    if (user?.portal_connected) {
+      throw new Error('이미 포털 계정과 연동된 사용자입니다.');
+    }
+
     // 2) 학과 department_id(FK) 설정
     const departmentPk = await this.departmentService.getOrCreateDepartment(
       student.departmentCode, // 크롤링된 학과 코드
@@ -68,14 +64,14 @@ export class StudentService {
       );
     }
 
-    const {  error } = await this.supabase.rpc('initialize_portal_connection', {
+    const { error } = await this.supabase.rpc('initialize_portal_connection', {
       p_user_id: userId,
       p_student_data: {
         ...student,
         department_id: departmentPk,
         major_id: majorPk,
-        secondary_major_id: secondaryMajorPk
-      }
+        secondary_major_id: secondaryMajorPk,
+      },
     });
 
     if (error) {
@@ -83,24 +79,23 @@ export class StudentService {
       throw new Error('포털 연동에 실패했습니다.');
     }
 
-    return userId;  // student_id는 user_id와 동일
+    return userId; // student_id는 user_id와 동일
   }
 
-    /**
+  /**
    * 포털 연동 해제
    */
-    async disconnectPortal(): Promise<void> {
-      const userId = await this.getAuthenticatedUserId();
-  
-      const { error } = await this.supabase.rpc('disconnect_portal', {
-        p_user_id: userId
-      });
-  
-      if (error) {
-        throw new Error('포털 연동 해제에 실패했습니다.');
-      }
-    }
+  async disconnectPortal(): Promise<void> {
+    const userId = await this.getAuthenticatedUserId();
 
+    const { error } = await this.supabase.rpc('disconnect_portal', {
+      p_user_id: userId,
+    });
+
+    if (error) {
+      throw new Error('포털 연동 해제에 실패했습니다.');
+    }
+  }
 
   /**
    * 연동 상태 확인
@@ -123,7 +118,7 @@ export class StudentService {
 
     return {
       isConnected: data.portal_connected || false,
-      connectedAt: data.connected_at || undefined
+      connectedAt: data.connected_at || undefined,
     };
   }
 }

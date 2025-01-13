@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { Database } from '@/types/supabase';
 import styles from './page.module.scss';
+
 type CourseAreaType = Database['public']['Enums']['course_area_type'];
 
 interface Course {
@@ -46,34 +47,40 @@ export default function GraduationProgressPage() {
     fetchGraduationProgress();
   }, []);
 
-  if (isLoading) return <div>로딩 중...</div>;
-  if (error) return <div>에러: {error}</div>;
+  if (isLoading) {
+    return <div>로딩 중...</div>;
+  }
+  if (error) {
+    return <div>에러: {error}</div>;
+  }
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>졸업요건 확인</h1>
 
-      {areaProgress.map((area) => (
+      {areaProgress.map(area => (
         <div key={area.areaType} className={styles.areaCard}>
-          <div className={`${styles.areaCardContent} ${
-            area.earnedCredits >= area.requiredCredits 
-              ? styles.areaCardContentCompleted 
-              : styles.areaCardContentIncomplete
-          }`}>
+          <div
+            className={`${styles.areaCardContent} ${
+              area.earnedCredits >= area.requiredCredits
+                ? styles.areaCardContentCompleted
+                : styles.areaCardContentIncomplete
+            }`}
+          >
             <div className={styles.areaHeader}>
               <div className={styles.areaInfo}>
-                <span className={`${styles.areaType} ${
-                  area.earnedCredits >= area.requiredCredits 
-                    ? styles.areaTypeCompleted 
-                    : styles.areaTypeIncomplete
-                }`}>
+                <span
+                  className={`${styles.areaType} ${
+                    area.earnedCredits >= area.requiredCredits ? styles.areaTypeCompleted : styles.areaTypeIncomplete
+                  }`}
+                >
                   {area.areaType}
                 </span>
-                <span className={
-                  area.earnedCredits >= area.requiredCredits 
-                    ? styles.creditsCompleted 
-                    : styles.creditsIncomplete
-                }>
+                <span
+                  className={
+                    area.earnedCredits >= area.requiredCredits ? styles.creditsCompleted : styles.creditsIncomplete
+                  }
+                >
                   {area.earnedCredits} / {area.requiredCredits}
                 </span>
                 {area.earnedCredits >= area.requiredCredits && (
@@ -88,24 +95,26 @@ export default function GraduationProgressPage() {
               <div className={styles.coursesList}>
                 {area.courses.map((course, idx) => (
                   <div key={idx} className={styles.courseItem}>
-                    <span className={`${styles.courseName} ${
-                      area.earnedCredits >= area.requiredCredits 
-                        ? styles.courseNameCompleted 
-                        : styles.courseNameIncomplete
-                    }`}>
+                    <span
+                      className={`${styles.courseName} ${
+                        area.earnedCredits >= area.requiredCredits
+                          ? styles.courseNameCompleted
+                          : styles.courseNameIncomplete
+                      }`}
+                    >
                       {course.courseName}
                     </span>
                     <div className={styles.courseInfo}>
-                      <span className={
-                        area.earnedCredits >= area.requiredCredits 
-                          ? styles.courseCreditsCompleted 
-                          : styles.courseCreditsIncomplete
-                      }>
+                      <span
+                        className={
+                          area.earnedCredits >= area.requiredCredits
+                            ? styles.courseCreditsCompleted
+                            : styles.courseCreditsIncomplete
+                        }
+                      >
                         {course.credits}학점
                       </span>
-                      <span className={getGradeStyleClass(course.grade)}>
-                        {course.grade}
-                      </span>
+                      <span className={getGradeStyleClass(course.grade)}>{course.grade}</span>
                     </div>
                   </div>
                 ))}
@@ -132,4 +141,4 @@ function getGradeStyleClass(grade: string): string {
     default:
       return styles.gradeDefault;
   }
-} 
+}
