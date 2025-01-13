@@ -36,19 +36,30 @@ export class StudentService {
   async initializeStudent(student: Student): Promise<string> {
     const userId = await this.getAuthenticatedUserId();
 
-    // 1) 학과 department_id(FK) 설정
+        // 1) 현재 사용자의 연동 상태 확인
+        const { data: user } = await this.supabase
+        .from('users')
+        .select('portal_connected')
+        .eq('id', userId)
+        .single();
+  
+      if (user?.portal_connected) {
+        throw new Error('이미 포털 계정과 연동된 사용자입니다.');
+      }
+  
+    // 2) 학과 department_id(FK) 설정
     const departmentPk = await this.departmentService.getOrCreateDepartment(
       student.departmentCode, // 크롤링된 학과 코드
       student.departmentName
     );
 
-    // 2) 주전공 major_id(FK) 설정
+    // 3) 주전공 major_id(FK) 설정
     const majorPk = await this.departmentService.getOrCreateDepartment(
       student.majorCode, // 크롤링된 전공 코드
       student.majorName
     );
 
-    // 3) 복수전공 secondary_major_id(FK) 설정 (선택사항)
+    // 4) 복수전공 secondary_major_id(FK) 설정 (선택사항)
     let secondaryMajorPk: number | null = null;
     if (student.secondaryMajorCode && student.secondaryMajorName) {
       secondaryMajorPk = await this.departmentService.getOrCreateDepartment(
@@ -57,31 +68,62 @@ export class StudentService {
       );
     }
 
-    const { data: studentData, error: studentError } = await this.supabase
-      .from('students')
-      .upsert({
-        student_id: userId,
-        student_code: student.studentCode,
-        name: student.name,
+    const {  error } = await this.supabase.rpc('initialize_portal_connection', {
+      p_user_id: userId,
+      p_student_data: {
+        ...student,
         department_id: departmentPk,
         major_id: majorPk,
-        secondary_major_id: secondaryMajorPk,
-        admission_year: student.admissionYear,
-        semester_enrolled: student.semesterEnrolled,
-        is_transfer_student: student.isTransferStudent,
-        is_graduated: student.isGraduated,
-        status: student.status,
-        grade_level: student.gradeLevel,
-        admission_type: student.admissionType,
-      })
-      .select('student_id')
-      .single();
+        secondary_major_id: secondaryMajorPk
+      }
+    });
 
-    if (studentError || !studentData) {
-      console.error('Failed to initialize student record.', studentError);
-      throw new Error('Failed to initialize student record.');
+    if (error) {
+      console.error('Failed to initialize student record:', error);
+      throw new Error('포털 연동에 실패했습니다.');
     }
 
-    return studentData.student_id;
+    return userId;  // student_id는 user_id와 동일
+  }
+
+    /**
+   * 포털 연동 해제
+   */
+    async disconnectPortal(): Promise<void> {
+      const userId = await this.getAuthenticatedUserId();
+  
+      const { error } = await this.supabase.rpc('disconnect_portal', {
+        p_user_id: userId
+      });
+  
+      if (error) {
+        throw new Error('포털 연동 해제에 실패했습니다.');
+      }
+    }
+
+
+  /**
+   * 연동 상태 확인
+   */
+  async getPortalConnectionStatus(): Promise<{
+    isConnected: boolean;
+    connectedAt?: string;
+  }> {
+    const userId = await this.getAuthenticatedUserId();
+
+    const { data, error } = await this.supabase
+      .from('users')
+      .select('portal_connected, connected_at')
+      .eq('id', userId)
+      .single();
+
+    if (error) {
+      throw new Error('연동 상태 확인에 실패했습니다.');
+    }
+
+    return {
+      isConnected: data.portal_connected || false,
+      connectedAt: data.connected_at || undefined
+    };
   }
 }
