@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import SchoolCard from '@/components/SchoolCard/SchoolCard';
 import { FixedButton, TextField } from '@/components/ui';
 import styles from './page.module.scss';
+import { SchoolCard } from '@/app/(funnel)/components';
 
 export default function UITEST() {
   const [username, setUsername] = useState<string>('');
