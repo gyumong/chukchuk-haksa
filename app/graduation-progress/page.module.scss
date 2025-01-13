@@ -1,0 +1,139 @@
+.container {
+    min-height: 100vh;
+    background-color: #F4F4F9;
+    padding: 1.25rem;
+  }
+  
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2B2B2B;
+    margin-bottom: 1rem;
+  }
+  
+  .areaCard {
+    margin-bottom: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  
+    &Content {
+      padding: 1.25rem;
+      border-radius: 1rem;
+      
+      &Completed {
+        background-color: #2B2B2B;
+      }
+      
+      &Incomplete {
+        background-color: white;
+      }
+    }
+  }
+  
+  .areaHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  
+  .areaInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .areaType {
+    font-size: 1.125rem;
+    font-weight: bold;
+    
+    &Completed {
+      color: #9F94FF;
+    }
+    
+    &Incomplete {
+      color: #2B2B2B;
+    }
+  }
+  
+  .credits {
+    &Completed {
+      color: white;
+    }
+    
+    &Incomplete {
+      color: #A3A2B1;
+    }
+  }
+  
+  .checkmark {
+    width: 18px;
+    height: 18px;
+    background-color: #7F71FB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    &Icon {
+      width: 9.33px;
+      height: 6.99px;
+      border: 1.65px solid white;
+    }
+  }
+  
+  .coursesList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .courseItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .courseName {
+    font-weight: bold;
+    
+    &Completed {
+      color: white;
+    }
+    
+    &Incomplete {
+      color: #2B2B2B;
+    }
+  }
+  
+  .courseInfo {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .courseCredits {
+    &Completed {
+      color: #9F94FF;
+    }
+    
+    &Incomplete {
+      color: #7F71FB;
+    }
+  }
+  
+  .grade {
+    &A {
+      color: #FF6F6F;
+    }
+    
+    &B {
+      color: #F2F881;
+    }
+    
+    &C {
+      color: #45DEA6;
+    }
+    
+    &Default {
+      color: #A3A2B1;
+    }
+  }
