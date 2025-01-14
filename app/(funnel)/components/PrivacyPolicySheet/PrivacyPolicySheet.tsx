@@ -7,7 +7,9 @@ interface PrivacyPolicySheetProps {
 }
 
 export default function PrivacyPolicySheet({ isOpen, onClose }: PrivacyPolicySheetProps) {
-  if (!isOpen) {return null;}
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div className={styles.overlay}>
@@ -16,8 +18,8 @@ export default function PrivacyPolicySheet({ isOpen, onClose }: PrivacyPolicyShe
       <div className={styles.content}>
         <p className={styles.intro}>
           <span className={styles.bold}>척척학사</span>
-          (이하 &ldquo;서비스&rdquo;)는 「개인정보 보호법」 등 관련 법령에 따라 사용자의 개인정보를 보호하고, 개인정보 처리와 관련된
-          내용을 투명하게 안내하고자 합니다.
+          (이하 &ldquo;서비스&rdquo;)는 「개인정보 보호법」 등 관련 법령에 따라 사용자의 개인정보를 보호하고, 개인정보
+          처리와 관련된 내용을 투명하게 안내하고자 합니다.
           <br />
           <br />
           서비스를 이용하기 전에, 아래의 개인정보 처리 내용을 충분히 읽어보신 뒤 동의해 주시기 바랍니다.
