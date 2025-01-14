@@ -1,10 +1,26 @@
 'use client';
 
+import { useCallback, useState } from 'react';
 import { FixedButton } from '@/components/ui';
-import { FunnelHeadline } from '../components';
+import { AgreementItem, FunnelHeadline, PrivacyPolicySheet } from '../components';
 import styles from './page.module.scss';
 
 export default function Agreement() {
+  const [isAgreed, setIsAgreed] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  const handleCheckChange = useCallback((checked: boolean) => {
+    setIsAgreed(checked);
+  }, []);
+
+  const handleOpenSheet = useCallback(() => {
+    setIsSheetOpen(true);
+  }, []);
+
+  const handleCloseSheet = useCallback(() => {
+    setIsSheetOpen(false);
+  }, []);
+
   return (
     <div className={styles.container}>
       <FunnelHeadline
@@ -13,7 +29,15 @@ export default function Agreement() {
         description="척척학사에서 수집하는 개인 정보는<br/>
             학교 연동 후 즉시 폐기됩니다."
       />
-      <FixedButton>다음</FixedButton>
+      <div className={styles.agreementList}>
+        <AgreementItem
+          title="개인 정보 수집 및 이용 동의"
+          onCheckChange={handleCheckChange}
+          onClick={handleOpenSheet}
+        />
+      </div>
+      <FixedButton disabled={!isAgreed}>다음</FixedButton>
+      <PrivacyPolicySheet isOpen={isSheetOpen} onClose={handleCloseSheet} />
     </div>
   );
 }
