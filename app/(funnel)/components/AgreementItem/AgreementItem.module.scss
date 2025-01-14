@@ -1,0 +1,31 @@
+@use '/styles/typography.scss' as typography;
+@use '/styles/color.scss' as color;
+
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 12px 0;
+}
+
+.leftContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title {
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+  color: color.$black-100;
+}
+
+.checkIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
