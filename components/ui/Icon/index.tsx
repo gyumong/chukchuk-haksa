@@ -1,13 +1,15 @@
-import { ArrowRightIcon, CheckStatusOffIcon, CheckStatusOnIcon, DeleteIcon, SchoolIcon } from './icons';
+import { ArrowRightIcon, ArrowLeftIcon, CheckStatusOffIcon, CheckStatusOnIcon, DeleteIcon, SchoolIcon, CloseIcon } from './icons';
 
-export type IconType = 'delete' | 'school' | 'checkStatusOn' | 'checkStatusOff' | 'arrowRight';
+export type IconType = 'delete' | 'school' | 'check-status-on' | 'check-status-off' | 'arrow-right' | 'arrow-left' | 'close';
 
 const iconMapping = {
-  delete: DeleteIcon,
-  school: SchoolIcon,
-  checkStatusOn: CheckStatusOnIcon,
-  checkStatusOff: CheckStatusOffIcon,
-  arrowRight: ArrowRightIcon,
+  'delete': DeleteIcon,
+  'school': SchoolIcon,
+  'check-status-on': CheckStatusOnIcon,
+  'check-status-off': CheckStatusOffIcon,
+  'arrow-right': ArrowRightIcon,
+  'arrow-left': ArrowLeftIcon,
+  'close': CloseIcon,
 } as const;
 
 interface IconProps {
