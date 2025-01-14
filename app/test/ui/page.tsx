@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { SchoolCard } from '@/app/(funnel)/components';
 import { FixedButton, TextField } from '@/components/ui';
 import styles from './page.module.scss';
+import { TopNavigation } from '@/components/ui/TopNavigation';
 
 export default function UITEST() {
   const [username, setUsername] = useState<string>('');
@@ -27,7 +28,12 @@ export default function UITEST() {
     } catch (err: any) {}
   };
 
-  return (
+  return (<>
+<TopNavigation.Preset 
+  title="개인 정보 수집 및 이용 동의 (필수)"
+  type="close"
+  onNavigationClick={() => router.back()}
+/>
     <div className={styles.container}>
       <div className={styles.content}>
         <SchoolCard schoolName="수원대학교" />
@@ -37,10 +43,11 @@ export default function UITEST() {
           placeholder="비밀번호를 입력해주세요"
           value={password}
           onChange={e => setPassword(e.target.value)}
-        />
+          />
       </div>
 
       <FixedButton onClick={handleLogin}>학교 연동하기</FixedButton>
     </div>
+          </>
   );
 }
