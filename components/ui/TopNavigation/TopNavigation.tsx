@@ -1,5 +1,6 @@
-import { ReactNode } from 'react';
-import { Icon, IconType } from '@/components/ui/Icon';
+import type { ReactNode } from 'react';
+import type { IconType } from '@/components/ui/Icon';
+import { Icon } from '@/components/ui/Icon';
 import styles from './TopNavigation.module.scss';
 
 // Base Types
@@ -22,11 +23,7 @@ interface TopNavigationRightProps {
 
 // Compound Components
 function TopNavigationRoot({ children, className }: TopNavigationRootProps) {
-  return (
-    <div className={`${styles.container} ${className || ''}`}>
-      {children}
-    </div>
-  );
+  return <div className={`${styles.container} ${className || ''}`}>{children}</div>;
 }
 
 function Left({ children }: TopNavigationLeftProps) {
