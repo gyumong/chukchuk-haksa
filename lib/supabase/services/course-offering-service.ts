@@ -13,7 +13,7 @@ interface CourseOfferingInsert {
   evaluation_type_code?: Database['public']['Enums']['evaluation_type'];
   is_video_lecture?: boolean;
   subject_establishment_semester?: number;
-  faculty_division_name?: string;
+  faculty_division_name?: Database['public']['Enums']['course_area_type'];
   area_code?: number;
   original_area_code?: number;
   points?: number; // 학점
