@@ -102,7 +102,8 @@ export async function POST(req: Request) {
             subject_establishment_semester: c.subjectEstablishmentSemesterCode
               ? parseInt(c.subjectEstablishmentSemesterCode, 10)
               : undefined,
-            faculty_division_name: c.facultyDivisionName || undefined,
+            faculty_division_name:
+              (c.facultyDivisionName as Database['public']['Enums']['course_area_type']) || undefined,
             area_code: c.areaCode,
             original_area_code: c.originalAreaCode,
             points: c.points || 0,
