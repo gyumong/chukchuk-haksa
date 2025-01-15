@@ -3,12 +3,14 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import Lottie from 'lottie-react';
 import loadingAnimation from '@/assets/lotties/loading.json';
 import styles from './Button.module.scss';
+import { Icon } from '../Icon';
 
 const buttonVariants = cva(styles.base, {
   variants: {
     variant: {
       primary: styles['variant-primary'],
       secondary: styles['variant-secondary'],
+      kakao: styles['variant-kakao'], 
     },
     size: {
       sm: styles['size-sm'],
@@ -47,6 +49,7 @@ export function Button({
   isLoading = false,
   ...props
 }: ButtonProps) {
+  const isKakao = variant === 'kakao';
   return (
     <button
       className={`${buttonVariants({ variant, size, width, state: disabled ? 'disabled' : 'default' })} ${className}`}
@@ -58,7 +61,14 @@ export function Button({
           <Lottie animationData={loadingAnimation} loop={true} className={styles.loadingAnimation} />
         </div>
       ) : (
-        children
+        <>
+                  {isKakao && (
+            <div className={styles.kakaoIcon}>
+              <Icon name="kakao" size={32} />
+            </div>
+          )}
+          {children}
+        </>
       )}
     </button>
   );

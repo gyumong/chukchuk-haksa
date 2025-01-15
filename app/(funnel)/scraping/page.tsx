@@ -51,7 +51,8 @@ export default function ScrapingPage() {
               majorName: result.data.student.majorName ?? '',
               studentCode: result.data.student.studentCode ?? '',
               gradeLevel: result.data.student.gradeLevel ?? '',
-              status: result.data.student.status ?? '',
+              completedSemesters: result.data.student.completedSemesters ?? '',
+              status: result.data.student.status ?? 0,
               school: '수원대학교',
             };
 

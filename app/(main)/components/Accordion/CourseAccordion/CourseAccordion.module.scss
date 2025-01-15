@@ -1,0 +1,40 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+
+  &.completed {
+    background: #2B2B2B;
+  }
+}
+
+.content {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: 
+    max-height 0.5s cubic-bezier(0.33, 1, 0.68, 1),
+    opacity 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+
+  &.expanded {
+    max-height: 1000px;
+    opacity: 1;
+  }
+}
+
+.inner {
+  padding: 0 18px;
+  transform: translateY(-8px);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  .expanded & {
+    transform: translateY(0);
+  }
+}
+
+.list {
+  padding-bottom: 18px;
+}

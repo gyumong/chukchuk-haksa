@@ -2,8 +2,24 @@
 import type { Page } from 'playwright';
 // import type을 사용
 import { chromium } from 'playwright';
-import type { Course, CourseDTO, Credit, CreditDTO, MergedSemester, Student, StudentDTO } from '@/types';
-import { mapCourseDTOToDomain, mapCreditDTOToDomain, mapStudentDTOToDomain } from './suwon-dto';
+import type {
+  Course,
+  CourseDTO,
+  Credit,
+  CreditDTO,
+  GradeResponseDTO,
+  MergedSemester,
+  ProcessedSemesterGrade,
+  ProcessedTotalGrade,
+  Student,
+  StudentDTO,
+} from '@/types';
+import {
+  mapCourseDTOToDomain,
+  mapCreditDTOToDomain,
+  mapGradeResponseDTOToDomain,
+  mapStudentDTOToDomain,
+} from './suwon-dto';
 
 /**
  * 로그인(공통) → 학생 정보 크롤링 → 성적 크롤링 → 수강 크롤링 → Merge
@@ -11,7 +27,14 @@ import { mapCourseDTOToDomain, mapCreditDTOToDomain, mapStudentDTOToDomain } fro
 export async function scrapeSuwonAll(
   username: string,
   password: string
-): Promise<{ student: Student; mergedData: MergedSemester[] }> {
+): Promise<{
+  student: Student;
+  mergedData: MergedSemester[];
+  academicRecords: {
+    semesters: ProcessedSemesterGrade[];
+    total: ProcessedTotalGrade;
+  };
+}> {
   const browser = await chromium.launch({ headless: true });
   let loginError = false;
 
@@ -61,15 +84,15 @@ export async function scrapeSuwonAll(
     // 학생 정보 크롤링
     const student: Student = await doStudentScrape(page, username);
 
-    // 성적 크롤링 + DTO 변환
-    const creditData: Credit[] = await doCreditScrape(page, username);
+    // 성적 크롤링 (상세 성적 + 성적 요약)
+    const { credits: creditData, academicRecords } = await doCreditScrape(page, username);
 
-    // 수강 크롤링 + DTO 변환
+    // 수강 크롤링
     const courseData: Course[] = await doCourseScrape(page, username);
 
     // 병합
     const mergedData = mergeCreditCourse(creditData, courseData);
-    return { student, mergedData };
+    return { student, mergedData, academicRecords };
   } finally {
     await browser.close();
   }
@@ -109,7 +132,16 @@ async function doStudentScrape(page: Page, username: string): Promise<Student> {
 }
 
 /** 성적 크롤링 로직 */
-async function doCreditScrape(page: Page, username: string): Promise<Credit[]> {
+async function doCreditScrape(
+  page: Page,
+  username: string
+): Promise<{
+  credits: Credit[];
+  academicRecords: {
+    semesters: ProcessedSemesterGrade[];
+    total: ProcessedTotalGrade;
+  };
+}> {
   const headers = {
     'Content-Type': 'application/json;charset=UTF-8',
     Accept: 'application/json',
@@ -119,15 +151,16 @@ async function doCreditScrape(page: Page, username: string): Promise<Credit[]> {
       'w2xPath=/views/usw/sa/hj/SA_HJ_1230.xml&menuSeq=3818&progSeq=1117',
   };
 
-  const response1 = await page.request.post('https://info.suwon.ac.kr/smrCretSum/listSmrCretSumTabYearSmrStud.do', {
+  const gradeResponse = await page.request.post('https://info.suwon.ac.kr/smrCretSum/listSmrCretSumTabYearSmrStud.do', {
     headers,
     data: { sno: username },
   });
 
-  const data1 = await response1.json();
+  const gradeData: GradeResponseDTO = await gradeResponse.json();
+  const academicRecords = mapGradeResponseDTOToDomain(gradeData);
   const detailedData: CreditDTO[] = [];
 
-  for (const item of data1.listSmrCretSumTabYearSmr || []) {
+  for (const item of gradeData.listSmrCretSumTabYearSmr || []) {
     const response2 = await page.request.post('https://info.suwon.ac.kr/cretBas/listSmrCretSumTabSubjt.do', {
       headers,
       data: {
@@ -154,7 +187,7 @@ async function doCreditScrape(page: Page, username: string): Promise<Credit[]> {
     domainCredit.semester = `${dto.cretGainYear}-${dto.cretSmrCd}`;
     return domainCredit;
   });
-  return domainData;
+  return { credits: domainData, academicRecords };
 }
 
 /** 수강 크롤링 로직 */

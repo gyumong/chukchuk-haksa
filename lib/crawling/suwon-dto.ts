@@ -1,5 +1,6 @@
-import type { Course, Credit, Student } from '@/types/domain';
-import type { CourseDTO, CreditDTO, StudentDTO } from '@/types/dto';
+import type { Course, Credit, ProcessedSemesterGrade, ProcessedTotalGrade, Student } from '@/types/domain';
+import type { CourseDTO, CreditDTO, GradeResponseDTO, SemesterGradeDTO, StudentDTO, TotalGradeDTO } from '@/types/dto';
+import { parseRankString } from '../utils/parseRankString';
 
 /** StudentDTO → Student 변환 */
 function mapStudentDTOToDomain(dto: StudentDTO): Student {
@@ -19,6 +20,7 @@ function mapStudentDTOToDomain(dto: StudentDTO): Student {
     status: dto.scrgStatNm, // 재학 상태
     gradeLevel: dto.studGrde, // 학년
     admissionType: dto.enscDvcd, // 입학 유형
+    completedSemesters: dto.facSmrCnt, // 총 이수학기
   };
 }
 
@@ -36,6 +38,7 @@ function mapCreditDTOToDomain(dto: CreditDTO): Credit {
     totalScore: dto.totalPoint,
     areaCode: dto.cltTerrNm ? parseInt(dto.cltTerrNm.replace(/[^0-9]/g, '')) : undefined,
     originalAreaCode: dto.cltTerrCd,
+    originalScore:dto.gainPont
   };
 }
 
@@ -59,5 +62,46 @@ function mapCourseDTOToDomain(dto: CourseDTO): Course {
     subjectEstablishmentYear: dto.subjtEstbYear,
   };
 }
+/** SemesterGradeDTO → ProcessedSemesterGrade 변환 */
+function mapSemesterGradeDTOToDomain(grades: SemesterGradeDTO[]): ProcessedSemesterGrade[] {
+  return grades.map(grade => {
+    const { rank, total } = parseRankString(grade.dpmjOrdp);
 
-export { mapStudentDTOToDomain, mapCreditDTOToDomain, mapCourseDTOToDomain };
+    return {
+      year: parseInt(grade.cretGainYear, 10),
+      semester: parseInt(grade.cretSmrCd, 10),
+      attemptedCredits: grade.applPoint,
+      earnedCredits: grade.gainPoint,
+      semesterGpa: grade.gainAvmk,
+      semesterPercentile: parseFloat(grade.gainTavgPont),
+      classRank: rank,
+      totalStudents: total,
+    };
+  });
+}
+
+/** TotalGradeDTO → ProcessedTotalGrade 변환 */
+function mapTotalGradeDTOToDomain(dto: TotalGradeDTO): ProcessedTotalGrade {
+  return {
+    totalAttemptedCredits: parseInt(dto.applPoint, 10),
+    totalEarnedCredits: parseInt(dto.gainPoint, 10),
+    cumulativeGpa: parseFloat(dto.gainAvmk),
+    percentile: parseFloat(dto.gainTavgPont),
+  };
+}
+
+function mapGradeResponseDTOToDomain(data: GradeResponseDTO) {
+  return {
+    semesters: mapSemesterGradeDTOToDomain(data.listSmrCretSumTabYearSmr),
+    total: mapTotalGradeDTOToDomain(data.selectSmrCretSumTabSjTotal),
+  };
+}
+
+export {
+  mapStudentDTOToDomain,
+  mapCreditDTOToDomain,
+  mapCourseDTOToDomain,
+  mapSemesterGradeDTOToDomain,
+  mapTotalGradeDTOToDomain,
+  mapGradeResponseDTOToDomain,
+};

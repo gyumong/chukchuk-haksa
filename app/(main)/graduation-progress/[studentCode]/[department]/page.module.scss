@@ -1,0 +1,24 @@
+@use '/styles/color.scss' as color;
+@use '/styles/typography.scss' as typography;
+
+.gap8 {
+  margin-top: 8px;
+}
+
+.gap28 {
+  margin-top: 28px;
+}
+
+.gap12 {
+  margin-top: 12px;
+}
+
+.sectionTitle {
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+  color: color.$gray-500;
+}
+
+.container {
+  padding: 0 20px;
+}

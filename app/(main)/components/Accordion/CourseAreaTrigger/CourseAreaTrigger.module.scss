@@ -1,0 +1,66 @@
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px;
+    cursor: pointer;
+    background: white;
+    border-radius: 16px;
+  
+    &.completed {
+      background: #2B2B2B;
+    }
+  }
+  
+  .info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .title {
+    font-family: 'SUIT';
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 28.8px;
+    color: #2B2B2B;
+  
+    .completed & {
+      color: #9F94FF;
+    }
+  }
+  
+  .credits {
+    font-family: 'SUIT';
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 25.6px;
+    color: #A3A2B1;
+    display: flex;  // 추가
+    align-items: center;  // 추가
+  
+    .completed & {
+      color: white;
+    }
+  }
+  
+  .checkIcon {
+    width: 18px;
+    height: 18px;
+    margin-left: 8px;
+  }
+  
+  .arrow {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+  
+    &.expanded {
+      transform: rotate(180deg);
+    }
+  
+    &.completed  {
+      color: white;
+    }
+  }

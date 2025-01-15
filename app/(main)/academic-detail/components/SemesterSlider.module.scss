@@ -1,0 +1,38 @@
+.sliderContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 0;
+    width: 100%;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  
+  .semesterButton {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 18px;
+    font-family: 'SUIT', sans-serif;
+    line-height: 28.8px;
+    color: #7F7E8A;
+    font-weight: 300;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  
+    &.active {
+      color: #7F71FB;
+      font-weight: 700;
+    }
+  
+    &:hover {
+      opacity: 0.8;
+    }
+  }

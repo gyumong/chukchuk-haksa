@@ -33,6 +33,29 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // 포털 연동 상태 확인
+  if (user) {
+    const { data: users } = await supabase
+      .from('users')
+      .select('portal_connected')
+      .eq('id', user.id)
+      .single();
+
+    // 로그인 후 리다이렉트 처리
+    if (request.nextUrl.pathname === '/auth/callback') {
+      const url = request.nextUrl.clone();
+      url.pathname = users?.portal_connected ? '/main' : '/portal-login';
+      return NextResponse.redirect(url);
+    }
+
+    // 포털 미연동 사용자가 main 페이지 접근 시 portal-login으로 리다이렉트
+    if (!users?.portal_connected && request.nextUrl.pathname.startsWith('/main')) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/portal-login';
+      return NextResponse.redirect(url);
+    }
+  }
+
   if (!user && !request.nextUrl.pathname.startsWith('/login') && !request.nextUrl.pathname.startsWith('/auth')) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();

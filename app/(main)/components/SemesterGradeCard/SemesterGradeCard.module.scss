@@ -1,0 +1,40 @@
+.container {
+  width: 100%;
+  height: 103px;
+  background: white;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  padding: 18px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title {
+  color: #2b2b2b;
+  font-size: 18px;
+  font-family: 'SUIT';
+  font-weight: 700;
+  line-height: 28.8px;
+}
+
+.semester {
+  color: #a3a2b1;
+  font-size: 16px;
+  font-family: 'SUIT';
+  font-weight: 400;
+  line-height: 25.6px;
+}
+
+.button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}

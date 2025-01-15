@@ -31,7 +31,8 @@ export default function TargetScorePage() {
       }
 
       // 성공 시 다음 페이지로 이동
-      router.push('/complete');
+      // TODO 페이지 상수관리
+      router.push('/main');
     } catch (error) {
       console.error('Failed to set target score:', error);
       alert(error instanceof Error ? error.message : '목표 학점 설정에 실패했습니다.');

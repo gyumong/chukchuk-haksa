@@ -96,3 +96,23 @@
   width: 48px;
   height: 48px;
 }
+
+.variant-kakao {
+  background-color: #F9E000;
+  color: #371D1E;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 28.8px;
+  gap: 8px; // 아이콘과 텍스트 사이 간격
+  padding-left: 16px; // 왼쪽 여백 유지
+
+  &:hover:not(:disabled) {
+    background-color: darken(#F9E000, 5%);
+  }
+}
+
+.kakaoIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

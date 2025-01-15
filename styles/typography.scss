@@ -5,6 +5,13 @@
   letter-spacing: -0.01em;
 }
 
+@mixin title-exlg {
+  font-family: var(--paperlogy-font);
+  font-size: 1.75rem;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
 @mixin body-exlg {
   font-family: var(--suit-font);
   font-size: 1.5rem;
