@@ -8,10 +8,7 @@ export async function POST(request: Request) {
 
     // 유효성 검사
     if (isNaN(targetGpa) || targetGpa < 0 || targetGpa > 4.5) {
-      return NextResponse.json(
-        { error: '유효하지 않은 목표 학점입니다.' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '유효하지 않은 목표 학점입니다.' }, { status: 400 });
     }
 
     const studentService = new StudentService();
@@ -20,9 +17,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Target score update failed:', error);
-    return NextResponse.json(
-      { error: '목표 학점 설정에 실패했습니다.' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: '목표 학점 설정에 실패했습니다.' }, { status: 500 });
   }
 }

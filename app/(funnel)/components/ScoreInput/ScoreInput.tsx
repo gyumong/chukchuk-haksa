@@ -1,10 +1,10 @@
-import type { ChangeEvent} from 'react';
+import type { ChangeEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import styles from './ScoreInput.module.scss';
 
 interface Props {
-    value: string;
-    onChange: (value: string) => void;
+  value: string;
+  onChange: (value: string) => void;
 }
 
 export default function ScoreInput({ value = '3.5', onChange }: Props) {
@@ -12,12 +12,16 @@ export default function ScoreInput({ value = '3.5', onChange }: Props) {
   const hiddenSpanRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    if (!hiddenSpanRef.current) {return;}
+    if (!hiddenSpanRef.current) {
+      return;
+    }
     measureTextWidth('3.5');
   }, []);
 
   const measureTextWidth = (text: string) => {
-    if (!hiddenSpanRef.current) {return;}
+    if (!hiddenSpanRef.current) {
+      return;
+    }
     hiddenSpanRef.current.textContent = text;
     const measured = hiddenSpanRef.current.offsetWidth;
     const minWidthPx = 48;
