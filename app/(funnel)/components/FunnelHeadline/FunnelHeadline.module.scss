@@ -19,3 +19,7 @@
   @include typography.title-lg;
   @include typography.font-weight-bold;
 }
+
+.highlight {
+  color: colors.$purple-100;
+}
