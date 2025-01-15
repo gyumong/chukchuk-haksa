@@ -532,6 +532,7 @@ export type Database = {
           status: Database['public']['Enums']['student_status'] | null;
           student_code: string;
           student_id: string;
+          target_gpa: number | null;
           updated_at: string | null;
         };
         Insert: {
@@ -549,6 +550,7 @@ export type Database = {
           status?: Database['public']['Enums']['student_status'] | null;
           student_code: string;
           student_id: string;
+          target_gpa?: number | null;
           updated_at?: string | null;
         };
         Update: {
@@ -566,6 +568,7 @@ export type Database = {
           status?: Database['public']['Enums']['student_status'] | null;
           student_code?: string;
           student_id?: string;
+          target_gpa?: number | null;
           updated_at?: string | null;
         };
         Relationships: [

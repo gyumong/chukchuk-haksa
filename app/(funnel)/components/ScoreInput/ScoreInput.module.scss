@@ -1,0 +1,67 @@
+.container {
+  background: #f4f4f9;
+  border-radius: 16px;
+  padding: 24px 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 auto; /* 가운데 정렬 */
+}
+
+/* 숨은 span (텍스트 폭 측정) */
+.hiddenSpan {
+  position: absolute;
+  visibility: hidden;
+  white-space: pre; /* 공백도 그대로 측정 */
+  font-size: 32px;
+  font-family: 'Paperlogy';
+  font-weight: 700;
+  line-height: 48px;
+  /* 같은 스타일로 측정해야 실제 크기 일치 */
+}
+
+/* 목표 학점 입력 */
+.score {
+  color: #7f71fb;
+  font-size: 32px;
+  font-family: 'Paperlogy';
+  font-weight: 700;
+  line-height: 48px;
+  border: none;
+  background: transparent;
+  outline: none;
+  text-align: right;
+
+  /* 초기는 width를 JS로 설정하므로 CSS에는 min-width 정도만 */
+  min-width: 48px; /* 2.5ch ≈ 48px 정도로 가정 */
+
+  /* 스핀 버튼 제거 */
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+/* 구분자 (I) */
+.divider {
+  color: #2b2b2b;
+  font-size: 32px;
+  font-family: 'Paperlogy';
+  font-weight: 700;
+  line-height: 48px;
+}
+
+/* 최대 학점(4.5) */
+.maxScore {
+  color: #2b2b2b;
+  font-size: 32px;
+  font-family: 'Paperlogy';
+  font-weight: 700;
+  line-height: 48px;
+
+  /* 고정 2.5ch → 48px로 설정 */
+  display: inline-block;
+  width: 48px;
+  text-align: left;
+}

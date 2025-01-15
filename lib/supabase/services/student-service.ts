@@ -121,4 +121,18 @@ export class StudentService {
       connectedAt: data.connected_at || undefined,
     };
   }
+
+  /**
+   * 학생의 목표 학점 업데이트
+   */
+  async updateTargetGpa(targetGpa: number): Promise<void> {
+    const userId = await this.getAuthenticatedUserId();
+
+    const { error } = await this.supabase.from('students').update({ target_gpa: targetGpa }).eq('student_id', userId);
+
+    if (error) {
+      console.error('Failed to update target gpa:', error);
+      throw new Error('목표 학점 설정에 실패했습니다.');
+    }
+  }
 }
