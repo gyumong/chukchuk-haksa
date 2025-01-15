@@ -31,7 +31,7 @@ export default function PortalLogin() {
       if (!res.ok) {
         throw new Error(data.error || '로그인 실패');
       }
-      router.push('/suwon-scrape');
+      router.push('/scraping');
     } catch (err: any) {
       console.log(err);
       setErrorMessage(err.message);
