@@ -1,47 +1,44 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { FixedButton } from '@/components/ui';
 import { FunnelHeadline, ScoreInput } from '../components';
 import styles from './page.module.scss';
-import {  useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 export default function TargetScorePage() {
-    const [score, setScore] = useState('3.5');
-    const [isLoading, setIsLoading] = useState(false);
-    const router = useRouter();
+  const [score, setScore] = useState('3.5');
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
+  const handleSubmit = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/target-gpa', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          targetGpa: parseFloat(score),
+        }),
+      });
 
+      console.log(response);
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || '목표 학점 설정에 실패했습니다.');
+      }
 
-
-    const handleSubmit = async () => {
-        try {
-            setIsLoading(true);
-            const response = await fetch('/api/target-gpa', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    targetGpa: parseFloat(score)
-                })
-            });
-
-            console.log(response);
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.error || '목표 학점 설정에 실패했습니다.');
-            }
-
-            // 성공 시 다음 페이지로 이동
-            router.push('/complete');
-        } catch (error) {
-            console.error('Failed to set target score:', error);
-            alert(error instanceof Error ? error.message : '목표 학점 설정에 실패했습니다.');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+      // 성공 시 다음 페이지로 이동
+      router.push('/complete');
+    } catch (error) {
+      console.error('Failed to set target score:', error);
+      alert(error instanceof Error ? error.message : '목표 학점 설정에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <div className={styles.container}>
       <FunnelHeadline
@@ -50,8 +47,10 @@ export default function TargetScorePage() {
         highlightText="졸업 학점"
       />
       <div className={styles.gap} />
-        <ScoreInput value={score} onChange={setScore} />
-      <FixedButton onClick={handleSubmit} isLoading={isLoading}>다음</FixedButton>
+      <ScoreInput value={score} onChange={setScore} />
+      <FixedButton onClick={handleSubmit} isLoading={isLoading}>
+        다음
+      </FixedButton>
     </div>
   );
 }
