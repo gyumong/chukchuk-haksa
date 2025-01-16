@@ -5,7 +5,7 @@ import styles from './layout.module.scss';
 export default function FunnelLayout({ children }: PropsWithChildren) {
   return (
     <div className={styles.container}>
-      <TopNavigation.Preset title="수원대학교 위시캠" type="none" rightIcon="setting" />
+      <TopNavigation.Preset title="수원대학교" type="none" rightIcon="setting" />
       <div className={styles.content}>{children}</div>
     </div>
   );

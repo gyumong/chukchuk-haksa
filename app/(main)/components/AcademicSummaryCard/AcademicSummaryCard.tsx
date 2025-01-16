@@ -20,7 +20,7 @@ export default function AcademicSummaryCard({ earnedCredits, gpa, percentile, to
       <div className={styles.divider} />
 
       <div className={styles.statItem}>
-        <span className={styles.label}>평점 평균</span>
+        <span className={styles.label}>평점평균</span>
         <span className={styles.value}>{gpa.toFixed(2)}</span>
       </div>
 

@@ -7,6 +7,7 @@ import AcademicSummaryCard from '../components/AcademicSummaryCard/AcademicSumma
 import GraduationRequirementCard from '../components/GraduationRequirementCard/GraduationRequirementCard';
 import ProfileCard from '../components/ProfileCard/ProfileCard';
 import styles from './page.module.scss';
+import Image from 'next/image';
 
 export default function Home() {
   const [data, setData] = useState<DashboardData | null>(null);
@@ -58,6 +59,16 @@ export default function Home() {
             earnedCredits={data?.summary.earnedCredits ?? 0}
             requiredCredits={data?.summary.requiredCredits ?? 0}
           />
+          <div className={styles.mainBannerContainer}>
+
+          <Image 
+          src="/images/illustrations/Tong.png" 
+          alt="main-banner"
+          width={380}    // 이미지의 실제 너비
+          height={300}   
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+          </div>
         </>
       )}
     </div>

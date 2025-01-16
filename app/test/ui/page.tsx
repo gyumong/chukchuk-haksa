@@ -6,6 +6,7 @@ import { SchoolCard } from '@/app/(funnel)/components';
 import { FixedButton, TextField } from '@/components/ui';
 import { TopNavigation } from '@/components/ui/TopNavigation';
 import styles from './page.module.scss';
+import LoadingScreen from '@/app/(funnel)/components/LoadingScreen/LoadingScreen';
 
 export default function UITEST() {
   const [username, setUsername] = useState<string>('');
@@ -28,27 +29,5 @@ export default function UITEST() {
     } catch (err: any) {}
   };
 
-  return (
-    <>
-      <TopNavigation.Preset
-        title="개인 정보 수집 및 이용 동의 (필수)"
-        type="close"
-        onNavigationClick={() => router.back()}
-      />
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <SchoolCard schoolName="수원대학교" />
-          <TextField placeholder="학번을 입력해주세요" value={username} onChange={e => setUsername(e.target.value)} />
-          <TextField
-            type="password"
-            placeholder="비밀번호를 입력해주세요"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
-        </div>
-
-        <FixedButton onClick={handleLogin}>학교 연동하기</FixedButton>
-      </div>
-    </>
-  );
+    return <LoadingScreen targetPath="/complete" minRepeatCount={3} onComplete={()=>console.log('complete')}/>;
 }
