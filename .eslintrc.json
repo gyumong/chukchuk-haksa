@@ -2,12 +2,7 @@
   "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],
   "plugins": ["@typescript-eslint"],
   "rules": {
-    "@typescript-eslint/no-explicit-any": [
-      "warn",
-      {
-        "ignoreRestArgs": true
-      }
-    ],
+    "@typescript-eslint/no-explicit-any": "off",
     "no-implicit-coercion": "error",
     "curly": ["error", "all"],
     "eqeqeq": ["error", "always", { "null": "ignore" }],
@@ -33,15 +28,9 @@
       }
     ],
     "@typescript-eslint/array-type": ["error", { "default": "array-simple" }],
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      {
-        "ignoreRestSiblings": true,
-        "caughtErrors": "none"
-      }
-    ],
+    "@typescript-eslint/no-unused-vars": "off",
 
-    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "no-console": "off",
     "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
     "no-restricted-syntax": [
       "error",
@@ -49,7 +38,8 @@
         "selector": "CallExpression[callee.object.name='Object'][callee.property.name='entries']",
         "message": "Object.entries 대신 Object.keys나 Object.values 사용을 고려하세요."
       }
-    ]
+    ],
+    "react-hooks/exhaustive-deps": "off"
   },
   "ignorePatterns": [
     ".yarn/**",

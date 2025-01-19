@@ -4,12 +4,11 @@ interface Props {
   earnedCredits: number; // 취득학점
   gpa: number; // 평점 평균
   percentile?: number; // 백분위
-  totalGpa?: number; // 전체 평점 평균
   classRank?: number; // 석차
   totalStudents?: number; // 전체 학생 수
 }
 
-export default function AcademicSummaryCard({ earnedCredits, gpa, percentile, totalGpa, classRank, totalStudents  }: Props) {
+export default function AcademicSummaryCard({ earnedCredits, gpa, percentile, classRank, totalStudents  }: Props) {
   return (
     <div className={styles.container}>
       <div className={styles.statItem}>

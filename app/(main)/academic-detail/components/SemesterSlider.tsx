@@ -27,7 +27,7 @@ export default function SemesterSlider({ currentYear, currentSemester }: Semeste
             revalidate: 3600 // 1시간마다 재검증
           }
         });
-        if (!response.ok) throw new Error('Failed to fetch semesters');
+        if (!response.ok) {throw new Error('Failed to fetch semesters');}
         const data = await response.json();
         setSemesters(data);
       } catch (error) {
@@ -40,7 +40,7 @@ export default function SemesterSlider({ currentYear, currentSemester }: Semeste
     fetchSemesters();
   }, []);
 
-  if (isLoading) return null;
+  if (isLoading) {return null;}
 
   const handleSemesterClick = (year: number, semester: number) => {
     router.push(`/academic-detail?year=${year}&semester=${semester}`);

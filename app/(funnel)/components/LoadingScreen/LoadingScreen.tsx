@@ -21,11 +21,11 @@ const LOADING_STATES = [
 
 interface LoadingScreenProps {
   targetPath: string;
-  minRepeatCount: number;
+  minRepeatCount?: number;
   onComplete: (currentRepeatCount: number) => void;
 }
 
-const LoadingScreen = ({ targetPath, minRepeatCount = 3, onComplete }: LoadingScreenProps) => {
+const LoadingScreen = ({ targetPath, minRepeatCount = 0, onComplete }: LoadingScreenProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playCount, setPlayCount] = useState(0);
   const [fadeState, setFadeState] = useState<'in' | 'out'>('in');
@@ -33,7 +33,7 @@ const LoadingScreen = ({ targetPath, minRepeatCount = 3, onComplete }: LoadingSc
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video) {return;}
 
     const handleEnded = () => {
       setFadeState('out');

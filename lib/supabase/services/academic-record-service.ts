@@ -24,7 +24,7 @@ export class AcademicRecordService {
 
   private async getAuthenticatedUserId(): Promise<string> {
     const { data: userData, error } = await this.supabase.auth.getUser();
-    if (error || !userData?.user) throw new Error('User is not authenticated');
+    if (error || !userData?.user) {throw new Error('User is not authenticated');}
     return userData.user.id;
   }
 

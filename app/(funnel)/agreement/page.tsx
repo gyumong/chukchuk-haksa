@@ -4,8 +4,11 @@ import { useCallback, useState } from 'react';
 import { FixedButton } from '@/components/ui';
 import { AgreementItem, FunnelHeadline, PrivacyPolicySheet } from '../components';
 import styles from './page.module.scss';
+import { useRouter } from 'next/navigation';
 
 export default function Agreement() {
+
+  const router = useRouter();
   const [isAgreed, setIsAgreed] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -19,6 +22,10 @@ export default function Agreement() {
 
   const handleCloseSheet = useCallback(() => {
     setIsSheetOpen(false);
+  }, []);
+
+  const handleAgree = useCallback(() => {
+    router.push('/scraping');
   }, []);
 
   return (
@@ -36,7 +43,7 @@ export default function Agreement() {
           onClick={handleOpenSheet}
         />
       </div>
-      <FixedButton disabled={!isAgreed}>다음</FixedButton>
+      <FixedButton disabled={!isAgreed} onClick={handleAgree}>다음</FixedButton>
       <PrivacyPolicySheet isOpen={isSheetOpen} onClose={handleCloseSheet} />
     </div>
   );

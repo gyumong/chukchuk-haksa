@@ -1,11 +1,11 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import styles from './page.module.scss';
 import AcademicSummaryCard from '../components/AcademicSummaryCard/AcademicSummaryCard';
 import SemesterSlider from './components/SemesterSlider';
-import { CourseDetail } from '@/types/api/academic';
+import type { CourseDetail } from '@/types/api/academic';
 import GradeCard from './components/GradeCard/GradeCard';
 
 interface AcademicDetailProps {
@@ -26,6 +26,15 @@ interface AcademicDetailProps {
 
 
 export default function AcademicDetailPage() {
+  return (
+    <Suspense fallback={<div>로딩 중...</div>}>
+      <AcademicDetailContent />
+    </Suspense>
+  );
+}
+
+
+ function AcademicDetailContent() {
 
   const searchParams = useSearchParams();
   const year = parseInt(searchParams.get('year') || '0');
@@ -100,7 +109,7 @@ export default function AcademicDetailPage() {
             professor={course.professor}
             courseName={course.courseName}
             grade={course.grade}
-            originalScore={course.originalScore}
+            originalScore={course.originalScore ?? 0}
           />
         ))}
       </div>  
@@ -118,7 +127,7 @@ export default function AcademicDetailPage() {
             professor={course.professor}
             courseName={course.courseName}
             grade={course.grade}
-            originalScore={course.originalScore}
+            originalScore={course.originalScore ?? 0}
           />
         ))}
       </div>

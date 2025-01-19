@@ -36,7 +36,7 @@ interface AcademicSummary {
 
 interface SemesterGrade {
   year: number;
-  semester: number;
+  semester: number | string;
   earnedCredits: number;
   semesterGpa: number;
 }
@@ -118,14 +118,14 @@ export default function GraduationProgressPage() {
     // 학기 데이터를 정렬 (년도 및 학기 순서 기준)
     semesters.sort((a, b) => {
       const yearDiff = a.year - b.year;
-      if (yearDiff !== 0) return yearDiff;
+      if (yearDiff !== 0) {return yearDiff;}
   
       // 학기 순서를 1학기 -> 여름학기 -> 2학기 -> 겨울학기로 정렬
-      const semesterOrder = { "1": 1, "여름": 2, "2": 3, "겨울": 4 };
-      return semesterOrder[a.semester] - semesterOrder[b.semester];
+      const semesterOrder = { "1": 1, "여름": 2, "2": 3, "겨울": 4 } as const;
+      return semesterOrder[a.semester as unknown as keyof typeof semesterOrder] - semesterOrder[b.semester as unknown as keyof typeof semesterOrder];
     });
   
-    let regularSemesterCount = 0; // 정규 학기 카운트
+    const regularSemesterCount = 0; // 정규 학기 카운트
     let lastGrade = 1; // 현재 학년
     let lastSemesterName = "1학기"; // 현재 학기명
     let leftover = false; // 정규학기 조합 상태 플래그
@@ -187,7 +187,7 @@ export default function GraduationProgressPage() {
     }
   } 
   const handleClickSemesterGradeCard = () => {
-    router.push(`/academic-detail?year=${semesterGrades[semesterGrades.length - 1].year}&semester=${parseSemester(semesterGrades[semesterGrades.length - 1].semester+'')}`);
+    router.push(`/academic-detail?year=${semesterGrades[semesterGrades.length - 1].year}&semester=${parseSemester(String(semesterGrades[semesterGrades.length - 1].semester))}`);
   }
 
   return (

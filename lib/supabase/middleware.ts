@@ -45,6 +45,7 @@ export async function updateSession(request: NextRequest) {
     if (request.nextUrl.pathname === '/auth/callback') {
       const url = request.nextUrl.clone();
       url.pathname = users?.portal_connected ? '/main' : '/portal-login';
+      url.search = '';
       return NextResponse.redirect(url);
     }
 

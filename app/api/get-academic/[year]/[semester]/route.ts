@@ -1,8 +1,38 @@
-import { NextRequest, NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import type { Database } from '@/types/supabase';
 
 type CourseAreaType = Database['public']['Enums']['course_area_type'];
+
+interface CourseOffering {
+  course_id: number;
+  points: number;
+  professor_id: number | null;
+  is_video_lecture: boolean | null;
+  faculty_division_name: Database['public']['Enums']['course_area_type'] | null;
+  courses: {
+    course_code: string;
+    course_name: string;
+  };
+  professor: {
+    id: number;
+    professor_name: string;
+  } | null;
+  year: number;
+  semester: number;
+}
+
+interface Course {
+  id: number;
+  student_id: string;
+  original_score: number | null;
+  grade: Database['public']['Enums']['grade_type'] | null;
+  points: number | null;
+  is_retake: boolean | null;
+  course_offerings: CourseOffering;
+}
 
 interface CourseDetail {
   id: string;
@@ -21,7 +51,7 @@ interface CourseDetail {
 }
 
 interface AcademicRecordResponse {
-  semesterGrades: {
+  semesterGrades: Array<{
     year: number;                  // 이수년도
     semester: string;             // 학기 (1, 2, 여름, 겨울)
     earnedCredits: number;        // 취득학점
@@ -29,7 +59,7 @@ interface AcademicRecordResponse {
     semesterGpa: number;          // 평점평균
     classRank?: number;           // 석차 (있는 경우)
     totalStudents?: number;       // 전체 학생 수 (있는 경우)
-  }[];
+  }>;
   courses: {
     major: CourseDetail[];     // 전공 과목 (전취, 전핵, 전선, 전교)
     liberal: CourseDetail[];   // 교양 과목 (중핵, 기교, 선교, 소교, 일선)
@@ -118,29 +148,29 @@ export async function GET(
     }
 
     // 과목 데이터를 카테고리별로 분류
-
-const categorizedCourses = courses?.reduce((acc, course) => {
-  const category = getCourseCategory(course.course_offerings.faculty_division_name);
-  const courseDetail: CourseDetail = {
-    courseName: course.course_offerings.courses.course_name,
-    courseCode: course.course_offerings.courses.course_code,
-    areaType: course.course_offerings.faculty_division_name,
-    credits: course.course_offerings.points,
-    professor: course.course_offerings.professor?.professor_name || '미지정',
-    grade: course.grade,
-    score: course.points,
-    isRetake: course.is_retake || false,
-    isOnline: course.course_offerings.is_video_lecture || false,
-    year: course.course_offerings.year,
-    semester: course.course_offerings.semester,
-    originalScore: course.original_score,
-  };
-  acc[category].push(courseDetail);
-  return acc;
-}, {
-  major: [] as CourseDetail[],
-  liberal: [] as CourseDetail[],
-}) || { major: [], liberal: [] };
+    const categorizedCourses = (courses as unknown as Course[])?.reduce<{ major: CourseDetail[]; liberal: CourseDetail[] }>(
+      (acc, course) => {
+        const category = getCourseCategory(course.course_offerings.faculty_division_name as CourseAreaType);
+        const courseDetail: CourseDetail = {
+          id: course.id.toString(),
+          courseName: course.course_offerings.courses.course_name,
+          courseCode: course.course_offerings.courses.course_code,
+          areaType: course.course_offerings.faculty_division_name as CourseAreaType,
+          credits: course.course_offerings.points,
+          professor: course.course_offerings.professor?.professor_name || '미지정',
+          grade: course.grade || 'F',
+          score: course.points || 0,
+          isRetake: course.is_retake || false,
+          isOnline: course.course_offerings.is_video_lecture || false,
+          year: course.course_offerings.year,
+          semester: course.course_offerings.semester,
+          originalScore: course.original_score || 0,
+        };
+        acc[category].push(courseDetail);
+        return acc;
+      },
+      { major: [], liberal: [] }
+    ) || { major: [], liberal: [] };
 
     // 전공 평점 계산
     const majorGpa = calculateMajorGpa(categorizedCourses.major);
@@ -178,7 +208,7 @@ const categorizedCourses = courses?.reduce((acc, course) => {
 
 // 전공 평점 계산 함수
 function calculateMajorGpa(majorCourses: CourseDetail[]): number {
-  if (!majorCourses.length) return 0;
+  if (!majorCourses.length) {return 0;}
   
   const gradePoints = {
     'A+': 4.5, 'A0': 4.0,

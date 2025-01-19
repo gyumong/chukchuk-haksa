@@ -1,7 +1,8 @@
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { DashboardFacade } from '@/lib/supabase/facades/dashboard-facade';
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const dashboardFacade = new DashboardFacade();
     const dashboard = await dashboardFacade.getDashboard();

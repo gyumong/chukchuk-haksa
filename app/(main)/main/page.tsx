@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { DashboardData } from '@/types/api/dashboard';
+import type { DashboardData } from '@/types/api/dashboard';
 import AcademicSummaryCard from '../components/AcademicSummaryCard/AcademicSummaryCard';
 import GraduationRequirementCard from '../components/GraduationRequirementCard/GraduationRequirementCard';
 import ProfileCard from '../components/ProfileCard/ProfileCard';

@@ -1,5 +1,5 @@
 import { getSemesterInfo } from '@/lib/utils/semester';
-import { DashboardData } from '@/types/api/dashboard';
+import type { DashboardData } from '@/types/api/dashboard';
 import { AcademicRecordService } from '../services/academic-record-service';
 import { StudentService } from '../services/student-service';
 

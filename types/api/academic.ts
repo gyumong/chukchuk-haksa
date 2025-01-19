@@ -22,6 +22,7 @@ export interface SemesterGrade {
     isOnline: boolean;           // 사이버강의 여부
     year: number;                // 이수년도
     semester: number;            // 이수학기코드
+    originalScore?: number;      // 원점수 (있는 경우)
   }
   
   // API 요청 파라미터

@@ -64,6 +64,8 @@ export default function ScrapingPage() {
 
         setStudentInfo(studentData);
         setIsScrapingDone(true);
+        router.push('/complete'); 
+        return;
       } else if (result.status === 'failed') {
         setError(result.data?.message || '크롤링 중 오류가 발생했습니다.');
       } else {
@@ -72,6 +74,7 @@ export default function ScrapingPage() {
       }
     } catch (err: any) {
       setError(err.message);
+      return;
     }
   };
 
@@ -82,13 +85,7 @@ export default function ScrapingPage() {
   return (
     <LoadingScreen 
       targetPath="/complete"
-      minRepeatCount={3}
-      onComplete={(currentRepeatCount) => {
-        // API 응답이 완료되고 최소 3번 이상 반복된 경우에만 이동
-        if (isScrapingDone && currentRepeatCount >= 3) {
-          router.push('/complete');
-        }
-      }}
+      onComplete={() => {}} 
     />
   );
 }
