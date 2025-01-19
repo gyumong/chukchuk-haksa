@@ -35,11 +35,7 @@ export async function updateSession(request: NextRequest) {
 
   // 포털 연동 상태 확인
   if (user) {
-    const { data: users } = await supabase
-      .from('users')
-      .select('portal_connected')
-      .eq('id', user.id)
-      .single();
+    const { data: users } = await supabase.from('users').select('portal_connected').eq('id', user.id).single();
 
     // 로그인 후 리다이렉트 처리
     if (request.nextUrl.pathname === '/auth/callback') {

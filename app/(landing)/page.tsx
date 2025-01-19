@@ -1,20 +1,21 @@
 'use client';
 
+import Image from 'next/image';
 import { FixedButton } from '@/components/ui';
 import { kakaoLogin } from '@/lib/auth';
-import Image from 'next/image';
 
 export default function LandingPage() {
-    const handleLogin = async () => {
-        try {
-          await kakaoLogin();
-        } catch (error) {
-          console.error('로그인 실패:', error);
-          alert('로그인 중 문제가 발생했습니다.');
-        }
-      };
-  return (<>
-          <Image
+  const handleLogin = async () => {
+    try {
+      await kakaoLogin();
+    } catch (error) {
+      console.error('로그인 실패:', error);
+      alert('로그인 중 문제가 발생했습니다.');
+    }
+  };
+  return (
+    <>
+      <Image
         src="/images/illustrations/LandingStart.png" // 이미지 경로를 지정해주세요
         alt="설명적인 대체 텍스트"
         width={375} // 원하는 너비
@@ -65,4 +66,3 @@ export default function LandingPage() {
     </>
   );
 }
-
