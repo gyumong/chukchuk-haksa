@@ -9,12 +9,11 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
-  const next = searchParams.get('next') ?? `${origin}`;
   const code = searchParams.get('code');
   const returnedState = searchParams.get('state');
 
   if (!code || !returnedState) {
-    return NextResponse.redirect(`${origin}/login`);
+    return NextResponse.redirect(`${origin}`);
   }
   try {
     /**
@@ -32,7 +31,7 @@ export async function GET(request: Request) {
     const idToken = await getKakaoToken(code, redirectUri);
     await signInWithSupabase(idToken);
 
-    return NextResponse.redirect(next);
+    return NextResponse.redirect(`${origin}/auth/callback`);
   } catch (error) {
     console.log('error', error);
     const errorCode = error instanceof AuthError ? error.message : 'UNKNOWN_ERROR';
