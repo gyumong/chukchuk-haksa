@@ -4,7 +4,6 @@ import Image, { type ImageProps } from 'next/image';
 import { FixedButton } from '@/components/ui';
 import { kakaoLogin } from '@/lib/auth';
 
-
 const landingImages: ImageProps[] = [
   {
     src: '/images/illustrations/LandingStart.png',
@@ -50,14 +49,10 @@ export default function LandingPage() {
   };
   return (
     <>
-
-      {landingImages.map((image) => (
+      {landingImages.map(image => (
         <div key={image.alt + image.src}>
-        <Image
-          {...image}
-          className="object-cover"
-          />
-          </div>
+          <Image {...image} className="object-cover" />
+        </div>
       ))}
       <FixedButton variant="kakao" onClick={handleLogin}>
         3초 만에 카카오톡으로 시작하기
