@@ -1,8 +1,43 @@
 'use client';
 
-import Image from 'next/image';
+import Image, { type ImageProps } from 'next/image';
 import { FixedButton } from '@/components/ui';
 import { kakaoLogin } from '@/lib/auth';
+
+
+const landingImages: ImageProps[] = [
+  {
+    src: '/images/illustrations/LandingStart.png',
+    alt: '척척학사 메인 랜딩 이미지',
+    width: 375,
+    height: 1412,
+    priority: true,
+  },
+  {
+    src: '/images/illustrations/LandingSecond.png',
+    alt: '간편연동을 통해 쉽게 졸업요건 관리 설명 이미지',
+    width: 375,
+    height: 731,
+  },
+  {
+    src: '/images/illustrations/LandingThird.png',
+    alt: '수강 완료 리스트 확인 페이지 이미지',
+    width: 375,
+    height: 650,
+  },
+  {
+    src: '/images/illustrations/Landing4.png',
+    alt: '학기별 세부 성적 확인 이미지',
+    width: 375,
+    height: 684,
+  },
+  {
+    src: '/images/illustrations/Landing5.png',
+    alt: '척척학사 유도 이미지',
+    width: 375,
+    height: 719,
+  },
+] as const;
 
 export default function LandingPage() {
   const handleLogin = async () => {
@@ -15,51 +50,15 @@ export default function LandingPage() {
   };
   return (
     <>
-      <Image
-        src="/images/illustrations/LandingStart.png" // 이미지 경로를 지정해주세요
-        alt="설명적인 대체 텍스트"
-        width={375} // 원하는 너비
-        height={1412} // 원하는 높이
-        quality={100} // 품질 설정 (1-100)
-        priority={true} // LCP(Largest Contentful Paint) 이미지의 경우 true로 설정
-        className="object-cover" // 이미지 비율 유지를 위한 스타일
-      />
-      <Image
-        src="/images/illustrations/LandingSecond.png"
-        alt="설명적인 대체 텍스트"
-        width={375}
-        height={731}
-        quality={100}
-        priority={true}
-        className="object-cover"
-      />
-      <Image
-        src="/images/illustrations/LandingThird.png"
-        alt="설명적인 대체 텍스트"
-        width={375}
-        height={650}
-        quality={100}
-        priority={true}
-        className="object-cover"
-      />
-      <Image
-        src="/images/illustrations/Landing4.png"
-        alt="설명적인 대체 텍스트"
-        width={375}
-        height={684}
-        quality={100}
-        priority={true}
-        className="object-cover"
-      />
-      <Image
-        src="/images/illustrations/Landing5.png"
-        alt="설명적인 대체 텍스트"
-        width={375}
-        height={719}
-        quality={100}
-        priority={true}
-        className="object-cover"
-      />
+
+      {landingImages.map((image) => (
+        <div key={image.alt + image.src}>
+        <Image
+          {...image}
+          className="object-cover"
+          />
+          </div>
+      ))}
       <FixedButton variant="kakao" onClick={handleLogin}>
         3초 만에 카카오톡으로 시작하기
       </FixedButton>
