@@ -7,11 +7,15 @@ $gray-100: #a3a2b1;
 $gray-200: #d9d9e3;
 $gray-300: #eff0f7;
 $gray-400: #616168;
+$gray-500: #7f7e8a;
+
+$background-color: #e8e9ef;
 // Purple Scale
 $purple-100: #7f71fb;
 $purple-200: #9f94ff;
 $purple-300: #e5e5fc;
 $purple-400: #ecedfc;
+$purple-500: #7f71fb;
 
 $red-100: #ff5751;
 $red-200: #feafac;
@@ -38,6 +42,9 @@ $red-200: #feafac;
     &-400 {
       color: var(--gray-400);
     }
+    &-500 {
+      color: var(--gray-500);
+    }
   }
 
   &-purple {
@@ -52,6 +59,9 @@ $red-200: #feafac;
     }
     &-400 {
       color: var(--purple-400);
+    }
+    &-500 {
+      color: var(--purple-500);
     }
   }
 
@@ -87,6 +97,9 @@ $red-200: #feafac;
     &-400 {
       background-color: var(--gray-400);
     }
+    &-500 {
+      background-color: var(--gray-500);
+    }
   }
 
   &-purple {
@@ -101,6 +114,9 @@ $red-200: #feafac;
     }
     &-400 {
       background-color: var(--purple-400);
+    }
+    &-500 {
+      background-color: var(--purple-500);
     }
   }
 
