@@ -89,6 +89,13 @@ export type Database = {
             referencedRelation: 'liberal_arts_area_codes';
             referencedColumns: ['code'];
           },
+          {
+            foreignKeyName: 'fk_course_offerings_professor';
+            columns: ['professor_id'];
+            isOneToOne: false;
+            referencedRelation: 'professor';
+            referencedColumns: ['id'];
+          },
         ];
       };
       courses: {
@@ -367,6 +374,106 @@ export type Database = {
           },
         ];
       };
+      semester_academic_records: {
+        Row: {
+          attempted_credits: number | null;
+          attempted_credits_gpa: number | null;
+          class_rank: number | null;
+          created_at: string | null;
+          earned_credits: number | null;
+          id: string;
+          semester: number | null;
+          semester_gpa: number | null;
+          semester_percentile: number | null;
+          student_id: string | null;
+          total_students: number | null;
+          updated_at: string | null;
+          year: number | null;
+        };
+        Insert: {
+          attempted_credits?: number | null;
+          attempted_credits_gpa?: number | null;
+          class_rank?: number | null;
+          created_at?: string | null;
+          earned_credits?: number | null;
+          id?: string;
+          semester?: number | null;
+          semester_gpa?: number | null;
+          semester_percentile?: number | null;
+          student_id?: string | null;
+          total_students?: number | null;
+          updated_at?: string | null;
+          year?: number | null;
+        };
+        Update: {
+          attempted_credits?: number | null;
+          attempted_credits_gpa?: number | null;
+          class_rank?: number | null;
+          created_at?: string | null;
+          earned_credits?: number | null;
+          id?: string;
+          semester?: number | null;
+          semester_gpa?: number | null;
+          semester_percentile?: number | null;
+          student_id?: string | null;
+          total_students?: number | null;
+          updated_at?: string | null;
+          year?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'semester_academic_records_student_id_fkey';
+            columns: ['student_id'];
+            isOneToOne: false;
+            referencedRelation: 'students';
+            referencedColumns: ['student_id'];
+          },
+        ];
+      };
+      student_academic_records: {
+        Row: {
+          attempted_credits_gpa: number | null;
+          created_at: string | null;
+          cumulative_gpa: number | null;
+          id: string;
+          percentile: number | null;
+          student_id: string | null;
+          total_attempted_credits: number | null;
+          total_earned_credits: number | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          attempted_credits_gpa?: number | null;
+          created_at?: string | null;
+          cumulative_gpa?: number | null;
+          id?: string;
+          percentile?: number | null;
+          student_id?: string | null;
+          total_attempted_credits?: number | null;
+          total_earned_credits?: number | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          attempted_credits_gpa?: number | null;
+          created_at?: string | null;
+          cumulative_gpa?: number | null;
+          id?: string;
+          percentile?: number | null;
+          student_id?: string | null;
+          total_attempted_credits?: number | null;
+          total_earned_credits?: number | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'student_academic_records_student_id_fkey';
+            columns: ['student_id'];
+            isOneToOne: true;
+            referencedRelation: 'students';
+            referencedColumns: ['student_id'];
+          },
+        ];
+      };
       student_courses: {
         Row: {
           created_at: string | null;
@@ -374,6 +481,7 @@ export type Database = {
           id: number;
           is_retake: boolean | null;
           offering_id: number;
+          original_score: number | null;
           points: number | null;
           student_id: string;
         };
@@ -383,6 +491,7 @@ export type Database = {
           id?: number;
           is_retake?: boolean | null;
           offering_id: number;
+          original_score?: number | null;
           points?: number | null;
           student_id: string;
         };
@@ -392,6 +501,7 @@ export type Database = {
           id?: number;
           is_retake?: boolean | null;
           offering_id?: number;
+          original_score?: number | null;
           points?: number | null;
           student_id?: string;
         };
@@ -520,6 +630,7 @@ export type Database = {
         Row: {
           admission_type: string | null;
           admission_year: number;
+          completed_semesters: number | null;
           created_at: string | null;
           department_id: number;
           grade_level: number | null;
@@ -538,6 +649,7 @@ export type Database = {
         Insert: {
           admission_type?: string | null;
           admission_year: number;
+          completed_semesters?: number | null;
           created_at?: string | null;
           department_id: number;
           grade_level?: number | null;
@@ -556,6 +668,7 @@ export type Database = {
         Update: {
           admission_type?: string | null;
           admission_year?: number;
+          completed_semesters?: number | null;
           created_at?: string | null;
           department_id?: number;
           grade_level?: number | null;
