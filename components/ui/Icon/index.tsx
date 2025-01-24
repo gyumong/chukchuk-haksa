@@ -1,11 +1,17 @@
 import {
+  ArrowDownIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
+  ArrowTopIcon,
   CheckStatusOffIcon,
   CheckStatusOnIcon,
   CloseIcon,
   DeleteIcon,
+  InfoIcon,
+  KakaoIcon,
+  RefreshIcon,
   SchoolIcon,
+  SettingIcon,
 } from './icons';
 
 export type IconType =
@@ -15,7 +21,13 @@ export type IconType =
   | 'check-status-off'
   | 'arrow-right'
   | 'arrow-left'
-  | 'close';
+  | 'close'
+  | 'arrow-down'
+  | 'info'
+  | 'setting'
+  | 'refresh'
+  | 'arrow-top'
+  | 'kakao';
 
 const iconMapping = {
   delete: DeleteIcon,
@@ -25,6 +37,12 @@ const iconMapping = {
   'arrow-right': ArrowRightIcon,
   'arrow-left': ArrowLeftIcon,
   close: CloseIcon,
+  'arrow-down': ArrowDownIcon,
+  info: InfoIcon,
+  setting: SettingIcon,
+  refresh: RefreshIcon,
+  'arrow-top': ArrowTopIcon,
+  kakao: KakaoIcon,
 } as const;
 
 interface IconProps {
