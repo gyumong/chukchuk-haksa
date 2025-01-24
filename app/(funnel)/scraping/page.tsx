@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useStudentInfo } from '../contexts';
 import LoadingScreen from '../components/LoadingScreen/LoadingScreen';
+import { useStudentInfo } from '../contexts';
 
 export default function ScrapingPage() {
   const [taskId, setTaskId] = useState<string | null>(null);
@@ -64,7 +64,7 @@ export default function ScrapingPage() {
 
         setStudentInfo(studentData);
         setIsScrapingDone(true);
-        router.push('/complete'); 
+        router.push('/complete');
         return;
       } else if (result.status === 'failed') {
         setError(result.data?.message || '크롤링 중 오류가 발생했습니다.');
@@ -82,10 +82,5 @@ export default function ScrapingPage() {
     return <div>에러: {error}</div>;
   }
 
-  return (
-    <LoadingScreen 
-      targetPath="/complete"
-      onComplete={() => {}} 
-    />
-  );
+  return <LoadingScreen />;
 }

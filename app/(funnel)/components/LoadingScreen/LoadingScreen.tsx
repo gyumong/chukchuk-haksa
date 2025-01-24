@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import styles from './LoadingScreen.module.scss';
 
 const LOADING_STATES = [
@@ -19,17 +18,10 @@ const LOADING_STATES = [
   }
 ];
 
-interface LoadingScreenProps {
-  targetPath: string;
-  minRepeatCount?: number;
-  onComplete: (currentRepeatCount: number) => void;
-}
-
-const LoadingScreen = ({ targetPath, minRepeatCount = 0, onComplete }: LoadingScreenProps) => {
+const LoadingScreen = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playCount, setPlayCount] = useState(0);
   const [fadeState, setFadeState] = useState<'in' | 'out'>('in');
-  const router = useRouter();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -43,10 +35,6 @@ const LoadingScreen = ({ targetPath, minRepeatCount = 0, onComplete }: LoadingSc
         setPlayCount(nextCount);
         setFadeState('in');
         
-        // 최소 반복 횟수 이상 실행됐을 때 onComplete 호출
-        onComplete(nextCount);
-        
-        // 비디오 계속 재생
         video.play();
       }, 300);
     };
@@ -57,7 +45,7 @@ const LoadingScreen = ({ targetPath, minRepeatCount = 0, onComplete }: LoadingSc
     return () => {
       video.removeEventListener('ended', handleEnded);
     };
-  }, [playCount, onComplete]);
+  }, [playCount]);
 
   const currentState = LOADING_STATES[playCount % LOADING_STATES.length];
 
