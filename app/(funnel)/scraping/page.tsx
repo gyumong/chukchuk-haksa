@@ -6,8 +6,7 @@ import LoadingScreen from '../components/LoadingScreen/LoadingScreen';
 import { useStudentInfo } from '../contexts';
 
 export default function ScrapingPage() {
-  const [taskId, setTaskId] = useState<string | null>(null);
-  const [isScrapingDone, setIsScrapingDone] = useState(false);
+  const [_, setTaskId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const isStarting = useRef(false);
   const router = useRouter();
@@ -63,7 +62,6 @@ export default function ScrapingPage() {
         };
 
         setStudentInfo(studentData);
-        setIsScrapingDone(true);
         router.push('/complete');
         return;
       } else if (result.status === 'failed') {
