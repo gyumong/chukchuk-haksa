@@ -3,6 +3,8 @@ import { AuthError } from '@/lib/error';
 import { generateRandomNonce, generateRandomString, hashNonce } from '.';
 
 function initializeKakao() {
+  if (typeof window === 'undefined') return;
+
   if (!window.Kakao) {
     throw new Error('Kakao SDK is not loaded.');
   }
@@ -13,12 +15,16 @@ function initializeKakao() {
 }
 
 function cleanupKakao() {
+  if (typeof window === 'undefined') return;
+
   if (window.Kakao?.isInitialized()) {
     window.Kakao.cleanup();
   }
 }
 
 async function kakaoLogin(redirectUri?: string) {
+  if (typeof window === 'undefined') return;
+  
   if (!window?.Kakao || !window.Kakao.Auth) {
     throw new AuthError('Kakao SDK is not loaded or initialized.');
   }
