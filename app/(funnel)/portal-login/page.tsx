@@ -31,7 +31,7 @@ export default function PortalLogin() {
       if (!res.ok) {
         throw new Error(data.error || '로그인 실패');
       }
-      router.push('/scraping');
+      router.push('/agreement');
     } catch (err: any) {
       console.log(err);
       setErrorMessage(err.message);
