@@ -1,0 +1,24 @@
+// TODO gap도 유틸리티 만들기
+
+.gap16 {
+  margin-top: 16px;
+}
+
+.gap18 {
+  margin-top: 18px;
+}
+
+.mainBanner {
+  max-width: 335px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto; // 가운데 정렬이 필요한 경우
+}
+
+.mainBannerContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
