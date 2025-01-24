@@ -1,0 +1,110 @@
+@use '@/styles/color.scss' as color;
+
+.cardContainer {
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.courseInfo,
+.professorInfo {
+  color: #a3a2b1;
+  font-size: 14px;
+  font-family: 'SUIT';
+  font-weight: 500;
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+
+.cardBody {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.courseNameWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.courseName {
+  color: #2b2b2b;
+  font-size: 18px;
+  font-family: 'SUIT';
+  font-weight: 700;
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+
+.gradeWrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.grade {
+  font-family: 'SUIT';
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 28.8px;
+  word-wrap: break-word;
+
+  // A+, A0, A 모두 포함
+  &[data-grade='A+'],
+  &[data-grade='A0'],
+  &[data-grade='A'] {
+    color: #eb5050;
+  }
+
+  &[data-grade='P'] {
+    color: color.$purple-500;
+    .completed & {
+      color: color.$purple-200;
+    }
+  }
+
+  // B+, B0, B 모두 포함
+  &[data-grade='B+'],
+  &[data-grade='B0'],
+  &[data-grade='B'] {
+    color: #f6b645;
+  }
+
+  // C+, C0, C 모두 포함
+  &[data-grade='C+'],
+  &[data-grade='C0'],
+  &[data-grade='C'] {
+    color: #1fce8e;
+  }
+
+  // D+, D0, D 모두 포함
+  &[data-grade='D+'],
+  &[data-grade='D0'],
+  &[data-grade='D'] {
+    color: #7f7e8a;
+    .completed & {
+      color: color.$gray-100;
+    }
+  }
+  &[data-grade='F'] {
+    color: color.$gray-500;
+    .completed & {
+      color: color.$gray-100;
+    }
+  }
+}
+
+.score {
+  color: #2b2b2b;
+  font-size: 14px;
+  font-family: 'SUIT';
+  font-weight: 500;
+}
