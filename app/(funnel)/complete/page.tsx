@@ -1,7 +1,9 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { FixedButton } from '@/components/ui';
+import { getSemesterInfo } from '@/lib/utils/semester';
 import { FunnelHeadline } from '../components';
 import { useStudentInfo } from '../contexts';
 import styles from './page.module.scss';
@@ -17,6 +19,12 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 
 export default function Complete() {
   const { studentInfo } = useStudentInfo();
+  const router = useRouter();
+
+  const handleNext = () => {
+    router.push('/target-score');
+  };
+
   return (
     <div className={styles.container}>
       <FunnelHeadline
@@ -40,14 +48,17 @@ export default function Complete() {
               <InfoRow label="학교" value={studentInfo?.school ?? ''} />
               <InfoRow label="학과" value={studentInfo?.majorName ?? ''} />
               <InfoRow label="학번" value={studentInfo?.studentCode ?? ''} />
-              <InfoRow label="학기" value={studentInfo?.gradeLevel ?? ''} />
+              <InfoRow
+                label="학기"
+                value={`${studentInfo?.gradeLevel ?? ''}학년 ${getSemesterInfo(studentInfo?.completedSemesters ?? 0).currentSemester ?? ''}학기`}
+              />
               <InfoRow label="재학 여부" value={studentInfo?.status ?? ''} />
             </div>
           </div>
         </div>
         <button className={styles.wrongInfoButton}>입력된 정보가 맞지 않아요</button>
       </div>
-      <FixedButton>다음</FixedButton>
+      <FixedButton onClick={handleNext}>다음</FixedButton>
     </div>
   );
 }
