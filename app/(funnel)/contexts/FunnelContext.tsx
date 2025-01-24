@@ -10,6 +10,7 @@ export interface StudentInfo {
   studentCode: string;
   gradeLevel: string;
   status: string;
+  completedSemesters: number;
 }
 
 interface FunnelContextType {
@@ -27,6 +28,7 @@ export function FunnelProvider({ children }: { children: ReactNode }) {
     studentCode: '',
     gradeLevel: '',
     status: '',
+    completedSemesters: 0,
   });
 
   return <FunnelContext.Provider value={{ studentInfo, setStudentInfo }}>{children}</FunnelContext.Provider>;
