@@ -132,7 +132,6 @@ export default function GraduationProgressPage() {
       );
     });
 
-    const regularSemesterCount = 0; // 정규 학기 카운트
     let lastGrade = 1; // 현재 학년
     let lastSemesterName = '1학기'; // 현재 학기명
     let leftover = false; // 정규학기 조합 상태 플래그
