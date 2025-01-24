@@ -6,7 +6,7 @@ import LoadingScreen from '../components/LoadingScreen/LoadingScreen';
 import { useStudentInfo } from '../contexts';
 
 export default function ScrapingPage() {
-  const [_, setTaskId] = useState<string | null>(null);
+  const [, setTaskId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const isStarting = useRef(false);
   const router = useRouter();
