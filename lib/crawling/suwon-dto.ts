@@ -61,7 +61,7 @@ function mapCourseDTOToDomain(dto: CourseDTO): Course {
     subjectCode: dto.subjtCd,
     subjectEstablishmentYear: dto.subjtEstbYear,
   };
-}
+};
 /** SemesterGradeDTO → ProcessedSemesterGrade 변환 */
 function mapSemesterGradeDTOToDomain(grades: SemesterGradeDTO[]): ProcessedSemesterGrade[] {
   return grades.map(grade => {
