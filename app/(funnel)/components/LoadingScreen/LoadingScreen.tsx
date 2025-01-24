@@ -6,16 +6,16 @@ import styles from './LoadingScreen.module.scss';
 const LOADING_STATES = [
   {
     title: '학교 정보를 불러오는 중이에요',
-    description: '척척학사에서 수집하는 개인 정보는\n학교 연동 후 즉시 폐기됩니다.'
+    description: '척척학사에서 수집하는 개인 정보는\n학교 연동 후 즉시 폐기됩니다.',
   },
   {
     title: '불러온 정보를 입력하고 있어요',
-    description: '척척학사에서 수집하는 개인 정보는\n학교 연동 후 즉시 폐기됩니다.'
+    description: '척척학사에서 수집하는 개인 정보는\n학교 연동 후 즉시 폐기됩니다.',
   },
   {
     title: '학교 인증이 거의 다 되었어요!',
-    description: '척척학사에서 수집하는 개인 정보는\n학교 연동 후 즉시 폐기됩니다.'
-  }
+    description: '척척학사에서 수집하는 개인 정보는\n학교 연동 후 즉시 폐기됩니다.',
+  },
 ];
 
 const LoadingScreen = () => {
@@ -25,16 +25,18 @@ const LoadingScreen = () => {
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) {return;}
+    if (!video) {
+      return;
+    }
 
     const handleEnded = () => {
       setFadeState('out');
-      
+
       setTimeout(() => {
         const nextCount = playCount + 1;
         setPlayCount(nextCount);
         setFadeState('in');
-        
+
         video.play();
       }, 300);
     };
@@ -51,16 +53,9 @@ const LoadingScreen = () => {
 
   return (
     <div className={styles.wrapper}>
-
-
       <main className={styles.main}>
         <div className={styles.videoContainer}>
-          <video
-            ref={videoRef}
-            className={styles.video}
-            playsInline
-            muted
-          >
+          <video ref={videoRef} className={styles.video} playsInline muted>
             <source src="/videos/chuck_loading.mp4" type="video/mp4" />
           </video>
         </div>
