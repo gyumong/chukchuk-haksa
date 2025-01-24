@@ -10,6 +10,7 @@ interface AreaProgress {
   completedElectiveCourses: number;
   totalElectiveCourses: number | null;
   courses: Array<{
+    year: number;
     courseName: string;
     credits: number;
     grade: string;
@@ -43,6 +44,7 @@ export class GraduationProgressService {
       completedElectiveCourses: row.completed_elective_courses,
       totalElectiveCourses: row.total_elective_courses,
       courses: row.courses as Array<{
+        year: number;
         courseName: string;
         credits: number;
         grade: string;
