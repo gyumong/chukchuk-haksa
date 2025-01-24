@@ -17,6 +17,7 @@ interface StudentDTO {
   scrgStatNm: StudentStatus; // 재학 상태 (예: 재학, 졸업)
   studGrde: number; // 학년 (예: 3)
   enscDvcd: string; // 입학 구분 코드 (예: 1: 신입학, 2: 편입학)
+  facSmrCnt: number; // 총 이수학기
 }
 
 // Credit DTO: 크롤링된 성적 데이터 타입
@@ -28,6 +29,7 @@ interface CreditDTO {
   estbDpmjNm: string; // 개설 학과명
   facDvnm: string; // 교수 이름
   gainPoint: number; // 취득 학점
+  gainPont: number; // 원 점수 ex) 93
   subjtCd: string; // 과목 코드
   cretSmrNm: string; // 학기
   totalPoint: number; // 총점
@@ -56,4 +58,30 @@ interface CourseDTO {
   subjtEstbYear: number; // 과목 개설 연도
 }
 
-export type { StudentDTO, CreditDTO, CourseDTO };
+// 수원대 포털에서 받아오는 원본 데이터 타입
+interface SemesterGradeDTO {
+  sno: string; // 학번
+  cretGainYear: string; // 년도
+  cretSmrCd: string; // 학기 코드 (10, 15, 20, 25)
+  gainPoint: number; // 취득 학점
+  applPoint: number; // 신청 학점
+  gainAvmk: number; // 평점 평균 (GPA)
+  gainTavgPont: string; // 백분위 점수
+  dpmjOrdp: string; // 학과 석차 (예: "6/33")
+}
+
+// 전체 성적 요약 데이터 타입
+interface TotalGradeDTO {
+  gainPoint: string; // 총 취득학점
+  applPoint: string; // 총 신청학점
+  gainAvmk: string; // 전체 평점평균
+  gainTavgPont: string; // 전체 백분위
+}
+
+// API 응답 타입
+interface GradeResponseDTO {
+  listSmrCretSumTabYearSmr: SemesterGradeDTO[];
+  selectSmrCretSumTabSjTotal: TotalGradeDTO;
+}
+
+export type { StudentDTO, CreditDTO, CourseDTO, SemesterGradeDTO, TotalGradeDTO, GradeResponseDTO };

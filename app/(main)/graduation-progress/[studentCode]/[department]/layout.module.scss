@@ -1,0 +1,12 @@
+@use '/styles/color.scss' as color;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  background-color: color.$background-color;
+  min-height: 100vh;
+
+  max-width: 600px; // 최대 너비 600px로 제한
+  margin: 0 auto; // 중앙 정렬
+  padding-bottom: 100px;
+}

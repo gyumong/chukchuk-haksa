@@ -1,0 +1,27 @@
+.gap8 {
+  margin-bottom: 8px;
+}
+.gap12 {
+  margin-bottom: 12px;
+}
+.gap20 {
+  margin-bottom: 20px;
+}
+.gap24 {
+  margin-bottom: 24px;
+}
+
+.majorText {
+  color: #7f7e8a;
+  font-size: 16px;
+  font-family: 'SUIT';
+  font-weight: 700;
+  line-height: 1.6; /* or 25.6px */
+  word-wrap: break-word;
+}
+
+.cardsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

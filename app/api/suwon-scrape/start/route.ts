@@ -6,12 +6,13 @@ import type { SessionData } from '@/lib/auth';
 import { sessionOptions } from '@/lib/auth';
 import { setTask } from '@/lib/crawling/scrape-task';
 import { scrapeSuwonAll } from '@/lib/crawling/suwon-scrape-all';
+import { AcademicRecordService } from '@/lib/supabase/services/academic-record-service';
 import { CourseOfferingService } from '@/lib/supabase/services/course-offering-service';
 import { CourseService } from '@/lib/supabase/services/course-service';
 import { ProfessorService } from '@/lib/supabase/services/professor-service';
 import { StudentCourseService } from '@/lib/supabase/services/student-course-service';
 import { StudentService } from '@/lib/supabase/services/student-service';
-import type { Database, MergedSemester, Student } from '@/types';
+import type { AcademicRecords, Database, MergedSemester, Student } from '@/types';
 
 export async function POST(req: Request) {
   function parseSemesterString(semStr: string): { year: number; semester: number } {
@@ -43,9 +44,11 @@ export async function POST(req: Request) {
       const {
         student,
         mergedData,
+        academicRecords,
       }: {
         student: Student;
         mergedData: MergedSemester[];
+        academicRecords: AcademicRecords;
       } = await scrapeSuwonAll(username, password);
       // 1) 학생 정보 초기화
       const studentService = new StudentService();
@@ -58,6 +61,10 @@ export async function POST(req: Request) {
       const offeringService = new CourseOfferingService();
       const professorService = new ProfessorService();
       const studentCourseService = new StudentCourseService();
+      const academicRecordService = new AcademicRecordService();
+
+      // 3) 성적 정보 저장
+      await academicRecordService.upsertAcademicRecords(studentId, academicRecords);
 
       // 4) student_courses upsert 준비
       const studentCoursesToUpsert = [];
@@ -120,6 +127,7 @@ export async function POST(req: Request) {
           studentCoursesToUpsert.push({
             student_id: studentId,
             offering_id: offeringId,
+            original_score: c.originalScore,
             grade: grade as Database['public']['Enums']['grade_type'],
             points: c.points || 0,
             is_retake: isRetake,
@@ -134,6 +142,7 @@ export async function POST(req: Request) {
       setTask(taskId, 'completed', {
         student,
         mergedData,
+        academicRecords,
       });
       // **세션 만료 처리**
       session.destroy(); // Iron Session에서 세션 데이터 삭제

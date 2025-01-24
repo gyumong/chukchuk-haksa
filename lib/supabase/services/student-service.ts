@@ -4,6 +4,16 @@ import type { Database } from '@/types/supabase';
 import { createClient } from '../server';
 import { DepartmentService } from './department-service';
 
+interface StudentInfo {
+  studentCode: string;
+  name: string | null;
+  departmentName: string | null;
+  gradeLevel: number | null;
+  status: Database['public']['Enums']['student_status'] | null;
+  completedSemesters: number | null;
+  updatedAt: string | null;
+}
+
 export class StudentService {
   private readonly departmentService: DepartmentService;
 
@@ -134,5 +144,42 @@ export class StudentService {
       console.error('Failed to update target gpa:', error);
       throw new Error('목표 학점 설정에 실패했습니다.');
     }
+  }
+
+  /** 학생 정보 조회 */
+  async getStudentInfo(): Promise<StudentInfo> {
+    const userId = await this.getAuthenticatedUserId();
+    const { data, error } = await this.supabase
+      .from('students')
+      .select(
+        `
+      student_code,
+      name,
+      departments!fk_department_id (
+        established_department_name
+      ),
+      grade_level,
+      status,
+      completed_semesters,
+      updated_at
+    `
+      )
+      .eq('student_id', userId)
+      .single();
+
+    if (error) {
+      console.error('Failed to fetch student info:', error);
+      throw new Error('학생 정보 조회 실패');
+    }
+
+    return {
+      studentCode: data.student_code,
+      name: data.name,
+      departmentName: data?.departments?.established_department_name ?? null,
+      gradeLevel: data.grade_level,
+      status: data.status,
+      completedSemesters: data.completed_semesters,
+      updatedAt: data.updated_at,
+    };
   }
 }
