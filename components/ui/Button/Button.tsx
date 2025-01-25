@@ -1,9 +1,13 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 import { cva, type VariantProps } from 'class-variance-authority';
-import Lottie from 'lottie-react';
 import loadingAnimation from '@/assets/lotties/loading.json';
 import { Icon } from '../Icon';
 import styles from './Button.module.scss';
+
+const Lottie = dynamic(() => import('lottie-react'), {
+  ssr: false, // 서버 사이드 렌더링 비활성화
+});
 
 const buttonVariants = cva(styles.base, {
   variants: {
