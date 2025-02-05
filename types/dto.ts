@@ -84,4 +84,20 @@ interface GradeResponseDTO {
   selectSmrCretSumTabSjTotal: TotalGradeDTO;
 }
 
-export type { StudentDTO, CreditDTO, CourseDTO, SemesterGradeDTO, TotalGradeDTO, GradeResponseDTO };
+interface MergedSemesterDTO {
+  semester: string; // 예: "2024-20"
+  courses: MergedSemesterCourseDTO[];
+}
+
+type MergedSemesterCourseDTO = Partial<CreditDTO> & Partial<CourseDTO>;
+
+export type {
+  StudentDTO,
+  CreditDTO,
+  CourseDTO,
+  SemesterGradeDTO,
+  TotalGradeDTO,
+  GradeResponseDTO,
+  MergedSemesterDTO,
+  MergedSemesterCourseDTO,
+};

@@ -1,5 +1,22 @@
-import type { Course, Credit, ProcessedSemesterGrade, ProcessedTotalGrade, Student } from '@/types/domain';
-import type { CourseDTO, CreditDTO, GradeResponseDTO, SemesterGradeDTO, StudentDTO, TotalGradeDTO } from '@/types/dto';
+import type {
+  AcademicRecords,
+  Course,
+  Credit,
+  MergedSemester,
+  PartialCourseData,
+  ProcessedSemesterGrade,
+  ProcessedTotalGrade,
+  Student,
+} from '@/types/domain';
+import type {
+  CourseDTO,
+  CreditDTO,
+  GradeResponseDTO,
+  MergedSemesterDTO,
+  SemesterGradeDTO,
+  StudentDTO,
+  TotalGradeDTO,
+} from '@/types/dto';
 import { parseRankString } from '../utils/parseRankString';
 
 /** StudentDTO → Student 변환 */
@@ -62,6 +79,45 @@ function mapCourseDTOToDomain(dto: CourseDTO): Course {
     subjectEstablishmentYear: dto.subjtEstbYear,
   };
 }
+
+/** MergedSemesterDTO[] → MergedSemester[] 변환 */
+function mapMergedSemesterDTOToDomain(dtos: MergedSemesterDTO[]): MergedSemester[] {
+  return dtos.map(dto => ({
+    semester: dto.semester,
+    courses: dto.courses.map(course => {
+      // Credit & Course 타입의 통합 객체 생성
+      const mergedCourse: PartialCourseData = {
+        // Credit 관련 필드
+        studentNumber: course.sno,
+        grade: course.cretGrdCd,
+        gpa: course.gainGpa,
+        courseName: course.subjtNm,
+        department: course.estbDpmjNm,
+        facultyDivisionName: course.facDvnm,
+        points: course.point,
+        courseCode: course.subjtCd,
+        totalScore: course.totalPoint,
+        areaCode: course.cltTerrNm ? parseInt(course.cltTerrNm.replace(/[^0-9]/g, '')) : undefined,
+        originalAreaCode: course.cltTerrCd,
+        originalScore: course.gainPont,
+
+        // Course 관련 필드 (있는 경우에만)
+        courseNumber: course.diclNo,
+        scheduleSummary: course.timtSmryCn,
+        retakeYearSemester: course.refacYearSmr,
+        isClosed: course.closeYn,
+        facultyDivisionCode: course.facDvcd,
+        professorName: course.ltrPrfsNm,
+        subjectEstablishmentYearSemester: course.subjtEstbYearSmr,
+        subjectEstablishmentSemesterCode: course.subjtEstbSmrCd,
+        subjectCode: course.subjtCd,
+        subjectEstablishmentYear: course.subjtEstbYear,
+      };
+
+      return mergedCourse;
+    }),
+  }));
+}
 /** SemesterGradeDTO → ProcessedSemesterGrade 변환 */
 function mapSemesterGradeDTOToDomain(grades: SemesterGradeDTO[]): ProcessedSemesterGrade[] {
   return grades.map(grade => {
@@ -90,7 +146,7 @@ function mapTotalGradeDTOToDomain(dto: TotalGradeDTO): ProcessedTotalGrade {
   };
 }
 
-function mapGradeResponseDTOToDomain(data: GradeResponseDTO) {
+function mapGradeResponseDTOToDomain(data: GradeResponseDTO): AcademicRecords {
   return {
     semesters: mapSemesterGradeDTOToDomain(data.listSmrCretSumTabYearSmr),
     total: mapTotalGradeDTOToDomain(data.selectSmrCretSumTabSjTotal),
@@ -104,4 +160,5 @@ export {
   mapSemesterGradeDTOToDomain,
   mapTotalGradeDTOToDomain,
   mapGradeResponseDTOToDomain,
+  mapMergedSemesterDTOToDomain,
 };
