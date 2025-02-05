@@ -57,7 +57,7 @@ interface Course {
   semester?: string;
 }
 
-type PartialCourseData = Credit & Partial<Course>;
+type PartialCourseData = Partial<Credit> & Partial<Course>;
 
 interface ProcessedSemesterGrade {
   year: number;
