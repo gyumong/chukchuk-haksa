@@ -1,5 +1,5 @@
-import { CourseEnrollment } from '../models/CourseEnrollment';
-import { CourseEnrollments } from '../models/CourseEnrollments';
+import type { CourseEnrollment } from '../models/CourseEnrollment';
+import type { CourseEnrollments } from '../models/CourseEnrollments';
 
 // server/domain/academic-record/repositories/IStudentCourseRepository.ts
 export interface IStudentCourseRepository {

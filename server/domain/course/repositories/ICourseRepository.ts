@@ -1,6 +1,12 @@
 // server/domain/course/repositories/ICourseRepository.ts
 import { Course } from '@/server/domain/course/models/Course';
 
+interface CourseCreationData {
+  courseCode: string;
+  courseName: string;
+  points: number;
+}
+
 /**
  * ICourseRepository
  * - 강의(코스) 관련 데이터를 조회 및 생성하는 역할을 추상화한 인터페이스입니다.
@@ -26,5 +32,5 @@ export interface ICourseRepository {
    * @param courseData - 강의 생성에 필요한 데이터 (courseCode, courseName, points)
    * @returns 조회되거나 생성된 Course 도메인 모델
    */
-  getOrCreateCourse(courseData: { courseCode: string; courseName: string; points: number }): Promise<Course>;
+  getOrCreateCourse(courseData: CourseCreationData): Promise<Course>;
 }

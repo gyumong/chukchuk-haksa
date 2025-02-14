@@ -1,5 +1,27 @@
 // server/domain/course/repositories/ICourseOfferingRepository.ts
-import { CourseAreaType, CourseOffering, EvaluationType } from '@/server/domain/course-offering/models/CourseOffering';
+import type {
+  CourseAreaType,
+  CourseOffering,
+  EvaluationType,
+} from '@/server/domain/course-offering/models/CourseOffering';
+
+interface CourseOfferingCreationData {
+  courseId: number;
+  year: number;
+  semester: number;
+  classSection?: string;
+  professorId: number;
+  departmentId?: number;
+  scheduleSummary?: string;
+  evaluationType?: EvaluationType;
+  isVideoLecture?: boolean;
+  subjectEstablishmentSemester?: number;
+  facultyDivisionName?: CourseAreaType;
+  areaCode?: number;
+  originalAreaCode?: number;
+  points?: number;
+  hostDepartment?: string;
+}
 
 export interface ICourseOfferingRepository {
   /**
@@ -22,21 +44,5 @@ export interface ICourseOfferingRepository {
    * @param offering - CourseOffering 도메인 모델
    * @returns 조회되거나 생성된 CourseOffering 도메인 모델
    */
-  getOrCreateOffering(offeringData: {
-    courseId: number;
-    year: number;
-    semester: number;
-    classSection?: string;
-    professorId: number;
-    departmentId?: number;
-    scheduleSummary?: string;
-    evaluationType?: EvaluationType;
-    isVideoLecture?: boolean;
-    subjectEstablishmentSemester?: number;
-    facultyDivisionName?: CourseAreaType;
-    areaCode?: number;
-    originalAreaCode?: number;
-    points?: number;
-    hostDepartment?: string;
-  }): Promise<CourseOffering>;
+  getOrCreateOffering(offeringData: CourseOfferingCreationData): Promise<CourseOffering>;
 }
