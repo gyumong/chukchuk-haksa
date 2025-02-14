@@ -10,7 +10,11 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "type-check": "tsc --noEmit",
-    "gen": "dotenv -e .env -- bash -c 'npx supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" > types/supabase.ts'"
+    "test": "vitest",
+    "test:watch": "vitest watch",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "gen": "dotenv -e .env -- bash -c 'npx supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > types/supabase.ts'"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
@@ -42,8 +46,9 @@
     "postcss": "^8",
     "prettier": "^3.3.3",
     "sass": "^1.82.0",
-    "supabase": "^2.6.8",
-    "typescript": "5.6.3"
+    "supabase": "2.9.6",
+    "typescript": "5.6.3",
+    "vitest": "^3.0.5"
   },
-  "packageManager": "yarn@4.5.1"
+  "packageManager": "yarn@4.6.0"
 }
