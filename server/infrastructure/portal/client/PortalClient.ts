@@ -1,5 +1,5 @@
 // server/infrastructure/portal/client/PortalClient.ts
-import { RawPortalData } from '../dto/portal-types';
+import { RawPortalData } from '../dto/PortalRowDataType';
 
 export class PortalClient {
   private readonly baseUrl = process.env.AWS_URL!;

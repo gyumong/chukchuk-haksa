@@ -1,5 +1,6 @@
 // server/infrastructure/portal/mapper/PortalDataMapper.ts
 import { CourseAreaType, EvaluationType } from '@/server/domain/course-offering/models/CourseOffering';
+import { StudentStatusType } from '@/server/domain/student/models/AcademicInfo';
 import {
   PortalAcademicData,
   PortalCourseCreationData,
@@ -8,14 +9,13 @@ import {
   PortalOfferingCreationData,
   PortalProfessorCreationData,
   PortalStudentInfo,
-} from '@/server/domain/student/dto/PortalData';
-import { StudentStatusType } from '@/server/domain/student/models/AcademicInfo';
+} from '@/server/infrastructure/portal/dto/PortalDataType';
 import {
   RawPortalData,
   RawPortalGradeResponseDTO,
   RawPortalSemesterDTO,
   RawPortalStudentDTO,
-} from '../dto/portal-types';
+} from '../dto/PortalRowDataType';
 
 export class PortalDataMapper {
   static toPortalData(raw: RawPortalData): PortalData {

@@ -1,4 +1,38 @@
+import { StudentStatusType } from '../models/AcademicInfo';
 import { Student } from '../models/Student';
+
+export interface StudentCreationDataType {
+  studentCode: string;
+  name: string;
+  departmentCode: string;
+  departmentName: string;
+  majorCode: string;
+  majorName: string;
+  secondaryMajorCode?: string;
+  secondaryMajorName?: string;
+  admissionYear: number;
+  semesterEnrolled: number; // 10, 15, 20, 25
+  isTransferStudent: boolean;
+  status: StudentStatusType;
+  gradeLevel: number;
+  completedSemesters: number;
+}
+
+export interface StudentInitializationDataType {
+  studentCode: string;
+  name: string;
+  departmentId: number;
+  majorId: number;
+  secondaryMajorId?: number | null;
+  admissionYear: number;
+  semesterEnrolled: number;
+  isTransferStudent: boolean;
+  isGraduated: boolean; // 추가
+  status: StudentStatusType;
+  gradeLevel: number;
+  completedSemesters: number;
+  admissionType?: string;
+}
 
 export interface IStudentRepository {
   /**

@@ -1,4 +1,4 @@
-import { PortalData } from '../../student/dto/PortalData';
+import { PortalData } from '../../../infrastructure/portal/dto/PortalDataType';
 
 export interface IPortalRepository {
   /**
