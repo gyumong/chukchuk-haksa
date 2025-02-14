@@ -71,7 +71,7 @@ function mapCourseDTOToDomain(dto: CourseDTO): Course {
     isClosed: dto.closeYn,
     facultyDivisionCode: dto.facDvcd,
     points: dto.point,
-    professorName: dto.ltrPrfsNm,
+    professorName: dto.ltrPrfsNm || '미확인 교수',
     subjectEstablishmentYearSemester: dto.subjtEstbYearSmr,
     subjectEstablishmentSemesterCode: dto.subjtEstbSmrCd,
     facultyDivisionName: dto.facDvnm,
