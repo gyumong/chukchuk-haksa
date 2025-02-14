@@ -1,16 +1,13 @@
 // server/infrastructure/portal/mapper/PortalDataMapper.ts
-import { CourseAreaType, EvaluationType } from '@/server/domain/course-offering/models/CourseOffering';
-import { StudentStatusType } from '@/server/domain/student/models/AcademicInfo';
-import {
+import type { CourseAreaType } from '@/server/domain/course-offering/models/CourseOffering';
+import type { StudentStatusType } from '@/server/domain/student/models/AcademicInfo';
+import type {
   PortalAcademicData,
-  PortalCourseCreationData,
   PortalCurriculumData,
   PortalData,
-  PortalOfferingCreationData,
-  PortalProfessorCreationData,
   PortalStudentInfo,
 } from '@/server/infrastructure/portal/dto/PortalDataType';
-import {
+import type {
   RawPortalData,
   RawPortalGradeResponseDTO,
   RawPortalSemesterDTO,

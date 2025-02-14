@@ -1,4 +1,3 @@
-// server/domain/course/repositories/ICourseOfferingRepository.ts
 import type {
   CourseAreaType,
   CourseOffering,

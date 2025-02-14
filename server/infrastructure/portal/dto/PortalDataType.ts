@@ -1,6 +1,5 @@
-// TODO 계층이동
-import { CourseAreaType, EvaluationType } from '../../../domain/course-offering/models/CourseOffering';
-import { StudentStatusType } from '../../../domain/student/models/AcademicInfo';
+import type { CourseAreaType, EvaluationType } from '../../../domain/course-offering/models/CourseOffering';
+import type { StudentStatusType } from '../../../domain/student/models/AcademicInfo';
 
 // 중간 변환 데이터 타입들 - 비즈니스 로직에서 사용하기 위한 정제된 형태
 export interface PortalStudentInfo {

@@ -1,4 +1,3 @@
-// server/domain/course/repositories/ICourseRepository.ts
 import { Course } from '@/server/domain/course/models/Course';
 
 interface CourseCreationData {
