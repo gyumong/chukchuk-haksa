@@ -88,7 +88,9 @@ export class AcademicRecord {
     }
 
     return [...this.semesters].sort((a, b) => {
-      if (b.getYear() !== a.getYear()) {return b.getYear() - a.getYear();}
+      if (b.getYear() !== a.getYear()) {
+        return b.getYear() - a.getYear();
+      }
       return b.getSemester() - a.getSemester();
     });
   }
@@ -109,9 +111,9 @@ export class AcademicRecord {
     return this.courseEnrollments;
   }
 
-  getEnrollmentsBySemester(year: number, semester: number): CourseEnrollments {
-    return this.courseEnrollments.getBySemester(year, semester);
-  }
+  // getEnrollmentsBySemester(year: number, semester: number): CourseEnrollments {
+  //   return this.courseEnrollments.getBySemester(year, semester);
+  // }
 
   getTotalEarnedCredits(): number | null {
     if (!this.summary.getTotalEarnedCredits()) {

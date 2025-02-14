@@ -1,6 +1,7 @@
 // application/user/services/UserService.ts
 import type { IAuthService } from '@/server/domain/auth/IAuthService';
-import type { IUserRepository, StudentInitializationData } from '@/server/domain/user/repositories/IUserRepository';
+import type { StudentInitializationDataType } from '@/server/domain/student/repository/IStudentRepository';
+import type { IUserRepository } from '@/server/domain/user/repositories/IUserRepository';
 
 export class UserService {
   constructor(
@@ -18,7 +19,7 @@ export class UserService {
     return user.isPortalConnected();
   }
 
-  async initializePortalConnection(studentData: StudentInitializationData): Promise<void> {
+  async initializePortalConnection(studentData: StudentInitializationDataType): Promise<void> {
     const userId = await this.authService.getAuthenticatedUserId();
     const user = await this.userRepository.findById(userId);
     if (user && user.isPortalConnected()) {
