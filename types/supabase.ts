@@ -764,10 +764,10 @@ export type Database = {
         Args: {
           p_student_id: string;
         };
-        Returns: Array<{
+        Returns: {
           area_requirements_fulfilled: boolean;
           elective_courses_fulfilled: boolean;
-        }>;
+        }[];
       };
       check_liberal_arts_fulfillment: {
         Args: {
@@ -786,7 +786,7 @@ export type Database = {
           p_department_id: number;
           p_admission_year: number;
         };
-        Returns: Array<{
+        Returns: {
           area_type: Database['public']['Enums']['course_area_type'];
           required_credits: number;
           earned_credits: number;
@@ -794,7 +794,7 @@ export type Database = {
           completed_elective_courses: number;
           total_elective_courses: number;
           courses: Json;
-        }>;
+        }[];
       };
       initialize_portal_connection: {
         Args: {
@@ -807,16 +807,34 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: undefined;
       };
+      upsert_academic_record: {
+        Args: {
+          p_student_id: string;
+          p_semester_grades: Database['public']['CompositeTypes']['semester_grade_input'][];
+          p_academic_summary: Json;
+        };
+        Returns: undefined;
+      };
     };
     Enums: {
       course_area_type: '중핵' | '기교' | '선교' | '소교' | '전교' | '전취' | '전핵' | '전선' | '일선';
       evaluation_type: 'absolute' | 'relative';
       grade_type: 'A+' | 'A0' | 'B+' | 'B0' | 'C+' | 'C0' | 'D+' | 'D0' | 'F' | 'P' | 'NP' | 'IP';
       graduation_status_type: '재학' | '수료' | '졸업';
-      student_status: '재학' | '휴학' | '졸업' | '수료';
+      student_status: '재학' | '휴학' | '졸업' | '수료' | '제적';
     };
     CompositeTypes: {
-      [_ in never]: never;
+      semester_grade_input: {
+        year: number | null;
+        semester: number | null;
+        attempted_credits: number | null;
+        earned_credits: number | null;
+        semester_gpa: number | null;
+        semester_percentile: number | null;
+        attempted_credits_gpa: number | null;
+        class_rank: number | null;
+        total_students: number | null;
+      };
     };
   };
 };
