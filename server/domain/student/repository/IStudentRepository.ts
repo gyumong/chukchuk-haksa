@@ -1,5 +1,5 @@
-import { StudentStatusType } from '../models/AcademicInfo';
-import { Student } from '../models/Student';
+import type { StudentStatusType } from '../models/AcademicInfo';
+import type { Student } from '../models/Student';
 
 export interface StudentCreationDataType {
   studentCode: string;

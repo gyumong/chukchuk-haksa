@@ -1,5 +1,5 @@
 // server/domain/professor/repositories/IProfessorRepository.ts
-import { Professor } from '@/server/domain/professor/models/Professor';
+import type { Professor } from '@/server/domain/professor/models/Professor';
 
 export interface IProfessorRepository {
   /**

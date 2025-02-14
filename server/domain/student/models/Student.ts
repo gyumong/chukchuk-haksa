@@ -1,6 +1,7 @@
 // server/domain/student/models/Student.ts
 import { Id } from '../../shared/models/Id';
-import { AcademicInfo, StudentStatus, StudentStatusType } from './AcademicInfo';
+import type { StudentStatusType } from './AcademicInfo';
+import { AcademicInfo, StudentStatus } from './AcademicInfo';
 
 export class Student {
   private constructor(
@@ -133,7 +134,7 @@ export class Student {
   }
 
   equals(other: Student): boolean {
-    if (!(other instanceof Student)) return false;
+    if (!(other instanceof Student)) {return false;}
 
     return this.code === other.code && this.userId === other.userId;
   }

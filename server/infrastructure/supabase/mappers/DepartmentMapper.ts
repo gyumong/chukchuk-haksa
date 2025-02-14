@@ -1,5 +1,5 @@
 import { Department } from '@/server/domain/department/models/Department';
-import { Database } from '@/types';
+import type { Database } from '@/types';
 
 type DatabaseDepartment = Database['public']['Tables']['departments']['Row'];
 type InsertDepartment = Database['public']['Tables']['departments']['Insert'];

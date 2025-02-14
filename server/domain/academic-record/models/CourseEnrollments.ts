@@ -1,4 +1,4 @@
-import { CourseEnrollment } from './CourseEnrollment';
+import type { CourseEnrollment } from './CourseEnrollment';
 
 // server/domain/academic-record/models/CourseEnrollments.ts
 export class CourseEnrollments {
@@ -12,10 +12,10 @@ export class CourseEnrollments {
     return [...this.enrollments];
   }
 
-  getBySemester(year: number, semester: number): CourseEnrollments {
-    // TODO: offering_id를 통해 course_offerings 테이블과 조인 필요
-    return new CourseEnrollments([]);
-  }
+  // getBySemester(year: number, semester: number): CourseEnrollments {
+  //   // TODO: offering_id를 통해 course_offerings 테이블과 조인 필요
+  //   return new CourseEnrollments([]);
+  // }
 
   getCompleted(): CourseEnrollments {
     return new CourseEnrollments(this.enrollments.filter(e => e.isCompleted()));

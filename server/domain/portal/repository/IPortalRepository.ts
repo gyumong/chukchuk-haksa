@@ -1,4 +1,4 @@
-import { PortalData } from '../../../infrastructure/portal/dto/PortalDataType';
+import type { PortalData } from '../../../infrastructure/portal/dto/PortalDataType';
 
 export interface IPortalRepository {
   /**

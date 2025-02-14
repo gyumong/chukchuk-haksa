@@ -37,7 +37,7 @@ export class AcademicSummary {
   }
 
   isHonorsEligible(): boolean {
-    if (!this.cumulativeGpa) return false;
+    if (!this.cumulativeGpa) {return false;}
     return this.cumulativeGpa >= 4.0;
   }
 }

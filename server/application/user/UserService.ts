@@ -1,6 +1,6 @@
 // application/user/services/UserService.ts
-import { IAuthService } from '@/server/domain/auth/IAuthService';
-import { IUserRepository, StudentInitializationData } from '@/server/domain/user/repositories/IUserRepository';
+import type { IAuthService } from '@/server/domain/auth/IAuthService';
+import type { IUserRepository, StudentInitializationData } from '@/server/domain/user/repositories/IUserRepository';
 
 export class UserService {
   constructor(

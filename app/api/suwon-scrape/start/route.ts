@@ -1,6 +1,6 @@
 // app/api/suwon-scrape/start/route.ts
 import { NextResponse } from 'next/server';
-import { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { getIronSession } from 'iron-session';
 import { v4 as uuidv4 } from 'uuid';
 import type { SessionData } from '@/lib/auth';

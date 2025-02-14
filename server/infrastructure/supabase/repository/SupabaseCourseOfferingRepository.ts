@@ -1,8 +1,8 @@
 // server/infrastructure/supabase/repositories/SupabaseCourseOfferingRepository.ts
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { CourseOffering } from '@/server/domain/course-offering/models/CourseOffering';
-import { CourseAreaType, EvaluationType } from '@/server/domain/course-offering/models/CourseOffering';
-import { ICourseOfferingRepository } from '@/server/domain/course-offering/repositories/ICourseOfferingRepository';
+import type { CourseAreaType, EvaluationType } from '@/server/domain/course-offering/models/CourseOffering';
+import type { ICourseOfferingRepository } from '@/server/domain/course-offering/repositories/ICourseOfferingRepository';
 import type { Database } from '@/types/supabase';
 import { CourseOfferingMapper } from '../mappers/CourseOfferingMapper';
 

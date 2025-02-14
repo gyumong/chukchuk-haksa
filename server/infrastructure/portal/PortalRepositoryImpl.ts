@@ -1,5 +1,5 @@
-import { IPortalRepository } from '@/server/domain/portal/repository/IPortalRepository';
-import { PortalData } from '@/server/infrastructure/portal/dto/PortalDataType';
+import type { IPortalRepository } from '@/server/domain/portal/repository/IPortalRepository';
+import type { PortalData } from '@/server/infrastructure/portal/dto/PortalDataType';
 import { PortalClient } from './client/PortalClient';
 import { PortalDataMapper } from './mapper/PortalDataMapper';
 

@@ -1,9 +1,8 @@
 // server/infrastructure/supabase/repositories/SupabaseCourseRepository.ts
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { createClient } from '@/lib/supabase/server';
 import { Course } from '@/server/domain/course/models/Course';
-import { ICourseRepository } from '@/server/domain/course/repositories/ICourseRepository';
-import { Database } from '@/types';
+import type { ICourseRepository } from '@/server/domain/course/repositories/ICourseRepository';
+import type { Database } from '@/types';
 
 export class SupabaseCourseRepository implements ICourseRepository {
   constructor(private readonly supabase: SupabaseClient<Database>) {}

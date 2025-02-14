@@ -1,13 +1,13 @@
 // server/application/academic-record/usecases/SyncAcademicRecordUseCase.ts
 import { CourseEnrollment } from '@/server/domain/academic-record/models/CourseEnrollment';
-import { GradeType } from '@/server/domain/academic-record/models/Grade';
-import { IAcademicRecordRepository } from '@/server/domain/academic-record/repositories/IAcademicRecordRepository';
-import { IStudentCourseRepository } from '@/server/domain/academic-record/repositories/IStudentCourseRepository';
-import { IAuthService } from '@/server/domain/auth/IAuthService';
-import { ICourseOfferingRepository } from '@/server/domain/course-offering/repositories/ICourseOfferingRepository';
-import { ICourseRepository } from '@/server/domain/course/repositories/ICourseRepository';
-import { IPortalRepository } from '@/server/domain/portal/repository/IPortalRepository';
-import { IProfessorRepository } from '@/server/domain/professor/repositories/IProfessorRepository';
+import type { GradeType } from '@/server/domain/academic-record/models/Grade';
+import type { IAcademicRecordRepository } from '@/server/domain/academic-record/repositories/IAcademicRecordRepository';
+import type { IStudentCourseRepository } from '@/server/domain/academic-record/repositories/IStudentCourseRepository';
+import type { IAuthService } from '@/server/domain/auth/IAuthService';
+import type { ICourseOfferingRepository } from '@/server/domain/course-offering/repositories/ICourseOfferingRepository';
+import type { ICourseRepository } from '@/server/domain/course/repositories/ICourseRepository';
+import type { IPortalRepository } from '@/server/domain/portal/repository/IPortalRepository';
+import type { IProfessorRepository } from '@/server/domain/professor/repositories/IProfessorRepository';
 import type {
   PortalAcademicData,
   PortalCourseInfo,

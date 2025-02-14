@@ -2,7 +2,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
 import { Professor } from '@/server/domain/professor/models/Professor';
-import { IProfessorRepository } from '@/server/domain/professor/repositories/IProfessorRepository';
+import type { IProfessorRepository } from '@/server/domain/professor/repositories/IProfessorRepository';
 import { ProfessorMapper } from '@/server/infrastructure/supabase/mappers/ProfessorMapper';
 import type { Database } from '@/types/supabase';
 

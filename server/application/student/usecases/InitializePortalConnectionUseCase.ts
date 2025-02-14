@@ -1,10 +1,11 @@
-import { IAuthService } from '@/server/domain/auth/IAuthService';
-import { IDepartmentRepository } from '@/server/domain/department/repositories/IDepartmentRepository';
-import { IPortalRepository } from '@/server/domain/portal/repository/IPortalRepository';
-import { StudentStatus, StudentStatusType } from '@/server/domain/student/models/AcademicInfo';
-import { StudentInitializationDataType } from '@/server/domain/student/repository/IStudentRepository';
-import { IUserRepository } from '@/server/domain/user/repositories/IUserRepository';
-import { PortalData } from '@/server/infrastructure/portal/dto/PortalDataType';
+import type { IAuthService } from '@/server/domain/auth/IAuthService';
+import type { IDepartmentRepository } from '@/server/domain/department/repositories/IDepartmentRepository';
+import type { IPortalRepository } from '@/server/domain/portal/repository/IPortalRepository';
+import type { StudentStatusType } from '@/server/domain/student/models/AcademicInfo';
+import { StudentStatus } from '@/server/domain/student/models/AcademicInfo';
+import type { StudentInitializationDataType } from '@/server/domain/student/repository/IStudentRepository';
+import type { IUserRepository } from '@/server/domain/user/repositories/IUserRepository';
+import type { PortalData } from '@/server/infrastructure/portal/dto/PortalDataType';
 
 export interface InitializePortalConnectionResult {
   isSuccess: boolean;

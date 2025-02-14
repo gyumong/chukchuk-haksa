@@ -1,6 +1,6 @@
 // server/domain/user/repositories/IUserRepository.ts
-import { StudentInitializationDataType } from '../../student/repository/IStudentRepository';
-import { User } from '../models/User';
+import type { StudentInitializationDataType } from '../../student/repository/IStudentRepository';
+import type { User } from '../models/User';
 
 export interface IUserRepository {
   /**

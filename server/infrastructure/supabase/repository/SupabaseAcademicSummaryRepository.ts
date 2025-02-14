@@ -1,8 +1,8 @@
 // server/infrastructure/supabase/repositories/SupabaseAcademicSummaryRepository.ts
-import { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { AcademicSummary } from '@/server/domain/academic-record/models/AcademicSummary';
-import { IAcademicSummaryRepository } from '@/server/domain/academic-record/repositories/IAcademicSummaryRepository';
-import { Database } from '@/types';
+import type { IAcademicSummaryRepository } from '@/server/domain/academic-record/repositories/IAcademicSummaryRepository';
+import type { Database } from '@/types';
 
 export class SupabaseAcademicSummaryRepository implements IAcademicSummaryRepository {
   constructor(private readonly supabase: SupabaseClient<Database>) {}
@@ -48,7 +48,7 @@ export class SupabaseAcademicSummaryRepository implements IAcademicSummaryReposi
   }
 
   async findByStudentIds(studentIds: string[]): Promise<AcademicSummary[]> {
-    if (!studentIds.length) return [];
+    if (!studentIds.length) {return [];}
 
     const { data, error } = await this.supabase
       .from('student_academic_records')
@@ -72,10 +72,10 @@ export class SupabaseAcademicSummaryRepository implements IAcademicSummaryReposi
   }
 
   async getGpaDistribution(): Promise<
-    {
+    Array<{
       range: { min: number; max: number };
       count: number;
-    }[]
+    }>
   > {
     const { data, error } = await this.supabase
       .from('student_academic_records')
@@ -87,7 +87,7 @@ export class SupabaseAcademicSummaryRepository implements IAcademicSummaryReposi
     }
 
     // GPA 구간 정의 (0.5 단위)
-    const ranges: { range: { min: number; max: number }; count: number }[] = [];
+    const ranges: Array<{ range: { min: number; max: number }; count: number }> = [];
     for (let i = 0; i <= 4.5; i += 0.5) {
       ranges.push({
         range: { min: i, max: i + 0.5 },
@@ -98,7 +98,7 @@ export class SupabaseAcademicSummaryRepository implements IAcademicSummaryReposi
     // 각 GPA를 해당하는 구간에 카운트
     data.forEach(record => {
       const gpa = record.cumulative_gpa;
-      if (gpa === null) return;
+      if (gpa === null) {return;}
       const range = ranges.find(r => gpa >= r.range.min && gpa < r.range.max);
       if (range) {
         range.count++;

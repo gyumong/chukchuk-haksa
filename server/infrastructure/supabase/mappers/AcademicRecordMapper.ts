@@ -1,6 +1,6 @@
 // server/infrastructure/supabase/mappers/AcademicRecordMapper.ts
 import { AcademicRecord } from '@/server/domain/academic-record/models/AcademicRecord';
-import { Database } from '@/types';
+import type { Database } from '@/types';
 
 type SemesterRecord = Database['public']['Tables']['semester_academic_records']['Row'];
 type StudentRecord = Database['public']['Tables']['student_academic_records']['Row'];
@@ -88,7 +88,7 @@ export class AcademicRecordMapper {
   }
 
   static toPersistence(record: AcademicRecord): {
-    semesterRecords: Omit<SemesterRecord, 'id' | 'created_at' | 'updated_at'>[];
+    semesterRecords: Array<Omit<SemesterRecord, 'id' | 'created_at' | 'updated_at'>>;
     summary: Omit<StudentRecord, 'id' | 'created_at' | 'updated_at'>;
   } {
     const studentId = record.getStudentId();

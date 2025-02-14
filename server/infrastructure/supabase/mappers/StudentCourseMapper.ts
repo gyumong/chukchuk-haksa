@@ -1,6 +1,6 @@
 // server/infrastructure/supabase/mappers/StudentCourseMapper.ts
 import { CourseEnrollment } from '@/server/domain/academic-record/models/CourseEnrollment';
-import { Database } from '@/types/supabase';
+import type { Database } from '@/types/supabase';
 import { GradeMapper } from './GradeMapper';
 
 type StudentCourseRecord = Database['public']['Tables']['student_courses']['Row'];

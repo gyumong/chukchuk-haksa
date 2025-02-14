@@ -1,4 +1,4 @@
-import { AcademicRecord } from '../models/AcademicRecord';
+import type { AcademicRecord } from '../models/AcademicRecord';
 
 // server/domain/academic-record/repositories/IAcademicRecordRepository.ts
 export interface IAcademicRecordRepository {

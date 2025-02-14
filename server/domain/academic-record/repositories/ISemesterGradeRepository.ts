@@ -1,4 +1,4 @@
-import { SemesterGrade } from '../models/SemesterGrade';
+import type { SemesterGrade } from '../models/SemesterGrade';
 
 // server/domain/academic-record/repositories/ISemesterGradeRepository.ts
 export interface ISemesterGradeRepository {

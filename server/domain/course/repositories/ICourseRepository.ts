@@ -1,4 +1,4 @@
-import { Course } from '@/server/domain/course/models/Course';
+import type { Course } from '@/server/domain/course/models/Course';
 
 interface CourseCreationData {
   courseCode: string;

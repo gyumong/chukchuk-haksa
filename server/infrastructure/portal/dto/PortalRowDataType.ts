@@ -1,5 +1,5 @@
 // server/infrastructure/portal/dto/portal-types.ts
-import { StudentStatusType } from '@/server/domain/student/models/AcademicInfo';
+import type { StudentStatusType } from '@/server/domain/student/models/AcademicInfo';
 
 // 포털에서 가져오는 원시 데이터 타입들
 export interface RawPortalStudentDTO {

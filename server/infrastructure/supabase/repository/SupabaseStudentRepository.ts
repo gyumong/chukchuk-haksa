@@ -1,7 +1,7 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Student } from '@/server/domain/student/models/Student';
-import { IStudentRepository } from '@/server/domain/student/repository/IStudentRepository';
-import { Database } from '@/types';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Student } from '@/server/domain/student/models/Student';
+import type { IStudentRepository } from '@/server/domain/student/repository/IStudentRepository';
+import type { Database } from '@/types';
 import { StudentMapper } from '../mappers/StudentMapper';
 
 export class SupabaseStudentRepository implements IStudentRepository {
@@ -48,7 +48,7 @@ export class SupabaseStudentRepository implements IStudentRepository {
       .eq('student_id', id)
       .single();
 
-    if (error || !data) return null;
+    if (error || !data) {return null;}
 
     return StudentMapper.toDomain(data);
   }
@@ -68,7 +68,7 @@ export class SupabaseStudentRepository implements IStudentRepository {
       )
       .eq('major_id', majorId);
 
-    if (error || !data) return [];
+    if (error || !data) {return [];}
 
     return data.map(student => StudentMapper.toDomain(student));
   }
@@ -89,7 +89,7 @@ export class SupabaseStudentRepository implements IStudentRepository {
       .eq('student_code', code)
       .single();
 
-    if (error || !data) return null;
+    if (error || !data) {return null;}
 
     return StudentMapper.toDomain(data);
   }
@@ -110,7 +110,7 @@ export class SupabaseStudentRepository implements IStudentRepository {
       .eq('student_code', studentCode)
       .single();
 
-    if (error || !data) return null;
+    if (error || !data) {return null;}
 
     return StudentMapper.toDomain(data);
   }
@@ -130,7 +130,7 @@ export class SupabaseStudentRepository implements IStudentRepository {
       )
       .eq('department_id', departmentId);
 
-    if (error || !data) return [];
+    if (error || !data) {return [];}
 
     return data
       .map(student => StudentMapper.toDomain(student))
@@ -177,7 +177,7 @@ export class SupabaseStudentRepository implements IStudentRepository {
       .eq('student_id', studentId)
       .single();
 
-    if (error) return false;
-    return !!data;
+    if (error) {return false;}
+    return Boolean(data);
   }
 }

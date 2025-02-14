@@ -1,6 +1,6 @@
 // server/infrastructure/supabase/mappers/UserMapper.ts
 import { User } from '@/server/domain/user/models/User';
-import { Database } from '@/types';
+import type { Database } from '@/types';
 
 type DatabaseUser = Database['public']['Tables']['users']['Row'];
 

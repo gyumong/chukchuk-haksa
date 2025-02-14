@@ -1,8 +1,8 @@
 // server/infrastructure/supabase/repositories/SupabaseUserRepository.ts
-import { SupabaseClient } from '@supabase/supabase-js';
-import { StudentInitializationDataType } from '@/server/domain/student/repository/IStudentRepository';
-import { User } from '@/server/domain/user/models/User';
-import { IUserRepository } from '@/server/domain/user/repositories/IUserRepository';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { StudentInitializationDataType } from '@/server/domain/student/repository/IStudentRepository';
+import type { User } from '@/server/domain/user/models/User';
+import type { IUserRepository } from '@/server/domain/user/repositories/IUserRepository';
 import { UserMapper } from '../mappers/UserMapper';
 
 export class SupabaseUserRepository implements IUserRepository {
@@ -36,7 +36,7 @@ export class SupabaseUserRepository implements IUserRepository {
       p_user_id: userId,
       p_student_data: {
         ...studentData,
-        completedSemesters: parseInt(studentData.completedSemesters + '', 10), // 명시적으로 정수형 변환
+        completedSemesters: parseInt(String(studentData.completedSemesters), 10), // 명시적으로 정수형 변환
         major_id: studentData.majorId,
         secondary_major_id: studentData.secondaryMajorId,
         department_id: studentData.departmentId,

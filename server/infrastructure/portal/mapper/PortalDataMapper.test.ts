@@ -1,6 +1,6 @@
 // server/infrastructure/portal/mapper/__tests__/PortalDataMapper.test.ts
 import { describe, expect, it } from 'vitest';
-import { RawPortalData } from '../dto/PortalRowDataType';
+import type { RawPortalData } from '../dto/PortalRowDataType';
 import { PortalDataMapper } from './PortalDataMapper';
 
 describe('PortalDataMapper', () => {

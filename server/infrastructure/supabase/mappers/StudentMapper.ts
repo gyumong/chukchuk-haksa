@@ -1,7 +1,7 @@
 // server/infrastructure/supabase/mappers/StudentMapper.ts
-import { StudentStatusType } from '@/server/domain/student/models/AcademicInfo';
+import type { StudentStatusType } from '@/server/domain/student/models/AcademicInfo';
 import { Student } from '@/server/domain/student/models/Student';
-import { Database } from '@/types';
+import type { Database } from '@/types';
 
 type DatabaseStudent = Database['public']['Tables']['students']['Row'];
 type DatabaseStudentStatus = Database['public']['Enums']['student_status'];

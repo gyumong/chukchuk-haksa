@@ -1,5 +1,5 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { IAuthService } from '@/server/domain/auth/IAuthService';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { IAuthService } from '@/server/domain/auth/IAuthService';
 
 export class SupabaseAuthService implements IAuthService {
   constructor(private readonly supabase: SupabaseClient) {}

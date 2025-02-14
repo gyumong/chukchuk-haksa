@@ -1,6 +1,6 @@
 // server/infrastructure/supabase/mappers/GradeMapper.ts
 import { GradeType as DomainGradeType } from '@/server/domain/academic-record/models/Grade';
-import { Database } from '@/types';
+import type { Database } from '@/types';
 
 type GradeType = Database['public']['Tables']['student_courses']['Row']['grade'];
 export class GradeMapper {

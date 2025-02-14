@@ -1,7 +1,7 @@
-import { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { Department } from '@/server/domain/department/models/Department';
-import { IDepartmentRepository } from '@/server/domain/department/repositories/IDepartmentRepository';
-import { Database } from '@/types';
+import type { IDepartmentRepository } from '@/server/domain/department/repositories/IDepartmentRepository';
+import type { Database } from '@/types';
 import { DepartmentMapper } from '../mappers/DepartmentMapper';
 
 export class SupabaseDepartmentRepository implements IDepartmentRepository {

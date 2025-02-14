@@ -1,7 +1,7 @@
 import { AcademicSummary } from './AcademicSummary';
 import { CourseEnrollment } from './CourseEnrollment';
 import { CourseEnrollments } from './CourseEnrollments';
-import { GradeType } from './Grade';
+import type { GradeType } from './Grade';
 import { SemesterGrade } from './SemesterGrade';
 
 // server/domain/academic-record/models/AcademicRecord.ts
@@ -15,7 +15,7 @@ export class AcademicRecord {
 
   static create(params: {
     studentId: string | null;
-    semesters: {
+    semesters: Array<{
       year: number;
       semester: number;
       attemptedCredits: number | null;
@@ -25,7 +25,7 @@ export class AcademicRecord {
       attemptedCreditsGpa: number | null;
       classRank: number | null;
       totalStudents: number | null;
-    }[];
+    }>;
     total: {
       totalAttemptedCredits: number | null;
       totalEarnedCredits: number | null;
@@ -33,13 +33,13 @@ export class AcademicRecord {
       percentile: number | null;
       attemptedCreditsGpa: number | null;
     };
-    enrollments: {
+    enrollments: Array<{
       offeringId: number;
       grade?: GradeType;
       points: number;
       isRetake: boolean;
       originalScore?: number;
-    }[];
+    }>;
   }): AcademicRecord {
     const semesterGrades = params.semesters.map(
       sem =>
@@ -88,7 +88,7 @@ export class AcademicRecord {
     }
 
     return [...this.semesters].sort((a, b) => {
-      if (b.getYear() !== a.getYear()) return b.getYear() - a.getYear();
+      if (b.getYear() !== a.getYear()) {return b.getYear() - a.getYear();}
       return b.getSemester() - a.getSemester();
     });
   }

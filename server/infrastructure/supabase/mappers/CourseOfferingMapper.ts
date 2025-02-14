@@ -1,5 +1,6 @@
 // server/infrastructure/supabase/mappers/CourseOfferingMapper.ts
-import { CourseAreaType, CourseOffering, EvaluationType } from '@/server/domain/course-offering/models/CourseOffering';
+import type { CourseAreaType, EvaluationType } from '@/server/domain/course-offering/models/CourseOffering';
+import { CourseOffering } from '@/server/domain/course-offering/models/CourseOffering';
 import type { Database } from '@/types/supabase';
 
 type DBCourseOfferingRecord = Database['public']['Tables']['course_offerings']['Row'];

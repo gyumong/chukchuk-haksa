@@ -1,4 +1,4 @@
-import { AcademicSummary } from '../models/AcademicSummary';
+import type { AcademicSummary } from '../models/AcademicSummary';
 
 // server/domain/academic-record/repositories/IAcademicSummaryRepository.ts
 export interface IAcademicSummaryRepository {
@@ -21,9 +21,9 @@ export interface IAcademicSummaryRepository {
    * 전체 학생 성적 분포 조회
    */
   getGpaDistribution(): Promise<
-    {
+    Array<{
       range: { min: number; max: number };
       count: number;
-    }[]
+    }>
   >;
 }

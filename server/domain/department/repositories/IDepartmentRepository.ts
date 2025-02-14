@@ -1,4 +1,4 @@
-import { Department } from '../models/Department';
+import type { Department } from '../models/Department';
 
 interface DepartmentCreationData {
   code: string;

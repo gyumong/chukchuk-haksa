@@ -1,8 +1,8 @@
 // server/infrastructure/supabase/repositories/SupabaseStudentCourseRepository.ts
-import { SupabaseClient } from '@supabase/supabase-js';
-import { CourseEnrollment } from '@/server/domain/academic-record/models/CourseEnrollment';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { CourseEnrollment } from '@/server/domain/academic-record/models/CourseEnrollment';
 import { CourseEnrollments } from '@/server/domain/academic-record/models/CourseEnrollments';
-import { IStudentCourseRepository } from '@/server/domain/academic-record/repositories/IStudentCourseRepository';
+import type { IStudentCourseRepository } from '@/server/domain/academic-record/repositories/IStudentCourseRepository';
 import { StudentCourseMapper } from '@/server/infrastructure/supabase/mappers/StudentCourseMapper';
 import type { Database } from '@/types/supabase';
 

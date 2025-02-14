@@ -1,7 +1,7 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { AcademicRecord } from '@/server/domain/academic-record/models/AcademicRecord';
-import { IAcademicRecordRepository } from '@/server/domain/academic-record/repositories/IAcademicRecordRepository';
-import { Database } from '@/types';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { AcademicRecord } from '@/server/domain/academic-record/models/AcademicRecord';
+import type { IAcademicRecordRepository } from '@/server/domain/academic-record/repositories/IAcademicRecordRepository';
+import type { Database } from '@/types';
 import { AcademicRecordMapper } from '../mappers/AcademicRecordMapper';
 
 // server/infrastructure/supabase/repositories/SupabaseAcademicRecordRepository.ts
@@ -51,7 +51,7 @@ export class SupabaseAcademicRecordRepository implements IAcademicRecordReposito
   }
 
   async findByStudentIds(studentIds: string[]): Promise<AcademicRecord[]> {
-    if (!studentIds.length) return [];
+    if (!studentIds.length) {return [];}
 
     const [semesterGrades, summaries] = await Promise.all([
       this.supabase
@@ -71,14 +71,14 @@ export class SupabaseAcademicRecordRepository implements IAcademicRecordReposito
     const gradesByStudent = new Map<string, typeof semesterGrades.data>();
 
     for (const grade of semesterGrades.data) {
-      if (!grade.student_id) continue;
+      if (!grade.student_id) {continue;}
       const studentGrades = gradesByStudent.get(grade.student_id) || [];
       studentGrades.push(grade);
       gradesByStudent.set(grade.student_id, studentGrades);
     }
 
     return summaries.data
-      .filter((summary): summary is typeof summary & { student_id: string } => !!summary.student_id)
+      .filter((summary): summary is typeof summary & { student_id: string } => Boolean(summary.student_id))
       .map(summary =>
         AcademicRecordMapper.toDomain(summary.student_id, gradesByStudent.get(summary.student_id) || [], summary)
       );
@@ -86,13 +86,13 @@ export class SupabaseAcademicRecordRepository implements IAcademicRecordReposito
 
   async findBySemester(studentId: string, year: number, semester: number): Promise<AcademicRecord | null> {
     const record = await this.findByStudentId(studentId);
-    if (!record) return null;
+    if (!record) {return null;}
 
     const semesterGrade = record
       .getSemesters()
       .find(grade => grade.getYear() === year && grade.getSemester() === semester);
 
-    if (!semesterGrade) return null;
+    if (!semesterGrade) {return null;}
 
     return record;
   }
