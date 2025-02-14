@@ -807,16 +807,34 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: undefined;
       };
+      upsert_academic_record: {
+        Args: {
+          p_student_id: string;
+          p_semester_grades: Array<Database['public']['CompositeTypes']['semester_grade_input']>;
+          p_academic_summary: Json;
+        };
+        Returns: undefined;
+      };
     };
     Enums: {
       course_area_type: '중핵' | '기교' | '선교' | '소교' | '전교' | '전취' | '전핵' | '전선' | '일선';
       evaluation_type: 'absolute' | 'relative';
       grade_type: 'A+' | 'A0' | 'B+' | 'B0' | 'C+' | 'C0' | 'D+' | 'D0' | 'F' | 'P' | 'NP' | 'IP';
       graduation_status_type: '재학' | '수료' | '졸업';
-      student_status: '재학' | '휴학' | '졸업' | '수료';
+      student_status: '재학' | '휴학' | '졸업' | '수료' | '제적';
     };
     CompositeTypes: {
-      [_ in never]: never;
+      semester_grade_input: {
+        year: number | null;
+        semester: number | null;
+        attempted_credits: number | null;
+        earned_credits: number | null;
+        semester_gpa: number | null;
+        semester_percentile: number | null;
+        attempted_credits_gpa: number | null;
+        class_rank: number | null;
+        total_students: number | null;
+      };
     };
   };
 };

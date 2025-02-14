@@ -50,7 +50,7 @@ interface CourseDTO {
   closeYn: boolean; // 수강 종료 여부
   facDvcd: number; // 학부 코드
   point: number; // 학점
-  ltrPrfsNm: string; // 담당 교수 이름
+  ltrPrfsNm?: string; // 담당 교수 이름
   subjtEstbYearSmr: string; // 과목 개설 학기
   subjtEstbSmrCd: string; // 학기 코드
   facDvnm: string; // 학부 이름
