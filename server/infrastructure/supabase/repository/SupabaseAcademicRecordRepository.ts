@@ -51,7 +51,9 @@ export class SupabaseAcademicRecordRepository implements IAcademicRecordReposito
   }
 
   async findByStudentIds(studentIds: string[]): Promise<AcademicRecord[]> {
-    if (!studentIds.length) {return [];}
+    if (!studentIds.length) {
+      return [];
+    }
 
     const [semesterGrades, summaries] = await Promise.all([
       this.supabase
@@ -71,7 +73,9 @@ export class SupabaseAcademicRecordRepository implements IAcademicRecordReposito
     const gradesByStudent = new Map<string, typeof semesterGrades.data>();
 
     for (const grade of semesterGrades.data) {
-      if (!grade.student_id) {continue;}
+      if (!grade.student_id) {
+        continue;
+      }
       const studentGrades = gradesByStudent.get(grade.student_id) || [];
       studentGrades.push(grade);
       gradesByStudent.set(grade.student_id, studentGrades);
@@ -86,13 +90,17 @@ export class SupabaseAcademicRecordRepository implements IAcademicRecordReposito
 
   async findBySemester(studentId: string, year: number, semester: number): Promise<AcademicRecord | null> {
     const record = await this.findByStudentId(studentId);
-    if (!record) {return null;}
+    if (!record) {
+      return null;
+    }
 
     const semesterGrade = record
       .getSemesters()
       .find(grade => grade.getYear() === year && grade.getSemester() === semester);
 
-    if (!semesterGrade) {return null;}
+    if (!semesterGrade) {
+      return null;
+    }
 
     return record;
   }

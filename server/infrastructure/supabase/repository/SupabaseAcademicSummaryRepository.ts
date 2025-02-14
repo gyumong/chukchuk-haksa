@@ -48,7 +48,9 @@ export class SupabaseAcademicSummaryRepository implements IAcademicSummaryReposi
   }
 
   async findByStudentIds(studentIds: string[]): Promise<AcademicSummary[]> {
-    if (!studentIds.length) {return [];}
+    if (!studentIds.length) {
+      return [];
+    }
 
     const { data, error } = await this.supabase
       .from('student_academic_records')
@@ -98,7 +100,9 @@ export class SupabaseAcademicSummaryRepository implements IAcademicSummaryReposi
     // 각 GPA를 해당하는 구간에 카운트
     data.forEach(record => {
       const gpa = record.cumulative_gpa;
-      if (gpa === null) {return;}
+      if (gpa === null) {
+        return;
+      }
       const range = ranges.find(r => gpa >= r.range.min && gpa < r.range.max);
       if (range) {
         range.count++;

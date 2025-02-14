@@ -134,7 +134,9 @@ export class Student {
   }
 
   equals(other: Student): boolean {
-    if (!(other instanceof Student)) {return false;}
+    if (!(other instanceof Student)) {
+      return false;
+    }
 
     return this.code === other.code && this.userId === other.userId;
   }

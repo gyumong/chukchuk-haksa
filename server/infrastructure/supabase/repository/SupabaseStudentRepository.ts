@@ -48,7 +48,9 @@ export class SupabaseStudentRepository implements IStudentRepository {
       .eq('student_id', id)
       .single();
 
-    if (error || !data) {return null;}
+    if (error || !data) {
+      return null;
+    }
 
     return StudentMapper.toDomain(data);
   }
@@ -68,7 +70,9 @@ export class SupabaseStudentRepository implements IStudentRepository {
       )
       .eq('major_id', majorId);
 
-    if (error || !data) {return [];}
+    if (error || !data) {
+      return [];
+    }
 
     return data.map(student => StudentMapper.toDomain(student));
   }
@@ -89,7 +93,9 @@ export class SupabaseStudentRepository implements IStudentRepository {
       .eq('student_code', code)
       .single();
 
-    if (error || !data) {return null;}
+    if (error || !data) {
+      return null;
+    }
 
     return StudentMapper.toDomain(data);
   }
@@ -110,7 +116,9 @@ export class SupabaseStudentRepository implements IStudentRepository {
       .eq('student_code', studentCode)
       .single();
 
-    if (error || !data) {return null;}
+    if (error || !data) {
+      return null;
+    }
 
     return StudentMapper.toDomain(data);
   }
@@ -130,7 +138,9 @@ export class SupabaseStudentRepository implements IStudentRepository {
       )
       .eq('department_id', departmentId);
 
-    if (error || !data) {return [];}
+    if (error || !data) {
+      return [];
+    }
 
     return data
       .map(student => StudentMapper.toDomain(student))
@@ -177,7 +187,9 @@ export class SupabaseStudentRepository implements IStudentRepository {
       .eq('student_id', studentId)
       .single();
 
-    if (error) {return false;}
+    if (error) {
+      return false;
+    }
     return Boolean(data);
   }
 }
