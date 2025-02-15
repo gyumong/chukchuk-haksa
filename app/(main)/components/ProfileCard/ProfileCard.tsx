@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { StudentStatus } from '../../contants/profile';
+import type { StudentStatus } from '../../contants/profile';
 import { getProfileImagePath } from '../../utils/getProfileImagePath';
 import styles from './ProfileCard.module.scss';
 
