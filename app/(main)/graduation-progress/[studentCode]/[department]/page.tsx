@@ -201,17 +201,17 @@ export default function GraduationProgressPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.gap8}></div>
+      <div className="gap-8"></div>
       <SemesterGradeCard startSemester={start} endSemester={end} onClick={handleClickSemesterGradeCard} />
-      <div className={styles.gap28}></div>
+      <div className="gap-28"></div>
       <div className={styles.sectionTitle}>전체 수강내역</div>
-      <div className={styles.gap12}></div>
+      <div className="gap-12"></div>
       <AcademicSummaryCard
         earnedCredits={academicSummary.totalEarnedCredits}
         gpa={academicSummary.cumulativeGpa}
         percentile={academicSummary.percentile}
       />
-      <div className={styles.gap12}></div>
+      <div className="gap-12"></div>
       {areaProgress.map((area, index) => (
         <div key={area.area_type}>
           <CourseAccordion
@@ -221,7 +221,7 @@ export default function GraduationProgressPage() {
             isCompleted={area.earned_credits >= area.required_credits}
             courses={area.courses}
           />
-          {index < areaProgress.length - 1 && <div className={styles.gap12}></div>}
+          {index < areaProgress.length - 1 && <div className="gap-12"></div>}
         </div>
       ))}
     </div>

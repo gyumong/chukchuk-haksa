@@ -46,7 +46,7 @@ export default function TargetScorePage() {
         description="목표 학점으로 졸업할 수 있게<br/>척척학사에서 도와드릴게요"
         highlightText="졸업 학점"
       />
-      <div className={styles.gap} />
+      <div className="gap-100" />
       <ScoreInput value={score} onChange={setScore} />
       <FixedButton onClick={handleSubmit} isLoading={isLoading}>
         다음
