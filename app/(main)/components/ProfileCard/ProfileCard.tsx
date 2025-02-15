@@ -1,4 +1,6 @@
 import Image from 'next/image';
+import type { StudentStatus } from '../../constants/profile';
+import { getProfileImagePath } from '../../utils/getProfileImagePath';
 import styles from './ProfileCard.module.scss';
 
 interface Props {
@@ -7,16 +9,17 @@ interface Props {
   studentId: string;
   grade: number;
   semester: number;
-  status: '재학' | '휴학' | '졸업'; // 필요한 상태 추가 가능
+  status: StudentStatus;
 }
 
 export default function ProfileCard({ name, department, studentId, grade, semester, status }: Props) {
+  const profileImagePath = getProfileImagePath(status, grade);
   return (
     <div className={styles.container}>
       <div className={styles.profileImage}>
         <Image
-          src="/images/illustrations/DefaultProfile.png"
-          alt="프로필 이미지"
+          src={profileImagePath}
+          alt={`${status} ${grade}학년 프로필 이미지`}
           width={102}
           height={102}
           className={styles.image}

@@ -10,6 +10,8 @@ export type SemesterType = '1' | '2' | '여름' | '겨울';
  */
 export function getSemesterInfo(completedSemesters: number) {
   const gradeLevel = Math.ceil(completedSemesters / 2);
+  // TODO gradeLevel은 올라가나 방학중인 경우 completedSemester는 갱신이 안되는 문제가 있음
+  // 따라서 계산식 변경 필요
   const currentSemester = completedSemesters % 2 === 1 ? 1 : 2;
 
   return {
