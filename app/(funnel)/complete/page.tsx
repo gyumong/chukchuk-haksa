@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { FixedButton } from '@/components/ui';
+import { ROUTES } from '@/constants/routes';
 import { getSemesterInfo } from '@/lib/utils/semester';
 import { FunnelHeadline } from '../components';
 import { useStudentInfo } from '../contexts';
@@ -22,7 +23,7 @@ export default function Complete() {
   const router = useRouter();
 
   const handleNext = () => {
-    router.push('/target-score');
+    router.push(`${ROUTES.FUNNEL.TARGET_SCORE}`);
   };
 
   return (

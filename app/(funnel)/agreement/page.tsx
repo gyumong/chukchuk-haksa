@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FixedButton } from '@/components/ui';
+import { ROUTES } from '@/constants/routes';
 import { AgreementItem, FunnelHeadline, PrivacyPolicySheet } from '../components';
 import styles from './page.module.scss';
 
@@ -24,7 +25,7 @@ export default function Agreement() {
   }, []);
 
   const handleAgree = useCallback(() => {
-    router.push('/scraping');
+    router.push(`${ROUTES.FUNNEL.SCRAPING}`);
   }, []);
 
   return (
