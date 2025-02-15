@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import AcademicSummaryCard from '@/app/(main)/components/AcademicSummaryCard/AcademicSummaryCard';
 import { CourseAccordion } from '@/app/(main)/components/Accordion';
 import SemesterGradeCard from '@/app/(main)/components/SemesterGradeCard/SemesterGradeCard';
+import { ROUTES } from '@/constants/routes';
 import { getSemesterFromCode } from '@/lib/utils/semester';
 import type { Database } from '@/types/supabase';
 import styles from './page.module.scss';
@@ -109,7 +110,7 @@ export default function GraduationProgressPage() {
   console.log(semesterGrades);
 
   if (isLoading) {
-    return <div>로딩 중...</div>;
+    return <div></div>;
   }
 
   if (error) {
@@ -194,7 +195,7 @@ export default function GraduationProgressPage() {
   }
   const handleClickSemesterGradeCard = () => {
     router.push(
-      `/academic-detail?year=${semesterGrades[semesterGrades.length - 1].year}&semester=${parseSemester(String(semesterGrades[semesterGrades.length - 1].semester))}`
+      `${ROUTES.ACADEMIC_DETAIL}?year=${semesterGrades[semesterGrades.length - 1].year}&semester=${parseSemester(String(semesterGrades[semesterGrades.length - 1].semester))}`
     );
   };
 

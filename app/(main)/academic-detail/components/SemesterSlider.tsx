@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
 import styles from './SemesterSlider.module.scss';
 
 interface Semester {
@@ -47,7 +48,7 @@ export default function SemesterSlider({ currentYear, currentSemester }: Semeste
   }
 
   const handleSemesterClick = (year: number, semester: number) => {
-    router.push(`/academic-detail?year=${year}&semester=${semester}`);
+    router.push(`${ROUTES.ACADEMIC_DETAIL}?year=${year}&semester=${semester}`);
   };
 
   const getSemesterLabel = (semester: number): string => {

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
 import type { DashboardData } from '@/types/api/dashboard';
 import AcademicSummaryCard from '../components/AcademicSummaryCard/AcademicSummaryCard';
 import GraduationRequirementCard from '../components/GraduationRequirementCard/GraduationRequirementCard';
@@ -26,7 +27,7 @@ export default function Home() {
 
   const handleGraduationProgress = () => {
     router.push(
-      `/graduation-progress/${parseInt(data?.profile.studentCode.slice(0, 2) ?? '0')}/${data?.profile.departmentName}`
+      `${ROUTES.GRADUATION_PROGRESS}/${parseInt(data?.profile.studentCode.slice(0, 2) ?? '0')}/${data?.profile.departmentName}`
     );
   };
 

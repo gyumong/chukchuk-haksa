@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FixedButton } from '@/components/ui';
+import { ROUTES } from '@/constants/routes';
 import { FunnelHeadline, ScoreInput } from '../components';
 import styles from './page.module.scss';
 
@@ -30,9 +31,7 @@ export default function TargetScorePage() {
         throw new Error(data.error || '목표 학점 설정에 실패했습니다.');
       }
 
-      // 성공 시 다음 페이지로 이동
-      // TODO 페이지 상수관리
-      router.push('/main');
+      router.push(`${ROUTES.MAIN}`);
     } catch (error) {
       console.error('Failed to set target score:', error);
       alert(error instanceof Error ? error.message : '목표 학점 설정에 실패했습니다.');
