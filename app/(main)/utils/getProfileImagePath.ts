@@ -1,4 +1,5 @@
-import { PROFILE_IMAGES, StudentStatus } from '../constants/profile';
+import type { StudentStatus } from '../constants/profile';
+import { PROFILE_IMAGES } from '../constants/profile';
 
 export function getProfileImagePath(status: StudentStatus, grade?: number): string {
   if (status === '재학' && grade) {

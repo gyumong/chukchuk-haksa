@@ -45,13 +45,13 @@ export default function Home() {
             semester={data?.profile.currentSemester ?? 0}
             status={(data?.profile.status as '재학' | '휴학' | '졸업') ?? '재학'}
           />
-          <div className={styles.gap16}></div>
+          <div className="gap-16"></div>
           <AcademicSummaryCard
             earnedCredits={data?.summary.earnedCredits ?? 0}
             gpa={data?.summary.cumulativeGpa ?? 0}
             percentile={data?.summary.percentile ?? 0}
           />
-          <div className={styles.gap18}></div>
+          <div className="gap-18"></div>
           <GraduationRequirementCard
             majorType="주전공"
             admissionYear={parseInt(data?.profile.studentCode.slice(0, 2) ?? '0')}
