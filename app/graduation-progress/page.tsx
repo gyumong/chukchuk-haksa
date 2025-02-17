@@ -48,7 +48,7 @@ export default function GraduationProgressPage() {
   }, []);
 
   if (isLoading) {
-    return <div>로딩 중...</div>;
+    return <div></div>;
   }
   if (error) {
     return <div>에러: {error}</div>;
