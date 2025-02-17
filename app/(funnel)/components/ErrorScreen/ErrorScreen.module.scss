@@ -1,0 +1,15 @@
+@use '/styles/typography.scss' as typography;
+@use '/styles/color.scss' as colors;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.errorImage {
+  width: 100%;
+  height: 100%;
+}

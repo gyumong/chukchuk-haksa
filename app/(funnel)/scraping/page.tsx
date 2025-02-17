@@ -52,12 +52,12 @@ export default function ScrapingPage() {
 
       if (result.status === 'completed') {
         const studentData = {
-          name: result.data.student.name ?? '',
-          majorName: result.data.student.majorName ?? '',
-          studentCode: result.data.student.studentCode ?? '',
-          gradeLevel: result.data.student.gradeLevel ?? '',
-          completedSemesters: result.data.student.completedSemesters ?? '',
-          status: result.data.student.status ?? 0,
+          name: '척척이',
+          majorName: '척척학과' ,
+          studentCode: '17019013',
+          gradeLevel: '4',
+          completedSemesters: '2',
+          status: 0,
           school: '수원대학교',
         };
 
@@ -77,7 +77,7 @@ export default function ScrapingPage() {
   };
 
   if (error) {
-    return <div>에러: {error}</div>;
+    throw new Error(error);
   }
 
   return <LoadingScreen />;
