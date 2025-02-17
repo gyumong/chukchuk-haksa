@@ -3,6 +3,7 @@
 import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { captureException, setUser } from '@sentry/nextjs';
 import { FixedButton, TextField } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { FunnelHeadline, SchoolCard } from '../components';
@@ -32,9 +33,14 @@ export default function PortalLogin() {
       if (!res.ok) {
         throw new Error(data.error || '로그인 실패');
       }
+      // TODO setUser 관련해서 handleSubmit 처리가 아닌 모듈화 필요
+      setUser({
+        username: data.studentCode,
+      });
       router.push(`${ROUTES.FUNNEL.AGREEMENT}`);
     } catch (err: any) {
       console.log(err);
+      captureException(err);
       setErrorMessage(err.message);
     } finally {
       setIsLoading(false);

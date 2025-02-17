@@ -4,9 +4,8 @@ import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import type { CourseDetail } from '@/types/api/academic';
 import AcademicSummaryCard from '../components/AcademicSummaryCard/AcademicSummaryCard';
-import GradeCard from './components/GradeCard/GradeCard';
+import SectionCourses from './components/SectionCourses/SectionCourses';
 import SemesterSlider from './components/SemesterSlider';
-import styles from './page.module.scss';
 
 interface AcademicDetailProps {
   semesterGrades: {
@@ -26,7 +25,7 @@ interface AcademicDetailProps {
 
 export default function AcademicDetailPage() {
   return (
-    <Suspense fallback={<div>로딩 중...</div>}>
+    <Suspense fallback={<div></div>}>
       <AcademicDetailContent />
     </Suspense>
   );
@@ -70,7 +69,7 @@ function AcademicDetailContent() {
   }, [year, semester]);
 
   if (isLoading) {
-    return <div>로딩 중...</div>;
+    return <div></div>;
   }
 
   if (error) {
@@ -83,9 +82,9 @@ function AcademicDetailContent() {
 
   return (
     <>
-      <div className={styles.gap8}></div>
+      <div className="gap-8"></div>
       <SemesterSlider currentYear={year} currentSemester={semester} />
-      <div className={styles.gap20}></div>
+      <div className="gap-20"></div>
       {/* 학기 성적 요약 */}
       <AcademicSummaryCard
         earnedCredits={data.semesterGrades.earnedCredits}
@@ -93,42 +92,12 @@ function AcademicDetailContent() {
         classRank={data.semesterGrades.classRank}
         totalStudents={data.semesterGrades.totalStudents}
       />
-      <div className={styles.gap24}></div>
+      <div className="gap-24"></div>
       {/* 전공 과목 목록 */}
-      <div className={styles.majorText}>전공 ({data.courses.major.length})</div>
-      <div className={styles.gap12}></div>
-      <div className={styles.cardsContainer}>
-        {data.courses.major.map(course => (
-          <GradeCard
-            key={course.courseCode}
-            courseCode={course.courseCode}
-            courseType={course.areaType}
-            credits={course.credits}
-            professor={course.professor}
-            courseName={course.courseName}
-            grade={course.grade}
-            originalScore={course.originalScore ?? 0}
-          />
-        ))}
-      </div>
+      <SectionCourses title="전공" courses={data.courses.major} />
       {/* 교양 과목 목록 */}
-      <div className={styles.gap24}></div>
-      <div className={styles.majorText}>교양 ({data.courses.liberal.length})</div>
-      <div className={styles.gap12}></div>
-      <div className={styles.cardsContainer}>
-        {data.courses.liberal.map(course => (
-          <GradeCard
-            key={course.courseCode}
-            courseCode={course.courseCode}
-            courseType={course.areaType}
-            credits={course.credits}
-            professor={course.professor}
-            courseName={course.courseName}
-            grade={course.grade}
-            originalScore={course.originalScore ?? 0}
-          />
-        ))}
-      </div>
+      <div className="gap-24"></div>
+      <SectionCourses title="교양" courses={data.courses.liberal} />
     </>
   );
 }
