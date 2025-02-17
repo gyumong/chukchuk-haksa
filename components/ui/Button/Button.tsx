@@ -9,12 +9,14 @@ const Lottie = dynamic(() => import('lottie-react'), {
   ssr: false, // 서버 사이드 렌더링 비활성화
 });
 
+// TODO 임시로 variant error, kakao 등이 존재하지만 차후 수정 필요
 const buttonVariants = cva(styles.base, {
   variants: {
     variant: {
       primary: styles['variant-primary'],
       secondary: styles['variant-secondary'],
       kakao: styles['variant-kakao'],
+      error: styles['variant-error'],
     },
     size: {
       sm: styles['size-sm'],

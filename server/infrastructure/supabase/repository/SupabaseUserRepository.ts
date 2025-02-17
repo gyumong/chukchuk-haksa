@@ -11,7 +11,7 @@ export class SupabaseUserRepository implements IUserRepository {
   async findById(id: string): Promise<User | null> {
     const { data, error } = await this.supabase
       .from('users')
-      .select('id, portal_connected, connected_at, created_at, email, profile_image, profile_nickname, updated_at')
+      .select('id, portal_connected, connected_at, created_at, email, profile_image, profile_nickname, updated_at, deleted_at, is_deleted')
       .eq('id', id)
       .single();
 
@@ -20,14 +20,6 @@ export class SupabaseUserRepository implements IUserRepository {
     }
 
     return UserMapper.toDomain(data);
-  }
-
-  async delete(userId: string): Promise<void> {
-    const { error } = await this.supabase.from('users').delete().eq('id', userId);
-
-    if (error) {
-      throw new Error('사용자 삭제 중 오류가 발생했습니다.');
-    }
   }
 
   async initializePortalConnection(userId: string, studentData: StudentInitializationDataType): Promise<void> {
@@ -45,6 +37,21 @@ export class SupabaseUserRepository implements IUserRepository {
 
     if (error) {
       throw new Error('포털 연동 초기화 중 오류가 발생했습니다.');
+    }
+  }
+
+  async delete(userId: string): Promise<void> {
+    // Instead of physical delete(), do "soft delete"
+    const { error } = await this.supabase
+      .from('users')
+      .update({
+        is_deleted: true,
+        deleted_at: new Date().toISOString(),
+      })
+      .eq('id', userId);
+
+    if (error) {
+      throw new Error(`사용자 소프트 삭제 중 오류가 발생했습니다: ${error.message}`);
     }
   }
 }

@@ -33,6 +33,15 @@
   }
 }
 
+.variant-error {
+  background-color: color.$red-300;
+  color: color.$white;
+
+  &:hover:not(:disabled) {
+    background-color: darken(color.$red-300, 10%);
+  }
+}
+
 // Sizes
 .size-md {
   height: 64px;

@@ -726,8 +726,10 @@ export type Database = {
         Row: {
           connected_at: string | null;
           created_at: string | null;
+          deleted_at: string | null;
           email: string | null;
           id: string;
+          is_deleted: boolean;
           portal_connected: boolean | null;
           profile_image: string | null;
           profile_nickname: string | null;
@@ -736,8 +738,10 @@ export type Database = {
         Insert: {
           connected_at?: string | null;
           created_at?: string | null;
+          deleted_at?: string | null;
           email?: string | null;
           id: string;
+          is_deleted?: boolean;
           portal_connected?: boolean | null;
           profile_image?: string | null;
           profile_nickname?: string | null;
@@ -746,8 +750,10 @@ export type Database = {
         Update: {
           connected_at?: string | null;
           created_at?: string | null;
+          deleted_at?: string | null;
           email?: string | null;
           id?: string;
+          is_deleted?: boolean;
           portal_connected?: boolean | null;
           profile_image?: string | null;
           profile_nickname?: string | null;
@@ -764,10 +770,10 @@ export type Database = {
         Args: {
           p_student_id: string;
         };
-        Returns: Array<{
+        Returns: {
           area_requirements_fulfilled: boolean;
           elective_courses_fulfilled: boolean;
-        }>;
+        }[];
       };
       check_liberal_arts_fulfillment: {
         Args: {
@@ -786,7 +792,7 @@ export type Database = {
           p_department_id: number;
           p_admission_year: number;
         };
-        Returns: Array<{
+        Returns: {
           area_type: Database['public']['Enums']['course_area_type'];
           required_credits: number;
           earned_credits: number;
@@ -794,7 +800,7 @@ export type Database = {
           completed_elective_courses: number;
           total_elective_courses: number;
           courses: Json;
-        }>;
+        }[];
       };
       initialize_portal_connection: {
         Args: {
@@ -810,7 +816,7 @@ export type Database = {
       upsert_academic_record: {
         Args: {
           p_student_id: string;
-          p_semester_grades: Array<Database['public']['CompositeTypes']['semester_grade_input']>;
+          p_semester_grades: Database['public']['CompositeTypes']['semester_grade_input'][];
           p_academic_summary: Json;
         };
         Returns: undefined;

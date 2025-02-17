@@ -19,6 +19,8 @@ $purple-500: #7f71fb;
 
 $red-100: #ff5751;
 $red-200: #feafac;
+$red-300: #ff5751;
+$red-400: #eb5050;
 
 // Text Color Utility Classes
 .text {
@@ -71,6 +73,12 @@ $red-200: #feafac;
     }
     &-200 {
       color: var(--red-200);
+    }
+    &-300 {
+      color: var(--red-300);
+    }
+    &-400 {
+      color: var(--red-400);
     }
   }
 }
@@ -126,6 +134,12 @@ $red-200: #feafac;
     }
     &-200 {
       background-color: var(--red-200);
+    }
+    &-300 {
+      background-color: var(--red-300);
+    }
+    &-400 {
+      background-color: var(--red-400);
     }
   }
 }
