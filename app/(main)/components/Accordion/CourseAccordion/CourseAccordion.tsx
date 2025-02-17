@@ -12,6 +12,7 @@ export default function CourseAccordion({
 }: CourseAreaProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  console.log('courses', courses);
   return (
     <div className={`${styles.container} ${isCompleted ? styles.completed : ''}`}>
       <CourseAreaTrigger
@@ -22,13 +23,15 @@ export default function CourseAccordion({
         isExpanded={isExpanded}
         onClick={() => setIsExpanded(!isExpanded)}
       />
-      <div className={`${styles.content} ${isExpanded ? styles.expanded : ''}`}>
-        <div className={styles.inner}>
-          <div className={styles.list}>
-            <CourseList courses={courses} isCompleted={isCompleted} />
+      {courses.length > 0 && (
+        <div className={`${styles.content} ${isExpanded ? styles.expanded : ''}`}>
+          <div className={styles.inner}>
+            <div className={styles.list}>
+              <CourseList courses={courses} isCompleted={isCompleted} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
