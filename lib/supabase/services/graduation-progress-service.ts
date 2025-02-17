@@ -24,13 +24,15 @@ export class GraduationProgressService {
   async getStudentAreaProgress(
     studentId: string,
     departmentId: number,
-    admissionYear: number
+    admissionYear: number,
+    majorId?: number
   ): Promise<AreaProgress[]> {
+    // 2월 17일 전공 코드가 없는 학과도 있으므로 majorId가 없으면 departmentId를 사용
     const { data, error } = await this.supabase.rpc('get_student_area_progress', {
-      p_department_id: departmentId,
+      p_department_id: majorId ?? departmentId,
       p_admission_year: admissionYear,
     });
-
+    console.log('data', data);
     if (error) {
       console.error('Failed to get area progress:', error);
       throw new Error('영역별 이수현황 조회에 실패했습니다.');

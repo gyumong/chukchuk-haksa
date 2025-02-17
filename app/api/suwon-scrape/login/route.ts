@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     }
 
     // 로그인 성공 시 세션 저장
-    const res = NextResponse.json({ message: '로그인 성공' });
+    const res = NextResponse.json({ message: '로그인 성공', studentCode: username });
     const session = await getIronSession<SessionData>(req, res, sessionOptions);
 
     session.username = username;

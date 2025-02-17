@@ -4,7 +4,7 @@ import styles from './GraduationRequirementCard.module.scss';
 interface Props {
   majorType: '주전공' | '복수전공' | '부전공';
   admissionYear: number;
-  department: string;
+  majorName: string;
   earnedCredits: number;
   requiredCredits: number;
   handleGraduationProgress: () => void;
@@ -13,7 +13,7 @@ interface Props {
 export default function GraduationRequirementCard({
   majorType,
   admissionYear,
-  department,
+  majorName,
   earnedCredits,
   requiredCredits,
   handleGraduationProgress,
@@ -24,7 +24,7 @@ export default function GraduationRequirementCard({
 
       <div className={styles.requirementHeader}>
         <span className={styles.title}>
-          {admissionYear}학번 {department} 졸업요건
+          {admissionYear}학번 {majorName} 졸업요건
         </span>
         <button className={styles.arrowButton} onClick={handleGraduationProgress}>
           <Icon name="arrow-right" />

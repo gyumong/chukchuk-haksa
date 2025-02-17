@@ -63,6 +63,7 @@ export class InitializePortalConnectionUseCase {
           })
         : null;
 
+      // TODO majorId 없는 학과도 있을 수 잇음
       const departmentId = department.getId()?.getValue();
       const majorId = major.getId()?.getValue();
       if (!departmentId || !majorId) {

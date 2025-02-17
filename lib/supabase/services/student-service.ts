@@ -8,6 +8,7 @@ interface StudentInfo {
   studentCode: string;
   name: string | null;
   departmentName: string | null;
+  majorName: string | null;
   gradeLevel: number | null;
   status: Database['public']['Enums']['student_status'] | null;
   completedSemesters: number | null;
@@ -147,6 +148,7 @@ export class StudentService {
   }
 
   /** 학생 정보 조회 */
+  // 2월 17일에 departments!fk_major_id 컬럼 추가
   async getStudentInfo(): Promise<StudentInfo> {
     const userId = await this.getAuthenticatedUserId();
     const { data, error } = await this.supabase
@@ -155,7 +157,10 @@ export class StudentService {
         `
       student_code,
       name,
-      departments!fk_department_id (
+      major:departments!fk_major_id (
+        established_department_name
+      ),
+      department:departments!fk_department_id (
         established_department_name
       ),
       grade_level,
@@ -175,7 +180,8 @@ export class StudentService {
     return {
       studentCode: data.student_code,
       name: data.name,
-      departmentName: data?.departments?.established_department_name ?? null,
+      departmentName: data.department?.established_department_name ?? null,
+      majorName: data.major?.established_department_name ?? null,
       gradeLevel: data.grade_level,
       status: data.status,
       completedSemesters: data.completed_semesters,

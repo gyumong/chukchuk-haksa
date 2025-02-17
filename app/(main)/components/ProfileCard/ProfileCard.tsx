@@ -5,14 +5,14 @@ import styles from './ProfileCard.module.scss';
 
 interface Props {
   name: string;
-  department: string;
+  majorName: string;
   studentId: string;
   grade: number;
   semester: number;
   status: StudentStatus;
 }
 
-export default function ProfileCard({ name, department, studentId, grade, semester, status }: Props) {
+export default function ProfileCard({ name, majorName, studentId, grade, semester, status }: Props) {
   const profileImagePath = getProfileImagePath(status, grade);
   return (
     <div className={styles.container}>
@@ -33,7 +33,7 @@ export default function ProfileCard({ name, department, studentId, grade, semest
         </div>
 
         <div className={styles.details}>
-          <span>{department}</span>
+          <span>{majorName}</span>
           <span className={styles.divider}>I</span>
           <span>{studentId}</span>
         </div>
