@@ -52,12 +52,12 @@ export default function ScrapingPage() {
 
       if (result.status === 'completed') {
         const studentData = {
-          name: '척척이',
-          majorName: '척척학과' ,
-          studentCode: '17019013',
-          gradeLevel: '4',
-          completedSemesters: '2',
-          status: 0,
+          name: result.data?.studentInfo.name ?? '',
+          majorName: result.data?.studentInfo.majorName ?? '',
+          studentCode: result.data?.studentInfo.studentCode ?? '',
+          gradeLevel: result.data?.studentInfo.gradeLevel ?? '',
+          completedSemesters: result.data?.studentInfo.completedSemesters ?? '',
+          status: result.data?.studentInfo.status ?? 0,
           school: '수원대학교',
         };
 
