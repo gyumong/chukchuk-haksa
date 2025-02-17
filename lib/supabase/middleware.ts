@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { createServerClient } from '@supabase/ssr';
 
 export async function updateSession(request: NextRequest) {
@@ -32,10 +33,34 @@ export async function updateSession(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  console.log('user', user);
 
   // 포털 연동 상태 확인
   if (user) {
-    const { data: users } = await supabase.from('users').select('portal_connected').eq('id', user.id).single();
+    // TODO setUser 관련 코드 모듈화 필요
+    Sentry.setUser({
+      id: user.id,
+    });
+    const { data: users, error } = await supabase.from('users').select('portal_connected, is_deleted').eq('id', user.id).single();
+
+    console.log('users', users);
+    if (error || !users) {
+      console.warn('Cannot find user or error => skipping checks');
+      return supabaseResponse;
+    }
+
+    if (users.is_deleted) {
+      if (request.nextUrl.pathname !== '/') {
+        console.warn('User is deleted => redirecting to /');
+        const url = request.nextUrl.clone();
+        url.pathname = '/';
+        url.searchParams.set('msg', 'deleted-user');
+        return NextResponse.redirect(url);
+      } else {
+        // 이미 '/' 라면, 더 이상 redirect 하지 않고 그대로 보여주기
+        console.warn('User is deleted, but we are already at /. Not redirecting.');
+      }
+    }
 
     // 로그인 후 리다이렉트 처리
     if (request.nextUrl.pathname === '/auth/callback') {
