@@ -12,7 +12,6 @@ export default function CourseAccordion({
 }: CourseAreaProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  console.log('courses', courses);
   return (
     <div className={`${styles.container} ${isCompleted ? styles.completed : ''}`}>
       <CourseAreaTrigger

@@ -30,7 +30,7 @@ export async function POST(req: Request) {
   if (!username || !password) {
     return NextResponse.json({ error: '포털 로그인이 필요합니다.' }, { status: 401 });
   }
-
+  let studentInfo;
   const taskId = uuidv4();
   setTask(taskId, 'in-progress', null);
 
@@ -78,7 +78,9 @@ export async function POST(req: Request) {
         throw new Error(syncResult.error);
       }
 
-      setTask(taskId, 'completed', { message: '동기화 완료' });
+      studentInfo = initResult.studentInfo;
+
+      setTask(taskId, 'completed', { message: '동기화 완료', studentInfo: initResult.studentInfo });
       // **세션 만료 처리**
       session.destroy(); // Iron Session에서 세션 데이터 삭제
       console.log('Session destroyed after successful scrape');
@@ -87,5 +89,5 @@ export async function POST(req: Request) {
     }
   })();
 
-  return NextResponse.json({ taskId }, { status: 202 });
+  return NextResponse.json({ taskId, studentInfo }, { status: 202 });
 }

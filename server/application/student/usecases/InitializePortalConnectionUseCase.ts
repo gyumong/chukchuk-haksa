@@ -10,6 +10,15 @@ import type { PortalData } from '@/server/infrastructure/portal/dto/PortalDataTy
 export interface InitializePortalConnectionResult {
   isSuccess: boolean;
   studentId?: string;
+  studentInfo?: {
+    name: string;
+    school: string;
+    majorName: string;
+    studentCode: string;
+    gradeLevel: number;
+    status: string;
+    completedSemesters: number;
+  };
   error?: string;
 }
 
@@ -150,7 +159,17 @@ export class InitializePortalConnectionUseCase {
       };
 
       await this.userRepository.initializePortalConnection(userId, studentCreationData);
-      return { isSuccess: true, studentId: studentCreationData.studentCode };
+
+      const studentInfo = {
+        name: studentCreationData.name,
+        school: '수원대학교',
+        majorName: major.getName(),
+        studentCode: studentCreationData.studentCode,
+        gradeLevel: studentCreationData.gradeLevel,
+        status: studentCreationData.status,
+        completedSemesters: studentCreationData.completedSemesters % 2 === 0 ? 1 : 2,
+      };
+      return { isSuccess: true, studentId: studentCreationData.studentCode, studentInfo };
     } catch (error) {
       return {
         isSuccess: false,

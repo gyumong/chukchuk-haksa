@@ -5,17 +5,17 @@ export type SemesterType = '1' | '2' | '여름' | '겨울';
 
 /**
  * 정규 이수학기 수를 기반으로 현재 학년과 학기를 계산
+ * @param gradeLevel 학년
  * @param completedSemesters 정규 이수학기 수
  * @returns { gradeLevel: number, currentSemester: number }
  */
 export function getSemesterInfo(completedSemesters: number) {
-  const gradeLevel = Math.ceil(completedSemesters / 2);
   // TODO gradeLevel은 올라가나 방학중인 경우 completedSemester는 갱신이 안되는 문제가 있음
   // 따라서 계산식 변경 필요
-  const currentSemester = completedSemesters % 2 === 1 ? 1 : 2;
+  console.log('completedSemesters', completedSemesters);
+  const currentSemester = completedSemesters % 2 === 1 ? 2 : 1;
 
   return {
-    gradeLevel,
     currentSemester,
   };
 }
