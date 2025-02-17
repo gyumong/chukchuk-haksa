@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { FunnelHeadline } from '@/app/(funnel)/components';
 import { FixedButton } from '@/components/ui';
-import { createClient } from '@/lib/supabase/client';
 import styles from './page.module.scss';
 
 const DeletePage = () => {
@@ -16,7 +15,7 @@ const DeletePage = () => {
 
 
   const handleDelete = async () => {
-    if (!confirm('정말 탈퇴하시겠습니까?')) return;
+    if (!confirm('정말 탈퇴하시겠습니까?')) {return;}
 
     setIsLoading(true);
     try {
