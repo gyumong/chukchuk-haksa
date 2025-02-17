@@ -21,6 +21,7 @@ export class DashboardFacade {
         name: studentInfo.name ?? '',
         studentCode: studentInfo.studentCode ?? '',
         departmentName: studentInfo.departmentName ?? '',
+        majorName: studentInfo.majorName ?? '',
         gradeLevel: studentInfo.gradeLevel ?? 0,
         currentSemester: getSemesterInfo(studentInfo.completedSemesters ?? 0).currentSemester,
         status: studentInfo.status ?? '',

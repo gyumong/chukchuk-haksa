@@ -73,12 +73,15 @@ export default function GraduationProgressPage() {
           required_elective_courses: area.requiredElectiveCourses,
           completed_elective_courses: area.completedElectiveCourses,
           total_elective_courses: area.totalElectiveCourses,
-          courses: area.courses.map((course: any) => ({
-            name: course.courseName,
-            semester: `${course.year % 100}-${getSemesterFromCode(course.semester)}`,
-            credits: course.credits,
-            grade: course.grade,
-          })),
+          courses:
+            area.courses?.length > 0
+              ? area.courses.map((course: any) => ({
+                  name: course.courseName,
+                  semester: `${course.year % 100}-${getSemesterFromCode(course.semester)}`,
+                  credits: course.credits,
+                  grade: course.grade,
+                }))
+              : [],
         }));
 
         setAcademicSummary({

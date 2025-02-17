@@ -1,13 +1,15 @@
 import { NextResponse } from 'next/server';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
 import { AcademicRecordService } from '@/lib/supabase/services/academic-record-service';
 import { GraduationProgressService } from '@/lib/supabase/services/graduation-progress-service';
+import type { Database } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const supabase = createClient();
+    const supabase: SupabaseClient<Database> = createClient();
     const graduationService = new GraduationProgressService(supabase);
     const academicService = new AcademicRecordService(supabase);
 
@@ -28,7 +30,12 @@ export async function GET() {
     // 병렬로 모든 데이터 조회
     const [areaProgress, academicSummary, semesterGrades] = await Promise.all([
       // 영역별 이수현황 조회
-      graduationService.getStudentAreaProgress(user.id, student.department_id, student.admission_year),
+      graduationService.getStudentAreaProgress(
+        user.id,
+        student.department_id,
+        student.admission_year,
+        student.major_id ?? undefined
+      ),
       // 학업 성적 요약 정보 조회
       academicService.getAcademicSummary(),
       // 학기별 성적 정보 조회

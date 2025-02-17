@@ -4,6 +4,7 @@ export interface DashboardData {
     name: string | null;
     studentCode: string;
     departmentName: string | null;
+    majorName: string | null;
     gradeLevel: number | null;
     currentSemester: number;
     status: string | null;

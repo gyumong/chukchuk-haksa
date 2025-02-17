@@ -39,7 +39,7 @@ export default function Home() {
         <>
           <ProfileCard
             name={data?.profile.name ?? ''}
-            department={data?.profile.departmentName ?? ''}
+            majorName={data?.profile.majorName ?? ''}
             studentId={data?.profile.studentCode ?? ''}
             grade={data?.profile.gradeLevel ?? 0}
             semester={data?.profile.currentSemester ?? 0}
@@ -55,7 +55,7 @@ export default function Home() {
           <GraduationRequirementCard
             majorType="주전공"
             admissionYear={parseInt(data?.profile.studentCode.slice(0, 2) ?? '0')}
-            department={data?.profile.departmentName ?? ''}
+            majorName={data?.profile.majorName ?? ''}
             handleGraduationProgress={handleGraduationProgress}
             earnedCredits={data?.summary.earnedCredits ?? 0}
             requiredCredits={data?.summary.requiredCredits ?? 0}
