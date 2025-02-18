@@ -33,7 +33,6 @@ export async function updateSession(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  console.log('user', user);
 
   // 포털 연동 상태 확인
   if (user) {
@@ -41,9 +40,12 @@ export async function updateSession(request: NextRequest) {
     Sentry.setUser({
       id: user.id,
     });
-    const { data: users, error } = await supabase.from('users').select('portal_connected, is_deleted').eq('id', user.id).single();
+    const { data: users, error } = await supabase
+      .from('users')
+      .select('portal_connected, is_deleted')
+      .eq('id', user.id)
+      .single();
 
-    console.log('users', users);
     if (error || !users) {
       console.warn('Cannot find user or error => skipping checks');
       return supabaseResponse;
