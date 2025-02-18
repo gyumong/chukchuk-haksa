@@ -2,7 +2,6 @@ import React from 'react';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { Analytics } from '@vercel/analytics/react';
-import KakaoProvider from '@/components/KakaoProvider';
 import '../styles/global.scss';
 
 export const metadata: Metadata = {
@@ -23,8 +22,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: '/images/opengraph/og-image.png',
-        width: 800,
-        height: 400,
+        width: 1200,
+        height: 630,
       },
     ],
   },
@@ -58,7 +57,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   return (
     <html lang="ko">
       <body className={`${paperlogy.variable} ${suit.variable} antialiased`}>
-        <KakaoProvider>{children}</KakaoProvider>
+        {children}
         <Analytics />
       </body>
     </html>
