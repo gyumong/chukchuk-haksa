@@ -1,8 +1,8 @@
 'use client';
 
-import { cleanupKakao, initializeKakao } from '@/lib/auth';
-import Script from 'next/script';
 import React from 'react';
+import Script from 'next/script';
+import { cleanupKakao, initializeKakao } from '@/lib/auth';
 
 export default function KakaoProvider({ children }: { children: React.ReactNode }) {
   return (
