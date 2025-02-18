@@ -23,7 +23,7 @@ export class DashboardFacade {
         departmentName: studentInfo.departmentName ?? '',
         majorName: studentInfo.majorName ?? '',
         gradeLevel: studentInfo.gradeLevel ?? 0,
-        currentSemester: getSemesterInfo(studentInfo.completedSemesters ?? 0).currentSemester,
+        currentSemester: studentInfo.completedSemesters ?? 0,
         status: studentInfo.status ?? '',
         lastUpdatedAt: studentInfo.updatedAt ?? '',
       },
