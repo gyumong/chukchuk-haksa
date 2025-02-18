@@ -89,6 +89,6 @@ export async function POST(req: Request) {
       setTask(taskId, 'failed', { message: err.message });
     }
   })();
-  
+
   return NextResponse.json({ taskId, studentInfo }, { status: 202 });
 }

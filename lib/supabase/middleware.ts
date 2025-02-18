@@ -40,7 +40,11 @@ export async function updateSession(request: NextRequest) {
     Sentry.setUser({
       id: user.id,
     });
-    const { data: users, error } = await supabase.from('users').select('portal_connected, is_deleted').eq('id', user.id).single();
+    const { data: users, error } = await supabase
+      .from('users')
+      .select('portal_connected, is_deleted')
+      .eq('id', user.id)
+      .single();
 
     if (error || !users) {
       console.warn('Cannot find user or error => skipping checks');
