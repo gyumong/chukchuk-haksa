@@ -117,8 +117,6 @@ export default function GraduationProgressPage() {
     fetchData();
   }, []);
 
-  console.log(semesterGrades);
-
   if (isLoading) {
     return <div></div>;
   }

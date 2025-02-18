@@ -144,7 +144,6 @@ export async function GET(request: NextRequest, { params }: { params: { year: st
       .eq('course_offerings.year', year)
       .eq('course_offerings.semester', semester);
 
-    console.log('@@@@@@@@@@@@@', courses);
     if (coursesError) {
       console.error('@@@@@@@@@@@@@', coursesError);
       throw coursesError;

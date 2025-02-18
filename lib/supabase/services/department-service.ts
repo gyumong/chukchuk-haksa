@@ -33,7 +33,6 @@ export class DepartmentService {
       .eq('department_name', departmentName)
       .maybeSingle();
     if (error || !data) {
-      console.log('departmentName', departmentName);
       console.error('Failed to get department by name:', error);
       return null;
     }

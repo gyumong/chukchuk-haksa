@@ -16,7 +16,6 @@ export default function Home() {
     const fetchDashboard = async () => {
       const response = await fetch('/api/get-dashboard');
       const data: DashboardData = await response.json();
-      console.log('ㅇㅇ', data);
       setData(data);
       setIsLoading(false);
     };

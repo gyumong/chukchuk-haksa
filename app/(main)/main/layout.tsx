@@ -1,8 +1,9 @@
-  'use client';
+'use client';
+
 import type { PropsWithChildren } from 'react';
+import { useRouter } from 'next/navigation';
 import { TopNavigation } from '@/components/ui/TopNavigation';
 import styles from './layout.module.scss';
-import { useRouter } from 'next/navigation';
 
 export default function FunnelLayout({ children }: PropsWithChildren) {
   const router = useRouter();
@@ -12,7 +13,12 @@ export default function FunnelLayout({ children }: PropsWithChildren) {
 
   return (
     <div className={styles.container}>
-      <TopNavigation.Preset title="수원대학교" type="none" rightIcon="setting" onRightIconClick={handleRightIconClick} />
+      <TopNavigation.Preset
+        title="수원대학교"
+        type="none"
+        rightIcon="setting"
+        onRightIconClick={handleRightIconClick}
+      />
       <div className={styles.content}>{children}</div>
     </div>
   );
