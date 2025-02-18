@@ -11,7 +11,6 @@ export async function POST(req: Request) {
     if (!username || !password) {
       return NextResponse.json({ error: '학번/비밀번호가 필요합니다.' }, { status: 400 });
     }
-    console.time('ColdStartTimer');
 
     const response = await fetch(`${process.env.AWS_URL}/auth`, {
       method: 'POST',
@@ -44,7 +43,6 @@ export async function POST(req: Request) {
       message: error.message,
       stack: error.stack,
     });
-    console.timeEnd('ColdStartTimer');
     return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 });
   }
 }

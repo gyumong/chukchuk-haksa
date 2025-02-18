@@ -23,7 +23,6 @@ import type { Database } from '@/types';
 export async function POST(req: Request) {
   const res = NextResponse.next();
   const session = await getIronSession<SessionData>(req, res, sessionOptions);
-  console.time('ColdStartTimer');
   const username = session.username;
   const password = session.password;
 
@@ -80,7 +79,6 @@ export async function POST(req: Request) {
 
       studentInfo = initResult.studentInfo;
 
-      console.timeEnd('ColdStartTimer');
       setTask(taskId, 'completed', { message: '동기화 완료', studentInfo: initResult.studentInfo });
       // **세션 만료 처리**
       session.destroy(); // Iron Session에서 세션 데이터 삭제
