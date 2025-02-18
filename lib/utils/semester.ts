@@ -12,8 +12,7 @@ export type SemesterType = '1' | '2' | '여름' | '겨울';
 export function getSemesterInfo(completedSemesters: number) {
   // TODO gradeLevel은 올라가나 방학중인 경우 completedSemester는 갱신이 안되는 문제가 있음
   // 따라서 계산식 변경 필요
-  console.log('completedSemesters', completedSemesters);
-  const currentSemester = completedSemesters % 2 === 1 ? 2 : 1;
+  const currentSemester = completedSemesters % 2 === 1 ? 1 : 2;
 
   return {
     currentSemester,
