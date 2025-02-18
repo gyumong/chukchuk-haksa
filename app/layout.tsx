@@ -4,6 +4,7 @@ import React from 'react';
 import localFont from 'next/font/local';
 import Script from 'next/script';
 import { cleanupKakao, initializeKakao } from '@/lib/auth';
+import { Analytics } from "@vercel/analytics/react"
 import '../styles/global.scss';
 
 const paperlogy = localFont({
@@ -25,11 +26,7 @@ const suit = localFont({
   variable: '--suit-font',
 });
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
       <head>
@@ -42,7 +39,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${paperlogy.variable} ${suit.variable} antialiased`}>{children}</body>
+      <body className={`${paperlogy.variable} ${suit.variable} antialiased`}>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
