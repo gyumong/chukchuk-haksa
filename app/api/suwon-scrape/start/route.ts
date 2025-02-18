@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       const studentCourseRepository = new SupabaseStudentCourseRepository(supabase);
       const academicRecordRepository = new SupabaseAcademicRecordRepository(supabase);
       const courseOfferingRepository = new SupabaseCourseOfferingRepository(supabase);
-
+      console.log('fetch start')
       const portalData = await portalRepository.fetchPortalData(username, password);
       console.log('fetch finished');
 
