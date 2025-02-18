@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   setTask(taskId, 'in-progress', null);
 
   // 비동기로 크롤링 시작
-  (async () => {
+  // (async () => {
     try {
       const supabase: SupabaseClient<Database> = createClient();
       const portalRepository = new PortalRepositoryImpl();
@@ -91,7 +91,7 @@ export async function POST(req: Request) {
     } catch (err: any) {
       setTask(taskId, 'failed', { message: err.message });
     }
-  })();
+  // })();
 
   return NextResponse.json({ taskId, studentInfo }, { status: 202 });
 }
