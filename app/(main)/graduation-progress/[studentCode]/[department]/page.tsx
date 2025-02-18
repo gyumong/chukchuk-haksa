@@ -117,7 +117,6 @@ export default function GraduationProgressPage() {
     fetchData();
   }, []);
 
-
   if (isLoading) {
     return <div></div>;
   }

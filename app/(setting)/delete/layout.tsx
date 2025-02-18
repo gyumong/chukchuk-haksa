@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react';
+import { useRouter } from 'next/navigation';
 import { TopNavigation } from '@/components/ui/TopNavigation';
 import styles from './layout.module.scss';
-import { useRouter } from 'next/navigation';
 
 export default function FunnelLayout({ children }: PropsWithChildren) {
   const router = useRouter();
