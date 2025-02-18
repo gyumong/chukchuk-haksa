@@ -40,7 +40,7 @@ export class GraduationProgressService {
     }
 
     return data.map(row => ({
-      areaType: row.area_type,
+      areaType: row.area_type as Database['public']['Enums']['course_area_type'],
       requiredCredits: row.required_credits,
       earnedCredits: row.earned_credits,
       requiredElectiveCourses: row.required_elective_courses,
