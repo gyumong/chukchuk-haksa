@@ -1,4 +1,3 @@
-import { getSemesterInfo } from '@/lib/utils/semester';
 import type { DashboardData } from '@/types/api/dashboard';
 import { AcademicRecordService } from '../services/academic-record-service';
 import { StudentService } from '../services/student-service';
@@ -23,7 +22,7 @@ export class DashboardFacade {
         departmentName: studentInfo.departmentName ?? '',
         majorName: studentInfo.majorName ?? '',
         gradeLevel: studentInfo.gradeLevel ?? 0,
-        currentSemester: getSemesterInfo(studentInfo.completedSemesters ?? 0).currentSemester,
+        currentSemester: studentInfo.completedSemesters ?? 0,
         status: studentInfo.status ?? '',
         lastUpdatedAt: studentInfo.updatedAt ?? '',
       },
