@@ -22,7 +22,9 @@ export default function CourseAreaTrigger({
               {requiredElectiveCredits}개 영역 이수 필요 ({currentCredits} / {requiredCredits})
             </>
           ) : (
-            <>{currentCredits} / {requiredCredits}</>
+            <>
+              {currentCredits} / {requiredCredits}
+            </>
           )}
 
           {isCompleted && <Icon name="check-status-on" className={styles.checkIcon} size={18} />}
