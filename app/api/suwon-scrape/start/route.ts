@@ -21,7 +21,6 @@ import { SupabaseAuthService } from '@/server/infrastructure/supabase/SupabaseAu
 import type { Database } from '@/types';
 
 export async function POST(req: Request) {
-  const timerLabel = `ColdStartTimer-${Date.now()}`;
   const res = NextResponse.next();
   const session = await getIronSession<SessionData>(req, res, sessionOptions);
   const username = session.username;
