@@ -5,8 +5,6 @@ import type { SessionData } from '@/lib/auth/session';
 import { sessionOptions } from '@/lib/auth/session';
 
 export async function POST(req: Request) {
-  const timerLabel = `ColdStartTimer-${Date.now()}`;
-  console.time(timerLabel);
   try {
     const { username, password } = await req.json();
 
@@ -45,7 +43,6 @@ export async function POST(req: Request) {
       message: error.message,
       stack: error.stack,
     });
-    console.timeEnd(timerLabel);
     return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 });
   }
 }
