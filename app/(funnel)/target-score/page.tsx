@@ -25,7 +25,6 @@ export default function TargetScorePage() {
         }),
       });
 
-      console.log(response);
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.error || '목표 학점 설정에 실패했습니다.');
