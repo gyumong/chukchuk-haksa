@@ -13,11 +13,11 @@ export default function GraduationProgressLayout({
 }) {
   const router = useRouter();
   const { studentCode, department } = params;
-  const decodedDepartment = decodeURIComponent(department);
+  const decodedMajorName= decodeURIComponent(department);
   return (
     <div className={styles.container}>
       <TopNavigation.Preset
-        title={`${studentCode ? `${studentCode} ` : ''}학번 ${decodedDepartment || ''} 졸업요건`}
+        title={`${studentCode ? `${studentCode} ` : ''}학번 ${decodedMajorName || ''} 졸업요건`}
         type="back"
         onNavigationClick={() => router.back()}
       />

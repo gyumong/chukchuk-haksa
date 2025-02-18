@@ -25,7 +25,7 @@ export default function Home() {
 
   const handleGraduationProgress = () => {
     router.push(
-      `${ROUTES.GRADUATION_PROGRESS}/${parseInt(data?.profile.studentCode.slice(0, 2) ?? '0')}/${data?.profile.departmentName}`
+      `${ROUTES.GRADUATION_PROGRESS}/${parseInt(data?.profile.studentCode.slice(0, 2) ?? '0')}/${data?.profile.majorName}`
     );
   };
 
