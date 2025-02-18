@@ -13,7 +13,7 @@ export default function GraduationProgressLayout({
 }) {
   const router = useRouter();
   const { studentCode, department } = params;
-  const decodedMajorName= decodeURIComponent(department);
+  const decodedMajorName = decodeURIComponent(department);
   return (
     <div className={styles.container}>
       <TopNavigation.Preset
