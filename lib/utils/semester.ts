@@ -4,16 +4,25 @@
 export type SemesterType = '1' | '2' | '여름' | '겨울';
 
 /**
- * 정규 이수학기 수를 기반으로 현재 학년과 학기를 계산
- * @param gradeLevel 학년
+ * 학년(gradeLevel)과 정규 이수학기(completedSemesters)를 기반으로 현재 학기를 계산
+ * @param gradeLevel 현재 학년
  * @param completedSemesters 정규 이수학기 수
- * @returns { gradeLevel: number, currentSemester: number }
+ * @returns { currentSemester: number } - 1 또는 2
  */
-export function getSemesterInfo(completedSemesters: number) {
-  // TODO gradeLevel은 올라가나 방학중인 경우 completedSemester는 갱신이 안되는 문제가 있음
-  // 따라서 계산식 변경 필요
-  const currentSemester = completedSemesters % 2 === 1 ? 1 : 2;
-
+export function getSemesterInfo(gradeLevel: number, completedSemesters: number) {
+  // 해당 학년 이전에 완료해야 하는 최소 학기 수
+  const expectedCompleted = (gradeLevel - 1) * 2;
+  
+  // 만약 completedSemesters가 예상보다 낮으면 최소값으로 간주 (방학 중 업데이트가 안된 경우 대비)
+  const effectiveCompleted = Math.max(completedSemesters, expectedCompleted);
+  
+  // 현재 학기는, (실제 완료 학기 - 예상 완료 학기) + 1
+  let currentSemester = effectiveCompleted - expectedCompleted + 1;
+  
+  // currentSemester는 1 또는 2만 나와야 함
+  if (currentSemester < 1) currentSemester = 1;
+  if (currentSemester > 2) currentSemester = 2;
+  
   return {
     currentSemester,
   };

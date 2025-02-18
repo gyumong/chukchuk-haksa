@@ -21,11 +21,9 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 export default function Complete() {
   const { studentInfo } = useStudentInfo();
   const router = useRouter();
-
   const handleNext = () => {
     router.push(`${ROUTES.FUNNEL.TARGET_SCORE}`);
   };
-
   return (
     <div className={styles.container}>
       <FunnelHeadline
@@ -51,7 +49,7 @@ export default function Complete() {
               <InfoRow label="학번" value={studentInfo?.studentCode ?? ''} />
               <InfoRow
                 label="학기"
-                value={`${studentInfo?.gradeLevel ?? ''}학년 ${getSemesterInfo(studentInfo?.completedSemesters ?? 0).currentSemester ?? ''}학기`}
+                value={`${studentInfo?.gradeLevel ?? ''}학년 ${getSemesterInfo(parseInt(studentInfo?.gradeLevel ?? '0'), studentInfo?.completedSemesters as number).currentSemester ?? ''}학기`}
               />
               <InfoRow label="재학 여부" value={studentInfo?.status ?? ''} />
             </div>
