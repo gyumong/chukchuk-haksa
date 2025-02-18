@@ -87,11 +87,11 @@ export class SyncAcademicRecordUseCase {
       // 1) academicData → 도메인 모델(AcademicRecord) 매핑 & 저장
       const academicRecord = AcademicRecordMapperFromPortal.fromPortalAcademicData(userId, portalData.academic);
       await this.academicRecordRepository.upsertAcademicRecord(academicRecord);
-
+      console.log('academicRecordRepository.upsertAcademicRecord finished');
       // 2) offerings + academicData → 수강기록(CourseEnrollment) 생성 & 저장
       const enrollments = await this.processCurriculumData(portalData.curriculum, portalData.academic, userId);
       await this.studentCourseRepository.upsertEnrollments(enrollments);
-
+      console.log('studentCourseRepository.upsertEnrollments finished');
       return { isSuccess: true };
     } catch (error) {
       return {

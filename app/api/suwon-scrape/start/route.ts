@@ -48,6 +48,7 @@ export async function POST(req: Request) {
       const courseOfferingRepository = new SupabaseCourseOfferingRepository(supabase);
 
       const portalData = await portalRepository.fetchPortalData(username, password);
+      console.log('fetch finished');
 
       const initializePortalConnectionUseCase = new InitializePortalConnectionUseCase(
         portalRepository,
@@ -55,6 +56,7 @@ export async function POST(req: Request) {
         userRepository,
         authService
       );
+
 
       const syncAcademicRecordUseCase = new SyncAcademicRecordUseCase(
         portalRepository,
@@ -70,12 +72,15 @@ export async function POST(req: Request) {
       if (!initResult.isSuccess) {
         throw new Error(initResult.error);
       }
-
+      console.log('initializePortalConnectionUseCase Completed');
+      
       // (2) 학업 이력 동기화 유스케이스 실행
       const syncResult = await syncAcademicRecordUseCase.executeWithPortalData(portalData);
       if (!syncResult.isSuccess) {
         throw new Error(syncResult.error);
       }
+      
+      console.log('syncAcademicRecordUseCase Completed');
 
       studentInfo = initResult.studentInfo;
 

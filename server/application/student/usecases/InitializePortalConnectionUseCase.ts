@@ -129,6 +129,7 @@ export class InitializePortalConnectionUseCase {
           name: studentPortalData.major.name,
         }),
       ]);
+      console.log('department, major fetched');
       const secondaryMajor = studentPortalData.secondaryMajor
         ? await this.departmentRepository.getOrCreateDepartment({
             code: studentPortalData.secondaryMajor.code,
@@ -159,7 +160,7 @@ export class InitializePortalConnectionUseCase {
       };
 
       await this.userRepository.initializePortalConnection(userId, studentCreationData);
-
+      console.log('userRepository.initializePortalConnection');
       const studentInfo = {
         name: studentCreationData.name,
         school: '수원대학교',
