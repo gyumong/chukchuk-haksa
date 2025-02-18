@@ -1,11 +1,37 @@
-'use client';
 
 import React from 'react';
 import localFont from 'next/font/local';
-import Script from 'next/script';
-import { cleanupKakao, initializeKakao } from '@/lib/auth';
 import { Analytics } from "@vercel/analytics/react"
 import '../styles/global.scss';
+import KakaoProvider from '@/components/KakaoProvider';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '척척학사 I 수원대학교 졸업 관리의 모든 것',
+  description: '수원대학교 학생들을 위한 학사 및 졸업 관리 시스템, 척척학사! 졸업 요건 자동 확인, 학점 이수 현황 분석, 최적의 과목 추천까지 한 번에!',
+  keywords: ['수원대학교', '학사관리', '졸업 요건', '학점 관리', '수강 계획', '학사 시스템', '척척학사'],
+  metadataBase: new URL('https://cchaksa.com'),
+  icons: {
+    icon: '/favicon.ico',
+  },
+  openGraph: {
+    title: '척척학사 I 수원대학교 졸업 관리의 모든 것',
+    description: '수원대학교 학생들을 위한 학사 및 졸업 관리 시스템, 척척학사! 졸업 요건 자동 확인, 학점 이수 현황 분석, 최적의 과목 추천까지 한 번에!',
+    url: 'https://cchaksa.com',
+    siteName: '척척학사 I',
+    images: [
+      {
+        url: '/images/opengraph/og-image.png',
+        width: 800,
+        height: 400,
+      },
+    ],
+  },
+  twitter: {
+    title: '척척학사 I 수원대학교 졸업 관리의 모든 것',
+    description: '수원대학교 학생들을 위한 학사 및 졸업 관리 시스템, 척척학사! 졸업 요건 자동 확인, 학점 이수 현황 분석, 최적의 과목 추천까지 한 번에!',
+  },
+};
 
 const paperlogy = localFont({
   src: './fonts/Paperlogy-7Bold.woff2',
@@ -29,18 +55,12 @@ const suit = localFont({
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <head>
-        <Script
-          src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.1/kakao.min.js"
-          crossOrigin="anonymous"
-          onLoad={() => {
-            cleanupKakao();
-            initializeKakao();
-          }}
-        />
-      </head>
+
       <body className={`${paperlogy.variable} ${suit.variable} antialiased`}>
+        <KakaoProvider>
+
         {children}
+        </KakaoProvider>
         <Analytics />
       </body>
     </html>
