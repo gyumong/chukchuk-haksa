@@ -29,7 +29,7 @@ export class GraduationProgressService {
   ): Promise<AreaProgress[]> {
     // 2월 17일 전공 코드가 없는 학과도 있으므로 majorId가 없으면 departmentId를 사용
     const { data, error } = await this.supabase.rpc('get_student_area_progress', {
-      p_student_id: studentId,  
+      p_student_id: studentId,
       p_department_id: majorId ?? departmentId,
       p_admission_year: admissionYear,
     });
