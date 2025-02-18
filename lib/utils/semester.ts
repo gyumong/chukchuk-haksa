@@ -12,17 +12,21 @@ export type SemesterType = '1' | '2' | '여름' | '겨울';
 export function getSemesterInfo(gradeLevel: number, completedSemesters: number) {
   // 해당 학년 이전에 완료해야 하는 최소 학기 수
   const expectedCompleted = (gradeLevel - 1) * 2;
-  
+
   // 만약 completedSemesters가 예상보다 낮으면 최소값으로 간주 (방학 중 업데이트가 안된 경우 대비)
   const effectiveCompleted = Math.max(completedSemesters, expectedCompleted);
-  
+
   // 현재 학기는, (실제 완료 학기 - 예상 완료 학기) + 1
   let currentSemester = effectiveCompleted - expectedCompleted + 1;
-  
+
   // currentSemester는 1 또는 2만 나와야 함
-  if (currentSemester < 1) currentSemester = 1;
-  if (currentSemester > 2) currentSemester = 2;
-  
+  if (currentSemester < 1) {
+    currentSemester = 1;
+  }
+  if (currentSemester > 2) {
+    currentSemester = 2;
+  }
+
   return {
     currentSemester,
   };

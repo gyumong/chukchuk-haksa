@@ -229,6 +229,7 @@ export default function GraduationProgressPage() {
             currentCredits={area.earned_credits}
             requiredCredits={area.required_credits}
             isCompleted={area.earned_credits >= area.required_credits}
+            requiredElectiveCredits={area.required_elective_courses}
             courses={area.courses}
           />
           {index < areaProgress.length - 1 && <div className="gap-12"></div>}

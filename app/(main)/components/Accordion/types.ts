@@ -10,6 +10,7 @@ interface CourseAreaProps {
   currentCredits: number;
   requiredCredits: number;
   isCompleted: boolean;
+  requiredElectiveCredits?: number;
   courses?: Course[];
 }
 
@@ -20,6 +21,8 @@ interface CourseAreaTriggerProps {
   isCompleted: boolean;
   isExpanded: boolean;
   onClick: () => void;
+  requiredElectiveCredits?: number;
+  currentElectiveCourses?: number;
 }
 
 interface CourseListProps {
