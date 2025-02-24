@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import clsx from 'clsx';
 import styles from './ErrorScreen.module.scss';
 
 const ErrorScreen = ({ errorMessage }: { errorMessage?: string }) => {
@@ -10,7 +11,7 @@ const ErrorScreen = ({ errorMessage }: { errorMessage?: string }) => {
         <Image src="/images/illustrations/CommonError.png" alt="Error" width={300} height={300} />
       </div>
       <div className="gap-40" />
-      <div className="--title-lg-bold">{errorMessage}</div>
+      <div className={clsx(styles.errorMessage, '--title-lg-bold')}>{errorMessage}</div>
     </div>
   );
 };

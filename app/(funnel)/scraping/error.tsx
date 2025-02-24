@@ -20,7 +20,7 @@ const ScrapingErrorPage = ({ error }: { error: Error }) => {
   };
   return (
     <div className={styles.container}>
-      <ErrorScreen errorMessage="알 수 없는 오류가 발생했어요" />
+      <ErrorScreen errorMessage={error.message} />
       <FixedButton onClick={handleRetry}>다시 시도하기</FixedButton>
     </div>
   );

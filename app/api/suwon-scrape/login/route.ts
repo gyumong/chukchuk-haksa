@@ -12,21 +12,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: '학번/비밀번호가 필요합니다.' }, { status: 400 });
     }
 
-    const response = await fetch(`${process.env.AWS_URL}/auth`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
+    // const response = await fetch(`${process.env.AWS_URL}/auth`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Accept: 'application/json',
+    //   },
+    //   body: JSON.stringify({ username, password }),
+    // });
 
-    // 응답 확인
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: '알 수 없는 오류가 발생했습니다.' }));
-      console.error('Lambda Error:', errorData);
-      return NextResponse.json(errorData, { status: response.status });
-    }
+    // // 응답 확인
+    // if (!response.ok) {
+    //   const errorData = await response.json().catch(() => ({ error: '알 수 없는 오류가 발생했습니다.' }));
+    //   console.error('Lambda Error:', errorData);
+    //   return NextResponse.json(errorData, { status: response.status });
+    // }
 
     // 로그인 성공 시 세션 저장
     const res = NextResponse.json({ message: '로그인 성공', studentCode: username });

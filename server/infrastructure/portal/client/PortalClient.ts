@@ -32,8 +32,17 @@ export class PortalClient {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || '크롤링 중 오류가 발생했습니다.');
+      if (response.status === 401) {
+        throw new Error('아이디나 비밀번호가 일치하지 않습니다.\n학교 홈페이지에서 확인해주세요.', {
+          cause: response.status,
+        });
+      }
+      if (response.status === 423) {
+        throw new Error('계정이 잠겼습니다. 포털사이트로 돌아가서 학번/사번 찾기 및 비밀번호 재발급을 진행해주세요', {
+          cause: response.status,
+        });
+      }
+      throw new Error('크롤링 중 오류가 발생했습니다.');
     }
 
     return response.json();
