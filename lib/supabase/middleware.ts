@@ -78,6 +78,21 @@ export async function updateSession(request: NextRequest) {
       url.pathname = '/portal-login';
       return NextResponse.redirect(url);
     }
+
+    if (users?.portal_connected) {
+      // 만약 사용자가 portal-login, /funnel/*, /scraping 등 특정 경로 접근 시 차단하고 싶다면:
+      if (
+        request.nextUrl.pathname === '/portal-login' ||
+        request.nextUrl.pathname.startsWith('/agreement') ||
+        request.nextUrl.pathname.startsWith('/scraping') ||
+        request.nextUrl.pathname.startsWith('/target-score') ||
+        request.nextUrl.pathname.startsWith('/complete')
+      ) {
+        const url = request.nextUrl.clone();
+        url.pathname = '/main'; // 이미 연동된 유저는 /main 같은 페이지로 보낸다
+        return NextResponse.redirect(url);
+      }
+    }
   }
 
   if (!user && !request.nextUrl.pathname.startsWith('/') && !request.nextUrl.pathname.startsWith('/auth')) {
