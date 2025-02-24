@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     //   console.error('Lambda Error:', errorData);
     //   return NextResponse.json(errorData, { status: response.status });
     // }
-    
+
     // 로그인 성공 시 세션 저장
     const res = NextResponse.json({ message: '로그인 성공', studentCode: username });
     const session = await getIronSession<SessionData>(req, res, sessionOptions);

@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import styles from './ErrorScreen.module.scss';
 import clsx from 'clsx';
+import styles from './ErrorScreen.module.scss';
 
 const ErrorScreen = ({ errorMessage }: { errorMessage?: string }) => {
   return (
