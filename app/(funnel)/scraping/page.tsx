@@ -7,7 +7,7 @@ import { useStudentInfo } from '../contexts';
 
 export default function ScrapingPage() {
   const [, setTaskId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<number | null>(null);
   const isStarting = useRef(false);
   const router = useRouter();
   const { setStudentInfo } = useStudentInfo();
@@ -37,7 +37,7 @@ export default function ScrapingPage() {
       setTaskId(result.taskId);
       pollProgress(result.taskId);
     } catch (err: any) {
-      setError(err.message);
+      setErrorCode(500);
     }
   };
 
@@ -65,19 +65,31 @@ export default function ScrapingPage() {
         router.push('/complete');
         return;
       } else if (result.status === 'failed') {
-        setError(result.data?.message || '크롤링 중 오류가 발생했습니다.');
+        if (result.data?.status === 401) {
+          setErrorCode(401);
+        } else if (result.data?.status === 423) {
+          setErrorCode(423);
+        } else {
+          console.log('dd', result);
+          setErrorCode(500);
+        }
       } else {
         // 아직 진행 중이면 계속 폴링
         setTimeout(() => pollProgress(taskId), 2000);
       }
     } catch (err: any) {
-      setError(err.message);
-      return;
+      setErrorCode(500);
     }
   };
 
-  if (error) {
-    throw new Error(error);
+  if (errorCode) {
+    if (errorCode === 401) {
+      throw new Error('아이디나 비밀번호가 일치하지 않습니다.\n학교 홈페이지에서 확인해주세요.');
+    } else if (errorCode === 423) {
+      throw new Error('계정이 잠겼습니다. 포털사이트로 돌아가서 학번/사번 찾기 및 비밀번호 재발급을 진행해주세요');
+    } else {
+      throw new Error('알 수 없는 오류가 발생했어요 \n 잠시후 다시 시도해주세요');
+    }
   }
 
   return <LoadingScreen />;
