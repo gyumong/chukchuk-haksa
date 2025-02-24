@@ -11,7 +11,6 @@ const ScrapingErrorPage = ({ error }: { error: Error }) => {
   // TODO 에러 정의 및 처리
   useEffect(() => {
     Sentry.captureException(error);
-    console.log('error.tsx', error);
     console.log('error Message', error.message);
   }, [error]);
   const router = useRouter();

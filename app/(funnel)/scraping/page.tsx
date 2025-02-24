@@ -70,7 +70,6 @@ export default function ScrapingPage() {
         } else if (result.data?.status === 423) {
           setErrorCode(423);
         } else {
-          console.log('dd', result);
           setErrorCode(500);
         }
       } else {

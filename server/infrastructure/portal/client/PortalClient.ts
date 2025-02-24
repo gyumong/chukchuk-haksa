@@ -33,7 +33,7 @@ export class PortalClient {
 
 
     if (!response.ok) {
-      const result = await response.json();
+      
       if (response.status === 401) {
         throw new Error('아이디나 비밀번호가 일치하지 않습니다.\n학교 홈페이지에서 확인해주세요.', { cause: response.status });
       }
