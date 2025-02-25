@@ -22,7 +22,7 @@ export interface StudentInitializationDataType {
   studentCode: string;
   name: string;
   departmentId: number;
-  majorId: number;
+  majorId: number | null;
   secondaryMajorId?: number | null;
   admissionYear: number;
   semesterEnrolled: number;

@@ -11,7 +11,9 @@ export class SupabaseUserRepository implements IUserRepository {
   async findById(id: string): Promise<User | null> {
     const { data, error } = await this.supabase
       .from('users')
-      .select('id, portal_connected, connected_at, created_at, email, profile_image, profile_nickname, updated_at, deleted_at, is_deleted')
+      .select(
+        'id, portal_connected, connected_at, created_at, email, profile_image, profile_nickname, updated_at, deleted_at, is_deleted'
+      )
       .eq('id', id)
       .single();
 
@@ -36,6 +38,7 @@ export class SupabaseUserRepository implements IUserRepository {
     });
 
     if (error) {
+      console.log('error', error);
       throw new Error('포털 연동 초기화 중 오류가 발생했습니다.');
     }
   }

@@ -22,9 +22,10 @@ export default function Home() {
     fetchDashboard();
   }, []);
 
+
   const handleGraduationProgress = () => {
     router.push(
-      `${ROUTES.GRADUATION_PROGRESS}/${parseInt(data?.profile.studentCode.slice(0, 2) ?? '0')}/${data?.profile.majorName}`
+      `${ROUTES.GRADUATION_PROGRESS}/${parseInt(data?.profile.studentCode.slice(0, 2) ?? '0')}/${data?.profile?.majorName ? data?.profile?.majorName:  data?.profile?.departmentName ?? ''}`
     );
   };
 
@@ -52,7 +53,7 @@ export default function Home() {
           <GraduationRequirementCard
             majorType="주전공"
             admissionYear={parseInt(data?.profile.studentCode.slice(0, 2) ?? '0')}
-            majorName={data?.profile.majorName ?? ''}
+            majorName={data?.profile?.majorName ? data?.profile?.majorName:  data?.profile?.departmentName ?? ''}
             handleGraduationProgress={handleGraduationProgress}
             earnedCredits={data?.summary.earnedCredits ?? 0}
             requiredCredits={data?.summary.requiredCredits ?? 0}
