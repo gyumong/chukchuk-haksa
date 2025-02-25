@@ -18,7 +18,6 @@ export default function GraduationRequirementCard({
   requiredCredits,
   handleGraduationProgress,
 }: Props) {
-  
   return (
     <div className={styles.container}>
       <span className={styles.majorType}>{majorType}</span>

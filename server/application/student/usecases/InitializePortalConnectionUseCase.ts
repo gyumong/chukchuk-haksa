@@ -55,16 +55,17 @@ export class InitializePortalConnectionUseCase {
 
       // 학과/전공 정보 초기화
 
-
       const department = await this.departmentRepository.getOrCreateDepartment({
         code: studentPortalData.department.code,
         name: studentPortalData.department.name,
       });
 
-      const major = studentPortalData.major.code ? await this.departmentRepository.getOrCreateDepartment({
-        code: studentPortalData.major.code,
-        name: studentPortalData.major.name,
-      }) : null;
+      const major = studentPortalData.major.code
+        ? await this.departmentRepository.getOrCreateDepartment({
+            code: studentPortalData.major.code,
+            name: studentPortalData.major.name,
+          })
+        : null;
       // 복수전공 정보 초기화 (없으면 null)
       const secondaryMajor = studentPortalData.secondaryMajor
         ? await this.departmentRepository.getOrCreateDepartment({
@@ -124,10 +125,12 @@ export class InitializePortalConnectionUseCase {
         code: studentPortalData.department.code,
         name: studentPortalData.department.name,
       });
-      const major = studentPortalData.major.code ? await this.departmentRepository.getOrCreateDepartment({
-        code: studentPortalData.major.code,
-        name: studentPortalData.major.name,
-      }) : null;
+      const major = studentPortalData.major.code
+        ? await this.departmentRepository.getOrCreateDepartment({
+            code: studentPortalData.major.code,
+            name: studentPortalData.major.name,
+          })
+        : null;
       console.log('department, major fetched');
       const secondaryMajor = studentPortalData.secondaryMajor
         ? await this.departmentRepository.getOrCreateDepartment({
