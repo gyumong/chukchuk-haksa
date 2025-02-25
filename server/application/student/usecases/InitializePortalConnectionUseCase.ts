@@ -54,16 +54,18 @@ export class InitializePortalConnectionUseCase {
       }
 
       // 학과/전공 정보 초기화
-      const [department, major] = await Promise.all([
-        this.departmentRepository.getOrCreateDepartment({
-          code: studentPortalData.department.code,
-          name: studentPortalData.department.name,
-        }),
-        this.departmentRepository.getOrCreateDepartment({
-          code: studentPortalData.major.code,
-          name: studentPortalData.major.name,
-        }),
-      ]);
+
+      const department = await this.departmentRepository.getOrCreateDepartment({
+        code: studentPortalData.department.code,
+        name: studentPortalData.department.name,
+      });
+
+      const major = studentPortalData.major.code
+        ? await this.departmentRepository.getOrCreateDepartment({
+            code: studentPortalData.major.code,
+            name: studentPortalData.major.name,
+          })
+        : null;
       // 복수전공 정보 초기화 (없으면 null)
       const secondaryMajor = studentPortalData.secondaryMajor
         ? await this.departmentRepository.getOrCreateDepartment({
@@ -74,7 +76,7 @@ export class InitializePortalConnectionUseCase {
 
       // TODO majorId 없는 학과도 있을 수 잇음
       const departmentId = department.getId()?.getValue();
-      const majorId = major.getId()?.getValue();
+      const majorId = major?.getId()?.getValue();
       if (!departmentId || !majorId) {
         throw new Error('학과/전공 정보 초기화 실패');
       }
@@ -119,16 +121,16 @@ export class InitializePortalConnectionUseCase {
         return { isSuccess: false, error: '이미 포털 계정과 연동된 사용자입니다.' };
       }
 
-      const [department, major] = await Promise.all([
-        this.departmentRepository.getOrCreateDepartment({
-          code: studentPortalData.department.code,
-          name: studentPortalData.department.name,
-        }),
-        this.departmentRepository.getOrCreateDepartment({
-          code: studentPortalData.major.code,
-          name: studentPortalData.major.name,
-        }),
-      ]);
+      const department = await this.departmentRepository.getOrCreateDepartment({
+        code: studentPortalData.department.code,
+        name: studentPortalData.department.name,
+      });
+      const major = studentPortalData.major.code
+        ? await this.departmentRepository.getOrCreateDepartment({
+            code: studentPortalData.major.code,
+            name: studentPortalData.major.name,
+          })
+        : null;
       console.log('department, major fetched');
       const secondaryMajor = studentPortalData.secondaryMajor
         ? await this.departmentRepository.getOrCreateDepartment({
@@ -138,8 +140,8 @@ export class InitializePortalConnectionUseCase {
         : null;
 
       const departmentId = department.getId()?.getValue();
-      const majorId = major.getId()?.getValue();
-      if (!departmentId || !majorId) {
+      const majorId = major?.getId()?.getValue();
+      if (!departmentId) {
         throw new Error('학과/전공 정보 초기화 실패');
       }
 
@@ -147,7 +149,7 @@ export class InitializePortalConnectionUseCase {
         studentCode: studentPortalData.studentCode,
         name: studentPortalData.name,
         departmentId,
-        majorId,
+        majorId: majorId ?? null,
         secondaryMajorId: secondaryMajor?.getId()?.getValue() ?? null,
         admissionYear: studentPortalData.admission.year,
         semesterEnrolled: studentPortalData.admission.semester,
@@ -164,7 +166,7 @@ export class InitializePortalConnectionUseCase {
       const studentInfo = {
         name: studentCreationData.name,
         school: '수원대학교',
-        majorName: major.getName(),
+        majorName: major?.getName() ?? department.getName(),
         studentCode: studentCreationData.studentCode,
         gradeLevel: studentCreationData.gradeLevel,
         status: studentCreationData.status,
