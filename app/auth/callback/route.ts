@@ -35,6 +35,6 @@ export async function GET(request: Request) {
   } catch (error) {
     console.log('error', error);
     const errorCode = error instanceof AuthError ? error.message : 'UNKNOWN_ERROR';
-    return NextResponse.redirect(`${origin}/login?error=${errorCode}`);
+    return NextResponse.redirect(`${origin}/main?error=${errorCode}`);
   }
 }
