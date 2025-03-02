@@ -64,7 +64,6 @@ export default function GraduationProgressPage() {
 
         const data = await response.json();
 
-        console.log(data);
         // 데이터 형식 변환
         const formattedGraduationProgress = data.graduationProgress.map((area: any) => ({
           area_type: area.areaType,
@@ -127,6 +126,13 @@ export default function GraduationProgressPage() {
 
   function calculateAcademicLevel(semesters: SemesterGrade[]) {
     // 학기 데이터를 정렬 (년도 및 학기 순서 기준)
+    if (!semesters || semesters.length === 0) {
+      return {
+        start: '1학년 1학기',
+        end: '1학년 1학기',
+      };
+    }
+
     semesters.sort((a, b) => {
       const yearDiff = a.year - b.year;
       if (yearDiff !== 0) {
@@ -210,7 +216,11 @@ export default function GraduationProgressPage() {
   return (
     <div className={styles.container}>
       <div className="gap-8"></div>
-      <SemesterGradeCard startSemester={start} endSemester={end} onClick={handleClickSemesterGradeCard} />
+      {semesterGrades.length === 0 ? (
+        <div>학기 데이터가 없습니다.</div>
+      ) : (
+        <SemesterGradeCard startSemester={start} endSemester={end} onClick={handleClickSemesterGradeCard} />
+      )}
       <div className="gap-28"></div>
       <div className={styles.sectionTitle}>전체 수강내역</div>
       <div className="gap-12"></div>
@@ -220,19 +230,21 @@ export default function GraduationProgressPage() {
         percentile={academicSummary.percentile}
       />
       <div className="gap-12"></div>
-      {areaProgress.map((area, index) => (
-        <div key={area.area_type}>
-          <CourseAccordion
-            title={area.area_type}
-            currentCredits={area.earned_credits}
-            requiredCredits={area.required_credits}
-            isCompleted={area.earned_credits >= area.required_credits}
-            requiredElectiveCredits={area.required_elective_courses}
-            courses={area.courses}
-          />
-          {index < areaProgress.length - 1 && <div className="gap-12"></div>}
-        </div>
-      ))}
+      {areaProgress
+        .filter(area => area.required_credits > 0)
+        .map((area, index) => (
+          <div key={area.area_type}>
+            <CourseAccordion
+              title={area.area_type}
+              currentCredits={area.earned_credits}
+              requiredCredits={area.required_credits}
+              isCompleted={area.earned_credits >= area.required_credits}
+              requiredElectiveCredits={area.required_elective_courses}
+              courses={area.courses}
+            />
+            {index < areaProgress.length - 1 && <div className="gap-12"></div>}
+          </div>
+        ))}
     </div>
   );
 }
