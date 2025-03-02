@@ -126,7 +126,15 @@ export default function GraduationProgressPage() {
   }
 
   function calculateAcademicLevel(semesters: SemesterGrade[]) {
+    console.log('semesters', semesters);
     // 학기 데이터를 정렬 (년도 및 학기 순서 기준)
+    if (!semesters || semesters.length === 0) {
+      return {
+        start: '1학년 1학기',
+        end: '1학년 1학기'
+      };
+    }
+
     semesters.sort((a, b) => {
       const yearDiff = a.year - b.year;
       if (yearDiff !== 0) {
@@ -179,6 +187,9 @@ export default function GraduationProgressPage() {
     const start = results[0];
     const end = results[results.length - 1];
 
+    console.log('start', results);
+    console.log('end', end);
+
     return {
       start: `${start.grade}학년 ${start.semesterName}`,
       end: `${end.grade}학년 ${end.semesterName}`,
@@ -201,7 +212,7 @@ export default function GraduationProgressPage() {
         return 10; // 기본값
     }
   }
-  const handleClickSemesterGradeCard = () => {
+  const handleClickSemesterGradeCard = () => {    
     router.push(
       `${ROUTES.ACADEMIC_DETAIL}?year=${semesterGrades[semesterGrades.length - 1].year}&semester=${parseSemester(String(semesterGrades[semesterGrades.length - 1].semester))}`
     );
@@ -210,7 +221,11 @@ export default function GraduationProgressPage() {
   return (
     <div className={styles.container}>
       <div className="gap-8"></div>
-      <SemesterGradeCard startSemester={start} endSemester={end} onClick={handleClickSemesterGradeCard} />
+      {semesterGrades.length === 0 ? (
+        <div>학기 데이터가 없습니다.</div>
+      ) : (
+        <SemesterGradeCard startSemester={start} endSemester={end} onClick={handleClickSemesterGradeCard} />
+      )}
       <div className="gap-28"></div>
       <div className={styles.sectionTitle}>전체 수강내역</div>
       <div className="gap-12"></div>
@@ -220,7 +235,7 @@ export default function GraduationProgressPage() {
         percentile={academicSummary.percentile}
       />
       <div className="gap-12"></div>
-      {areaProgress.map((area, index) => (
+      {areaProgress.filter(area => area.required_credits > 0).map((area, index) => (
         <div key={area.area_type}>
           <CourseAccordion
             title={area.area_type}
