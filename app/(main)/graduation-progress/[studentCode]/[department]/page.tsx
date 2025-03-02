@@ -64,7 +64,6 @@ export default function GraduationProgressPage() {
 
         const data = await response.json();
 
-        console.log(data);
         // 데이터 형식 변환
         const formattedGraduationProgress = data.graduationProgress.map((area: any) => ({
           area_type: area.areaType,
@@ -126,7 +125,6 @@ export default function GraduationProgressPage() {
   }
 
   function calculateAcademicLevel(semesters: SemesterGrade[]) {
-    console.log('semesters', semesters);
     // 학기 데이터를 정렬 (년도 및 학기 순서 기준)
     if (!semesters || semesters.length === 0) {
       return {
@@ -186,9 +184,6 @@ export default function GraduationProgressPage() {
     // 시작 학기와 마지막 학기 추출
     const start = results[0];
     const end = results[results.length - 1];
-
-    console.log('start', results);
-    console.log('end', end);
 
     return {
       start: `${start.grade}학년 ${start.semesterName}`,
