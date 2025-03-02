@@ -131,7 +131,7 @@ export default function GraduationProgressPage() {
     if (!semesters || semesters.length === 0) {
       return {
         start: '1학년 1학기',
-        end: '1학년 1학기'
+        end: '1학년 1학기',
       };
     }
 
@@ -212,7 +212,7 @@ export default function GraduationProgressPage() {
         return 10; // 기본값
     }
   }
-  const handleClickSemesterGradeCard = () => {    
+  const handleClickSemesterGradeCard = () => {
     router.push(
       `${ROUTES.ACADEMIC_DETAIL}?year=${semesterGrades[semesterGrades.length - 1].year}&semester=${parseSemester(String(semesterGrades[semesterGrades.length - 1].semester))}`
     );
@@ -235,19 +235,21 @@ export default function GraduationProgressPage() {
         percentile={academicSummary.percentile}
       />
       <div className="gap-12"></div>
-      {areaProgress.filter(area => area.required_credits > 0).map((area, index) => (
-        <div key={area.area_type}>
-          <CourseAccordion
-            title={area.area_type}
-            currentCredits={area.earned_credits}
-            requiredCredits={area.required_credits}
-            isCompleted={area.earned_credits >= area.required_credits}
-            requiredElectiveCredits={area.required_elective_courses}
-            courses={area.courses}
-          />
-          {index < areaProgress.length - 1 && <div className="gap-12"></div>}
-        </div>
-      ))}
+      {areaProgress
+        .filter(area => area.required_credits > 0)
+        .map((area, index) => (
+          <div key={area.area_type}>
+            <CourseAccordion
+              title={area.area_type}
+              currentCredits={area.earned_credits}
+              requiredCredits={area.required_credits}
+              isCompleted={area.earned_credits >= area.required_credits}
+              requiredElectiveCredits={area.required_elective_courses}
+              courses={area.courses}
+            />
+            {index < areaProgress.length - 1 && <div className="gap-12"></div>}
+          </div>
+        ))}
     </div>
   );
 }
