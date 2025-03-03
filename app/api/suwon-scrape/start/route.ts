@@ -91,7 +91,6 @@
 
       console.log('syncAcademicRecordUseCase Completed');
 
-      studentInfo = initResult.studentInfo;
 
       setTask(taskId, 'completed', { message: '동기화 완료', studentInfo: initResult.studentInfo });
       // **세션 만료 처리**
