@@ -31,7 +31,6 @@
     if (!username || !password) {
       return NextResponse.json({ error: '포털 로그인이 필요합니다.' }, { status: 401 });
     }
-    let studentInfo;
     const taskId = uuidv4();
     setTask(taskId, 'in-progress', null);
 
