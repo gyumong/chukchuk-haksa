@@ -19,10 +19,10 @@
   import { SupabaseUserRepository } from '@/server/infrastructure/supabase/repository/SupabaseUserRepository';
   import { SupabaseAuthService } from '@/server/infrastructure/supabase/SupabaseAuthService';
   import type { Database } from '@/types';
+  import { after } from 'next/server'
 
-  export const runtime = 'edge';;
 
-  export async function POST(req: Request, {waitUntil}: {waitUntil: (promise: Promise<void>) => void}) {
+  export async function POST(req: Request) {
     const res = NextResponse.next();
     const session = await getIronSession<SessionData>(req, res, sessionOptions);
     const username = session.username;
@@ -36,8 +36,16 @@
     setTask(taskId, 'in-progress', null);
 
     // 비동기로 크롤링 시작
-    waitUntil(
-    (async () => {
+    const jsonResponse = NextResponse.json({ taskId, studentInfo: {
+      name: '',
+      majorName: '',
+      studentCode: '',
+      gradeLevel: '',
+      completedSemesters: '',
+      status: 0,
+      school: '수원대학교',
+    } }, { status: 202 });
+    after(async () => {
     try {
       const supabase: SupabaseClient<Database> = createClient();
       const portalRepository = new PortalRepositoryImpl();
@@ -96,8 +104,7 @@
       // TODO cause 처리 로직 암묵적 의존성 내포 개선 필요
       setTask(taskId, 'failed', { message: err.message, status: err.cause });
     }
-    })()
-  )
+    })
 
-    return NextResponse.json({ taskId, studentInfo }, { status: 202 });
+    return jsonResponse;
   }
