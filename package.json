@@ -23,6 +23,7 @@
     "@sentry/opentelemetry": "^9.1.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.46.1",
+    "@upstash/redis": "^1.34.4",
     "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "cookies-next": "4.3.0",

@@ -1,29 +1,27 @@
-type TaskStatus = 'in-progress' | 'completed' | 'failed';
+// lib/crawling/scrape-task.ts
+import { redis } from '@/lib/redis';
 
-interface TaskInfo {
-  status: TaskStatus;
-  data: any; // 크롤링 결과 or 에러 메시지
+export interface TaskInfo {
+  status: 'in-progress' | 'completed' | 'failed';
+  data: any;
 }
 
-declare global {
-  // TypeScript에서 global 객체 확장을 위해 반드시 선언이 필요
-  let taskMap: Map<string, TaskInfo> | undefined;
+// 작업 등록(업데이트)
+export async function setTask(taskId: string, status: TaskInfo['status'], data: any) {
+  const task: TaskInfo = { status, data };
+  // JSON 문자열로 변환 후 Redis에 저장
+  await redis.set(`task:${taskId}`, JSON.stringify(task));
 }
 
-// `globalThis`를 사용해 글로벌 변수 관리
-const globalTaskMap = (globalThis as any).taskMap || new Map<string, TaskInfo>();
-(globalThis as any).taskMap = globalTaskMap;
+// 작업 조회
+export async function getTask(taskId: string): Promise<TaskInfo | null> {
+  const raw = await redis.get<string>(`task:${taskId}`);
+  if (!raw) {return null;} // 찾을 수 없음
 
-export const taskMap = globalTaskMap;
-
-export function setTask(taskId: string, status: TaskStatus, data: any) {
-  taskMap.set(taskId, { status, data });
+  return JSON.parse(raw) as TaskInfo;
 }
 
-export function getTask(taskId: string): TaskInfo | undefined {
-  return taskMap.get(taskId);
-}
-
-export function deleteTask(taskId: string) {
-  taskMap.delete(taskId);
+// 작업 삭제
+export async function deleteTask(taskId: string) {
+  await redis.del(`task:${taskId}`);
 }
