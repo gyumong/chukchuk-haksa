@@ -20,9 +20,7 @@
   import { SupabaseAuthService } from '@/server/infrastructure/supabase/SupabaseAuthService';
   import type { Database } from '@/types';
 
-  export const config = {
-    runtime: 'edge',
-  };
+  export const runtime = 'edge';;
 
   export async function POST(req: Request, {waitUntil}: {waitUntil: (promise: Promise<void>) => void}) {
     const res = NextResponse.next();
