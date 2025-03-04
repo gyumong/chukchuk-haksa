@@ -32,7 +32,7 @@
       return NextResponse.json({ error: '포털 로그인이 필요합니다.' }, { status: 401 });
     }
     const taskId = uuidv4();
-    setTask(taskId, 'in-progress', null);
+    await setTask(taskId, 'in-progress', null);
 
     // 비동기로 크롤링 시작
     const jsonResponse = NextResponse.json({ taskId, studentInfo: {
@@ -59,7 +59,6 @@
       console.log('fetch start');
       const portalData = await portalRepository.fetchPortalData(username, password);
       console.log('fetch finished');
-      console.log('portalData', portalData);
       const initializePortalConnectionUseCase = new InitializePortalConnectionUseCase(
         portalRepository,
         departmentRepository,
@@ -92,7 +91,7 @@
       console.log('syncAcademicRecordUseCase Completed');
 
 
-      setTask(taskId, 'completed', { message: '동기화 완료', studentInfo: initResult.studentInfo });
+      await setTask(taskId, 'completed', { message: '동기화 완료', studentInfo: initResult.studentInfo });
       // **세션 만료 처리**
       session.destroy(); // Iron Session에서 세션 데이터 삭제
       console.log('Session destroyed after succes sful scrape');
@@ -100,7 +99,7 @@
     } catch (err: any) {
       console.log('@error@', err.message, err);
       // TODO cause 처리 로직 암묵적 의존성 내포 개선 필요
-      setTask(taskId, 'failed', { message: err.message, status: err.cause });
+     await setTask(taskId, 'failed', { message: err.message, status: err.cause });
     }
     })
 
