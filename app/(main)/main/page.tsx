@@ -28,6 +28,11 @@ export default function Home() {
     );
   };
 
+
+  const handleResyncLogin = () => {
+    router.push(ROUTES.FUNNEL.RESYNC_LOGIN);
+  };
+
   return (
     <div>
       {isLoading ? (
@@ -59,6 +64,7 @@ export default function Home() {
           />
         </>
       )}
+      <button onClick={handleResyncLogin}>학업 이력 동기화하기</button>
     </div>
   );
 }
