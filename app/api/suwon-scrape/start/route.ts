@@ -35,62 +35,61 @@ export async function POST(req: Request) {
 
   // 비동기로 크롤링 시작
   // (async () => {
-    try {
-      const supabase: SupabaseClient<Database> = createClient();
-      const portalRepository = new PortalRepositoryImpl();
-      const departmentRepository = new SupabaseDepartmentRepository(supabase);
-      const userRepository = new SupabaseUserRepository(supabase);
-      const authService = new SupabaseAuthService(supabase);
-      const courseRepository = new SupabaseCourseRepository(supabase);
-      const professorRepository = new SupabaseProfessorRepository(supabase);
-      const studentCourseRepository = new SupabaseStudentCourseRepository(supabase);
-      const academicRecordRepository = new SupabaseAcademicRecordRepository(supabase);
-      const courseOfferingRepository = new SupabaseCourseOfferingRepository(supabase);
-      console.log('fetch start')
-      const portalData = await portalRepository.fetchPortalData(username, password);
-      console.log('fetch finished');
+  try {
+    const supabase: SupabaseClient<Database> = createClient();
+    const portalRepository = new PortalRepositoryImpl();
+    const departmentRepository = new SupabaseDepartmentRepository(supabase);
+    const userRepository = new SupabaseUserRepository(supabase);
+    const authService = new SupabaseAuthService(supabase);
+    const courseRepository = new SupabaseCourseRepository(supabase);
+    const professorRepository = new SupabaseProfessorRepository(supabase);
+    const studentCourseRepository = new SupabaseStudentCourseRepository(supabase);
+    const academicRecordRepository = new SupabaseAcademicRecordRepository(supabase);
+    const courseOfferingRepository = new SupabaseCourseOfferingRepository(supabase);
+    console.log('fetch start');
+    const portalData = await portalRepository.fetchPortalData(username, password);
+    console.log('fetch finished');
 
-      const initializePortalConnectionUseCase = new InitializePortalConnectionUseCase(
-        portalRepository,
-        departmentRepository,
-        userRepository,
-        authService
-      );
+    const initializePortalConnectionUseCase = new InitializePortalConnectionUseCase(
+      portalRepository,
+      departmentRepository,
+      userRepository,
+      authService
+    );
 
-
-      const syncAcademicRecordUseCase = new SyncAcademicRecordUseCase(
-        portalRepository,
-        authService,
-        academicRecordRepository,
-        studentCourseRepository,
-        courseRepository,
-        courseOfferingRepository,
-        professorRepository
-      );
-      // (1) 포털 연동 초기화 유스케이스 실행
-      const initResult = await initializePortalConnectionUseCase.executeWithPortalData(portalData);
-      if (!initResult.isSuccess) {
-        throw new Error(initResult.error);
-      }
-      console.log('initializePortalConnectionUseCase Completed');
-      
-      // (2) 학업 이력 동기화 유스케이스 실행
-      const syncResult = await syncAcademicRecordUseCase.executeWithPortalData(portalData);
-      if (!syncResult.isSuccess) {
-        throw new Error(syncResult.error);
-      }
-      
-      console.log('syncAcademicRecordUseCase Completed');
-
-      studentInfo = initResult.studentInfo;
-
-      setTask(taskId, 'completed', { message: '동기화 완료', studentInfo: initResult.studentInfo });
-      // **세션 만료 처리**
-      session.destroy(); // Iron Session에서 세션 데이터 삭제
-      console.log('Session destroyed after successful scrape');
-    } catch (err: any) {
-      setTask(taskId, 'failed', { message: err.message });
+    const syncAcademicRecordUseCase = new SyncAcademicRecordUseCase(
+      portalRepository,
+      authService,
+      academicRecordRepository,
+      studentCourseRepository,
+      courseRepository,
+      courseOfferingRepository,
+      professorRepository
+    );
+    // (1) 포털 연동 초기화 유스케이스 실행
+    const initResult = await initializePortalConnectionUseCase.executeWithPortalData(portalData);
+    if (!initResult.isSuccess) {
+      throw new Error(initResult.error);
     }
+    console.log('initializePortalConnectionUseCase Completed');
+
+    // (2) 학업 이력 동기화 유스케이스 실행
+    const syncResult = await syncAcademicRecordUseCase.executeWithPortalData(portalData);
+    if (!syncResult.isSuccess) {
+      throw new Error(syncResult.error);
+    }
+
+    console.log('syncAcademicRecordUseCase Completed');
+
+    studentInfo = initResult.studentInfo;
+
+    setTask(taskId, 'completed', { message: '동기화 완료', studentInfo: initResult.studentInfo });
+    // **세션 만료 처리**
+    session.destroy(); // Iron Session에서 세션 데이터 삭제
+    console.log('Session destroyed after successful scrape');
+  } catch (err: any) {
+    setTask(taskId, 'failed', { message: err.message });
+  }
   // })();
 
   return NextResponse.json({ taskId, studentInfo }, { status: 202 });
