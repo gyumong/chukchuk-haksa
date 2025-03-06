@@ -19,6 +19,11 @@ export interface IStudentCourseRepository {
   findByStudentId(studentId: string): Promise<CourseEnrollments>;
 
   /**
+   * 학생의 모든 수강 이력 삭제
+   */
+  removeEnrollments(studentId: string, offeringIds: number[]): Promise<void>;
+
+  /**
    * 특정 학기의 수강 이력 조회
    */
   // findBySemester(studentId: string, year: number, semester: number): Promise<CourseEnrollments>;
