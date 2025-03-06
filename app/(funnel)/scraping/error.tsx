@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/nextjs';
 import { FixedButton } from '@/components/ui';
 import ErrorScreen from '../components/ErrorScreen/ErrorScreen';
 import styles from './error.module.scss';
+import { ROUTES } from '@/constants/routes';
 
 const ScrapingErrorPage = ({ error }: { error: Error }) => {
   // TODO 에러 정의 및 처리
@@ -16,7 +17,7 @@ const ScrapingErrorPage = ({ error }: { error: Error }) => {
   const router = useRouter();
 
   const handleRetry = () => {
-    router.push('/portal-login');
+    router.push(`${ROUTES.FUNNEL.PORTAL_LOGIN}`);
   };
   return (
     <div className={styles.container}>
