@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import LoadingScreen from '../components/LoadingScreen/LoadingScreen';
+
 export default function ScrapingPage() {
   const [errorCode, setErrorCode] = useState<number | null>(null);
   const isStarting = useRef(false);

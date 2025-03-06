@@ -266,7 +266,6 @@ export class SyncAcademicRecordUseCase {
     return courseMap;
   }
 
-
   /**
    * DB에 이미 있는 수강기록 vs 새로 만든 enrollments를 비교해
    * 이번에 누락된 과목은 삭제(정정 기간 드롭 처리).
@@ -278,7 +277,7 @@ export class SyncAcademicRecordUseCase {
 
     // 2) 새로운 offeringId 집합
     const newOfferingIds = newEnrollments.map(e => e.getOfferingId());
-    
+
     // 3) 기존 중에서 newOfferingIds에 없는 항목 → 삭제 대상
     const toRemoveOfferingIds: number[] = [];
     for (const e of existingAll) {

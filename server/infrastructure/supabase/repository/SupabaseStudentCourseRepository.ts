@@ -32,10 +32,7 @@ export class SupabaseStudentCourseRepository implements IStudentCourseRepository
   }
 
   async findByStudentId(studentId: string): Promise<CourseEnrollments> {
-    const { data, error } = await this.supabase
-      .from('student_courses')
-      .select('*')
-      .eq('student_id', studentId)
+    const { data, error } = await this.supabase.from('student_courses').select('*').eq('student_id', studentId);
     if (error) {
       throw new Error(`Find enrollments by studentId failed: ${error.message}`);
     }
@@ -49,7 +46,7 @@ export class SupabaseStudentCourseRepository implements IStudentCourseRepository
       .delete()
       .eq('student_id', studentId)
       .in('offering_id', offeringIds);
-  
+
     if (error) {
       throw new Error(`Remove enrollments failed: ${error.message}`);
     }

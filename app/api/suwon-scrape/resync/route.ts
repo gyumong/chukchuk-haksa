@@ -8,6 +8,7 @@ import { sessionOptions } from '@/lib/auth';
 import { setTask } from '@/lib/crawling/scrape-task';
 import { createClient } from '@/lib/supabase/server';
 import { SyncAcademicRecordUseCase } from '@/server/application/academic-record/usecases/SyncAcademicRecordUseCase';
+import { RefreshPortalConnectionUseCase } from '@/server/application/student/usecases/RefreshPortalConnectionUseCase';
 import { PortalRepositoryImpl } from '@/server/infrastructure/portal/PortalRepositoryImpl';
 import { SupabaseAcademicRecordRepository } from '@/server/infrastructure/supabase/repository/SupabaseAcademicRecordRepository';
 import { SupabaseCourseOfferingRepository } from '@/server/infrastructure/supabase/repository/SupabaseCourseOfferingRepository';
@@ -18,7 +19,6 @@ import { SupabaseStudentCourseRepository } from '@/server/infrastructure/supabas
 import { SupabaseUserRepository } from '@/server/infrastructure/supabase/repository/SupabaseUserRepository';
 import { SupabaseAuthService } from '@/server/infrastructure/supabase/SupabaseAuthService';
 import type { Database } from '@/types';
-import { RefreshPortalConnectionUseCase } from '@/server/application/student/usecases/RefreshPortalConnectionUseCase';
 
 export async function POST(req: Request) {
   const res = NextResponse.next();
@@ -79,9 +79,8 @@ export async function POST(req: Request) {
 
     console.log('syncAcademicRecordUseCase Completed');
 
-
     setTask(taskId, 'completed', { message: '동기화 완료' });
-    // **세션 만료 처리**   
+    // **세션 만료 처리**
     session.destroy(); // Iron Session에서 세션 데이터 삭제
     console.log('Session destroyed after successful scrape');
   } catch (err) {

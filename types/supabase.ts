@@ -773,10 +773,10 @@ export type Database = {
         Args: {
           p_student_id: string;
         };
-        Returns: {
+        Returns: Array<{
           area_requirements_fulfilled: boolean;
           elective_courses_fulfilled: boolean;
-        }[];
+        }>;
       };
       check_liberal_arts_fulfillment: {
         Args: {
@@ -796,7 +796,7 @@ export type Database = {
           p_department_id: number;
           p_admission_year: number;
         };
-        Returns: {
+        Returns: Array<{
           area_type: string;
           required_credits: number;
           earned_credits: number;
@@ -804,7 +804,7 @@ export type Database = {
           completed_elective_courses: number;
           total_elective_courses: number;
           courses: Json;
-        }[];
+        }>;
       };
       initialize_portal_connection: {
         Args: {
@@ -827,7 +827,7 @@ export type Database = {
       upsert_academic_record: {
         Args: {
           p_student_id: string;
-          p_semester_grades: Database['public']['CompositeTypes']['semester_grade_input'][];
+          p_semester_grades: Array<Database['public']['CompositeTypes']['semester_grade_input']>;
           p_academic_summary: Json;
         };
         Returns: undefined;

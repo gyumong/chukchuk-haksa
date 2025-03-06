@@ -18,7 +18,7 @@ export class RefreshPortalConnectionUseCase {
   constructor(
     private readonly departmentRepository: IDepartmentRepository,
     private readonly userRepository: IUserRepository,
-    private readonly authService: IAuthService,
+    private readonly authService: IAuthService
   ) {}
 
   // 포털 데이터를 주입받는 execute 메서드
