@@ -25,4 +25,12 @@ export interface IUserRepository {
    * DB 트랜잭션으로 처리됨
    */
   initializePortalConnection(userId: string, studentData: StudentInitializationDataType): Promise<void>;
+
+  /**
+   * 포털 연동 재동기화
+   * - users 테이블의  last_synced_at 업데이트
+   * - students 테이블에 학생 정보 생성
+   * DB 트랜잭션으로 처리됨
+   */
+  refreshPortalConnection(userId: string, studentData: StudentInitializationDataType): Promise<void>;
 }
