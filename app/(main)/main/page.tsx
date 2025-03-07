@@ -7,7 +7,7 @@ import type { DashboardData } from '@/types/api/dashboard';
 import AcademicSummaryCard from '../components/AcademicSummaryCard/AcademicSummaryCard';
 import GraduationRequirementCard from '../components/GraduationRequirementCard/GraduationRequirementCard';
 import ProfileCard from '../components/ProfileCard/ProfileCard';
-
+import SyncUpdateButton from '../components/SyncUpdateButton/SyncUpdateButton';
 export default function Home() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,6 +32,7 @@ export default function Home() {
     router.push(ROUTES.FUNNEL.RESYNC_LOGIN);
   };
 
+
   return (
     <div>
       {isLoading ? (
@@ -52,6 +53,8 @@ export default function Home() {
             gpa={data?.summary.cumulativeGpa ?? 0}
             percentile={data?.summary.percentile ?? 0}
           />
+          <div className="gap-8"></div>
+          <SyncUpdateButton lastSyncedAt={data?.user?.lastSyncedAt ?? ''} onClick={handleResyncLogin} />
           <div className="gap-18"></div>
           <GraduationRequirementCard
             majorType="주전공"
@@ -63,7 +66,7 @@ export default function Home() {
           />
         </>
       )}
-      <button onClick={handleResyncLogin}>학업 이력 동기화하기</button>
+
     </div>
   );
 }
