@@ -39,4 +39,8 @@ export class User {
   isPortalConnected(): boolean {
     return this.portalConnection.isConnected();
   }
+
+  getLastSyncedAt(): Date | null {
+    return this.portalConnection.getLastSyncedAt();
+  }
 }
