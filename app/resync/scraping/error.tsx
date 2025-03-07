@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import * as Sentry from '@sentry/nextjs';
 import { FixedButton } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import ErrorScreen from '../components/ErrorScreen/ErrorScreen';
+import ErrorScreen from '../../(funnel)/components/ErrorScreen/ErrorScreen';
 import styles from './error.module.scss';
 
 const ScrapingErrorPage = ({ error }: { error: Error }) => {

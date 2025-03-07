@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { captureException } from '@sentry/nextjs';
 import { FixedButton, TextField } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { FunnelHeadline, SchoolCard } from '../components';
+import { FunnelHeadline, SchoolCard } from '../../(funnel)/components';
 import styles from './page.module.scss';
 
 export default function PortalLogin() {
@@ -33,7 +33,7 @@ export default function PortalLogin() {
       if (!res.ok) {
         throw new Error(data.error || '로그인 실패');
       }
-      router.push(`${ROUTES.FUNNEL.RESYNC_SCRAPING}`);
+      router.push(`${ROUTES.RESYNC.SCRAPING}`);
     } catch (err: any) {
       console.log(err);
       captureException(err);

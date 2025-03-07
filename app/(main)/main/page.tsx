@@ -29,7 +29,7 @@ export default function Home() {
   };
 
   const handleResyncLogin = () => {
-    router.push(ROUTES.FUNNEL.RESYNC_LOGIN);
+    router.push(ROUTES.RESYNC.LOGIN);
   };
 
 

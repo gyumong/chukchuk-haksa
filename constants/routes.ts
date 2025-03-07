@@ -7,11 +7,13 @@ export const ROUTES = {
     PORTAL_LOGIN: '/portal-login',
     SCRAPING: '/scraping',
     TARGET_SCORE: '/target-score',
-    RESYNC_LOGIN: '/resync-login',
-    RESYNC_SCRAPING: '/resync-scraping',
   },
   AUTH: {
     CALLBACK: '/auth/callback',
+  },
+  RESYNC: {
+    LOGIN: '/resync/login',
+    SCRAPING: '/resync/scraping',
   },
   ACADEMIC_DETAIL: '/academic-detail',
   GRADUATION_PROGRESS: '/graduation-progress',
