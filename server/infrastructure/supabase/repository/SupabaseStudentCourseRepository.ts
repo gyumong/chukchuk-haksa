@@ -32,12 +32,7 @@ export class SupabaseStudentCourseRepository implements IStudentCourseRepository
   }
 
   async findByStudentId(studentId: string): Promise<CourseEnrollments> {
-    const { data, error } = await this.supabase
-      .from('student_courses')
-      .select('*')
-      .eq('student_id', studentId)
-      .order('year', { ascending: true })
-      .order('semester', { ascending: true });
+    const { data, error } = await this.supabase.from('student_courses').select('*').eq('student_id', studentId);
     if (error) {
       throw new Error(`Find enrollments by studentId failed: ${error.message}`);
     }
@@ -45,5 +40,16 @@ export class SupabaseStudentCourseRepository implements IStudentCourseRepository
     return new CourseEnrollments(enrollments);
   }
 
+  async removeEnrollments(studentId: string, offeringIds: number[]): Promise<void> {
+    const { error } = await this.supabase
+      .from('student_courses')
+      .delete()
+      .eq('student_id', studentId)
+      .in('offering_id', offeringIds);
+
+    if (error) {
+      throw new Error(`Remove enrollments failed: ${error.message}`);
+    }
+  }
   // 추가적으로 필요에 따라 findBySemester, findByOfferingId 등도 구현할 수 있습니다.
 }

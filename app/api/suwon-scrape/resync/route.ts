@@ -8,7 +8,7 @@ import { sessionOptions } from '@/lib/auth';
 import { setTask } from '@/lib/crawling/scrape-task';
 import { createClient } from '@/lib/supabase/server';
 import { SyncAcademicRecordUseCase } from '@/server/application/academic-record/usecases/SyncAcademicRecordUseCase';
-import { InitializePortalConnectionUseCase } from '@/server/application/student/usecases/InitializePortalConnectionUseCase';
+import { RefreshPortalConnectionUseCase } from '@/server/application/student/usecases/RefreshPortalConnectionUseCase';
 import { PortalRepositoryImpl } from '@/server/infrastructure/portal/PortalRepositoryImpl';
 import { SupabaseAcademicRecordRepository } from '@/server/infrastructure/supabase/repository/SupabaseAcademicRecordRepository';
 import { SupabaseCourseOfferingRepository } from '@/server/infrastructure/supabase/repository/SupabaseCourseOfferingRepository';
@@ -29,7 +29,6 @@ export async function POST(req: Request) {
   if (!username || !password) {
     return NextResponse.json({ error: '포털 로그인이 필요합니다.' }, { status: 401 });
   }
-  let studentInfo;
   const taskId = uuidv4();
   setTask(taskId, 'in-progress', null);
 
@@ -50,8 +49,7 @@ export async function POST(req: Request) {
     const portalData = await portalRepository.fetchPortalData(username, password);
     console.log('fetch finished');
 
-    const initializePortalConnectionUseCase = new InitializePortalConnectionUseCase(
-      portalRepository,
+    const refreshPortalConnectionUseCase = new RefreshPortalConnectionUseCase(
       departmentRepository,
       userRepository,
       authService
@@ -67,11 +65,11 @@ export async function POST(req: Request) {
       professorRepository
     );
     // (1) 포털 연동 초기화 유스케이스 실행
-    const initResult = await initializePortalConnectionUseCase.executeWithPortalData(portalData);
-    if (!initResult.isSuccess) {
-      throw new Error(initResult.error);
+    const resyncResult = await refreshPortalConnectionUseCase.executeWithPortalData(portalData);
+    if (!resyncResult.isSuccess) {
+      throw new Error(resyncResult.error);
     }
-    console.log('initializePortalConnectionUseCase Completed');
+    console.log('refreshPortalConnectionUseCase Completed');
 
     // (2) 학업 이력 동기화 유스케이스 실행
     const syncResult = await syncAcademicRecordUseCase.executeWithPortalData(portalData);
@@ -81,16 +79,14 @@ export async function POST(req: Request) {
 
     console.log('syncAcademicRecordUseCase Completed');
 
-    studentInfo = initResult.studentInfo;
-
-    setTask(taskId, 'completed', { message: '동기화 완료', studentInfo: initResult.studentInfo });
+    setTask(taskId, 'completed', { message: '동기화 완료' });
     // **세션 만료 처리**
     session.destroy(); // Iron Session에서 세션 데이터 삭제
     console.log('Session destroyed after successful scrape');
-  } catch (err: any) {
-    setTask(taskId, 'failed', { message: err.message });
+  } catch (err) {
+    setTask(taskId, 'failed', { message: err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.' });
   }
   // })();
 
-  return NextResponse.json({ taskId, studentInfo }, { status: 202 });
+  return NextResponse.json({ taskId }, { status: 202 });
 }

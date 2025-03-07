@@ -91,6 +91,8 @@ export class SyncAcademicRecordUseCase {
       // 2) offerings + academicData → 수강기록(CourseEnrollment) 생성 & 저장
       const enrollments = await this.processCurriculumData(portalData.curriculum, portalData.academic, userId);
       await this.studentCourseRepository.upsertEnrollments(enrollments);
+
+      await this.removeDeletedEnrollments(userId, enrollments);
       console.log('studentCourseRepository.upsertEnrollments finished');
       return { isSuccess: true };
     } catch (error) {
@@ -262,6 +264,33 @@ export class SyncAcademicRecordUseCase {
       courseMap.set(courseData.courseCode, courseIdValue);
     }
     return courseMap;
+  }
+
+  /**
+   * DB에 이미 있는 수강기록 vs 새로 만든 enrollments를 비교해
+   * 이번에 누락된 과목은 삭제(정정 기간 드롭 처리).
+   */
+  private async removeDeletedEnrollments(userId: string, newEnrollments: CourseEnrollment[]): Promise<void> {
+    // 1) DB에서 userId로 등록된 기존 수강 내역 전부 가져오기
+    const existingEnrollments = await this.studentCourseRepository.findByStudentId(userId);
+    const existingAll = existingEnrollments.getAll(); // CourseEnrollment[]
+
+    // 2) 새로운 offeringId 집합
+    const newOfferingIds = newEnrollments.map(e => e.getOfferingId());
+
+    // 3) 기존 중에서 newOfferingIds에 없는 항목 → 삭제 대상
+    const toRemoveOfferingIds: number[] = [];
+    for (const e of existingAll) {
+      const offeringId = e.getOfferingId();
+      if (offeringId !== null && !newOfferingIds.includes(offeringId)) {
+        toRemoveOfferingIds.push(offeringId);
+      }
+    }
+
+    // 4) 실제 DB에서 삭제 or 드롭 마킹
+    if (toRemoveOfferingIds.length > 0) {
+      await this.studentCourseRepository.removeEnrollments(userId, toRemoveOfferingIds);
+    }
   }
 
   /**

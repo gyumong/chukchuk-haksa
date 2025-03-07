@@ -12,7 +12,7 @@ export class SupabaseUserRepository implements IUserRepository {
     const { data, error } = await this.supabase
       .from('users')
       .select(
-        'id, portal_connected, connected_at, created_at, email, profile_image, profile_nickname, updated_at, deleted_at, is_deleted'
+        'id, portal_connected, connected_at, last_synced_at, created_at, email, profile_image, profile_nickname, updated_at, deleted_at, is_deleted'
       )
       .eq('id', id)
       .single();
@@ -40,6 +40,24 @@ export class SupabaseUserRepository implements IUserRepository {
     if (error) {
       console.log('error', error);
       throw new Error('포털 연동 초기화 중 오류가 발생했습니다.');
+    }
+  }
+
+  async refreshPortalConnection(userId: string, studentData: StudentInitializationDataType): Promise<void> {
+    const { error } = await this.supabase.rpc('refresh_portal_connection', {
+      p_user_id: userId,
+      p_student_data: {
+        ...studentData,
+        completedSemesters: parseInt(String(studentData.completedSemesters), 10),
+        major_id: studentData.majorId,
+        secondary_major_id: studentData.secondaryMajorId,
+        department_id: studentData.departmentId,
+      },
+    });
+
+    if (error) {
+      console.log('error', error);
+      throw new Error('포털 재동기화 중 오류가 발생했습니다.');
     }
   }
 

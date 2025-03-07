@@ -7,6 +7,7 @@ import type { DashboardData } from '@/types/api/dashboard';
 import AcademicSummaryCard from '../components/AcademicSummaryCard/AcademicSummaryCard';
 import GraduationRequirementCard from '../components/GraduationRequirementCard/GraduationRequirementCard';
 import ProfileCard from '../components/ProfileCard/ProfileCard';
+import SyncUpdateButton from '../components/SyncUpdateButton/SyncUpdateButton';
 
 export default function Home() {
   const [data, setData] = useState<DashboardData | null>(null);
@@ -26,6 +27,10 @@ export default function Home() {
     router.push(
       `${ROUTES.GRADUATION_PROGRESS}/${parseInt(data?.profile.studentCode.slice(0, 2) ?? '0')}/${data?.profile?.majorName ? data?.profile?.majorName : (data?.profile?.departmentName ?? '')}`
     );
+  };
+
+  const handleResyncLogin = () => {
+    router.push(ROUTES.RESYNC.LOGIN);
   };
 
   return (
@@ -48,6 +53,8 @@ export default function Home() {
             gpa={data?.summary.cumulativeGpa ?? 0}
             percentile={data?.summary.percentile ?? 0}
           />
+          <div className="gap-8"></div>
+          <SyncUpdateButton lastSyncedAt={data?.user?.lastSyncedAt ?? ''} onClick={handleResyncLogin} />
           <div className="gap-18"></div>
           <GraduationRequirementCard
             majorType="주전공"

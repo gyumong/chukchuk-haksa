@@ -12,7 +12,8 @@ export class UserMapper {
     return User.reconstitute(
       dbUser.id,
       dbUser.portal_connected ?? false,
-      dbUser.connected_at ? new Date(dbUser.connected_at) : null
+      dbUser.connected_at ? new Date(dbUser.connected_at) : null,
+      dbUser.last_synced_at ? new Date(dbUser.last_synced_at) : null
     );
   }
 }

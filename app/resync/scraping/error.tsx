@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import * as Sentry from '@sentry/nextjs';
 import { FixedButton } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import ErrorScreen from '../components/ErrorScreen/ErrorScreen';
+import ErrorScreen from '../../(funnel)/components/ErrorScreen/ErrorScreen';
 import styles from './error.module.scss';
 
 const ScrapingErrorPage = ({ error }: { error: Error }) => {
@@ -17,7 +17,7 @@ const ScrapingErrorPage = ({ error }: { error: Error }) => {
   const router = useRouter();
 
   const handleRetry = () => {
-    router.push(`${ROUTES.FUNNEL.PORTAL_LOGIN}`);
+    router.push(`${ROUTES.RESYNC.LOGIN}`);
   };
   return (
     <div className={styles.container}>

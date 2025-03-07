@@ -11,8 +11,8 @@ export class User {
     return new User(Id.create<string>(), PortalConnection.create());
   }
 
-  static reconstitute(id: string, connected: boolean, connectedAt: Date | null): User {
-    return new User(Id.of(id), PortalConnection.reconstitute(connected, connectedAt));
+  static reconstitute(id: string, connected: boolean, connectedAt: Date | null, lastSyncedAt: Date | null): User {
+    return new User(Id.of(id), PortalConnection.reconstitute(connected, connectedAt, lastSyncedAt));
   }
 
   connectPortal(): void {
@@ -38,5 +38,9 @@ export class User {
 
   isPortalConnected(): boolean {
     return this.portalConnection.isConnected();
+  }
+
+  getLastSyncedAt(): Date | null {
+    return this.portalConnection.getLastSyncedAt();
   }
 }

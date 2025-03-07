@@ -11,6 +11,10 @@ export const ROUTES = {
   AUTH: {
     CALLBACK: '/auth/callback',
   },
+  RESYNC: {
+    LOGIN: '/resync/login',
+    SCRAPING: '/resync/scraping',
+  },
   ACADEMIC_DETAIL: '/academic-detail',
   GRADUATION_PROGRESS: '/graduation-progress',
 } as const;
