@@ -2,11 +2,15 @@ import { getSemesterInfo } from '@/lib/utils/semester';
 import type { DashboardData } from '@/types/api/dashboard';
 import { AcademicRecordService } from '../services/academic-record-service';
 import { StudentService } from '../services/student-service';
+import type { IUserRepository } from '@/server/domain/user/repositories/IUserRepository';
+import type { IAuthService } from '@/server/domain/auth/IAuthService';
 
 export class DashboardFacade {
   constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly authService: IAuthService,
     private readonly studentService = new StudentService(),
-    private readonly academicRecordService = new AcademicRecordService()
+    private readonly academicRecordService = new AcademicRecordService(),
   ) {}
 
   async getDashboard(): Promise<DashboardData> {
@@ -15,6 +19,9 @@ export class DashboardFacade {
       this.studentService.getStudentInfo(),
       this.academicRecordService.getAcademicSummary(),
     ]);
+
+    const userId = await this.authService.getAuthenticatedUserId();
+    const user = await this.userRepository.findById(userId);
 
     return {
       profile: {
@@ -33,6 +40,9 @@ export class DashboardFacade {
         requiredCredits: 130, // 기본값이나 학과별로 동적 처리 필요
         cumulativeGpa: academicSummary.cumulativeGpa ?? 0,
         percentile: academicSummary.percentile ?? 0,
+      },
+      user: {
+        lastSyncedAt: user?.getLastSyncedAt()?.toISOString() ?? '',
       },
     };
   }

@@ -18,4 +18,9 @@ export interface DashboardData {
     cumulativeGpa: number | null; // 전체 평점
     percentile: number | null; // 백분위
   };
+
+  // 포털 연동 상태
+  user: {
+    lastSyncedAt: string | null;
+  };
 }
