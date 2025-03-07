@@ -1,16 +1,16 @@
 import { getSemesterInfo } from '@/lib/utils/semester';
+import type { IAuthService } from '@/server/domain/auth/IAuthService';
+import type { IUserRepository } from '@/server/domain/user/repositories/IUserRepository';
 import type { DashboardData } from '@/types/api/dashboard';
 import { AcademicRecordService } from '../services/academic-record-service';
 import { StudentService } from '../services/student-service';
-import type { IUserRepository } from '@/server/domain/user/repositories/IUserRepository';
-import type { IAuthService } from '@/server/domain/auth/IAuthService';
 
 export class DashboardFacade {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly authService: IAuthService,
     private readonly studentService = new StudentService(),
-    private readonly academicRecordService = new AcademicRecordService(),
+    private readonly academicRecordService = new AcademicRecordService()
   ) {}
 
   async getDashboard(): Promise<DashboardData> {

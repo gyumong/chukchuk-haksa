@@ -1,13 +1,13 @@
 @use '/styles/color.scss' as colors;
 
 .container {
-    width: 100%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
 
-  .text{
-    color: colors.$gray-600;
-  }
+.text {
+  color: colors.$gray-600;
+}

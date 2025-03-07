@@ -8,6 +8,7 @@ import AcademicSummaryCard from '../components/AcademicSummaryCard/AcademicSumma
 import GraduationRequirementCard from '../components/GraduationRequirementCard/GraduationRequirementCard';
 import ProfileCard from '../components/ProfileCard/ProfileCard';
 import SyncUpdateButton from '../components/SyncUpdateButton/SyncUpdateButton';
+
 export default function Home() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,7 +32,6 @@ export default function Home() {
   const handleResyncLogin = () => {
     router.push(ROUTES.RESYNC.LOGIN);
   };
-
 
   return (
     <div>
@@ -66,7 +66,6 @@ export default function Home() {
           />
         </>
       )}
-
     </div>
   );
 }

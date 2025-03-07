@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { DashboardFacade } from '@/lib/supabase/facades/dashboard-facade';
+import { createClient } from '@/lib/supabase/server';
 import { SupabaseUserRepository } from '@/server/infrastructure/supabase/repository/SupabaseUserRepository';
 import { SupabaseAuthService } from '@/server/infrastructure/supabase/SupabaseAuthService';
-import type { SupabaseClient } from '@supabase/supabase-js';
-import { createClient } from '@/lib/supabase/server';
 import type { Database } from '@/types';
 
 export const dynamic = 'force-dynamic';
@@ -13,10 +13,7 @@ export async function GET() {
     const supabase: SupabaseClient<Database> = createClient();
     const userRepository = new SupabaseUserRepository(supabase);
     const authService = new SupabaseAuthService(supabase);
-    const dashboardFacade = new DashboardFacade(
-      userRepository,
-      authService
-    );
+    const dashboardFacade = new DashboardFacade(userRepository, authService);
     const dashboard = await dashboardFacade.getDashboard();
 
     return NextResponse.json(dashboard);
