@@ -17,7 +17,7 @@ const ScrapingErrorPage = ({ error }: { error: Error }) => {
   const router = useRouter();
 
   const handleRetry = () => {
-    router.push(`${ROUTES.FUNNEL.RESYNC_LOGIN}`);
+    router.push(`${ROUTES.RESYNC.LOGIN}`);
   };
   return (
     <div className={styles.container}>
