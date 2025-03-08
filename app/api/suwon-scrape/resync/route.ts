@@ -83,8 +83,14 @@ export async function POST(req: Request) {
     // **세션 만료 처리**
     session.destroy(); // Iron Session에서 세션 데이터 삭제
     console.log('Session destroyed after successful scrape');
-  } catch (err) {
-    setTask(taskId, 'failed', { message: err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.' });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error('status', err.cause, 'message', err.message);
+      setTask(taskId, 'failed', { status: err.cause, message: err.message });
+    } else {
+      console.error('Unknown error occurred:', err);
+      setTask(taskId, 'failed', { message: '알 수 없는 오류가 발생했습니다.' });
+    }
   }
   // })();
 
