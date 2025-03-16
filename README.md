@@ -52,5 +52,5 @@
 
 ## 📝 관련 블로그 게시글
 
-- [척척학사 왜 만들게 되었나?](https://www.gyumong.info/daily/chukchukhaksa-mvp-review)
+- [척척학사 왜 만들게 되었나?](https://www.gyumong.info/daily/chukchukhaksa-mvp-review)
 - [척척학사 프로덕션 배포를 하며 겪은 이슈](https://www.gyumong.info/daily/chukchukhaksa-prod)
