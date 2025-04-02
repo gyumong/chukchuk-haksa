@@ -1,8 +1,9 @@
 'use client';
 
+import type { RoutePath } from '@/hooks/useInternalRouter';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { useEffect, useState } from 'react';
 import { ROUTES } from '@/constants/routes';
-import { useInternalRouter } from '@/hooks/useInternalRouter';
 import type { DashboardData } from '@/types/api/dashboard';
 import AcademicSummaryCard from '../components/AcademicSummaryCard/AcademicSummaryCard';
 import GraduationRequirementCard from '../components/GraduationRequirementCard/GraduationRequirementCard';
@@ -25,7 +26,7 @@ export default function Home() {
 
   const handleGraduationProgress = () => {
     router.push(
-      `${ROUTES.GRADUATION_PROGRESS}/${parseInt(data?.profile.studentCode.slice(0, 2) ?? '0')}/${data?.profile?.majorName ? data?.profile?.majorName : (data?.profile?.departmentName ?? '')}`
+      `${ROUTES.GRADUATION_PROGRESS}/${parseInt(data?.profile.studentCode.slice(0, 2) ?? '0')}/${data?.profile?.majorName ? data?.profile?.majorName : (data?.profile?.departmentName ?? '')}` as RoutePath
     );
   };
 

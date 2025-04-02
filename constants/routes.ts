@@ -18,4 +18,5 @@ export const ROUTES = {
   ACADEMIC_DETAIL: '/academic-detail',
   GRADUATION_PROGRESS: '/graduation-progress',
   SETTING: '/setting',
+  DELETE: '/delete',
 } as const;
