@@ -2,9 +2,9 @@
 
 import type { PropsWithChildren } from 'react';
 import { TopNavigation } from '@/components/ui/TopNavigation';
+import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import styles from './layout.module.scss';
-import { ROUTES } from '@/constants/routes';
 
 export default function FunnelLayout({ children }: PropsWithChildren) {
   const router = useInternalRouter();
