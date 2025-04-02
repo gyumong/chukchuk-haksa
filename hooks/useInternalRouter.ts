@@ -7,9 +7,27 @@ export const useInternalRouter = () => {
   const router = useRouter();
 
   return useMemo(() => {
+    const buildUrl = (path: RoutePath, query?: Record<string, string | number>) => {
+      if (!query) {return path;}
+      const searchParams = new URLSearchParams();
+      // eslint-disable-next-line no-restricted-syntax
+      for (const [key, value] of Object.entries(query)) {
+        if (value !== undefined) {
+          searchParams.set(key, String(value));
+        }
+      }
+      return `${path}?${searchParams.toString()}` as RoutePath;
+    };
+
     return {
-      push: (href: RoutePath, options?: NavigateOptions) => router.push(href, options),
-      replace: (href: RoutePath, options?: NavigateOptions) => router.replace(href, options),
+      push: (href: RoutePath, query?: Record<string, string | number>, options?: NavigateOptions) => {
+        const url = buildUrl(href, query);
+        return router.push(url, options);
+      },
+      replace: (href: RoutePath, query?: Record<string, string | number>, options?: NavigateOptions) => {
+        const url = buildUrl(href, query);
+        return router.replace(url, options);
+      },
       back: () => router.back(),
       forward: () => router.forward(),
       refresh: () => router.refresh(),
