@@ -1,9 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { FixedButton } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { getSemesterInfo } from '@/lib/utils/semester';
 import { FunnelHeadline } from '../components';
 import { useStudentInfo } from '../contexts';

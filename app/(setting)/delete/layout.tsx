@@ -1,8 +1,8 @@
 'use client';
 
 import type { PropsWithChildren } from 'react';
-import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { TopNavigation } from '@/components/ui/TopNavigation';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import styles from './layout.module.scss';
 
 export default function FunnelLayout({ children }: PropsWithChildren) {

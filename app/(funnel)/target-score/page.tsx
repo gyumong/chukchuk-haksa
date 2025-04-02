@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { FixedButton } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { FunnelHeadline, ScoreInput } from '../components';
 import styles from './page.module.scss';
 

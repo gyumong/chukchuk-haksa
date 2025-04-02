@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useInternalRouter } from '@/hooks/useInternalRouter';
 import * as Sentry from '@sentry/nextjs';
 import { FixedButton } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import ErrorScreen from '../components/ErrorScreen/ErrorScreen';
 import styles from './error.module.scss';
 

@@ -15,7 +15,7 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "gen": "dotenv -e .env -- bash -c 'npx supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > types/supabase.ts'",
-    "codemod:router": "jscodeshift -t codemods/useRouter-to-useInternalRouter.js . --ignore-pattern='**/node_modules/**' --ignore-pattern='**/.next/**' --ignore-pattern='**/dist/**' --extensions=ts,tsx --parser=tsx",
+    "codemod:router": "jscodeshift -t codemods/useRouter-to-useInternalRouter.js . --ignore-pattern='**/node_modules/**' --ignore-pattern='**/.next/**' --ignore-pattern='**/dist/**' --extensions=ts,tsx --parser=tsx"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",

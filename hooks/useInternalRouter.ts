@@ -1,7 +1,7 @@
-import type { ROUTES } from "@/constants/routes";
-import type { NavigateOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo } from 'react';
+import type { NavigateOptions } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { useRouter } from 'next/navigation';
+import type { ROUTES } from '@/constants/routes';
 
 export const useInternalRouter = () => {
   const router = useRouter();

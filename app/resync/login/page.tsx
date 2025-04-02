@@ -2,10 +2,10 @@
 
 import type { FormEvent } from 'react';
 import { useState } from 'react';
-import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { captureException } from '@sentry/nextjs';
 import { FixedButton, TextField } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { FunnelHeadline, SchoolCard } from '../../(funnel)/components';
 import styles from './page.module.scss';
 

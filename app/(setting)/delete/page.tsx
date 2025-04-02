@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { FunnelHeadline } from '@/app/(funnel)/components';
 import { FixedButton } from '@/components/ui';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import styles from './page.module.scss';
 
 const DeletePage = () => {

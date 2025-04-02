@@ -1,8 +1,8 @@
 'use client';
 
-import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { Icon } from '@/components/ui';
 import { Menu } from '@/components/ui/Menu';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 
 const SettingPage = () => {
   const router = useInternalRouter();

@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useInternalRouter } from '@/hooks/useInternalRouter';
 import AcademicSummaryCard from '@/app/(main)/components/AcademicSummaryCard/AcademicSummaryCard';
 import { CourseAccordion } from '@/app/(main)/components/Accordion';
 import SemesterGradeCard from '@/app/(main)/components/SemesterGradeCard/SemesterGradeCard';
 import { ROUTES } from '@/constants/routes';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { getSemesterFromCode } from '@/lib/utils/semester';
 import type { Database } from '@/types/supabase';
 import styles from './page.module.scss';

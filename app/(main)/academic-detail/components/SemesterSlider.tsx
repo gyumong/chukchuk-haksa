@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { ROUTES } from '@/constants/routes';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import styles from './SemesterSlider.module.scss';
 
 interface Semester {
