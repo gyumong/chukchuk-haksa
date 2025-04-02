@@ -1,9 +1,9 @@
 'use client';
 
-import type { RoutePath } from '@/hooks/useInternalRouter';
-import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { useEffect, useState } from 'react';
 import { ROUTES } from '@/constants/routes';
+import type { RoutePath } from '@/hooks/useInternalRouter';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import type { DashboardData } from '@/types/api/dashboard';
 import AcademicSummaryCard from '../components/AcademicSummaryCard/AcademicSummaryCard';
 import GraduationRequirementCard from '../components/GraduationRequirementCard/GraduationRequirementCard';
