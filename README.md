@@ -41,12 +41,29 @@
 
 ## 🛠️ 기술 스택
 
+
 | 분야 | 기술 |
 |------|--------|
 | 프론트엔드 | React, Next.js, TypeScript |
 | 백엔드 및 데이터베이스 | Node.js, Supabase (PostgreSQL) |
 | 데이터 크롤링 | Playwright |
 | 인프라 및 배포 | Docker, AWS ECS, Vercel |
+
+<br/>
+
+# codemods
+
+> 이 디렉토리는 코드 자동 변환을 위한 jscodeshift 스크립트를 저장합니다.
+
+## 목록
+
+- `useRouter-to-useInternalRouter.js`: next/navigation의 useRouter 훅을 useInternalRouter로 치환합니다.
+
+## 실행 방법
+
+```bash
+yarn codemod:router        # 실행
+yarn codemod:router:dry    # 변경사항 미리보기
 
 <br/>
 
