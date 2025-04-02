@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { TopNavigation } from '@/components/ui/TopNavigation';
 import styles from './layout.module.scss';
 
@@ -11,7 +11,7 @@ export default function GraduationProgressLayout({
   children: React.ReactNode;
   params: { studentCode: string; department: string };
 }) {
-  const router = useRouter();
+  const router = useInternalRouter();
   const { studentCode, department } = params;
   const decodedMajorName = decodeURIComponent(department);
   return (

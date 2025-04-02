@@ -1,12 +1,12 @@
 'use client';
 
 import type { PropsWithChildren } from 'react';
-import { useRouter } from 'next/navigation';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { TopNavigation } from '@/components/ui/TopNavigation';
 import styles from './layout.module.scss';
 
 export default function FunnelLayout({ children }: PropsWithChildren) {
-  const router = useRouter();
+  const router = useInternalRouter();
   return (
     <div className={styles.container}>
       <TopNavigation.Preset title="탈퇴하기" type="back" onNavigationClick={() => router.back()} />

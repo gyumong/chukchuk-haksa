@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { ROUTES } from '@/constants/routes';
 import type { DashboardData } from '@/types/api/dashboard';
 import AcademicSummaryCard from '../components/AcademicSummaryCard/AcademicSummaryCard';
@@ -12,7 +12,7 @@ import SyncUpdateButton from '../components/SyncUpdateButton/SyncUpdateButton';
 export default function Home() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
+  const router = useInternalRouter();
   useEffect(() => {
     const fetchDashboard = async () => {
       const response = await fetch('/api/get-dashboard');

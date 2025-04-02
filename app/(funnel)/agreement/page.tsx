@@ -1,14 +1,14 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { FixedButton } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { AgreementItem, FunnelHeadline, PrivacyPolicySheet } from '../components';
 import styles from './page.module.scss';
 
 export default function Agreement() {
-  const router = useRouter();
+  const router = useInternalRouter();
   const [isAgreed, setIsAgreed] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 

@@ -1,11 +1,11 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { Icon } from '@/components/ui';
 import { Menu } from '@/components/ui/Menu';
 
 const SettingPage = () => {
-  const router = useRouter();
+  const router = useInternalRouter();
 
   const menuItems = [
     {

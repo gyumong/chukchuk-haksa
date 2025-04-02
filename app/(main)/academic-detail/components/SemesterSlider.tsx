@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { ROUTES } from '@/constants/routes';
 import styles from './SemesterSlider.module.scss';
 
@@ -16,7 +16,7 @@ interface SemesterSliderProps {
 }
 
 export default function SemesterSlider({ currentYear, currentSemester }: SemesterSliderProps) {
-  const router = useRouter();
+  const router = useInternalRouter();
   const [semesters, setSemesters] = useState<Semester[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import AcademicSummaryCard from '@/app/(main)/components/AcademicSummaryCard/AcademicSummaryCard';
 import { CourseAccordion } from '@/app/(main)/components/Accordion';
 import SemesterGradeCard from '@/app/(main)/components/SemesterGradeCard/SemesterGradeCard';
@@ -43,7 +43,7 @@ interface SemesterGrade {
 }
 
 export default function GraduationProgressPage() {
-  const router = useRouter();
+  const router = useInternalRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [areaProgress, setAreaProgress] = useState<AreaProgress[]>([]);
