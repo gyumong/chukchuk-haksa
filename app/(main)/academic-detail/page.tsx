@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
-import { useSearchParams } from '@/hooks/useInternalRouter';
+import { useSearchParams } from 'next/navigation';
 import type { CourseDetail } from '@/types/api/academic';
 import AcademicSummaryCard from '../components/AcademicSummaryCard/AcademicSummaryCard';
 import SectionCourses from './components/SectionCourses/SectionCourses';
