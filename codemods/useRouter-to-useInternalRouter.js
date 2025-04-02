@@ -21,18 +21,14 @@ export default function transformer(file, api) {
   root.find(j.ImportDeclaration, { source: { value: fromPath } }).forEach(path => {
     const specifiers = path.node.specifiers;
 
-    const hasUseRouter = specifiers.some(
-      s => s.type === 'ImportSpecifier' && s.imported.name === 'useRouter'
-    );
+    const hasUseRouter = specifiers.some(s => s.type === 'ImportSpecifier' && s.imported.name === 'useRouter');
 
     if (!hasUseRouter) {
       return;
     }
 
     // useRouter 제거
-    path.node.specifiers = specifiers.filter(
-      s => !(s.type === 'ImportSpecifier' && s.imported.name === 'useRouter')
-    );
+    path.node.specifiers = specifiers.filter(s => !(s.type === 'ImportSpecifier' && s.imported.name === 'useRouter'));
 
     shouldInsertInternalImport = true;
 
@@ -43,24 +39,25 @@ export default function transformer(file, api) {
   });
 
   // 3. useRouter() 호출 → useInternalRouter()
-  root.find(j.CallExpression, {
-    callee: { type: 'Identifier', name: 'useRouter' },
-  }).forEach(path => {
-    path.node.callee.name = 'useInternalRouter';
-  });
+  root
+    .find(j.CallExpression, {
+      callee: { type: 'Identifier', name: 'useRouter' },
+    })
+    .forEach(path => {
+      path.node.callee.name = 'useInternalRouter';
+    });
 
   // 4. useInternalRouter import 삽입 (없을 경우만)
-  const alreadyHasImport = root.find(j.ImportDeclaration, {
-    source: { value: toPath },
-  }).size();
+  const alreadyHasImport = root
+    .find(j.ImportDeclaration, {
+      source: { value: toPath },
+    })
+    .size();
 
   if (shouldInsertInternalImport && !alreadyHasImport) {
-    const importDecl = j.importDeclaration(
-      [j.importSpecifier(j.identifier('useInternalRouter'))],
-      j.literal(toPath)
-    );
+    const importDecl = j.importDeclaration([j.importSpecifier(j.identifier('useInternalRouter'))], j.literal(toPath));
     root.get().node.program.body.unshift(importDecl);
   }
 
   return root.toSource({ quote: 'single' });
-};
+}

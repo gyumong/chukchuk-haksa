@@ -8,7 +8,9 @@ export const useInternalRouter = () => {
 
   return useMemo(() => {
     const buildUrl = (path: RoutePath, query?: Record<string, string | number>) => {
-      if (!query) {return path;}
+      if (!query) {
+        return path;
+      }
       const searchParams = new URLSearchParams();
       // eslint-disable-next-line no-restricted-syntax
       for (const [key, value] of Object.entries(query)) {
