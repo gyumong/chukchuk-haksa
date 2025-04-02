@@ -48,7 +48,7 @@ export default function SemesterSlider({ currentYear, currentSemester }: Semeste
   }
 
   const handleSemesterClick = (year: number, semester: number) => {
-    router.push(`${ROUTES.ACADEMIC_DETAIL}?year=${year}&semester=${semester}`);
+    router.replace(ROUTES.ACADEMIC_DETAIL, { year, semester });
   };
 
   const getSemesterLabel = (semester: number): string => {
