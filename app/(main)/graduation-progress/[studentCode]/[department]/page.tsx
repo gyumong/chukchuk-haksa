@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import AcademicSummaryCard from '@/app/(main)/components/AcademicSummaryCard/AcademicSummaryCard';
 import { CourseAccordion } from '@/app/(main)/components/Accordion';
 import SemesterGradeCard from '@/app/(main)/components/SemesterGradeCard/SemesterGradeCard';
 import { ROUTES } from '@/constants/routes';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { getSemesterFromCode } from '@/lib/utils/semester';
 import type { Database } from '@/types/supabase';
 import styles from './page.module.scss';
@@ -43,7 +43,7 @@ interface SemesterGrade {
 }
 
 export default function GraduationProgressPage() {
-  const router = useRouter();
+  const router = useInternalRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [areaProgress, setAreaProgress] = useState<AreaProgress[]>([]);
@@ -208,9 +208,10 @@ export default function GraduationProgressPage() {
     }
   }
   const handleClickSemesterGradeCard = () => {
-    router.push(
-      `${ROUTES.ACADEMIC_DETAIL}?year=${semesterGrades[semesterGrades.length - 1].year}&semester=${parseSemester(String(semesterGrades[semesterGrades.length - 1].semester))}`
-    );
+    router.push(ROUTES.ACADEMIC_DETAIL, {
+      year: semesterGrades[semesterGrades.length - 1].year,
+      semester: parseSemester(String(semesterGrades[semesterGrades.length - 1].semester)),
+    });
   };
 
   return (

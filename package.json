@@ -14,7 +14,8 @@
     "test:watch": "vitest watch",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    "gen": "dotenv -e .env -- bash -c 'npx supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > types/supabase.ts'"
+    "gen": "dotenv -e .env -- bash -c 'npx supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > types/supabase.ts'",
+    "codemod:router": "jscodeshift -t codemods/useRouter-to-useInternalRouter.js . --ignore-pattern='**/node_modules/**' --ignore-pattern='**/.next/**' --ignore-pattern='**/dist/**' --extensions=ts,tsx --parser=tsx"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
@@ -49,6 +50,7 @@
     "eslint-config-next": "14.2.10",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",
+    "jscodeshift": "^17.3.0",
     "postcss": "^8",
     "prettier": "^3.3.3",
     "sass": "^1.82.0",

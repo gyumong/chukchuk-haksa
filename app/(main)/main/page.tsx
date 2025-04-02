@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
+import type { RoutePath } from '@/hooks/useInternalRouter';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import type { DashboardData } from '@/types/api/dashboard';
 import AcademicSummaryCard from '../components/AcademicSummaryCard/AcademicSummaryCard';
 import GraduationRequirementCard from '../components/GraduationRequirementCard/GraduationRequirementCard';
@@ -12,7 +13,7 @@ import SyncUpdateButton from '../components/SyncUpdateButton/SyncUpdateButton';
 export default function Home() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
+  const router = useInternalRouter();
   useEffect(() => {
     const fetchDashboard = async () => {
       const response = await fetch('/api/get-dashboard');
@@ -25,7 +26,7 @@ export default function Home() {
 
   const handleGraduationProgress = () => {
     router.push(
-      `${ROUTES.GRADUATION_PROGRESS}/${parseInt(data?.profile.studentCode.slice(0, 2) ?? '0')}/${data?.profile?.majorName ? data?.profile?.majorName : (data?.profile?.departmentName ?? '')}`
+      `${ROUTES.GRADUATION_PROGRESS}/${parseInt(data?.profile.studentCode.slice(0, 2) ?? '0')}/${data?.profile?.majorName ? data?.profile?.majorName : (data?.profile?.departmentName ?? '')}` as RoutePath
     );
   };
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import LoadingScreen from '../components/LoadingScreen/LoadingScreen';
 import { useStudentInfo } from '../contexts';
 
@@ -9,7 +9,7 @@ export default function ScrapingPage() {
   const [, setTaskId] = useState<string | null>(null);
   const [errorCode, setErrorCode] = useState<number | null>(null);
   const isStarting = useRef(false);
-  const router = useRouter();
+  const router = useInternalRouter();
   const { setStudentInfo } = useStudentInfo();
 
   useEffect(() => {

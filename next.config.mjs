@@ -33,6 +33,8 @@ const nextConfig = {
     // Modify the file loader rule to ignore *.svg, since we have it handled now.
     fileLoaderRule.exclude = /\.svg$/i;
 
+    config.resolve.alias['@'] = path.resolve(import.meta.dirname);
+
     return config;
   },
 };
@@ -44,7 +46,7 @@ export default withSentryConfig(nextConfig, {
   org: 'student-xhx',
   project: 'cchaksa',
   sourcemaps: {
-    deleteSourcemapsAfterUpload: true,  // Source Map 업로드 후 삭제
+    deleteSourcemapsAfterUpload: true, // Source Map 업로드 후 삭제
   },
 
   // Only print logs for uploading source maps in CI

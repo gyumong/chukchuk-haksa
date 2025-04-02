@@ -2,10 +2,10 @@
 
 import type { FormEvent } from 'react';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { captureException, setUser } from '@sentry/nextjs';
 import { FixedButton, TextField } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { FunnelHeadline, SchoolCard } from '../components';
 import styles from './page.module.scss';
 
@@ -14,7 +14,7 @@ export default function PortalLogin() {
   const [password, setPassword] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const router = useRouter();
+  const router = useInternalRouter();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

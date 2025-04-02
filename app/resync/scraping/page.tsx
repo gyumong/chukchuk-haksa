@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import LoadingScreen from '../../(funnel)/components/LoadingScreen/LoadingScreen';
 
 export default function ScrapingPage() {
   const [errorCode, setErrorCode] = useState<number | null>(null);
   const isStarting = useRef(false);
-  const router = useRouter();
+  const router = useInternalRouter();
 
   useEffect(() => {
     if (!isStarting.current) {

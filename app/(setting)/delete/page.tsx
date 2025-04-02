@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { FunnelHeadline } from '@/app/(funnel)/components';
 import { FixedButton } from '@/components/ui';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import styles from './page.module.scss';
 
 const DeletePage = () => {
-  const router = useRouter();
+  const router = useInternalRouter();
   // TODO style gap 관련하여 dvh 처리? 고민
   const [isLoading, setIsLoading] = useState(false);
 

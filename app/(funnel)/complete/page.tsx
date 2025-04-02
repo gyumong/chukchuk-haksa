@@ -1,9 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { FixedButton } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { getSemesterInfo } from '@/lib/utils/semester';
 import { FunnelHeadline } from '../components';
 import { useStudentInfo } from '../contexts';
@@ -20,7 +20,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 
 export default function Complete() {
   const { studentInfo } = useStudentInfo();
-  const router = useRouter();
+  const router = useInternalRouter();
   const handleNext = () => {
     router.push(`${ROUTES.FUNNEL.TARGET_SCORE}`);
   };

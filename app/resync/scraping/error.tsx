@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import * as Sentry from '@sentry/nextjs';
 import { FixedButton } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import ErrorScreen from '../../(funnel)/components/ErrorScreen/ErrorScreen';
 import styles from './error.module.scss';
 
@@ -14,7 +14,7 @@ const ScrapingErrorPage = ({ error }: { error: Error }) => {
     Sentry.captureException(error);
     console.log('error Message', error.message);
   }, [error]);
-  const router = useRouter();
+  const router = useInternalRouter();
 
   const handleRetry = () => {
     router.push(`${ROUTES.RESYNC.LOGIN}`);

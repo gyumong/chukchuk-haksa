@@ -1,16 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { FixedButton } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { FunnelHeadline, ScoreInput } from '../components';
 import styles from './page.module.scss';
 
 export default function TargetScorePage() {
   const [score, setScore] = useState('3.5');
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const router = useInternalRouter();
 
   const handleSubmit = async () => {
     try {

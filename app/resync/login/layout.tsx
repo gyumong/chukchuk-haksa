@@ -1,11 +1,11 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { TopNavigation } from '@/components/ui/TopNavigation';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import styles from './layout.module.scss';
 
 export default function ResyncLoginLayout({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
+  const router = useInternalRouter();
 
   return (
     <div className={styles.container}>
