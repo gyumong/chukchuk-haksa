@@ -7,55 +7,76 @@ export default function transformer(file, api) {
   const currentFilePath = file.path;
   const normalizedPath = normalize(currentFilePath);
 
-  // 1. 변환 제외: useInternalRouter.ts 본인은 스킵
-  if (normalizedPath.includes('hooks/useInternalRouter.ts')) {
+  if (normalizedPath.match(/hooks[\\/]+useInternalRouter\.(ts|tsx)$/)) {
     return null;
   }
 
   const fromPath = 'next/navigation';
   const toPath = '@/hooks/useInternalRouter';
-
   let shouldInsertInternalImport = false;
 
-  // 2. import { useRouter, ... } from 'next/navigation'
+  // 1. useRouter import 제거
   root.find(j.ImportDeclaration, { source: { value: fromPath } }).forEach(path => {
     const specifiers = path.node.specifiers;
+    const hasUseRouter = specifiers.some(s => s.imported.name === 'useRouter');
+    if (!hasUseRouter) {return;}
 
-    const hasUseRouter = specifiers.some(s => s.type === 'ImportSpecifier' && s.imported.name === 'useRouter');
-
-    if (!hasUseRouter) {
-      return;
-    }
-
-    // useRouter 제거
-    path.node.specifiers = specifiers.filter(s => !(s.type === 'ImportSpecifier' && s.imported.name === 'useRouter'));
-
+    path.node.specifiers = specifiers.filter(s => s.imported.name !== 'useRouter');
     shouldInsertInternalImport = true;
-
-    // 빈 import면 제거
-    if (path.node.specifiers.length === 0) {
-      j(path).remove();
-    }
+    if (path.node.specifiers.length === 0) {j(path).remove();}
   });
 
-  // 3. useRouter() 호출 → useInternalRouter()
-  root
-    .find(j.CallExpression, {
-      callee: { type: 'Identifier', name: 'useRouter' },
-    })
-    .forEach(path => {
-      path.node.callee.name = 'useInternalRouter';
-    });
+  // 2. useRouter() 호출명 교체
+  root.find(j.CallExpression, {
+    callee: { type: 'Identifier', name: 'useRouter' },
+  }).forEach(path => {
+    path.node.callee.name = 'useInternalRouter';
+  });
 
-  // 4. useInternalRouter import 삽입 (없을 경우만)
-  const alreadyHasImport = root
-    .find(j.ImportDeclaration, {
-      source: { value: toPath },
-    })
-    .size();
+  // 3. router.push/replace 템플릿 리터럴 쿼리 처리만 변환
+  root.find(j.CallExpression, {
+    callee: {
+      type: 'MemberExpression',
+      object: { name: 'router' },
+      property: { name: name => ['push', 'replace'].includes(name) }
+    }
+  }).forEach(path => {
+    const [arg] = path.node.arguments;
+    if (arg?.type !== 'TemplateLiteral') {return;}
+
+    const raw = arg.quasis.map(q => q.value.cooked).join('');
+    if (!raw.includes('?')) {return;} // ❗쿼리 스트링이 없으면 변환하지 않음
+
+    const { quasis, expressions } = arg;
+    const pathExpr = expressions[0]; // ROUTES.XXX
+
+    const queryProps = [];
+
+    for (let i = 1; i < quasis.length; i++) {
+      const cooked = quasis[i].value.cooked || '';
+      const keyMatch = cooked.match(/[?&]([^=]+)=/);
+      const key = keyMatch?.[1];
+      const expr = expressions[i];
+
+      if (key && expr) {
+        queryProps.push(j.property('init', j.identifier(key), expr));
+      }
+    }
+
+    const newArgs = [pathExpr, j.objectExpression(queryProps)];
+    path.node.arguments = newArgs;
+  });
+
+  // 4. useInternalRouter import 삽입
+  const alreadyHasImport = root.find(j.ImportDeclaration, {
+    source: { value: toPath },
+  }).size();
 
   if (shouldInsertInternalImport && !alreadyHasImport) {
-    const importDecl = j.importDeclaration([j.importSpecifier(j.identifier('useInternalRouter'))], j.literal(toPath));
+    const importDecl = j.importDeclaration(
+      [j.importSpecifier(j.identifier('useInternalRouter'))],
+      j.literal(toPath)
+    );
     root.get().node.program.body.unshift(importDecl);
   }
 
