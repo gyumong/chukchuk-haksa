@@ -14,10 +14,9 @@
   </a>
 </p>
 
-**척척학사**는 학생들이 학교 포털과 연동하여 본인의 이수 현황과 졸업 요건을 손쉽게 확인하고 관리할 수 있도록 도와주는 서비스입니다. 
+**척척학사**는 학생들이 학교 포털과 연동하여 본인의 이수 현황과 졸업 요건을 손쉽게 확인하고 관리할 수 있도록 도와주는 서비스입니다.
 
 기존에는 학생들이 직접 학과별 졸업 요건을 찾아 하나하나 대조해야 했던 불편함이 있었지만, 척척학사는 이를 자동화하여 보다 편리하게 졸업 요건을 관리할 수 있도록 지원합니다. 현재 수원대학교 재학생 **600명** 이상이 사용 중이며, 학사 데이터를 실시간으로 동기화하여 졸업을 체계적으로 준비할 수 있도록 돕고 있습니다.
-
 
 크롤링 관련 로직은 [suwon-scraper](https://github.com/gyumong/suwon-scraper)로 분리되어 있습니다.
 
@@ -37,17 +36,23 @@
 
 - **학교 포털 데이터 연동**을 통한 학점, 성적 등 학사 데이터 실시간 동기화
 - 학생별 학사 데이터와 졸업 요건을 자동 비교 분석하여 **부족한 학점 확인**
-<br/>
+  <br/>
 
 ## 🛠️ 기술 스택
 
-
-| 분야 | 기술 |
-|------|--------|
-| 프론트엔드 | React, Next.js, TypeScript |
+| 분야                   | 기술                           |
+| ---------------------- | ------------------------------ |
+| 프론트엔드             | React, Next.js, TypeScript     |
 | 백엔드 및 데이터베이스 | Node.js, Supabase (PostgreSQL) |
-| 데이터 크롤링 | Playwright |
-| 인프라 및 배포 | Docker, AWS ECS, Vercel |
+| 데이터 크롤링          | Playwright                     |
+| 인프라 및 배포         | Docker, AWS ECS, Vercel        |
+
+<br/>
+
+## 📝 관련 블로그 게시글
+
+- [척척학사 왜 만들게 되었나?](https://www.gyumong.info/daily/chukchukhaksa-mvp-review)
+- [척척학사 프로덕션 배포를 하며 겪은 이슈](https://www.gyumong.info/daily/chukchukhaksa-prod)
 
 <br/>
 
@@ -63,11 +68,4 @@
 
 ```bash
 yarn codemod:router        # 실행
-yarn codemod:router:dry    # 변경사항 미리보기
-
-<br/>
-
-## 📝 관련 블로그 게시글
-
-- [척척학사 왜 만들게 되었나?](https://www.gyumong.info/daily/chukchukhaksa-mvp-review)
-- [척척학사 프로덕션 배포를 하며 겪은 이슈](https://www.gyumong.info/daily/chukchukhaksa-prod)
+```
