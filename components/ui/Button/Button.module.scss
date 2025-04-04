@@ -1,6 +1,7 @@
-@use '/styles/typography' as typography;
-@use '/styles/color' as color;
-@use '/styles/device.scss' as device;
+@use '@/styles/typography' as typography;
+@use '@/styles/color' as colors;
+@use '@/styles/device.scss' as device;
+@use 'sass:color';
 
 .base {
   display: flex;
@@ -16,29 +17,29 @@
 
 // Variants
 .variant-primary {
-  background-color: color.$black-100;
-  color: color.$white;
+  background-color: colors.$black-100;
+  color: colors.$white;
 
   &:hover:not(:disabled) {
-    background-color: darken(color.$black-100, 10%);
+    background-color: color.adjust(colors.$black-100, $lightness: -10%);
   }
 }
 
 .variant-secondary {
-  background-color: color.$gray-200;
-  color: color.$gray-100;
+  background-color: colors.$gray-200;
+  color: colors.$gray-100;
 
   &:hover:not(:disabled) {
-    background-color: darken(color.$gray-200, 10%);
+    background-color: color.adjust(colors.$gray-200, $lightness: -10%);
   }
 }
 
 .variant-error {
-  background-color: color.$red-300;
-  color: color.$white;
+  background-color: colors.$red-300;
+  color: colors.$white;
 
   &:hover:not(:disabled) {
-    background-color: darken(color.$red-300, 10%);
+    background-color: color.adjust(colors.$red-300, $lightness: -10%);
   }
 }
 
@@ -116,7 +117,7 @@
   padding-left: 16px; // 왼쪽 여백 유지
 
   &:hover:not(:disabled) {
-    background-color: darken(#f9e000, 5%);
+    background-color: color.adjust(#f9e000, $lightness: 5%);
   }
 }
 

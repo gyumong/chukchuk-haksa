@@ -38,7 +38,7 @@ const landingImages: ImageProps[] = [
   },
 ] as const;
 
-export default function LandingPage() {
+const LandingPage = () => {
   const handleLogin = async () => {
     try {
       await kakaoLogin();
@@ -59,4 +59,6 @@ export default function LandingPage() {
       </FixedButton>
     </>
   );
-}
+};
+
+export default LandingPage;

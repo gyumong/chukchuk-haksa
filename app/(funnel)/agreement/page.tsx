@@ -7,7 +7,7 @@ import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { AgreementItem, FunnelHeadline, PrivacyPolicySheet } from '../components';
 import styles from './page.module.scss';
 
-export default function Agreement() {
+const Agreement = () => {
   const router = useInternalRouter();
   const [isAgreed, setIsAgreed] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -49,4 +49,6 @@ export default function Agreement() {
       <PrivacyPolicySheet isOpen={isSheetOpen} onClose={handleCloseSheet} />
     </div>
   );
-}
+};
+
+export default Agreement;

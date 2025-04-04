@@ -1,4 +1,4 @@
-@import './global/_variables.scss';
+@use '@/styles/global/_variables.scss' as *;
 
 // Basic gaps (2px ~ 20px)
 .gap-2 {

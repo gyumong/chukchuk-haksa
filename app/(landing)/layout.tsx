@@ -1,3 +1,6 @@
+
+export const fetchCache = 'default-cache';
+
 import KakaoProvider from '@/components/KakaoProvider';
 import styles from './layout.module.scss';
 
