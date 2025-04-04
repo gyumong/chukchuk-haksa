@@ -9,7 +9,7 @@ import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { FunnelHeadline, SchoolCard } from '../components';
 import styles from './page.module.scss';
 
-export default function PortalLogin() {
+const PortalLogin = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -86,4 +86,6 @@ export default function PortalLogin() {
       </form>
     </div>
   );
-}
+};
+
+export default PortalLogin;

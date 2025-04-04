@@ -10,7 +10,7 @@ import GraduationRequirementCard from '../components/GraduationRequirementCard/G
 import ProfileCard from '../components/ProfileCard/ProfileCard';
 import SyncUpdateButton from '../components/SyncUpdateButton/SyncUpdateButton';
 
-export default function Home() {
+const Home = () => {
   const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useInternalRouter();
@@ -69,4 +69,6 @@ export default function Home() {
       )}
     </div>
   );
-}
+};
+
+export default Home;
