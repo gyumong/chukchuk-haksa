@@ -5,14 +5,20 @@ import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { FunnelHeadline, SchoolCard } from '../components';
 import styles from './page.module.scss';
 import { PortalLoginForm } from './components/PortalLoginForm/PortalLoginForm';
+import { setUser, captureException } from '@sentry/nextjs';
 
 export default function PortalLogin() {
 
 
   const router = useInternalRouter();
 
-  const onSuccess = () => {
+  const onSuccess = (studentCode: string) => {
+    setUser({ username: studentCode });
     router.push(`${ROUTES.FUNNEL.AGREEMENT}`);
+  };
+
+  const onError = (error: Error) => {
+    captureException(error);
   };
 
   return (
@@ -23,7 +29,7 @@ export default function PortalLogin() {
       />
       <SchoolCard schoolName="수원대학교" />
       <div className="gap-12"></div>
-      <PortalLoginForm onSuccess={onSuccess} />
+      <PortalLoginForm onSuccess={onSuccess} onError={onError} />
     </div>
   );
 }

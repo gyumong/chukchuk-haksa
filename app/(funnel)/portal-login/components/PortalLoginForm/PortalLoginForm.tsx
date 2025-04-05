@@ -1,15 +1,15 @@
 'use client';
 
 import { useActionState, useState } from 'react';
-import { captureException, setUser } from '@sentry/nextjs';
 import { FixedButton, TextField } from '@/components/ui';
 import styles from './PortalLoginForm.module.scss';
 
 interface PortalLoginFormProps {
-  onSuccess: () => void;
+  onSuccess: (studentCode: string) => void;
+  onError?: (error: Error) => void;
 }
 
-export function PortalLoginForm({ onSuccess }: PortalLoginFormProps) {
+export function PortalLoginForm({ onSuccess, onError }: PortalLoginFormProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -28,12 +28,10 @@ export function PortalLoginForm({ onSuccess }: PortalLoginFormProps) {
       if (!res.ok) {
         throw new Error(data.error || '로그인 실패');
       }
-
-      setUser({ username: data.studentCode });
-      onSuccess();
+      onSuccess(data.studentCode);
       return null;
     } catch (err: any) {
-      captureException(err);
+      onError?.(err);
       return err.message;
     }
   }, null);
