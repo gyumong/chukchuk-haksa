@@ -7,29 +7,58 @@ export const useInternalRouter = () => {
   const router = useRouter();
 
   return useMemo(() => {
-    const buildUrl = (path: RoutePath, query?: Record<string, string | number>) => {
-      if (!query) {
-        return path;
+    const buildUrl = (
+      basePath: RoutePath,
+      options?: {
+        params?: Array<string | number>;
+        query?: Record<string, string | number>;
       }
-      const searchParams = new URLSearchParams();
-      // eslint-disable-next-line no-restricted-syntax
-      for (const [key, value] of Object.entries(query)) {
-        if (value !== undefined) {
-          searchParams.set(key, String(value));
+    ) => {
+      const { params, query } = options ?? {};
+
+      let url = basePath;
+      if (params && params.length > 0) {
+        url += '/' + params.map(String).join('/');
+      }
+
+      if (query && Object.keys(query).length > 0) {
+        const searchParams = new URLSearchParams();
+        for (const [key, value] of Object.entries(query)) {
+          if (value !== undefined) {
+            searchParams.set(key, String(value));
+          }
         }
+        url += `?${searchParams.toString()}`;
       }
-      return `${path}?${searchParams.toString()}` as RoutePath;
+
+      return url as RoutePath;
     };
 
     return {
-      push: (href: RoutePath, query?: Record<string, string | number>, options?: NavigateOptions) => {
-        const url = buildUrl(href, query);
-        return router.push(url, options);
+      push: (
+        href: RoutePath,
+        options?: {
+          params?: Array<string | number>;
+          query?: Record<string, string | number>;
+        },
+        navigateOptions?: NavigateOptions
+      ) => {
+        const url = buildUrl(href, options);
+        return router.push(url, navigateOptions);
       },
-      replace: (href: RoutePath, query?: Record<string, string | number>, options?: NavigateOptions) => {
-        const url = buildUrl(href, query);
-        return router.replace(url, options);
+
+      replace: (
+        href: RoutePath,
+        options?: {
+          params?: Array<string | number>;
+          query?: Record<string, string | number>;
+        },
+        navigateOptions?: NavigateOptions
+      ) => {
+        const url = buildUrl(href, options);
+        return router.replace(url, navigateOptions);
       },
+
       back: () => router.back(),
       forward: () => router.forward(),
       refresh: () => router.refresh(),
