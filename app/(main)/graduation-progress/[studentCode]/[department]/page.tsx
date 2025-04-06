@@ -209,8 +209,7 @@ export default function GraduationProgressPage() {
   }
   const handleClickSemesterGradeCard = () => {
     router.push(ROUTES.ACADEMIC_DETAIL, {
-      year: semesterGrades[semesterGrades.length - 1].year,
-      semester: parseSemester(String(semesterGrades[semesterGrades.length - 1].semester)),
+      params: [semesterGrades[semesterGrades.length - 1].year, parseSemester(String(semesterGrades[semesterGrades.length - 1].semester))],
     });
   };
 
