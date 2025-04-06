@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const supabase: SupabaseClient<Database> = createClient();
+    const supabase: SupabaseClient<Database> = await createClient();
     const graduationService = new GraduationProgressService(supabase);
     const academicService = new AcademicRecordService(supabase);
 

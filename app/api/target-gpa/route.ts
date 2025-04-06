@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: '유효하지 않은 목표 학점입니다.' }, { status: 400 });
     }
 
-    const studentService = new StudentService();
+    const studentService = await StudentService.create();
     await studentService.updateTargetGpa(targetGpa);
 
     return NextResponse.json({ success: true });

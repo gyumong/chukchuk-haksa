@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import type { Database } from '@/types/supabase';
 
-export const dynamic = 'force-dynamic';
 
 type CourseAreaType = Database['public']['Enums']['course_area_type'];
 
@@ -82,13 +81,10 @@ function getCourseCategory(areaType: CourseAreaType): 'major' | 'liberal' {
   return 'liberal';
 }
 
-export async function GET(
-  request: NextRequest,
-  props: { params: Promise<{ year: string; semester: string }> }
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ year: string; semester: string }> }) {
   const params = await props.params;
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // 인증된 사용자 확인
     const {

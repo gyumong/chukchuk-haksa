@@ -7,10 +7,11 @@ import { ProfessorMapper } from '@/server/infrastructure/supabase/mappers/Profes
 import type { Database } from '@/types/supabase';
 
 export class SupabaseProfessorRepository implements IProfessorRepository {
-  private readonly supabase: SupabaseClient<Database>;
+  constructor(private readonly supabase: SupabaseClient<Database>) {}
 
-  constructor(supabaseClient?: SupabaseClient<Database>) {
-    this.supabase = supabaseClient ?? createClient();
+  static async create() {
+    const supabase = await createClient();
+    return new SupabaseProfessorRepository(supabase);
   }
 
   async findByName(professorName: string): Promise<Professor | null> {

@@ -25,7 +25,12 @@ interface CourseOfferingInsert {
  *  - course_offerings 테이블에 대한 로직
  */
 export class CourseOfferingService {
-  constructor(private readonly supabase: SupabaseClient<Database> = createClient()) {}
+  constructor(private readonly supabase: SupabaseClient<Database>) {}
+
+  static async create() {
+    const supabase = await createClient();
+    return new CourseOfferingService(supabase);
+  }
 
   /**
    * 특정 (course_id, year, semester, class_section, professor_id)로 레코드 찾기

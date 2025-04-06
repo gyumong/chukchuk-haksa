@@ -36,7 +36,7 @@ export async function POST(req: Request) {
   // 비동기로 크롤링 시작
   // (async () => {
   try {
-    const supabase: SupabaseClient<Database> = createClient();
+    const supabase: SupabaseClient<Database> = await createClient();
     const portalRepository = new PortalRepositoryImpl();
     const departmentRepository = new SupabaseDepartmentRepository(supabase);
     const userRepository = new SupabaseUserRepository(supabase);
