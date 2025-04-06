@@ -23,11 +23,11 @@ export const useInternalRouter = () => {
 
       if (query && Object.keys(query).length > 0) {
         const searchParams = new URLSearchParams();
-        for (const [key, value] of Object.entries(query)) {
-          if (value !== undefined) {
+        Object.entries(query)
+          .filter(([_, value]) => value !== undefined)
+          .forEach(([key, value]) => {
             searchParams.set(key, String(value));
-          }
-        }
+          });          
         url += `?${searchParams.toString()}`;
       }
 
