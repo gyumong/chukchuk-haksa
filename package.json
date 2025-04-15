@@ -18,6 +18,7 @@
     "codemod:router": "jscodeshift -t codemods/useRouter-to-useInternalRouter.js . --ignore-pattern='**/node_modules/**' --ignore-pattern='**/.next/**' --ignore-pattern='**/dist/**' --extensions=ts,tsx --parser=tsx"
   },
   "dependencies": {
+    "@next/bundle-analyzer": "^15.3.0",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/core": "^1.30.1",
     "@sentry/nextjs": "^8",
@@ -34,6 +35,7 @@
     "playwright": "^1.49.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "sharp": "^0.34.1",
     "uuid": "^11.0.3"
   },
   "devDependencies": {

@@ -1,10 +1,19 @@
 import { withSentryConfig } from '@sentry/nextjs';
 import path from 'path';
+import withBundleAnalyzerFn from '@next/bundle-analyzer';
 
 /** @type {import('next').NextConfig} */
 
+const withBundleAnalyzer = withBundleAnalyzerFn({
+  enabled: process.env.NODE_ENV === 'development'
+});
+
 const nextConfig = {
   reactStrictMode: false,
+  images:{
+    formats: ['image/avif','image/webp'],
+    minimumCacheTTL: 60 * 60 * 24 * 365, // 1년
+  },
   sassOptions: {
     // import.meta.dirname는 node v20.11 이상 부터 가능
     // @example https://nodejs.org/api/esm.html#importmetadirname
@@ -39,7 +48,7 @@ const nextConfig = {
   },
 };
 
-export default withSentryConfig(nextConfig, {
+export default withBundleAnalyzer(withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
@@ -82,4 +91,4 @@ export default withSentryConfig(nextConfig, {
   // https://docs.sentry.io/product/crons/
   // https://vercel.com/docs/cron-jobs
   automaticVercelMonitors: true,
-});
+}));
