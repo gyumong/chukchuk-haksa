@@ -35,22 +35,24 @@ export const metadata: Metadata = {
 };
 
 const paperlogy = localFont({
-  src: './fonts/Paperlogy-7Bold.woff2',
+  src: './fonts/Paperlogy-subset-7Bold.woff2',
   weight: '700',
   variable: '--paperlogy-font',
+  display: 'swap',
 });
 const suit = localFont({
   src: [
     {
-      path: './fonts/SUIT-Regular.woff2',
+      path: './fonts/SUIT-subset-Regular.woff2',
       weight: '400',
     },
     {
-      path: './fonts/SUIT-SemiBold.woff2',
+      path: './fonts/SUIT-subset-SemiBold.woff2',
       weight: '600',
     },
   ],
   variable: '--suit-font',
+  display: 'swap',
 });
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
