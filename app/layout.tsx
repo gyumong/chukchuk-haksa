@@ -2,6 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { Analytics } from '@vercel/analytics/react';
+import Script from 'next/script';
 import '../styles/global.scss';
 
 export const metadata: Metadata = {
@@ -61,6 +62,12 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <body className={`${paperlogy.variable} ${suit.variable} antialiased`}>
         {children}
         <Analytics />
+                {/* Cloudflare Web Analytics: 스크립트 삽입 */}
+                <Script
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "e3e57bab626a47919bcc298916bec636"}'
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
