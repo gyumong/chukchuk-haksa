@@ -20,7 +20,7 @@ export const useInternalRouter = () => {
       if (params && params.length > 0) {
         url += '/' + params.map(String).join('/');
       }
-        // eslint-disable-next-line no-restricted-syntax, @typescript-eslint/no-unused-vars
+      
       if (query && Object.keys(query).length > 0) {
         const searchParams = new URLSearchParams();
         Object.entries(query)

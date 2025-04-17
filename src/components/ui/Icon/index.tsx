@@ -53,7 +53,6 @@ interface IconProps {
 }
 
 export const Icon = ({ name, size = 24, color, className }: IconProps) => {
-  console.log(name);
   const icons = iconMapping as Record<
     IconType,
     React.FC<{ width: number; height: number; color?: string; className?: string }>
