@@ -4,14 +4,26 @@ import type { IUserRepository } from '@/server/domain/user/repositories/IUserRep
 import type { DashboardData } from '@/types/api/dashboard';
 import { AcademicRecordService } from '../services/academic-record-service';
 import { StudentService } from '../services/student-service';
+import { SupabaseAuthService } from '@/server/infrastructure/supabase/SupabaseAuthService';
+import { SupabaseUserRepository } from '@/server/infrastructure/supabase/repository/SupabaseUserRepository';
+import { createClient } from '@/lib/supabase/server';
 
 export class DashboardFacade {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly authService: IAuthService,
-    private readonly studentService = new StudentService(),
-    private readonly academicRecordService = new AcademicRecordService()
+    private readonly studentService: StudentService,
+    private readonly academicRecordService: AcademicRecordService
   ) {}
+
+  static async create() {
+    const supabase = await createClient();
+    const userRepository = new SupabaseUserRepository(supabase);
+    const authService = new SupabaseAuthService(supabase);
+    const studentService = await StudentService.create();
+    const academicRecordService = await AcademicRecordService.create();
+    return new DashboardFacade(userRepository, authService, studentService, academicRecordService);
+  }
 
   async getDashboard(): Promise<DashboardData> {
     // 병렬로 데이터 조회

@@ -19,7 +19,12 @@ interface AreaProgress {
 }
 
 export class GraduationProgressService {
-  constructor(private readonly supabase: SupabaseClient<Database> = createClient()) {}
+  constructor(private readonly supabase: SupabaseClient<Database>) {}
+
+  static async create() {
+    const supabase = await createClient();
+    return new GraduationProgressService(supabase);
+  }
 
   async getStudentAreaProgress(
     studentId: string,

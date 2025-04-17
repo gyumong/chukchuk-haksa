@@ -4,7 +4,7 @@ import { AuthError } from '@/lib/error';
 import { createClient } from '@/lib/supabase/server';
 
 async function signInWithSupabase(idToken: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const nonce = await getCookie('nonce', { cookies });
 
   if (!nonce) {

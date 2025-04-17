@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
-export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // 인증된 사용자 확인
     const {

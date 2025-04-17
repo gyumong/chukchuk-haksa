@@ -20,7 +20,13 @@ interface SemesterGrade {
 }
 
 export class AcademicRecordService {
-  constructor(private readonly supabase: SupabaseClient<Database> = createClient()) {}
+  constructor(private readonly supabase: SupabaseClient<Database>) {}
+
+  static async create() {
+    const supabase = await createClient();
+    return new AcademicRecordService(supabase);
+  }
+
 
   private async getAuthenticatedUserId(): Promise<string> {
     const { data: userData, error } = await this.supabase.auth.getUser();

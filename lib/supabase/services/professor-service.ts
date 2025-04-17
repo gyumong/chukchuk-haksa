@@ -3,7 +3,12 @@ import type { Database } from '@/types';
 import { createClient } from '../server';
 
 export class ProfessorService {
-  constructor(private readonly supabase: SupabaseClient<Database> = createClient()) {}
+  constructor(private readonly supabase: SupabaseClient<Database>) {}
+
+  static async create() {
+    const supabase = await createClient();
+    return new ProfessorService(supabase);
+  }
 
   /**
    * 이름으로 교수 조회 또는 생성

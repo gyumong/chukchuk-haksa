@@ -3,7 +3,12 @@ import type { Database } from '@/types/supabase';
 import { createClient } from '../server';
 
 export class DepartmentService {
-  constructor(private readonly supabase: SupabaseClient<Database> = createClient()) {}
+  constructor(private readonly supabase: SupabaseClient<Database>) {}
+
+  static async create() {
+    const supabase = await createClient();
+    return new DepartmentService(supabase);
+  }
 
   /**
    * department_code 컬럼으로 departments.id(PK) 조회

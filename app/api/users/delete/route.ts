@@ -8,7 +8,7 @@ import type { Database } from '@/types';
 
 export async function DELETE() {
   try {
-    const supabase: SupabaseClient<Database> = createClient();
+    const supabase: SupabaseClient<Database> = await createClient();
     const userRepository = new SupabaseUserRepository(supabase);
     const deleteUserUseCase = new DeleteUserUseCase(userRepository);
 

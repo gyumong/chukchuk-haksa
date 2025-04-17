@@ -11,7 +11,12 @@ interface StudentCourseInsert {
 }
 
 export class StudentCourseService {
-  constructor(private readonly supabase: SupabaseClient<Database> = createClient()) {}
+  constructor(private readonly supabase: SupabaseClient<Database>) {}
+
+  static async create() {
+    const supabase = await createClient();
+    return new StudentCourseService(supabase);
+  }
 
   /**
    * 학생의 수강 이력을 Upsert

@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import styles from './SemesterSlider.module.scss';
@@ -13,42 +12,15 @@ interface Semester {
 interface SemesterSliderProps {
   currentYear: number;
   currentSemester: number;
+  semesters: Semester[];
 }
 
-export default function SemesterSlider({ currentYear, currentSemester }: SemesterSliderProps) {
+export default function SemesterSlider({ currentYear, currentSemester , semesters}: SemesterSliderProps) {
   const router = useInternalRouter();
-  const [semesters, setSemesters] = useState<Semester[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchSemesters = async () => {
-      try {
-        const response = await fetch('/api/get-semesters', {
-          next: {
-            revalidate: 3600, // 1시간마다 재검증
-          },
-        });
-        if (!response.ok) {
-          throw new Error('Failed to fetch semesters');
-        }
-        const data = await response.json();
-        setSemesters(data);
-      } catch (error) {
-        console.error('Error fetching semesters:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchSemesters();
-  }, []);
-
-  if (isLoading) {
-    return null;
-  }
 
   const handleSemesterClick = (year: number, semester: number) => {
-    router.replace(ROUTES.ACADEMIC_DETAIL, { year, semester });
+    router.replace(ROUTES.ACADEMIC_DETAIL, { params: [year, semester] });
   };
 
   const getSemesterLabel = (semester: number): string => {
@@ -65,6 +37,7 @@ export default function SemesterSlider({ currentYear, currentSemester }: Semeste
         return '';
     }
   };
+
 
   return (
     <div className={styles.sliderContainer}>

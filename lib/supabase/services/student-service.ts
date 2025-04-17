@@ -19,10 +19,15 @@ export class StudentService {
   private readonly departmentService: DepartmentService;
 
   constructor(
-    private readonly supabase: SupabaseClient<Database> = createClient(),
+    private readonly supabase: SupabaseClient<Database>, 
     departmentService?: DepartmentService
   ) {
     this.departmentService = departmentService || new DepartmentService(supabase);
+  }
+
+  static async create() {
+    const supabase = await createClient();
+    return new StudentService(supabase);
   }
 
   private async getAuthenticatedUserId(): Promise<string> {

@@ -10,7 +10,12 @@ interface TemporaryCourseInfo {
 }
 
 export class CourseService {
-  constructor(private readonly supabase: SupabaseClient<Database> = createClient()) {}
+  constructor(private readonly supabase: SupabaseClient<Database>) {}
+
+  static async create() {
+    const supabase = await createClient();
+    return new CourseService(supabase);
+  }
 
   /**
    * course_code로 courses.id (PK) 조회
