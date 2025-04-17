@@ -51,7 +51,7 @@ const LandingPage = () => {
     <>
       {landingImages.map(image => (
         <div key={image.alt + image.src}>
-          <Image {...image} className="object-cover" />
+          <Image {...image} />
         </div>
       ))}
       <FixedButton variant="kakao" onClick={handleLogin}>
