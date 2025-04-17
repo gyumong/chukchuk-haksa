@@ -1,0 +1,110 @@
+@use '@/styles/color.scss' as color;
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.courseItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 26px;
+}
+
+.courseInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.courseName {
+  font-family: 'SUIT';
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 25.6px;
+  color: #2b2b2b;
+
+  .completed & {
+    color: white;
+  }
+}
+
+.semester {
+  font-family: 'SUIT';
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22.4px;
+  color: #a3a2b1;
+}
+
+.courseGrade {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.credits {
+  font-family: 'SUIT';
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22.4px;
+  color: #7f71fb;
+
+  .completed & {
+    color: #c8c3f7;
+  }
+}
+
+.grade {
+  font-family: 'SUIT';
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22.4px;
+  min-width: 22px;
+  text-align: right;
+
+  // A+, A0, A 모두 포함
+  &[data-grade='A+'],
+  &[data-grade='A0'],
+  &[data-grade='A'] {
+    color: #eb5050;
+  }
+
+  &[data-grade='P'] {
+    color: color.$purple-500;
+    .completed & {
+      color: color.$purple-200;
+    }
+  }
+
+  // B+, B0, B 모두 포함
+  &[data-grade='B+'],
+  &[data-grade='B0'],
+  &[data-grade='B'] {
+    color: #f6b645;
+  }
+
+  // C+, C0, C 모두 포함
+  &[data-grade='C+'],
+  &[data-grade='C0'],
+  &[data-grade='C'] {
+    color: #1fce8e;
+  }
+
+  // D+, D0, D 모두 포함
+  &[data-grade='D+'],
+  &[data-grade='D0'],
+  &[data-grade='D'] {
+    color: #7f7e8a;
+    .completed & {
+      color: color.$gray-100;
+    }
+  }
+  &[data-grade='F'] {
+    color: color.$gray-500;
+    .completed & {
+      color: color.$gray-100;
+    }
+  }
+}
