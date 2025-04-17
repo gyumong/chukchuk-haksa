@@ -43,13 +43,7 @@
 
     "no-console": ["warn", { "allow": ["warn", "error"] }],
     "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
-    "no-restricted-syntax": [
-      "error",
-      {
-        "selector": "CallExpression[callee.object.name='Object'][callee.property.name='entries']",
-        "message": "Object.entries 대신 Object.keys나 Object.values 사용을 고려하세요."
-      }
-    ]
+
   },
   "ignorePatterns": [
     ".yarn/**",

@@ -1,0 +1,25 @@
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/color.scss' as colors;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
+}
+
+.description {
+  @include typography.body-md;
+  @include typography.font-weight-regular;
+  color: colors.$gray-400;
+}
+
+.title {
+  color: colors.$black-100;
+  @include typography.title-lg;
+  @include typography.font-weight-bold;
+}
+
+.highlight {
+  color: colors.$purple-100;
+}
