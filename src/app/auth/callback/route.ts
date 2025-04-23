@@ -1,9 +1,9 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { getCookie } from 'cookies-next';
 import { getKakaoToken } from '@/lib/auth/kakao';
-import { signInWithSupabase } from '@/lib/auth/supabase';
 import { AuthError } from '@/lib/error';
+import { signInWithBackend } from '@/lib/auth/signin';
+import { getRedirectUri } from '@/lib/auth/client';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,25 +16,28 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}`);
   }
   try {
-    /**
-     * example: https://www.npmjs.com/package/cookies-next
-     */
-    const state = await getCookie('state', { cookies });
+    const cookieStore = await cookies();
+    const state = cookieStore.get('state')?.value;
+    const nonce = cookieStore.get('nonce')?.value;
 
     if (!state || state !== returnedState) {
       throw new AuthError('Invalid state parameter.');
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? origin;
-    const redirectUri = `${baseUrl}/auth/callback`;
+    if (!nonce) {
+      throw new AuthError('Nonce is not found.');
+    }
 
-    const idToken = await getKakaoToken(code, redirectUri);
-    await signInWithSupabase(idToken);
-
-    return NextResponse.redirect(`${origin}/auth/callback`);
+    const successRedirectUri = getRedirectUri();
+    const idToken = await getKakaoToken(code, successRedirectUri);
+    
+    await signInWithBackend(idToken, nonce);
+    
+    return NextResponse.redirect(successRedirectUri);;
   } catch (error) {
     console.log('error', error);
+    const fallbackRedirectUri = `${origin}/login`;
     const errorCode = error instanceof AuthError ? error.message : 'UNKNOWN_ERROR';
-    return NextResponse.redirect(`${origin}/login?error=${errorCode}`);
+    return NextResponse.redirect(`${fallbackRedirectUri}?error=${errorCode}`);
   }
 }
