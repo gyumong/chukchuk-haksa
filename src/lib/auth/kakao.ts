@@ -1,6 +1,8 @@
 import { setCookie } from 'cookies-next';
 import { AuthError } from '@/lib/error';
 import { generateRandomNonce, generateRandomString, hashNonce } from '.';
+import { KAKAO_CLIENT_SECRET, KAKAO_JS_KEY, KAKAO_REST_API_KEY } from '@/config/env';
+import { getRedirectUri } from './client';
 
 function initializeKakao() {
   if (!window.Kakao) {
@@ -8,7 +10,7 @@ function initializeKakao() {
   }
 
   if (!window.Kakao.isInitialized()) {
-    window.Kakao.init(process.env.NEXT_PUBLIC_JAVASCRIPT_KEY!);
+    window.Kakao.init(KAKAO_JS_KEY);
   }
 }
 
@@ -18,7 +20,7 @@ function cleanupKakao() {
   }
 }
 
-async function kakaoLogin(redirectUri?: string) {
+async function kakaoLogin() {
   if (!window?.Kakao || !window.Kakao.Auth) {
     throw new AuthError('Kakao SDK is not loaded or initialized.');
   }
@@ -29,7 +31,7 @@ async function kakaoLogin(redirectUri?: string) {
 
   setCookie('nonce', nonce);
   setCookie('state', state);
-  const uri = redirectUri ?? new URL('/auth/callback', window.location.origin).toString();
+  const uri =  getRedirectUri()
 
   // 카카오 로그인 scope 옵션 내부적인 캐싱이 적용되어 있는지?
   /**
@@ -47,8 +49,6 @@ async function kakaoLogin(redirectUri?: string) {
 
 async function getKakaoToken(code: string, redirectUri: string): Promise<string> {
   const KAKAO_TOKEN_URL = 'https://kauth.kakao.com/oauth/token';
-  const REST_API_KEY = process.env.REST_API_KEY!;
-  const CLIENT_SECRET = process.env.CLIENT_SECRET!;
 
   const response = await fetch(KAKAO_TOKEN_URL, {
     method: 'POST',
@@ -58,10 +58,10 @@ async function getKakaoToken(code: string, redirectUri: string): Promise<string>
     },
     body: new URLSearchParams({
       grant_type: 'authorization_code',
-      client_id: REST_API_KEY,
+      client_id: KAKAO_REST_API_KEY,
       redirect_uri: redirectUri,
       code,
-      client_secret: CLIENT_SECRET,
+      client_secret: KAKAO_CLIENT_SECRET,
     }),
   });
 
