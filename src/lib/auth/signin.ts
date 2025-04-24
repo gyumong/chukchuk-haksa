@@ -13,7 +13,7 @@ export async function signInWithBackend(idToken: string, nonce: string) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id_token: idToken, nonce }),
-    credentials: 'include',
+
   });
 
   if (!response.ok) {
@@ -22,15 +22,15 @@ export async function signInWithBackend(idToken: string, nonce: string) {
 
   // Set-Cookie 헤더에서 access_token 추출
   const setCookie = response.headers.get('set-cookie');
-  const token = setCookie ? extractCookieValue(setCookie, 'accessToken') : null;
+  const accessToken = setCookie ? extractCookieValue(setCookie, 'accessToken') : null;
 
-  if (!token) {
+  if (!accessToken) {
     throw new AuthError('access_token not found in response headers.');
   }
 
-  await setAccessToken(token); // 저장 (with secure, httpOnly, etc.)
+  await setAccessToken(accessToken); // 저장 (with secure, httpOnly, etc.)
 
-  const data = await response.json();
+  const { data }: { data: { user: { isPortalLinked: boolean } } } = await response.json();
 
-  return { data };
+  return data.user;
 }
