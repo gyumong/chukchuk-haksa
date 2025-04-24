@@ -1,3 +1,5 @@
+import { NEXT_BASE_URL } from '@/config/env';
+
 export function getRedirectUri(path: string = '/auth/callback') {
-    return new URL(path, window.location.origin).toString();
-  }
+  return `${NEXT_BASE_URL}${path}`;
+}
