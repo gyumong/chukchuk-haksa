@@ -1,10 +1,10 @@
+import { API_BASE_URL } from '@/config/env';
+import { ACCESS_TOKEN_KEY } from '@/constants';
+import { setAccessToken } from '@/lib/auth/token';
 import { AuthError } from '@/lib/error';
 import { extractCookieValue } from '@/lib/utils/cookies';
-import { setAccessToken } from '@/lib/auth/token';
-import { API_BASE_URL } from '@/config/env';
 
 export async function signInWithBackend(idToken: string, nonce: string) {
-
   if (!nonce) {
     throw new AuthError('Nonce is not found.');
   }
@@ -13,7 +13,6 @@ export async function signInWithBackend(idToken: string, nonce: string) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id_token: idToken, nonce }),
-
   });
 
   if (!response.ok) {
@@ -22,7 +21,7 @@ export async function signInWithBackend(idToken: string, nonce: string) {
 
   // Set-Cookie 헤더에서 access_token 추출
   const setCookie = response.headers.get('set-cookie');
-  const accessToken = setCookie ? extractCookieValue(setCookie, 'accessToken') : null;
+  const accessToken = setCookie ? extractCookieValue(setCookie, ACCESS_TOKEN_KEY) : null;
 
   if (!accessToken) {
     throw new AuthError('access_token not found in response headers.');
