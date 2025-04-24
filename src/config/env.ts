@@ -22,5 +22,4 @@ export const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN ?? '';
 export const TEST_TOKEN = process.env.TEST_TOKEN ?? '';
 export const TEST_TOKEN2 = process.env.TEST_TOKEN2 ?? '';
 
-export const LOCAL_HOST = process.env.LOCAL_HOST ?? 'localhost';
 export const PORT = Number(process.env.PORT) || 3000;
