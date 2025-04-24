@@ -1,9 +1,10 @@
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { getCookie } from 'cookies-next';
+import { getRedirectUri } from '@/lib/auth/client';
 import { getKakaoToken } from '@/lib/auth/kakao';
-import { signInWithSupabase } from '@/lib/auth/supabase';
+import { getRedirectPathForUser } from '@/lib/auth/redirect';
+import { signInWithBackend } from '@/lib/auth/signin';
 import { AuthError } from '@/lib/error';
+import { getCookieValue } from '@/lib/utils/cookies';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,29 +13,25 @@ export async function GET(request: Request) {
   const code = searchParams.get('code');
   const returnedState = searchParams.get('state');
 
-  if (!code || !returnedState) {
-    return NextResponse.redirect(`${origin}`);
-  }
   try {
-    /**
-     * example: https://www.npmjs.com/package/cookies-next
-     */
-    const state = await getCookie('state', { cookies });
+    const state = await getCookieValue('state');
+    const nonce = await getCookieValue('nonce');
 
-    if (!state || state !== returnedState) {
-      throw new AuthError('Invalid state parameter.');
+    if (!code || !state || state !== returnedState || !nonce) {
+      throw new AuthError('Invalid login attempt.');
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? origin;
-    const redirectUri = `${baseUrl}/auth/callback`;
+    const redirectUri = getRedirectUri();
 
     const idToken = await getKakaoToken(code, redirectUri);
-    await signInWithSupabase(idToken);
+    const user = await signInWithBackend(idToken, nonce);
+    const nextPath = getRedirectPathForUser(user);
 
-    return NextResponse.redirect(`${origin}/auth/callback`);
+    return NextResponse.redirect(nextPath);
   } catch (error) {
-    console.log('error', error);
-    const errorCode = error instanceof AuthError ? error.message : 'UNKNOWN_ERROR';
-    return NextResponse.redirect(`${origin}/login?error=${errorCode}`);
+    const fallback = `${origin}/?error=${encodeURIComponent(
+      error instanceof AuthError ? error.message : 'UNKNOWN_ERROR'
+    )}`;
+    return NextResponse.redirect(fallback);
   }
 }

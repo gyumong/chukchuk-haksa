@@ -1,3 +1,4 @@
+import { SESSION_SECRET } from '@/config/env';
 import type { SessionOptions } from 'iron-session';
 
 export interface SessionData {
@@ -7,7 +8,7 @@ export interface SessionData {
 
 export const sessionOptions: SessionOptions = {
   cookieName: 'session',
-  password: process.env.SESSION_SECRET!,
+  password: SESSION_SECRET,
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
     maxAge: 600, // 10분
