@@ -15,6 +15,9 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "gen": "dotenv -e .env -- bash -c 'npx supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > types/supabase.ts'",
+    "api:fetch": "curl -sSL https://dev.api.cchaksa.com/v3/api-docs -o ./swagger/openapi-dev.json",
+    "api:gen": "swagger-typescript-api generate -p ./swagger/openapi-dev.json -o ./src/shared/api --modular --module-name-first-tag --templates ./swagger/templates --name index.ts --extract-response-body --extract-request-params",
+    "api:update": "yarn api:fetch && yarn api:gen",
     "codemod:router": "jscodeshift -t codemods/useRouter-to-useInternalRouter.js . --ignore-pattern='**/node_modules/**' --ignore-pattern='**/.next/**' --ignore-pattern='**/dist/**' --extensions=ts,tsx --parser=tsx"
   },
   "dependencies": {
@@ -57,6 +60,7 @@
     "prettier": "^3.3.3",
     "sass": "^1.82.0",
     "supabase": "2.9.6",
+    "swagger-typescript-api": "^13.1.1",
     "typescript": "5.6.3",
     "vitest": "^3.0.5"
   },
