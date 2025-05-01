@@ -54,7 +54,7 @@ jobs:
           
           if [ -z "$changed_files" ]; then
             echo "No changed files to format."
-          elif echo "$changed_files" | grep -q -E "^\.prettierrc(\.cjs)?$|^\.prettierignore$"; then
+          elif echo "$changed_files" | grep -q -E "^\.prettierrc$|^\.prettierignore$"; then
             yarn prettier --write -c .
           else
             echo "$changed_files" | xargs -r yarn prettier --write -c --ignore-unknown
