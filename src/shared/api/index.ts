@@ -8,3 +8,4 @@ export * from './SuwonScraping';
 export * from './User';
 export * from './http-client';
 export * from './data-contracts';
+export * from './client';
