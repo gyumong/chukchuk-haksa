@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
-    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/node": "^20",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",
@@ -57,7 +57,7 @@
     "eslint-plugin-import": "^2.31.0",
     "jscodeshift": "^17.3.0",
     "postcss": "^8",
-    "prettier": "^3.3.3",
+    "prettier": "3.5.3",
     "sass": "^1.82.0",
     "supabase": "2.9.6",
     "swagger-typescript-api": "^13.1.1",

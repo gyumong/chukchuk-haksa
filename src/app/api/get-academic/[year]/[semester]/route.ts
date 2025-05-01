@@ -82,10 +82,7 @@ function getCourseCategory(areaType: CourseAreaType): 'major' | 'liberal' {
   return 'liberal';
 }
 
-export async function GET(
-  request: NextRequest,
-  props: { params: Promise<{ year: string; semester: string }> }
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ year: string; semester: string }> }) {
   const params = await props.params;
   try {
     const supabase = createClient();

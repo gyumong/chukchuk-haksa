@@ -1,15 +1,13 @@
 'use client';
 
+import { captureException, setUser } from '@sentry/nextjs';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { FunnelHeadline, SchoolCard } from '../components';
-import styles from './page.module.scss';
 import { PortalLoginForm } from './components/PortalLoginForm/PortalLoginForm';
-import { setUser, captureException } from '@sentry/nextjs';
+import styles from './page.module.scss';
 
 export default function PortalLogin() {
-
-
   const router = useInternalRouter();
 
   const onSuccess = (studentCode: string) => {

@@ -1,5 +1,5 @@
-import { SESSION_SECRET } from '@/config/env';
 import type { SessionOptions } from 'iron-session';
+import { SESSION_SECRET } from '@/config/env';
 
 export interface SessionData {
   username: string;

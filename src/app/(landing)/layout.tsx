@@ -1,8 +1,7 @@
-
-export const fetchCache = 'default-cache';
-
 import KakaoProvider from '@/components/KakaoProvider';
 import styles from './layout.module.scss';
+
+export const fetchCache = 'default-cache';
 
 export default function LandingLayout({ children }: { children: React.ReactNode }) {
   return (

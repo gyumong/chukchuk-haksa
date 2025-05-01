@@ -20,14 +20,14 @@ export const useInternalRouter = () => {
       if (params && params.length > 0) {
         url += '/' + params.map(String).join('/');
       }
-      
+
       if (query && Object.keys(query).length > 0) {
         const searchParams = new URLSearchParams();
         Object.entries(query)
           .filter(([_, value]) => value !== undefined)
           .forEach(([key, value]) => {
             searchParams.set(key, String(value));
-          });          
+          });
         url += `?${searchParams.toString()}`;
       }
 

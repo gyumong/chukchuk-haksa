@@ -25,10 +25,17 @@ export async function GET(request: Request) {
 
     const idToken = await getKakaoToken(code, redirectUri);
     const user = await signInWithBackend(idToken, nonce);
-    const nextPath = getRedirectPathForUser(user);
 
-    return NextResponse.redirect(nextPath);
+    const isPortalLinked = user?.isPortalLinked;
+
+    if (isPortalLinked === undefined) {
+      throw new AuthError('User is missing or malformed.');
+    }
+
+    const nextPath = getRedirectPathForUser({ isPortalLinked });
+    return NextResponse.redirect(new URL(nextPath, origin));
   } catch (error) {
+    console.error(error);
     const fallback = `${origin}/?error=${encodeURIComponent(
       error instanceof AuthError ? error.message : 'UNKNOWN_ERROR'
     )}`;
