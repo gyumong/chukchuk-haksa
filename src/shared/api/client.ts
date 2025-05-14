@@ -1,72 +1,94 @@
-import { cookies } from 'next/headers';
-import * as Sentry from '@sentry/nextjs';
-import { type ApiConfig, HttpClient } from '@/shared/api/http-client';
-/** User API (회원/인증) */
-import { User as UserApi } from '@/shared/api/User';
+import type { ZodSchema } from 'zod';
+import { AcademicRecord as AcademicRecordApi, Student as StudentApi, User as UserApi } from '@/shared/api/domain';
+import { createApiConfig } from './configs/httpConfig';
+import type { ErrorResponseWrapper } from './data-contracts';
+import { ApiError } from './errors';
+import { HttpClient } from './http-client';
+import type { HttpResponse } from './http-client';
 
-/* ─────────────────────────────  공통 옵션  ───────────────────────────── */
+interface ApiResponse<TData> {
+  success?: boolean;
+  data?: TData;
+  message?: string;
+}
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://dev.api.cchaksa.com';
+// API 클라이언트 초기화
+const apiConfig = createApiConfig();
+export const http = new HttpClient(apiConfig);
 
-/** Sentry Enrich + 쿠키 Jar + 기본 fetch 옵션을 묶은 재사용 Config */
-const baseConfig: ApiConfig = {
-  baseUrl: BASE_URL,
+// API 클라이언트 생성 헬퍼
+export const createApiClient = <T extends new (...args: any) => any>(ApiClass: T) => {
+  const instance = new ApiClass(apiConfig);
+  const client: Record<string, any> = {};
 
-  /* 1) ✅ 쿠키 Jar → 백엔드(JWT) 전달 */
-  securityWorker: async () => {
-    try {
-      const cookieStore = cookies();
-      const cookieJar = (await cookieStore)
-        .getAll()
-        .map(({ name, value }) => `${name}=${value}`)
-        .join('; ');
+  Object.keys(instance).forEach(key => {
+    const method = instance[key];
+    if (typeof method === 'function') {
+      client[key] = async (...args: any[]) => {
+        try {
+          const res = await method.apply(instance, args);
 
-      return cookieJar ? { headers: { Cookie: cookieJar } } : {};
-    } catch {
-      // (클라이언트 등) 쿠키 API 사용 불가 영역
-      return {};
-    }
-  },
+          // HttpResponse 타입 체크 추가
+          if (res && typeof res === 'object' && 'data' in res) {
+            assertValidResponse(res); // data.data 확인
+            return res;
+          }
+          // 예외: 실제로 Response 객체가 리턴되었는데 잘못 처리된 경우
+          if (res instanceof Response) {
+            if (!res.ok) {
+              const body = await res.clone().text();
+              throw new ApiError(`HTTP ${res.status}`, {
+                status: res.status,
+                data: body,
+              } as HttpResponse<any, any>);
+            }
+            return res;
+          }
 
-  /* 2) ✅ Data-Cache Opt-out (사용자 개인화 데이터) */
-  baseApiParams: {
-    cache: 'no-store', // 필요 시 개별 fetch 에서 next:{ revalidate, tags } 로 덮어쓰기
-    credentials: 'include',
-    redirect: 'follow',
-    referrerPolicy: 'no-referrer',
-  },
-
-  /* 3) ✅ customFetch — Sentry 트레이싱 & 로깅 */
-  customFetch: async (...args) => {
-    try {
-      return await fetch(...args);
-    } catch (err: any) {
-      /* enrich */
-      Sentry.withScope(scope => {
-        scope.setLevel('fatal');
-        if (args.length) {
-          const url = typeof args[0] === 'string' ? args[0] : args[0].url;
-          scope.setTag('route', url);
+          throw new ApiError('Unknown response format', {
+            status: 500,
+            data: res,
+          } as HttpResponse<any, any>);
+        } catch (error) {
+          console.error(`[API ERROR: ${String(key)}]`, error);
+          throw error;
         }
-        Sentry.captureException(err);
-      });
-      throw err;
+      };
     }
-  },
+  });
+
+  return client as {
+    [K in keyof InstanceType<T>]: InstanceType<T>[K] extends (...args: any[]) => Promise<HttpResponse<any, any>>
+      ? (...args: Parameters<InstanceType<T>[K]>) => Promise<ReturnType<InstanceType<T>[K]>>
+      : InstanceType<T>[K];
+  };
 };
 
-/* ─────────────────────────────  싱글턴 인스턴스  ───────────────────────────── */
+export function makeUsecase<TIn, TOut>(
+  apiFn: () => Promise<HttpResponse<ApiResponse<TIn>, ErrorResponseWrapper>>,
+  schema: ZodSchema<TOut>
+): () => Promise<TOut> {
+  return async () => {
+    const res = await apiFn();
+    return schema.parse(res.data.data);
+  };
+}
 
-/** raw `HttpClient` (경로/타입 모르게 fetch 만 필요할 때) */
-export const http = new HttpClient(baseConfig);
+// API 클라이언트 인스턴스
+export const userApi = createApiClient(UserApi);
+export const studentApi = createApiClient(StudentApi);
+export const academicRecordApi = createApiClient(AcademicRecordApi);
 
-/*  서비스-별 API 클래스 인스턴스도 필요할 때 내보내기  */
-export { User } from '@/shared/api/User'; // 타입 재-export
-export { Student } from '@/shared/api/Student';
-export { AcademicRecord } from '@/shared/api/AcademicRecord';
-export { Graduation } from '@/shared/api/Graduation';
-export { SemesterRecord } from '@/shared/api/SemesterRecord';
+// 응답 검증 유틸리티
+export function assertValidResponse<TData>(
+  res: HttpResponse<ApiResponse<TData>, ErrorResponseWrapper>,
+  errorMessage?: string
+): asserts res is HttpResponse<ApiResponse<TData>, ErrorResponseWrapper> {
+  if (!res || typeof res !== 'object' || !('data' in res)) {
+    throw new ApiError('Invalid HttpResponse shape (non-object)', res);
+  }
 
-export const userApi = new UserApi(baseConfig);
-
-/* 필요하다면 다른 서비스-별 export 도 동일 패턴으로… */
+  if (!res.data?.data) {
+    throw new ApiError(errorMessage ?? '유효하지 않은 응답', res);
+  }
+}

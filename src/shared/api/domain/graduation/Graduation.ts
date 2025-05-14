@@ -13,8 +13,8 @@
 import {
   ErrorResponseWrapper,
   GetGraduationProgressData,
-} from "./data-contracts";
-import { HttpClient, RequestParams } from "./http-client";
+} from "../../data-contracts";
+import { HttpClient, RequestParams } from "../../http-client";
 
 export class Graduation<
   SecurityDataType = unknown,

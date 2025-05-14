@@ -16,8 +16,8 @@ import {
   LoginParams,
   RefreshAndSyncData,
   StartScrapingData,
-} from "./data-contracts";
-import { HttpClient, RequestParams } from "./http-client";
+} from "../../data-contracts";
+import { HttpClient, RequestParams } from "../../http-client";
 
 export class SuwonScraping<
   SecurityDataType = unknown,

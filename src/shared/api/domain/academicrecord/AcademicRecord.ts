@@ -9,18 +9,15 @@
  * ## SOURCE: https://github.com/acacode/swagger-typescript-api ##
  * ---------------------------------------------------------------
  */
-
 import {
   ErrorResponseWrapper,
   GetAcademicRecordData,
   GetAcademicRecordParams,
   GetAcademicSummaryData,
-} from "./data-contracts";
-import { HttpClient, RequestParams } from "./http-client";
+} from '../../data-contracts';
+import { HttpClient, RequestParams } from '../../http-client';
 
-export class AcademicRecord<
-  SecurityDataType = unknown,
-> extends HttpClient<SecurityDataType> {
+export class AcademicRecord<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
   /**
    * @description 로그인된 사용자의 학업 요약 정보를 조회합니다.
    *
@@ -33,9 +30,9 @@ export class AcademicRecord<
   getAcademicSummary = (params: RequestParams = {}) =>
     this.request<GetAcademicSummaryData, ErrorResponseWrapper>({
       path: `/api/academic/summary`,
-      method: "GET",
+      method: 'GET',
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
   /**
@@ -47,16 +44,13 @@ export class AcademicRecord<
    * @request GET:/api/academic/record
    * @secure
    */
-  getAcademicRecord = (
-    query: GetAcademicRecordParams,
-    params: RequestParams = {},
-  ) =>
+  getAcademicRecord = (query: GetAcademicRecordParams, params: RequestParams = {}) =>
     this.request<GetAcademicRecordData, ErrorResponseWrapper>({
       path: `/api/academic/record`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 }

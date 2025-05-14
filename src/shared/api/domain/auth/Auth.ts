@@ -14,8 +14,8 @@ import {
   ErrorResponseWrapper,
   RefreshRequest,
   RefreshResponseData,
-} from "./data-contracts";
-import { ContentType, HttpClient, RequestParams } from "./http-client";
+} from "../../data-contracts";
+import { ContentType, HttpClient, RequestParams } from "../../http-client";
 
 export class Auth<
   SecurityDataType = unknown,
