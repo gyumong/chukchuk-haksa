@@ -17,7 +17,8 @@
     "gen": "dotenv -e .env -- bash -c 'npx supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > types/supabase.ts'",
     "api:fetch": "curl -sSL https://dev.api.cchaksa.com/v3/api-docs -o ./swagger/openapi-dev.json",
     "api:gen": "swagger-typescript-api generate -p ./swagger/openapi-dev.json -o ./src/shared/api --modular --module-name-first-tag --templates ./swagger/templates --name index.ts --extract-response-body --extract-request-params",
-    "api:update": "yarn api:fetch && yarn api:gen",
+    "api:move": "node scripts/move-api-domains.mjs",
+    "api:update": "yarn api:fetch && yarn api:gen && yarn api:move",
     "codemod:router": "jscodeshift -t codemods/useRouter-to-useInternalRouter.js . --ignore-pattern='**/node_modules/**' --ignore-pattern='**/.next/**' --ignore-pattern='**/dist/**' --extensions=ts,tsx --parser=tsx"
   },
   "dependencies": {
@@ -28,6 +29,8 @@
     "@sentry/opentelemetry": "^9.1.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.46.1",
+    "@tanstack/react-query": "^5.76.1",
+    "@tanstack/react-query-devtools": "^5.76.1",
     "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "cookies-next": "4.3.0",
@@ -39,10 +42,12 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "sharp": "^0.34.1",
-    "uuid": "^11.0.3"
+    "uuid": "^11.0.3",
+    "zod": "^3.24.4"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
+    "@tanstack/eslint-plugin-query": "^5.74.7",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/node": "^20",
     "@types/react": "19.1.0",
@@ -64,7 +69,7 @@
     "typescript": "5.6.3",
     "vitest": "^3.0.5"
   },
-  "packageManager": "yarn@1.22.22",
+  "packageManager": "yarn@4.5.0",
   "resolutions": {
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1"
