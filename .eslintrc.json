@@ -2,7 +2,7 @@
   "extends": [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@tanstack/eslint-plugin-query",
+    "plugin:@tanstack/query/recommended",
     "prettier"
   ],
   "plugins": ["@typescript-eslint"],
@@ -61,6 +61,7 @@
     "coverage/**",
     "*.config.js",
     "*.config.ts",
-    "**/.DS_Store"
+    "**/.DS_Store",
+    "scripts/**"
   ]
 }

@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/react';
+import QueryProvider from '@/shared/providers/queryProvider';
 import '../styles/global.scss';
 
 export const metadata: Metadata = {
@@ -60,7 +61,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   return (
     <html lang="ko">
       <body className={`${paperlogy.variable} ${suit.variable} antialiased`}>
-        {children}
+        <QueryProvider>{children}</QueryProvider>
         <Analytics />
         {/* Cloudflare Web Analytics: 스크립트 삽입 */}
         <Script
