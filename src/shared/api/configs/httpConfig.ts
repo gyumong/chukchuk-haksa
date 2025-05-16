@@ -1,5 +1,5 @@
-// import { cookies } from 'next/headers';
 import * as Sentry from '@sentry/nextjs';
+import { getAccessToken } from '@/lib/auth/token';
 import type { ApiConfig } from '../http-client';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://dev.api.cchaksa.com';
@@ -8,12 +8,14 @@ export const createApiConfig = (): ApiConfig => ({
   baseUrl: BASE_URL,
   securityWorker: async () => {
     try {
-      // const cookieStore = cookies();
-      // const cookieJar = (await cookieStore)
-      //   .getAll()
-      //   .map(({ name, value }) => `${name}=${value}`)
-      //   .join('; ');
-      // return cookieJar ? { headers: { Cookie: cookieJar } } : {};
+      const accessToken = getAccessToken();
+      return accessToken
+        ? {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        : {};
     } catch {
       return {};
     }

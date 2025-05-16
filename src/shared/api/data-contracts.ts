@@ -10,15 +10,15 @@
  * ---------------------------------------------------------------
  */
 
-/** 회원가입 응답 포맷 */
+/** 회원가입 및 로그인 응답 */
 export interface SignInApiResponse {
   /**
    * 성공 여부
    * @example true
    */
-  success?: boolean;
-  /** 포털 연동 여부 응답 */
-  data?: SignInResponse;
+  success: boolean;
+  /** 회원가입 및 로그인 응답 */
+  data: SignInResponse;
   /**
    * 메시지
    * @example "요청 성공"
@@ -26,13 +26,23 @@ export interface SignInApiResponse {
   message?: string;
 }
 
-/** 포털 연동 여부 응답 */
+/** 회원가입 및 로그인 응답 */
 export interface SignInResponse {
+  /**
+   * Access Token
+   * @example "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+   */
+  accessToken: string;
+  /**
+   * Refresh Token
+   * @example "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+   */
+  refreshToken: string;
   /**
    * 포털 연동 여부
    * @example true
    */
-  isPortalLinked?: boolean;
+  isPortalLinked: boolean;
 }
 
 /** 에러 상세 정보 */
@@ -41,12 +51,12 @@ export interface ErrorDetail {
    * 에러 코드
    * @example "U01"
    */
-  code?: string;
+  code: string;
   /**
    * 에러 메시지
    * @example "해당 사용자를 찾을 수 없습니다."
    */
-  message?: string;
+  message: string;
   /** 에러 추가 정보 */
   details?: object | null;
 }
@@ -57,7 +67,7 @@ export interface ErrorResponseWrapper {
    * 성공 여부
    * @example false
    */
-  success?: boolean;
+  success: boolean;
   /** 에러 상세 정보 */
   error?: ErrorDetail;
 }
@@ -65,12 +75,12 @@ export interface ErrorResponseWrapper {
 /** 카카오 로그인 요청 정보 */
 export interface SignInRequest {
   /** 카카오에서 발급받은 ID 토큰 */
-  id_token?: string;
+  id_token: string;
   /**
    * 로그인 시 사용한 nonce 값
    * @example "random_nonce_value"
    */
-  nonce?: string;
+  nonce: string;
 }
 
 /** 포털 데이터 크롤링 응답 */
@@ -79,9 +89,9 @@ export interface StartScrapingApiResponse {
    * 성공 여부
    * @example true
    */
-  success?: boolean;
+  success: boolean;
   /** 포털 연동 및 학업 이력 동기화 성공 응답 */
-  data?: StartScrapingResponse;
+  data: StartScrapingResponse;
   /**
    * 메시지
    * @example "요청 성공"
@@ -95,9 +105,9 @@ export interface StartScrapingResponse {
    * 작업 ID
    * @example "4aabf0d0-1c23-4f3d-845e-24c9c943deed"
    */
-  taskId?: string;
+  taskId: string;
   /** 학생 정보 요약 */
-  studentInfo?: StudentInfo;
+  studentInfo: StudentInfo;
 }
 
 /** 학생 정보 요약 */
@@ -119,9 +129,9 @@ export interface RefreshScrapingApiResponse {
    * 성공 여부
    * @example true
    */
-  success?: boolean;
+  success: boolean;
   /** 포털 재연동 및 학업 동기화 응답 */
-  data?: RefreshScrapingResponse;
+  data: RefreshScrapingResponse;
   /**
    * 메시지
    * @example "요청 성공"
@@ -135,12 +145,12 @@ export interface RefreshScrapingResponse {
    * 작업 ID
    * @example "123e4567-e89b-12d3-a456-426614174000"
    */
-  taskId?: string;
+  taskId: string;
   /**
    * 결과 메시지
    * @example "포털 재연동 및 학업 이력 동기화 완료"
    */
-  message?: string;
+  message: string;
 }
 
 /** 포털 로그인 응답 */
@@ -149,9 +159,9 @@ export interface PortalLoginApiResponse {
    * 성공 여부
    * @example true
    */
-  success?: boolean;
+  success: boolean;
   /** 포털 로그인 응답 */
-  data?: PortalLoginResponse;
+  data: PortalLoginResponse;
   /**
    * 메시지
    * @example "요청 성공"
@@ -177,9 +187,9 @@ export interface TargetGpaApiResponse {
    * 성공 여부
    * @example true
    */
-  success?: boolean;
+  success: boolean;
   /** 메시지 응답 DTO */
-  data?: MessageOnlyResponse;
+  data: MessageOnlyResponse;
   /**
    * 메시지
    * @example "요청 성공"
@@ -190,9 +200,9 @@ export interface TargetGpaApiResponse {
 /** Refresh Response DTO */
 export interface RefreshResponse {
   /** 액세스 토큰 */
-  accessToken?: string;
+  accessToken: string;
   /** 리프레시 토큰 */
-  refreshToken?: string;
+  refreshToken: string;
 }
 
 /** 토큰 재발급 응답 포맷 */
@@ -201,9 +211,9 @@ export interface RefreshTokenApiResponse {
    * 성공 여부
    * @example true
    */
-  success?: boolean;
+  success: boolean;
   /** Refresh Response DTO */
-  data?: RefreshResponse;
+  data: RefreshResponse;
   /**
    * 메시지
    * @example "요청 성공"
@@ -214,7 +224,7 @@ export interface RefreshTokenApiResponse {
 /** 리프레시 토큰 요청 DTO */
 export interface RefreshRequest {
   /** Refresh Token */
-  refreshToken?: string;
+  refreshToken: string;
 }
 
 /** 학생 프로필 응답 */
@@ -223,9 +233,9 @@ export interface StudentProfileApiResponse {
    * 성공 여부
    * @example true
    */
-  success?: boolean;
+  success: boolean;
   /** 학생 프로필 정보 */
-  data?: StudentProfileResponse;
+  data: StudentProfileResponse;
   /**
    * 메시지
    * @example "요청 성공"
@@ -236,29 +246,29 @@ export interface StudentProfileApiResponse {
 /** 학생 프로필 정보 */
 export interface StudentProfileResponse {
   /** 이름 */
-  name?: string;
+  name: string;
   /** 학번 */
-  studentCode?: string;
+  studentCode: string;
   /** 학과 이름 */
-  departmentName?: string;
+  departmentName: string;
   /** 전공 이름 */
-  majorName?: string;
+  majorName: string;
   /**
    * 학년
    * @format int32
    */
-  gradeLevel?: number;
+  gradeLevel: number;
   /**
    * 현재 학기
    * @format int32
    */
-  currentSemester?: number;
+  currentSemester: number;
   /** 재학 상태 */
-  status?: string;
+  status: string;
   /** 마지막 업데이트 일시 */
-  lastUpdatedAt?: string;
+  lastUpdatedAt: string;
   /** 학사 정보 마지막 연동 일시 */
-  lastSyncedAt?: string;
+  lastSyncedAt: string;
 }
 
 /** 학생의 이수 학기 정보 */
@@ -268,13 +278,13 @@ export interface StudentSemesterInfoResponse {
    * @format int32
    * @example 2023
    */
-  year?: number;
+  year: number;
   /**
    * 이수 학기 코드 (10: 1학기, 15: 여름학기, 20: 2학기, 25: 겨울학기)
    * @format int32
    * @example 10
    */
-  semester?: number;
+  semester: number;
 }
 
 /** 사용자 학기 목록 응답 */
@@ -283,9 +293,9 @@ export interface StudentSemesterListApiResponse {
    * 성공 여부
    * @example true
    */
-  success?: boolean;
+  success: boolean;
   /** 응답 데이터 */
-  data?: StudentSemesterInfoResponse[];
+  data: StudentSemesterInfoResponse[];
   /**
    * 메시지
    * @example "요청 성공"
@@ -300,47 +310,47 @@ export interface SemesterGradeResponse {
    * @format int32
    * @example 2024
    */
-  year?: number;
+  year: number;
   /**
    * 학기 코드 (10: 1학기, 15: 여름학기, 20: 2학기, 25: 겨울학기)
    * @format int32
    * @example 10
    */
-  semester?: number;
+  semester: number;
   /**
    * 취득 학점
    * @format int32
    * @example 15
    */
-  earnedCredits?: number;
+  earnedCredits: number;
   /**
    * 신청 학점
    * @format int32
    * @example 18
    */
-  attemptedCredits?: number;
+  attemptedCredits: number;
   /**
    * 학기 GPA (평점 평균)
    * @example 3.85
    */
-  semesterGpa?: number;
+  semesterGpa: number;
   /**
    * 석차
    * @format int32
    * @example 5
    */
-  classRank?: number | null;
+  classRank: number | null;
   /**
    * 전체 학생 수
    * @format int32
    * @example 150
    */
-  totalStudents?: number | null;
+  totalStudents: number | null;
   /**
    * 백분율
    * @example 92.4
    */
-  percentile?: number;
+  percentile: number;
 }
 
 /** 학기별 성적 목록 응답 */
@@ -349,9 +359,9 @@ export interface SemesterGradesApiResponse {
    * 성공 여부
    * @example true
    */
-  success?: boolean;
+  success: boolean;
   /** 응답 데이터 */
-  data?: SemesterGradeResponse[];
+  data: SemesterGradeResponse[];
   /**
    * 메시지
    * @example "요청 성공"
@@ -362,7 +372,7 @@ export interface SemesterGradesApiResponse {
 /** 졸업 요건 영역별 이수 현황 */
 export interface AreaProgressDto {
   /** 영역 유형 (예: 전핵, 전선, 선교 등) */
-  areaType?:
+  areaType:
     | "중핵"
     | "기교"
     | "선교"
@@ -378,33 +388,33 @@ export interface AreaProgressDto {
    * @format int32
    * @example 60
    */
-  requiredCredits?: number;
+  requiredCredits: number;
   /**
    * 학생이 이수한 학점
    * @format int32
    * @example 45
    */
-  earnedCredits?: number;
+  earnedCredits: number;
   /**
    * 필수 선택 과목 수
    * @format int32
    * @example 2
    */
-  requiredElectiveCourses?: number;
+  requiredElectiveCourses: number;
   /**
    * 학생이 이수한 선택 과목 수
    * @format int32
    * @example 1
    */
-  completedElectiveCourses?: number;
+  completedElectiveCourses: number;
   /**
    * 총 선택 과목 수
    * @format int32
    * @example 3
    */
-  totalElectiveCourses?: number;
+  totalElectiveCourses: number;
   /** 학생이 이수한 과목 목록 */
-  courses?: CourseDto[];
+  courses: CourseDto[];
 }
 
 /** 이수 과목 정보 */
@@ -414,29 +424,29 @@ export interface CourseDto {
    * @format int32
    * @example 2023
    */
-  year?: number;
+  year: number;
   /**
    * 과목명
    * @example "자료구조"
    */
-  courseName?: string;
+  courseName: string;
   /**
    * 학점
    * @format int32
    * @example 3
    */
-  credits?: number;
+  credits: number;
   /**
    * 성적
    * @example "A+"
    */
-  grade?: string;
+  grade: string;
   /**
    * 이수 학기
    * @format int32
    * @example 10
    */
-  semester?: number;
+  semester: number;
 }
 
 /** 졸업 요건 진행 상황 응답 */
@@ -445,9 +455,9 @@ export interface GraduationProgressApiResponse {
    * 성공 여부
    * @example true
    */
-  success?: boolean;
+  success: boolean;
   /** 졸업 요건 진행 상황 응답 */
-  data?: GraduationProgressResponse;
+  data: GraduationProgressResponse;
   /**
    * 메시지
    * @example "요청 성공"
@@ -458,7 +468,7 @@ export interface GraduationProgressApiResponse {
 /** 졸업 요건 진행 상황 응답 */
 export interface GraduationProgressResponse {
   /** 졸업 요건 영역별 이수 현황 */
-  graduationProgress?: AreaProgressDto[];
+  graduationProgress: AreaProgressDto[];
 }
 
 /** 학업 요약 정보 응답 */
@@ -467,9 +477,9 @@ export interface AcademicSummaryApiResponse {
    * 성공 여부
    * @example true
    */
-  success?: boolean;
+  success: boolean;
   /** 학업 성적 요약 정보 */
-  data?: AcademicSummaryResponse;
+  data: AcademicSummaryResponse;
   /**
    * 메시지
    * @example "요청 성공"
@@ -484,23 +494,23 @@ export interface AcademicSummaryResponse {
    * @format int32
    * @example 120
    */
-  totalEarnedCredits?: number;
+  totalEarnedCredits: number;
   /**
    * 누적 GPA
    * @example 3.76
    */
-  cumulativeGpa?: number;
+  cumulativeGpa: number;
   /**
    * 전체 백분위
    * @example 87.5
    */
-  percentile?: number;
+  percentile: number;
   /**
    * 필요 졸업 학점
    * @format int32
    * @example 130
    */
-  requiredCredits?: number;
+  requiredCredits: number;
 }
 
 /** 학기별 성적 및 수강 과목 정보 응답 */
@@ -509,9 +519,9 @@ export interface AcademicRecordApiResponse {
    * 성공 여부
    * @example true
    */
-  success?: boolean;
+  success: boolean;
   /** 학기별 성적 및 수강 과목 응답 */
-  data?: AcademicRecordResponse;
+  data: AcademicRecordResponse;
   /**
    * 메시지
    * @example "요청 성공"
@@ -522,9 +532,9 @@ export interface AcademicRecordApiResponse {
 /** 학기별 성적 및 수강 과목 응답 */
 export interface AcademicRecordResponse {
   /** 학기 성적 요약 정보 */
-  semesterGrade?: SemesterGradeResponse;
+  semesterGrade: SemesterGradeResponse;
   /** 수강 과목 목록 */
-  courses?: Courses;
+  courses: Courses;
 }
 
 /** 수강 과목 상세 정보 */
@@ -585,9 +595,9 @@ export interface CourseDetailDto {
 /** 수강 과목 목록 */
 export interface Courses {
   /** 전공 과목 목록 */
-  major?: CourseDetailDto[];
+  major: CourseDetailDto[];
   /** 교양 과목 목록 */
-  liberal?: CourseDetailDto[];
+  liberal: CourseDetailDto[];
 }
 
 /** 회원 탈퇴 응답 포맷 */
@@ -596,9 +606,9 @@ export interface DeleteUserApiResponse {
    * 성공 여부
    * @example true
    */
-  success?: boolean;
+  success: boolean;
   /** 메시지 응답 DTO */
-  data?: MessageOnlyResponse;
+  data: MessageOnlyResponse;
   /**
    * 메시지
    * @example "요청 성공"
