@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { format } from 'date-fns/format';
 import { Icon } from '@/components/ui';
 import { ROUTES } from '@/constants';
-import { useProfileQuery } from '@/features/dashboard/server/queries/useProfileQuery';
+import { useProfileQuery } from '@/features/dashboard/apis/queries/useProfileQuery';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import styles from './SyncUpdateButton.module.scss';
 

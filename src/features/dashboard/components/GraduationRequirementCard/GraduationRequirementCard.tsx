@@ -1,7 +1,7 @@
 import { Icon } from '@/components/ui';
 import { ROUTES } from '@/constants';
-import { useAcademicSummaryQuery } from '@/features/dashboard/server/queries/useAcademicSummaryQuery';
-import { useProfileQuery } from '@/features/dashboard/server/queries/useProfileQuery';
+import { useAcademicSummaryQuery } from '@/features/dashboard/apis/queries/useAcademicSummaryQuery';
+import { useProfileQuery } from '@/features/dashboard/apis/queries/useProfileQuery';
 import { type RoutePath, useInternalRouter } from '@/hooks/useInternalRouter';
 import styles from './GraduationRequirementCard.module.scss';
 

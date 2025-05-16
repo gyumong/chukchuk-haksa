@@ -1,4 +1,4 @@
-import { useAcademicSummaryQuery } from '@/features/dashboard/server/queries/useAcademicSummaryQuery';
+import { useAcademicSummaryQuery } from '@/features/dashboard/apis/queries/useAcademicSummaryQuery';
 import styles from './AcademicSummaryCard.module.scss';
 
 interface Props {

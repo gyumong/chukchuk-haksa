@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useProfileQuery } from '@/features/dashboard/server/queries/useProfileQuery';
+import { useProfileQuery } from '@/features/dashboard/apis/queries/useProfileQuery';
 import { getProfileImagePath } from '../../../../app/(main)/utils/getProfileImagePath';
 import styles from './ProfileCard.module.scss';
 

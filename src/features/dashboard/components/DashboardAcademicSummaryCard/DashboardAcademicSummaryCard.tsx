@@ -1,5 +1,5 @@
 import AcademicStatsCard from '@/components/academic/AcademicStatsCard/AcademicStatsCard';
-import { useAcademicSummaryQuery } from '../../server/queries/useAcademicSummaryQuery';
+import { useAcademicSummaryQuery } from '../../apis/queries/useAcademicSummaryQuery';
 
 const DashboardAcademicSummaryCard = () => {
   const { data } = useAcademicSummaryQuery();
