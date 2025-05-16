@@ -1,3 +1,4 @@
+import { useAcademicSummaryQuery } from '@/features/dashboard/server/queries/useAcademicSummaryQuery';
 import styles from './AcademicSummaryCard.module.scss';
 
 interface Props {
@@ -8,12 +9,18 @@ interface Props {
   totalStudents?: number; // 전체 학생 수
 }
 
+// 삭제 예정
+
 export default function AcademicSummaryCard({ earnedCredits, gpa, percentile, classRank, totalStudents }: Props) {
+  const { data } = useAcademicSummaryQuery();
+
+  console.log(data);
+
   return (
     <div className={styles.container}>
       <div className={styles.statItem}>
         <span className={styles.label}>취득학점</span>
-        <span className={styles.value}>{earnedCredits}</span>
+        <span className={styles.value}>{data.totalEarnedCredits}</span>
       </div>
 
       <div className={styles.divider} />
