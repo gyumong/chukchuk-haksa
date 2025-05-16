@@ -2,7 +2,7 @@
 
 import { Component, type PropsWithChildren, type ReactElement } from 'react';
 
-export type FallbackProps = { error: Error; reset: () => void };
+export type FallbackProps = { error: unknown; reset: () => void };
 
 type Props = PropsWithChildren<{
   /** fallbackRender 우선, 없으면 fallback JSX 사용 */
@@ -14,7 +14,7 @@ type Props = PropsWithChildren<{
   onReset?: () => void;
 }>;
 
-type State = { hasError: boolean; error?: Error };
+type State = { hasError: boolean; error?: unknown };
 
 const init: State = { hasError: false };
 
