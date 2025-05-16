@@ -27,13 +27,18 @@ export async function GET(request: Request) {
     const user = await signInWithBackend(idToken, nonce);
 
     const isPortalLinked = user?.isPortalLinked;
+    const accessToken = user?.accessToken ?? '';
 
     if (isPortalLinked === undefined) {
       throw new AuthError('User is missing or malformed.');
     }
 
     const nextPath = getRedirectPathForUser({ isPortalLinked });
-    return NextResponse.redirect(new URL(nextPath, origin));
+
+    const url = new URL('/auth/success', origin);
+    url.searchParams.set('token', accessToken);
+    url.searchParams.set('redirect', nextPath);
+    return NextResponse.redirect(url);
   } catch (error) {
     console.error(error);
     const fallback = `${origin}/?error=${encodeURIComponent(
