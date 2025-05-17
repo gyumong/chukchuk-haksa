@@ -1,20 +1,22 @@
 import { ACCESS_TOKEN_KEY } from '@/constants';
-import { deleteCookie, getCookieValue, setCookie } from '@/lib/utils/cookies';
 
-export async function getAccessToken(): Promise<string | null> {
-  return getCookieValue(ACCESS_TOKEN_KEY);
+export function getAccessToken(): string | null {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  return sessionStorage.getItem(ACCESS_TOKEN_KEY);
 }
 
-export async function setAccessToken(token: string) {
-  return setCookie(ACCESS_TOKEN_KEY, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 60 * 60 * 24 * 7, // 7일
-  });
+export function setAccessToken(token: string) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  sessionStorage.setItem(ACCESS_TOKEN_KEY, token);
 }
 
-export async function deleteAccessToken() {
-  return deleteCookie(ACCESS_TOKEN_KEY);
+export function deleteAccessToken() {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  sessionStorage.removeItem(ACCESS_TOKEN_KEY);
 }

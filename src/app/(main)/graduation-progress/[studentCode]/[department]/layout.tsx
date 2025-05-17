@@ -1,21 +1,17 @@
-'use client';;
-import { use } from "react";
+'use client';
 
+import { use } from 'react';
 import { TopNavigation } from '@/components/ui/TopNavigation';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import styles from './layout.module.scss';
 
-export default function GraduationProgressLayout(
-  props: {
-    children: React.ReactNode;
-    params: Promise<{ studentCode: string; department: string }>;
-  }
-) {
+export default function GraduationProgressLayout(props: {
+  children: React.ReactNode;
+  params: Promise<{ studentCode: string; department: string }>;
+}) {
   const params = use(props.params);
 
-  const {
-    children
-  } = props;
+  const { children } = props;
 
   const router = useInternalRouter();
   const { studentCode, department } = params;

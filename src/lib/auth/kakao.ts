@@ -1,7 +1,7 @@
 import { setCookie } from 'cookies-next';
+import { KAKAO_CLIENT_SECRET, KAKAO_JS_KEY, KAKAO_REST_API_KEY } from '@/config/env';
 import { AuthError } from '@/lib/error';
 import { generateRandomNonce, generateRandomString, hashNonce } from '.';
-import { KAKAO_CLIENT_SECRET, KAKAO_JS_KEY, KAKAO_REST_API_KEY } from '@/config/env';
 import { getRedirectUri } from './client';
 
 function initializeKakao() {
@@ -31,7 +31,7 @@ async function kakaoLogin() {
 
   setCookie('nonce', nonce);
   setCookie('state', state);
-  const uri =  getRedirectUri()
+  const uri = getRedirectUri();
 
   // 카카오 로그인 scope 옵션 내부적인 캐싱이 적용되어 있는지?
   /**

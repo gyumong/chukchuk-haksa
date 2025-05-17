@@ -48,8 +48,8 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ['@/components/ui/Icon'],
-    turbo:{
-      rules:{
+    turbo: {
+      rules: {
         '*.svg': {
           loaders: ['@svgr/webpack'],
           as: '*.js',

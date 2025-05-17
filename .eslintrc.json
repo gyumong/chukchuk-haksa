@@ -1,5 +1,10 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@tanstack/query/recommended",
+    "prettier"
+  ],
   "plugins": ["@typescript-eslint"],
   "rules": {
     "@typescript-eslint/no-explicit-any": [
@@ -43,7 +48,6 @@
 
     "no-console": ["warn", { "allow": ["warn", "error"] }],
     "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }]
-
   },
   "ignorePatterns": [
     ".yarn/**",
@@ -57,6 +61,7 @@
     "coverage/**",
     "*.config.js",
     "*.config.ts",
-    "**/.DS_Store"
+    "**/.DS_Store",
+    "scripts/**"
   ]
 }
