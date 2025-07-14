@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { Database } from '@/types/supabase';
+import { graduationApi } from '@/shared/api/client';
+import type { AreaProgressDto } from '@/shared/api/data-contracts';
+import { ApiResponseHandler } from '@/shared/api/utils/response-handler';
 import styles from './page.module.scss';
 
-type CourseAreaType = Database['public']['Enums']['course_area_type'];
+type CourseAreaType = '중핵' | '기교' | '선교' | '소교' | '전교' | '전취' | '전핵' | '전선' | '일선' | '복선';
 
 interface Course {
   courseName: string;
@@ -31,12 +33,26 @@ export default function GraduationProgressPage() {
   useEffect(() => {
     async function fetchGraduationProgress() {
       try {
-        const response = await fetch('/api/graduation-progress');
-        if (!response.ok) {
-          throw new Error('졸업요건 조회에 실패했습니다.');
-        }
-        const data = await response.json();
-        setAreaProgress(data.areaProgress);
+        const data = await ApiResponseHandler.handleAsyncResponse(
+          graduationApi.getGraduationProgress()
+        );
+        
+        const formattedData = data.graduationProgress.map((area: AreaProgressDto) => ({
+          areaType: area.areaType as CourseAreaType,
+          requiredCredits: area.requiredCredits,
+          earnedCredits: area.earnedCredits,
+          requiredElectiveCourses: area.requiredElectiveCourses,
+          completedElectiveCourses: area.completedElectiveCourses,
+          totalElectiveCourses: area.totalElectiveCourses,
+          courses: area.courses?.map(course => ({
+            courseName: course.courseName,
+            credits: course.credits,
+            grade: course.grade,
+            semester: `${course.year % 100}-${course.semester === 10 ? '1' : course.semester === 20 ? '2' : course.semester === 15 ? '여름' : '겨울'}`,
+          })) || null,
+        }));
+        
+        setAreaProgress(formattedData);
       } catch (err) {
         setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
       } finally {

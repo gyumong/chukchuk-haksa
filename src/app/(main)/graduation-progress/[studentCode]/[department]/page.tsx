@@ -7,10 +7,10 @@ import SemesterGradeCard from '@/app/(main)/components/SemesterGradeCard/Semeste
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { getSemesterFromCode } from '@/lib/utils/semester';
-import type { Database } from '@/types/supabase';
+import { graduationApi } from '@/shared/api/client';
 import styles from './page.module.scss';
 
-type CourseAreaType = Database['public']['Enums']['course_area_type'];
+type CourseAreaType = '중핵' | '기교' | '선교' | '소교' | '전교' | '전취' | '전핵' | '전선' | '일선' | '복선';
 
 interface Course {
   name: string;
@@ -57,12 +57,12 @@ export default function GraduationProgressPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/graduation-progress');
+        const response = await graduationApi.getGraduationProgress();
         if (!response.ok) {
           throw new Error('데이터를 불러오는데 실패했습니다.');
         }
 
-        const data = await response.json();
+        const data = response.data;
 
         // 데이터 형식 변환
         const formattedGraduationProgress = data.graduationProgress.map((area: any) => ({

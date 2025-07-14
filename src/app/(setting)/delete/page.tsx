@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { FunnelHeadline } from '@/app/(funnel)/components';
 import { FixedButton } from '@/components/ui';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
+import { userApi } from '@/shared/api/client';
 import styles from './page.module.scss';
 
 const DeletePage = () => {
@@ -19,13 +20,10 @@ const DeletePage = () => {
 
     setIsLoading(true);
     try {
-      const res = await fetch('/api/users/delete', {
-        method: 'DELETE',
-      });
-      const data = await res.json();
+      const response = await userApi.deleteUser();
 
-      if (!res.ok) {
-        alert(data.error || '탈퇴 중 오류가 발생했습니다.');
+      if (!response.ok) {
+        alert('탈퇴 중 오류가 발생했습니다.');
       } else {
         alert('탈퇴가 완료되었습니다.');
         router.push('/'); // 메인 페이지 등으로 이동

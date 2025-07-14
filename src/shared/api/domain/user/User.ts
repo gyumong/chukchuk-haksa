@@ -35,7 +35,6 @@ export class User<
       method: "POST",
       body: data,
       type: ContentType.Json,
-      format: "json",
       ...params,
     });
   /**
@@ -52,7 +51,6 @@ export class User<
       path: `/api/users/delete`,
       method: "DELETE",
       secure: true,
-      format: "json",
       ...params,
     });
 }

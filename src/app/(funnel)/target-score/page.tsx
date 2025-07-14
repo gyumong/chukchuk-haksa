@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { FixedButton } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
+import { studentApi } from '@/shared/api/client';
+import { ApiResponseHandler } from '@/shared/api/utils/response-handler';
 import { FunnelHeadline, ScoreInput } from '../components';
 import styles from './page.module.scss';
 
@@ -15,20 +17,9 @@ export default function TargetScorePage() {
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('/api/target-gpa', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          targetGpa: parseFloat(score),
-        }),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || '목표 학점 설정에 실패했습니다.');
-      }
+      await ApiResponseHandler.handleAsyncResponse(
+        studentApi.setTargetGpa({ targetGpa: parseFloat(score) })
+      );
 
       router.push(`${ROUTES.MAIN}`);
     } catch (error) {

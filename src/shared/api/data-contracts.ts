@@ -84,14 +84,14 @@ export interface SignInRequest {
 }
 
 /** 포털 데이터 크롤링 응답 */
-export interface StartScrapingApiResponse {
+export interface ScrapingApiResponse {
   /**
    * 성공 여부
    * @example true
    */
   success: boolean;
-  /** 포털 연동 및 학업 이력 동기화 성공 응답 */
-  data: StartScrapingResponse;
+  /** 포털 연동 또는 재연동 및 학업 이력 동기화 성공 응답 */
+  data: ScrapingResponse;
   /**
    * 메시지
    * @example "요청 성공"
@@ -99,15 +99,15 @@ export interface StartScrapingApiResponse {
   message?: string;
 }
 
-/** 포털 연동 및 학업 이력 동기화 성공 응답 */
-export interface StartScrapingResponse {
+/** 포털 연동 또는 재연동 및 학업 이력 동기화 성공 응답 */
+export interface ScrapingResponse {
   /**
    * 작업 ID
    * @example "4aabf0d0-1c23-4f3d-845e-24c9c943deed"
    */
-  taskId: string;
+  taskId?: string;
   /** 학생 정보 요약 */
-  studentInfo: StudentInfo;
+  studentInfo?: StudentInfo;
 }
 
 /** 학생 정보 요약 */
@@ -121,36 +121,6 @@ export interface StudentInfo {
   status?: string;
   /** @format int32 */
   completedSemesterType?: number;
-}
-
-/** 포털 재연동 응답 */
-export interface RefreshScrapingApiResponse {
-  /**
-   * 성공 여부
-   * @example true
-   */
-  success: boolean;
-  /** 포털 재연동 및 학업 동기화 응답 */
-  data: RefreshScrapingResponse;
-  /**
-   * 메시지
-   * @example "요청 성공"
-   */
-  message?: string;
-}
-
-/** 포털 재연동 및 학업 동기화 응답 */
-export interface RefreshScrapingResponse {
-  /**
-   * 작업 ID
-   * @example "123e4567-e89b-12d3-a456-426614174000"
-   */
-  taskId: string;
-  /**
-   * 결과 메시지
-   * @example "포털 재연동 및 학업 이력 동기화 완료"
-   */
-  message: string;
 }
 
 /** 포털 로그인 응답 */
@@ -618,9 +588,9 @@ export interface DeleteUserApiResponse {
 
 export type SignInUserData = SignInApiResponse;
 
-export type StartScrapingData = StartScrapingApiResponse;
+export type StartScrapingData = ScrapingApiResponse;
 
-export type RefreshAndSyncData = RefreshScrapingApiResponse;
+export type RefreshAndSyncData = ScrapingApiResponse;
 
 export interface LoginParams {
   /** 포털 로그인 ID */

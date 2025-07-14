@@ -1,7 +1,10 @@
 import {
   AcademicRecord as AcademicRecordApi,
   Auth as AuthApi,
+  Graduation as GraduationApi,
+  SemesterRecord as SemesterRecordApi,
   Student as StudentApi,
+  SuwonScraping as SuwonScrapingApi,
   User as UserApi,
 } from '@/shared/api/domain';
 import { createApiConfig } from './configs/httpConfig';
@@ -66,6 +69,9 @@ export const userApi = createApiClient(UserApi);
 export const studentApi = createApiClient(StudentApi);
 export const academicRecordApi = createApiClient(AcademicRecordApi);
 export const authApi = createApiClient(AuthApi);
+export const graduationApi = createApiClient(GraduationApi);
+export const semesterRecordApi = createApiClient(SemesterRecordApi);
+export const suwonScrapingApi = createApiClient(SuwonScrapingApi);
 
 // 응답 검증 유틸리티 (필요하면 사용)
 export function assertValidResponse<TData>(

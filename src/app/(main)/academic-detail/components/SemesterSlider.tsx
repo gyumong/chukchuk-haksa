@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
+import { semesterRecordApi } from '@/shared/api/client';
 import styles from './SemesterSlider.module.scss';
 
 interface Semester {
@@ -23,16 +24,11 @@ export default function SemesterSlider({ currentYear, currentSemester }: Semeste
   useEffect(() => {
     const fetchSemesters = async () => {
       try {
-        const response = await fetch('/api/get-semesters', {
-          next: {
-            revalidate: 3600, // 1시간마다 재검증
-          },
-        });
+        const response = await semesterRecordApi.getSemesterRecord();
         if (!response.ok) {
           throw new Error('Failed to fetch semesters');
         }
-        const data = await response.json();
-        setSemesters(data);
+        setSemesters(response.data);
       } catch (error) {
         console.error('Error fetching semesters:', error);
       } finally {

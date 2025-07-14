@@ -12,44 +12,42 @@
 
 import {
   ErrorResponseWrapper,
-  GetProfileData,
-  SetTargetGpaData,
-  SetTargetGpaParams,
+  GetSemesterGradesData,
+  GetSemesterRecordData,
 } from "../../data-contracts";
 import { HttpClient, RequestParams } from "../../http-client";
 
-export class Student<
+export class SemesterController<
   SecurityDataType = unknown,
 > extends HttpClient<SecurityDataType> {
   /**
-   * @description 로그인된 사용자의 목표 GPA를 저장합니다.
+   * @description 사용자의 모든 학기 정보를 조회합니다.
    *
-   * @tags Student
-   * @name SetTargetGpa
-   * @summary 목표 GPA 설정
-   * @request POST:/api/student/target-gpa
+   * @tags semester-controller
+   * @name GetSemesterRecord
+   * @summary 사용자 학기 목록 조회
+   * @request GET:/api/semester
    * @secure
    */
-  setTargetGpa = (query: SetTargetGpaParams, params: RequestParams = {}) =>
-    this.request<SetTargetGpaData, ErrorResponseWrapper>({
-      path: `/api/student/target-gpa`,
-      method: "POST",
-      query: query,
+  getSemesterRecord = (params: RequestParams = {}) =>
+    this.request<GetSemesterRecordData, ErrorResponseWrapper>({
+      path: `/api/semester`,
+      method: "GET",
       secure: true,
       ...params,
     });
   /**
-   * @description 로그인된 사용자의 프로필 정보를 조회합니다.
+   * @description 사용자의 학기 별 성적 정보를 조회합니다.
    *
-   * @tags Student
-   * @name GetProfile
-   * @summary 사용자 프로필 조회
-   * @request GET:/api/student/profile
+   * @tags semester-controller
+   * @name GetSemesterGrades
+   * @summary 사용자 학기 별 성적 조회
+   * @request GET:/api/semester/grades
    * @secure
    */
-  getProfile = (params: RequestParams = {}) =>
-    this.request<GetProfileData, ErrorResponseWrapper>({
-      path: `/api/student/profile`,
+  getSemesterGrades = (params: RequestParams = {}) =>
+    this.request<GetSemesterGradesData, ErrorResponseWrapper>({
+      path: `/api/semester/grades`,
       method: "GET",
       secure: true,
       ...params,

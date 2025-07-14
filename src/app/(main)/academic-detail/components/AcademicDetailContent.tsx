@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import type { CourseDetail } from '@/types/api/academic';
+import { academicRecordApi } from '@/shared/api/client';
+import type { CourseDetailDto } from '@/shared/api/data-contracts';
 import AcademicSummaryCard from '../../components/AcademicSummaryCard/AcademicSummaryCard';
 import SectionCourses from './SectionCourses/SectionCourses';
 import SemesterSlider from './SemesterSlider';
@@ -8,16 +9,17 @@ import SemesterSlider from './SemesterSlider';
 interface AcademicDetailProps {
   semesterGrades: {
     year: number;
-    semester: string;
+    semester: number;
     earnedCredits: number;
     attemptedCredits: number;
     semesterGpa: number;
-    classRank?: number;
-    totalStudents?: number;
+    classRank?: number | null;
+    totalStudents?: number | null;
+    percentile: number;
   };
   courses: {
-    major: CourseDetail[];
-    liberal: CourseDetail[];
+    major: CourseDetailDto[];
+    liberal: CourseDetailDto[];
   };
 }
 
@@ -38,15 +40,14 @@ export default function AcademicDetailContent() {
       }
 
       try {
-        const response = await fetch(`/api/get-academic/${year}/${semester}`);
+        const response = await academicRecordApi.getAcademicRecord(year, semester);
         if (!response.ok) {
           throw new Error('성적 정보를 불러오는데 실패했습니다.');
         }
 
-        const result = await response.json();
         setData({
-          semesterGrades: result.semesterGrades[0], // 해당 학기 성적
-          courses: result.courses, // 전공/교양 과목 목록
+          semesterGrades: response.data.semesterGrade,
+          courses: response.data.courses,
         });
       } catch (err) {
         setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
