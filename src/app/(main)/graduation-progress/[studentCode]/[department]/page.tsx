@@ -8,6 +8,7 @@ import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { getSemesterFromCode } from '@/lib/utils/semester';
 import { graduationApi } from '@/shared/api/client';
+import { ApiResponseHandler } from '@/shared/api/utils/response-handler';
 import styles from './page.module.scss';
 
 type CourseAreaType = '중핵' | '기교' | '선교' | '소교' | '전교' | '전취' | '전핵' | '전선' | '일선' | '복선';
@@ -57,12 +58,9 @@ export default function GraduationProgressPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await graduationApi.getGraduationProgress();
-        if (!response.ok) {
-          throw new Error('데이터를 불러오는데 실패했습니다.');
-        }
-
-        const data = response.data;
+        const data = await ApiResponseHandler.handleAsyncResponse(
+          graduationApi.getGraduationProgress()
+        );
 
         // 데이터 형식 변환
         const formattedGraduationProgress = data.graduationProgress.map((area: any) => ({

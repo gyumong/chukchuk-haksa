@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { academicRecordApi } from '@/shared/api/client';
+import { ApiResponseHandler } from '@/shared/api/utils/response-handler';
 import type { CourseDetailDto } from '@/shared/api/data-contracts';
 import AcademicSummaryCard from '../../components/AcademicSummaryCard/AcademicSummaryCard';
 import SectionCourses from './SectionCourses/SectionCourses';
@@ -40,14 +41,13 @@ export default function AcademicDetailContent() {
       }
 
       try {
-        const response = await academicRecordApi.getAcademicRecord(year, semester);
-        if (!response.ok) {
-          throw new Error('성적 정보를 불러오는데 실패했습니다.');
-        }
+        const data = await ApiResponseHandler.handleAsyncResponse(
+          academicRecordApi.getAcademicRecord({ year, semester })
+        );
 
         setData({
-          semesterGrades: response.data.semesterGrade,
-          courses: response.data.courses,
+          semesterGrades: data.semesterGrade,
+          courses: data.courses,
         });
       } catch (err) {
         setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
@@ -80,15 +80,15 @@ export default function AcademicDetailContent() {
       <AcademicSummaryCard
         earnedCredits={data.semesterGrades.earnedCredits}
         gpa={data.semesterGrades.semesterGpa}
-        classRank={data.semesterGrades.classRank}
-        totalStudents={data.semesterGrades.totalStudents}
+        classRank={data.semesterGrades.classRank || undefined}
+        totalStudents={data.semesterGrades.totalStudents || undefined}
       />
       <div className="gap-24"></div>
       {/* 전공 과목 목록 */}
-      <SectionCourses title="전공" courses={data.courses.major} />
+      <SectionCourses title="전공" courses={data.courses.major as any} />
       {/* 교양 과목 목록 */}
       <div className="gap-24"></div>
-      <SectionCourses title="교양" courses={data.courses.liberal} />
+      <SectionCourses title="교양" courses={data.courses.liberal as any} />
     </>
   );
 }

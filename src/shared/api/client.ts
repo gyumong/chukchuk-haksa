@@ -1,8 +1,8 @@
 import {
-  AcademicRecord as AcademicRecordApi,
+  AcademicRecordController as AcademicRecordApi,
   Auth as AuthApi,
   Graduation as GraduationApi,
-  SemesterRecord as SemesterRecordApi,
+  SemesterController as SemesterRecordApi,
   Student as StudentApi,
   SuwonScraping as SuwonScrapingApi,
   User as UserApi,

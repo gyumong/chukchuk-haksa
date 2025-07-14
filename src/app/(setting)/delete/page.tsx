@@ -6,6 +6,7 @@ import { FunnelHeadline } from '@/app/(funnel)/components';
 import { FixedButton } from '@/components/ui';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { userApi } from '@/shared/api/client';
+import { ApiResponseHandler } from '@/shared/api/utils/response-handler';
 import styles from './page.module.scss';
 
 const DeletePage = () => {
@@ -20,14 +21,12 @@ const DeletePage = () => {
 
     setIsLoading(true);
     try {
-      const response = await userApi.deleteUser();
-
-      if (!response.ok) {
-        alert('탈퇴 중 오류가 발생했습니다.');
-      } else {
-        alert('탈퇴가 완료되었습니다.');
-        router.push('/'); // 메인 페이지 등으로 이동
-      }
+      await ApiResponseHandler.handleAsyncResponse(
+        userApi.deleteUser()
+      );
+      
+      alert('탈퇴가 완료되었습니다.');
+      router.push('/'); // 메인 페이지 등으로 이동
     } catch (err: any) {
       alert(err.message);
     } finally {
