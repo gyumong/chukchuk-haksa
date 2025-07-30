@@ -2,8 +2,16 @@
 
 import { useAuthCheck } from '../hooks/useAuthCheck';
 
-const ProtectedRoute = ({ children, redirectTo = '/' }: { children: React.ReactNode; redirectTo?: string }) => {
-  const isChecking = useAuthCheck(redirectTo);
+import type { RoutePath } from '@/hooks/useInternalRouter';
+
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  redirectTo?: RoutePath;
+  requirePortalLinked?: boolean;
+}
+
+const ProtectedRoute = ({ children, redirectTo = '/', requirePortalLinked = false }: ProtectedRouteProps) => {
+  const isChecking = useAuthCheck(redirectTo, requirePortalLinked);
 
   if (isChecking) {
     return <></>;

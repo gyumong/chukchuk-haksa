@@ -1,23 +1,30 @@
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { authService } from '../services/authService';
+import { useInternalRouter, type RoutePath } from '@/hooks/useInternalRouter';
+import { getAccessToken } from '@/lib/auth/token';
 
-/**
- * 페이지 접근 시 인증 여부를 확인하고 필요에 따라 리디렉션하는 훅
- * @param redirectTo 인증되지 않았을 때 리디렉션할 경로
- * @returns {boolean} 인증 확인 중인지 여부
- */
-export function useAuthCheck(redirectTo = '/') {
-  const router = useRouter();
+export function useAuthCheck(redirectTo: RoutePath = '/', requirePortalLinked: boolean = false) {
   const [isChecking, setIsChecking] = useState(true);
+  const router = useInternalRouter();
 
   useEffect(() => {
-    if (!authService.isAuthenticated()) {
-      router.push(redirectTo);
-    } else {
+    const checkAuth = () => {
+      const token = getAccessToken();
+      
+      if (!token) {
+        router.push(redirectTo);
+        return;
+      }
+
+      // TODO: requirePortalLinked 체크 로직 추가 필요
+      if (requirePortalLinked) {
+        // 포털 연동 여부 확인 로직
+      }
+
       setIsChecking(false);
-    }
-  }, [router, redirectTo]);
+    };
+
+    checkAuth();
+  }, [redirectTo, requirePortalLinked, router]);
 
   return isChecking;
 }
