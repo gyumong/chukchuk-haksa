@@ -33,7 +33,7 @@ export const createApiConfig = (): ApiConfig => ({
       Sentry.withScope(scope => {
         scope.setLevel('fatal');
         if (args.length) {
-          const url = typeof args[0] === 'string' ? args[0] : args[0].url;
+          const url = typeof args[0] === 'string' ? args[0] : args[0] instanceof URL ? args[0].href : args[0].url;
           scope.setTag('route', url);
         }
         Sentry.captureException(err);

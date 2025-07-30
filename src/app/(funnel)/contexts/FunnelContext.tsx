@@ -2,16 +2,7 @@
 
 import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
-
-export interface StudentInfo {
-  name: string;
-  school: string;
-  majorName: string;
-  studentCode: string;
-  gradeLevel: string;
-  status: string;
-  completedSemesters: number;
-}
+import type { StudentInfo } from '@/shared/api/data-contracts';
 
 interface FunnelContextType {
   studentInfo: StudentInfo | null;
@@ -21,15 +12,7 @@ interface FunnelContextType {
 const FunnelContext = createContext<FunnelContextType | null>(null);
 
 export function FunnelProvider({ children }: { children: ReactNode }) {
-  const [studentInfo, setStudentInfo] = useState<StudentInfo>({
-    name: '',
-    school: '수원대학교',
-    majorName: '',
-    studentCode: '',
-    gradeLevel: '',
-    status: '',
-    completedSemesters: 0,
-  });
+  const [studentInfo, setStudentInfo] = useState<StudentInfo | null>(null);
 
   return <FunnelContext.Provider value={{ studentInfo, setStudentInfo }}>{children}</FunnelContext.Provider>;
 }

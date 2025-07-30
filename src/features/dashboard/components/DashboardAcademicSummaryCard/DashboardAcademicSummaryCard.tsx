@@ -4,6 +4,10 @@ import { useAcademicSummaryQuery } from '../../apis/queries/useAcademicSummaryQu
 const DashboardAcademicSummaryCard = () => {
   const { data } = useAcademicSummaryQuery();
 
+  if (!data) {
+    return null;
+  }
+
   const rankInfo = {
     type: 'percentile' as const,
     value: data.percentile ?? '-',

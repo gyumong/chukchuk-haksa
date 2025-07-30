@@ -7,7 +7,7 @@ export const StudentProfileSchema = z.object({
   majorName: z.string().default(''),
   gradeLevel: z.number().default(0),
   currentSemester: z.number().default(0),
-  status: z.enum(['재학', '휴학', '졸업']),
+  status: z.string().default(''),
   lastUpdatedAt: z.string().default(''),
   lastSyncedAt: z.string().default(''),
 });

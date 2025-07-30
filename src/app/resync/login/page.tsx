@@ -6,6 +6,9 @@ import { captureException } from '@sentry/nextjs';
 import { FixedButton, TextField } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
+import { suwonScrapingApi } from '@/shared/api/client';
+import { ApiResponseHandler } from '@/shared/api/utils/response-handler';
+import type { PortalLoginApiResponse } from '@/shared/api/data-contracts';
 import { FunnelHeadline, SchoolCard } from '../../(funnel)/components';
 import styles from './page.module.scss';
 
@@ -23,16 +26,11 @@ export default function PortalLogin() {
       setIsLoading(true);
       setErrorMessage('');
 
-      const res = await fetch('/api/suwon-scrape/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-      const data = await res.json();
+      const response = await ApiResponseHandler.handleAsyncResponse<PortalLoginApiResponse>(
+        suwonScrapingApi.login({ username, password })
+      );
 
-      if (!res.ok) {
-        throw new Error(data.error || '로그인 실패');
-      }
+      // 로그인 성공 시 스크래핑 페이지로 이동
       router.push(`${ROUTES.RESYNC.SCRAPING}`);
     } catch (err: any) {
       console.log(err);

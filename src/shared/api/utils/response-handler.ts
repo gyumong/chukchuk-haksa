@@ -1,17 +1,27 @@
-import type { HttpResponse, ErrorResponseWrapper } from '../http-client';
+import type { HttpResponse } from '../http-client';
+import type { ErrorResponseWrapper } from '../data-contracts';
 
-export type ApiResponse<T> = HttpResponse<T, ErrorResponseWrapper>;
+export type ApiResponse<T> = Response;
+
+interface SpringBootApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+}
 
 export class ApiResponseHandler {
-  static handleResponse<T>(response: ApiResponse<T>): any {
+  static async handleResponse<T extends SpringBootApiResponse<any>>(response: Response): Promise<T> {
     if (!response.ok) {
-      throw new Error(response.error?.error?.message || 'API 요청에 실패했습니다.');
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.error?.message || 'API 요청에 실패했습니다.');
     }
-    // Spring Boot API는 { success: boolean, data: T, message?: string } 형태로 응답
-    return (response.data as any)?.data || response.data;
+    
+    // JSON 파싱 후 반환
+    const data = await response.json();
+    return data;
   }
   
-  static async handleAsyncResponse<T>(responsePromise: Promise<ApiResponse<T>>): Promise<any> {
+  static async handleAsyncResponse<T extends SpringBootApiResponse<any>>(responsePromise: Promise<Response>): Promise<T> {
     const response = await responsePromise;
     return this.handleResponse(response);
   }

@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
+import { suwonScrapingApi } from '@/shared/api/client';
+import { ApiResponseHandler } from '@/shared/api/utils/response-handler';
+import type { ScrapingApiResponse } from '@/shared/api/data-contracts';
 import LoadingScreen from '../../(funnel)/components/LoadingScreen/LoadingScreen';
 
 export default function ScrapingPage() {
@@ -22,47 +25,21 @@ export default function ScrapingPage() {
 
   const startScrape = async () => {
     try {
-      const response = await fetch('/api/suwon-scrape/resync', {
-        method: 'POST',
-      });
+      const response = await ApiResponseHandler.handleAsyncResponse<ScrapingApiResponse>(
+        suwonScrapingApi.refreshAndSync()
+      );
 
-      const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.error || '크롤링 시작에 실패했습니다.');
-      }
-
-      pollProgress(result.taskId);
+      // 재동기화 완료 시 메인 페이지로 이동
+      router.push('/main');
     } catch (err: any) {
-      setErrorCode(500);
-    }
-  };
-
-  const pollProgress = async (taskId: string) => {
-    try {
-      const response = await fetch(`/api/suwon-scrape/progress?taskId=${taskId}`);
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to fetch progress');
-      }
-
-      if (result.status === 'completed') {
-        router.push('/main');
-        return;
-      } else if (result.status === 'failed') {
-        if (result.data?.status === 401) {
-          setErrorCode(401);
-        } else if (result.data?.status === 423) {
-          setErrorCode(423);
-        } else {
-          setErrorCode(500);
-        }
+      // API 에러 처리
+      if (err.status === 401) {
+        setErrorCode(401);
+      } else if (err.status === 423) {
+        setErrorCode(423);
       } else {
-        // 아직 진행 중이면 계속 폴링
-        setTimeout(() => pollProgress(taskId), 2000);
+        setErrorCode(500);
       }
-    } catch (err: any) {
-      setErrorCode(500);
     }
   };
 
