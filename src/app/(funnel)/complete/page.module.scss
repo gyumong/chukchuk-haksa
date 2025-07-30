@@ -1,0 +1,103 @@
+// TODO 폰트 반응형 토큰 적용
+@use '@/styles/color.scss' as colors;
+.container {
+  /* 컨테이너 레벨에서 기준 크기 정의 */
+  --content-base: min(226px, 60vw);
+  display: flex;
+  flex-direction: column;
+  padding-top: calc(8vh);
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: calc(5vh);
+}
+
+/* contentItem는 일러스트 래핑용 */
+.contentItem {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: min(426px, 50vh);
+}
+
+.nameTagWrapper {
+  /* nameTag 관련 크기는 여기서만 사용 */
+  --base-size: var(--content-base);
+  width: var(--base-size);
+  aspect-ratio: 226 / 426;
+  position: relative;
+}
+
+.illustration {
+  object-fit: contain;
+  /* Next.js Image에서 fill을 사용할 경우, width/height 없이 fill만.
+     만약 width/height를 쓰면 상위 wrapper에 맞춰 scaling됨. */
+}
+
+.infoOverlay {
+  position: absolute;
+  /* 2) 좌표계: Figma에서 측정한 값(31px, etc) -> 비율 변환 */
+  left: calc(var(--base-size) * 0.137); /* 31/226 ≈ 0.137 */
+  bottom: calc(var(--base-size) * 0.17); /* 24/426 ≈ 0.056 */
+  width: calc(var(--base-size) * 0.726); /* (226 - 31 = 195)/226 ≈ 0.726 */
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base-size) * 0.044);
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--base-size) * 0.053);
+}
+
+.label {
+  color: colors.$gray-100;
+  /* 3) 폰트 크기: var(--base-size) 기반 비율 */
+  font-size: calc(var(--base-size) * 0.071);
+  font-family: 'SUIT';
+  font-weight: 400;
+  line-height: 1.4;
+  flex-shrink: 0;
+  width: calc(var(--base-size) * 0.314);
+}
+
+.value {
+  color: colors.$black-100;
+  font-size: clamp(14px, calc(var(--base-size) * 0.08), 16px);
+  font-family: 'SUIT';
+  font-weight: 700;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+
+.wrongInfoButton {
+  /* 컨테이너의 기준 크기 사용 */
+  margin-top: calc(var(--content-base) * 0.133); // 30/226 ≈ 0.133
+  color: colors.$gray-100;
+  font-size: clamp(14px, calc(var(--content-base) * 0.071), 16px);
+  font-family: 'SUIT';
+  font-weight: 400;
+  text-decoration: underline;
+  line-height: 1.6;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@media (max-height: 700px) {
+  .nameTagWrapper {
+    --base-size: min(180px, 60vw); /* nameTag만 더 작게 제한 */
+    max-height: 50vh;
+  }
+  .infoOverlay {
+    bottom: calc(var(--base-size) * 0.08);
+  }
+  .wrongInfoButton {
+    margin-top: calc(var(--content-base) * 0.073); // 30/226 ≈ 0.133
+  }
+}

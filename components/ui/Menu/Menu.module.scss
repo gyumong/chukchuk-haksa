@@ -1,9 +1,0 @@
-@use '/styles/global/_variables.scss' as *;
-
-.menu {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  overflow: hidden;
-  gap: $space-24;
-}

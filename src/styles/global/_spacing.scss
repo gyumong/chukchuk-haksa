@@ -1,0 +1,109 @@
+@use '@/styles/global/_variables.scss' as *;
+
+// Basic gaps (2px ~ 20px)
+.gap-2 {
+  margin-bottom: $space-2; // 2px
+}
+
+.gap-4 {
+  margin-bottom: $space-4; // 4px
+}
+
+.gap-6 {
+  margin-bottom: $space-6; // 6px
+}
+
+.gap-8 {
+  margin-bottom: $space-8; // 8px
+}
+
+.gap-10 {
+  margin-bottom: $space-10; // 10px
+}
+
+.gap-12 {
+  margin-bottom: $space-12; // 12px
+}
+
+.gap-14 {
+  margin-bottom: $space-14; // 14px
+}
+
+.gap-16 {
+  margin-bottom: $space-16; // 16px
+}
+
+.gap-18 {
+  margin-bottom: $space-18; // 18px
+}
+
+.gap-20 {
+  margin-bottom: $space-20; // 20px
+}
+
+// Medium gaps (24px ~ 48px)
+.gap-24 {
+  margin-bottom: $space-24; // 24px
+}
+
+.gap-28 {
+  margin-bottom: $space-28; // 28px
+}
+
+.gap-32 {
+  margin-bottom: $space-32; // 32px
+}
+
+.gap-36 {
+  margin-bottom: $space-36; // 36px
+}
+
+.gap-40 {
+  margin-bottom: $space-40; // 40px
+}
+
+.gap-48 {
+  margin-bottom: $space-48; // 48px
+}
+
+// Large gaps (56px ~ 96px)
+.gap-56 {
+  margin-bottom: $space-56; // 56px
+}
+
+.gap-64 {
+  margin-bottom: $space-64; // 64px
+}
+
+.gap-72 {
+  margin-bottom: $space-72; // 72px
+}
+
+.gap-80 {
+  margin-bottom: $space-80; // 80px
+}
+
+.gap-96 {
+  margin-bottom: $space-96; // 96px
+}
+
+.gap-100 {
+  margin-bottom: $space-100; // 100px
+}
+
+// Extra large gaps (112px ~ 160px)
+.gap-112 {
+  margin-bottom: $space-112; // 112px
+}
+
+.gap-128 {
+  margin-bottom: $space-128; // 128px
+}
+
+.gap-144 {
+  margin-bottom: $space-144; // 144px
+}
+
+.gap-160 {
+  margin-bottom: $space-160; // 160px
+}

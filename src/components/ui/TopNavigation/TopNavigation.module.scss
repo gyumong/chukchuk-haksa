@@ -1,0 +1,58 @@
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/color.scss' as color;
+
+.container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 52px;
+  padding: 12px 20px; // 기본 패딩 (leftArea가 없을 때)
+
+  // leftArea가 있을 때는 왼쪽 패딩을 0으로
+  &:has(.leftArea) {
+    padding-left: 0;
+  }
+}
+
+.leftArea {
+  display: flex;
+  align-items: center;
+  min-width: 24px;
+  padding-left: 14px;
+  // type이 있을 때 (back, close) container와의 간격 조정
+  & + .titleArea {
+    margin-left: 2px; // 아이콘이 있을 때 왼쪽 간격 2px
+  }
+}
+
+.titleArea {
+  flex: 1;
+  display: flex; // 추가
+  align-items: center; // 추가
+  height: 28px;
+
+  text-align: left; // 왼쪽 정렬로 변경
+}
+
+.title {
+  color: color.$black-100;
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rightArea {
+  display: flex;
+  align-items: center;
+  min-width: 24px;
+  justify-content: flex-end;
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
