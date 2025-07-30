@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getRedirectUri } from '@/lib/auth/client';
 import { getKakaoToken } from '@/lib/auth/kakao';
 import { getRedirectPathForUser } from '@/lib/auth/redirect';
-import { signInWithBackend } from '@/lib/auth/signin';
+import { authService } from '@/features/auth/services/authService';
 import { AuthError } from '@/lib/error';
 import { getCookieValue } from '@/lib/utils/cookies';
 
@@ -24,10 +24,10 @@ export async function GET(request: Request) {
     const redirectUri = getRedirectUri();
 
     const idToken = await getKakaoToken(code, redirectUri);
-    const user = await signInWithBackend(idToken, nonce);
+    const user = await authService.login(idToken, nonce, false);
 
-    const isPortalLinked = user?.isPortalLinked;
-    const accessToken = user?.accessToken ?? '';
+    const isPortalLinked = user.isPortalLinked;
+    const accessToken = user.accessToken;
 
     if (isPortalLinked === undefined) {
       throw new AuthError('User is missing or malformed.');
@@ -37,6 +37,7 @@ export async function GET(request: Request) {
 
     const url = new URL('/auth/success', origin);
     url.searchParams.set('token', accessToken);
+    url.searchParams.set('isPortalLinked', isPortalLinked.toString());
     url.searchParams.set('redirect', nextPath);
     return NextResponse.redirect(url);
   } catch (error) {
