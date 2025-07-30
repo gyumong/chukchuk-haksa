@@ -6,6 +6,6 @@ export function useAcademicSummaryQuery() {
   return useSuspenseQuery({
     queryKey: dashboardQueryKeys.academicSummary,
     queryFn: () => fetchAcademicSummary(),
-    select: data => data.data.data,
+    select: data => data?.data,
   });
 }
