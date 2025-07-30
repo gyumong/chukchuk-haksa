@@ -1,0 +1,13 @@
+@use '@/styles/device.scss' as device;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px;
+
+  @include device.compact {
+    padding: 16px;
+    gap: 16px;
+  }
+}

@@ -21,7 +21,6 @@ export const createApiConfig = (): ApiConfig => ({
     }
   },
   baseApiParams: {
-    cache: 'no-store',
     credentials: 'include',
     redirect: 'follow',
     referrerPolicy: 'no-referrer',

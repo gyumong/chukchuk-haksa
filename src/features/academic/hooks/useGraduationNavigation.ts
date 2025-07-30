@@ -8,12 +8,9 @@ import { createGraduationTitle } from '../utils/profileUtils';
  */
 export function useGraduationNavigation() {
   const router = useInternalRouter();
-  const { data: profile, isLoading } = useProfileQuery();
+  const { data: profile } = useProfileQuery();
 
   const navigationTitle = useMemo(() => {
-    if (!profile) {
-      return '졸업요건';
-    }
     return createGraduationTitle(profile.studentCode, profile);
   }, [profile]);
 
@@ -26,6 +23,5 @@ export function useGraduationNavigation() {
   return {
     navigationTitle,
     handleBack,
-    isLoading: isLoading || !profile,
   };
 }
