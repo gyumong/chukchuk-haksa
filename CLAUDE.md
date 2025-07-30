@@ -30,6 +30,24 @@ yarn gen              # Generate Supabase types
 
 ## Code Style & Rules
 
+### CSS & Styling
+
+```scss
+// NEVER use inline styles - always use SCSS modules
+// ❌ Bad
+<div style={{ marginBottom: '12px' }}>
+
+// ✅ Good  
+<div className={styles.spacing}>
+// with corresponding SCSS module:
+// .spacing { margin-bottom: 12px; }
+
+// Use design system imports in SCSS modules
+@use '@/styles/device.scss' as device;
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/color.scss' as colors;
+```
+
 ### Import/Export Conventions
 
 ```typescript
@@ -98,7 +116,15 @@ export default Component;
 ### API Integration
 
 ```typescript
-// Use React Query patterns
+// Use useSuspenseQuery for data fetching with proper error handling separation
+const useFeatureQuery = (id: string) => {
+  return useSuspenseQuery({
+    queryKey: ['feature', id],
+    queryFn: () => fetchFeature(id),
+  });
+};
+
+// Use mutations for data updates
 const useFeatureMutation = () => {
   return useMutation({
     mutationFn: apiFunction,
@@ -127,6 +153,17 @@ const apiFunction = async (params: RequestType): Promise<ResponseType> => {
 
   return data;
 };
+
+// Always wrap useSuspenseQuery with Suspense and Error Boundary
+function Component() {
+  return (
+    <ErrorBoundary fallback={<ErrorFallback />}>
+      <Suspense fallback={<LoadingFallback />}>
+        <DataComponent />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
 ```
 
 ### Commit Messages

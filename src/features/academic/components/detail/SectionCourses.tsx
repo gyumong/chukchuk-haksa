@@ -13,7 +13,7 @@ const SectionCourses = ({ title, courses }: SectionCoursesProps) => {
       <div className={styles.sectionTitle}>
         {title} ({courses.length})
       </div>
-      <div style={{ marginBottom: '12px' }}></div>
+      <div className={styles.spacing}></div>
       <div className={styles.cardsContainer}>
         {courses.map(course => (
           <GradeCard

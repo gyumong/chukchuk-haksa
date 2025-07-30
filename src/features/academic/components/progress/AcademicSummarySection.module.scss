@@ -1,0 +1,11 @@
+@use '@/styles/typography.scss' as typography;
+
+.title {
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+  margin-bottom: 12px;
+}
+
+.spacing {
+  margin-bottom: 12px;
+}

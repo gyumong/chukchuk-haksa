@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ACCESS_TOKEN_KEY } from '@/constants';
 import { setPortalLinked } from '@/lib/auth/token';
 import { type RoutePath, useInternalRouter } from '@/hooks/useInternalRouter';
 
-const SuccessPage = () => {
+const SuccessContent = () => {
   const router = useInternalRouter();
   const searchParams = useSearchParams();
 
@@ -32,6 +32,14 @@ const SuccessPage = () => {
   }, [router, searchParams]);
 
   return <div className="flex items-center justify-center h-screen"></div>;
+};
+
+const SuccessPage = () => {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen"></div>}>
+      <SuccessContent />
+    </Suspense>
+  );
 };
 
 export default SuccessPage;

@@ -24,9 +24,9 @@ export type AcademicRecordData = AcademicRecordResponse;
 
 // Composite 데이터 타입 (페이지에서 사용)
 export interface GraduationPageData {
-  graduationProgress: AreaProgress[];
-  academicSummary: AcademicSummary;
-  semesterGrades: SemesterGrade[];
+  graduationProgress: AreaProgress[] | undefined;
+  academicSummary: AcademicSummary | undefined;
+  semesterGrades: SemesterGrade[] | undefined;
 }
 
 // 필요시 추가 타입들
