@@ -5,10 +5,10 @@ export default function CourseList({ courses, isCompleted }: CourseListProps) {
   return (
     <div className={`${styles.container} ${isCompleted ? styles.completed : ''}`}>
       {courses.map((course, index) => (
-        <div key={`${course.name}-${index}`} className={styles.courseItem}>
+        <div key={`${course.courseName}-${index}`} className={styles.courseItem}>
           <div className={styles.courseInfo}>
-            <span className={styles.courseName}>{course.name}</span>
-            <span className={styles.semester}>{course.semester}</span>
+            <span className={styles.courseName}>{course.courseName}</span>
+            <span className={styles.semester}>{course.year}-{course.semester}</span>
           </div>
           <div className={styles.courseGrade}>
             <span className={styles.credits}>{course.credits}학점</span>

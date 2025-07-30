@@ -1,9 +1,6 @@
-interface Course {
-  name: string;
-  semester: string;
-  credits: number;
-  grade: string;
-}
+import type { CourseDto } from '@/shared/api/data-contracts';
+
+type Course = CourseDto;
 
 interface CourseAreaProps {
   title: string;

@@ -19,6 +19,10 @@ const GraduationRequirementCard = () => {
   const { data: profileData } = useProfileQuery();
   const { data: summaryData } = useAcademicSummaryQuery();
 
+  if (!profileData || !summaryData) {
+    return null;
+  }
+
   const admissionYear = profileData.studentCode.slice(0, 2);
   const departmentName = profileData.departmentName ?? profileData.majorName;
 
@@ -26,7 +30,7 @@ const GraduationRequirementCard = () => {
   const requiredCredits = summaryData.requiredCredits;
 
   const handleGraduationProgress = () => {
-    router.push(`${ROUTES.GRADUATION_PROGRESS}/${parseInt(admissionYear)}/${departmentName}` as RoutePath);
+    router.push(ROUTES.GRADUATION_PROGRESS);
   };
 
   return (

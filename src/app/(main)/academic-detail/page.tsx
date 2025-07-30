@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense } from 'react';
-import AcademicDetailContent from './components/AcademicDetailContent';
+import AcademicDetailContent from '@/features/academic/components/detail/AcademicDetailContent';
 
 export default function AcademicDetailPage() {
   return (
