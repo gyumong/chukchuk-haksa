@@ -45,7 +45,7 @@ export default function SemesterSlider({ currentYear, currentSemester }: Semeste
         >
           {sem.year}년 {getSemesterLabel(sem.semester)}
         </button>
-      ))}
+      )) || []}
     </div>
   );
 }
