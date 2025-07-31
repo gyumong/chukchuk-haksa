@@ -211,8 +211,12 @@ docs: update API integration guide
 - Feature-based folder structure
 - Centralized API configuration and response handling
 
-### Merge Strategy
+### Git Workflow Rules
 
+**CRITICAL: NEVER commit directly to dev or main branches**
+- `dev` and `main` branches are protected - only PR merges allowed
+- Always create feature branches for any changes
+- Use Pull Requests for all code integration
 - Use squash and merge for feature branches
 - Preserve commit history for important architectural changes
 - Always run tests before merging

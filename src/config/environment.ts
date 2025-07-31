@@ -34,10 +34,17 @@ export function getApiBaseUrl() {
 }
 
 /**
- * Frontend URL 가져오기 (Vercel 환경변수 우선)
+ * Frontend URL 가져오기 (환경별 로직)
  */
 export function getFrontendUrl() {
-  // Vercel URL이 있으면 사용
+  const env = getEnvironment();
+  
+  // 로컬 개발 환경
+  if (env === 'development' && !process.env.VERCEL_URL) {
+    return 'http://localhost:3000';
+  }
+  
+  // Vercel URL이 있으면 사용 (preview, production)
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
   }
