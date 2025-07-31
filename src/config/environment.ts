@@ -37,21 +37,14 @@ export function getApiBaseUrl() {
  * Frontend URL 가져오기 (환경별 로직)
  */
 export function getFrontendUrl() {
-  const env = getEnvironment();
-  
-  // 로컬 개발 환경
-  if (env === 'development' && !process.env.VERCEL_URL) {
-    return 'http://localhost:3000';
-  }
-  
-  // Vercel URL이 있으면 사용 (preview, production)
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-
-  // 환경변수가 설정되어 있으면 사용
+  // 클라이언트 환경변수 우선 사용
   if (process.env.NEXT_PUBLIC_BASE_URL) {
     return process.env.NEXT_PUBLIC_BASE_URL;
+  }
+
+  // 브라우저에서는 현재 origin 사용
+  if (typeof window !== 'undefined') {
+    return window.location.origin;
   }
 
   // fallback (로컬 개발용)
