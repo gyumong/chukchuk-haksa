@@ -1,8 +1,9 @@
 import * as Sentry from '@sentry/nextjs';
 import { getAccessToken } from '@/lib/auth/token';
+import { getApiBaseUrl } from '@/config/environment';
 import type { ApiConfig } from '../http-client';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://dev.api.cchaksa.com';
+const BASE_URL = getApiBaseUrl();
 
 export const createApiConfig = (): ApiConfig => ({
   baseUrl: BASE_URL,

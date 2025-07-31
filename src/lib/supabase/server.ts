@@ -1,11 +1,11 @@
 import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
-import { SUPABASE_ANON_KEY, SUPABASE_URL } from '@/config/env';
+import { ENV } from '@/config/environment';
 
 export function createClient() {
   const cookieStore = cookies() as unknown as UnsafeUnwrappedCookies;
 
-  return createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  return createServerClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON_KEY, {
     cookies: {
       getAll() {
         return cookieStore.getAll();

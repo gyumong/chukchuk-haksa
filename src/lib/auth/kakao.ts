@@ -1,5 +1,5 @@
 import { setCookie } from 'cookies-next';
-import { KAKAO_CLIENT_SECRET, KAKAO_JS_KEY, KAKAO_REST_API_KEY } from '@/config/env';
+import { ENV } from '@/config/environment';
 import { AuthError } from '@/lib/error';
 import { generateRandomNonce, generateRandomString, hashNonce } from '.';
 import { getRedirectUri } from './client';
@@ -10,7 +10,7 @@ function initializeKakao() {
   }
 
   if (!window.Kakao.isInitialized()) {
-    window.Kakao.init(KAKAO_JS_KEY);
+    window.Kakao.init(ENV.KAKAO_JS_KEY);
   }
 }
 
@@ -58,10 +58,10 @@ async function getKakaoToken(code: string, redirectUri: string): Promise<string>
     },
     body: new URLSearchParams({
       grant_type: 'authorization_code',
-      client_id: KAKAO_REST_API_KEY,
+      client_id: ENV.KAKAO_REST_API_KEY,
       redirect_uri: redirectUri,
       code,
-      client_secret: KAKAO_CLIENT_SECRET,
+      client_secret: ENV.KAKAO_CLIENT_SECRET,
     }),
   });
 
