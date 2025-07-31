@@ -1,5 +1,5 @@
-import { NEXT_BASE_URL } from '@/config/env';
+import { ENV } from '@/config/environment';
 
 export function getRedirectUri(path: string = '/auth/callback') {
-  return `${NEXT_BASE_URL}${path}`;
+  return `${ENV.FRONTEND_URL}${path}`;
 }

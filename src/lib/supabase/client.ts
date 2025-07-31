@@ -1,7 +1,7 @@
 import { createBrowserClient } from '@supabase/ssr';
-import { SUPABASE_ANON_KEY, SUPABASE_URL } from '@/config/env';
+import { ENV } from '@/config/environment';
 import type { Database } from '@/types/supabase';
 
 export function createClient() {
-  return createBrowserClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY);
+  return createBrowserClient<Database>(ENV.SUPABASE_URL, ENV.SUPABASE_ANON_KEY);
 }
