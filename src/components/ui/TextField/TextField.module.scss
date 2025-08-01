@@ -1,12 +1,14 @@
 @use '../../../styles/typography' as typography;
 @use '../../../styles/color' as color;
+@use '../../../styles/spacing' as spacing;
+@use '../../../styles/radius' as radius;
 
 .base {
   width: 100%;
   min-height: 64px;
-  padding: 0 20px;
+  padding: 0 spacing.$space-20;
   box-sizing: border-box;
-  border-radius: 10px;
+  border-radius: radius.$radius-sm;
   @include typography.body-lg;
   @include typography.font-weight-bold;
   letter-spacing: -0.02em;
@@ -67,7 +69,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: spacing.$space-4;
 }
 
 .inputWrapper {
@@ -85,24 +87,24 @@
   @include typography.body-sm;
   @include typography.font-weight-medium;
   color: color.$red-200;
-  margin-top: 4px;
+  margin-top: spacing.$space-4;
 }
 
 .helperText {
   @include typography.body-sm;
   @include typography.font-weight-medium;
   color: color.$gray-100;
-  margin-top: 4px;
+  margin-top: spacing.$space-4;
 }
 
 /* Delete icon */
 .deleteIcon {
   position: absolute;
-  right: 16px;
+  right: spacing.$space-16;
   top: 50%;
   transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  width: spacing.$space-24;
+  height: spacing.$space-24;
   cursor: pointer;
   background: none;
   border: none;

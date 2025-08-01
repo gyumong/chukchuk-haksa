@@ -1,25 +1,26 @@
 @use '@/styles/color.scss' as color;
+@use '@/styles/typography' as typography;
+@use '@/styles/spacing' as spacing;
+@use '@/styles/radius' as radius;
 
 .cardContainer {
   width: 100%;
-  background: white;
-  border-radius: 16px;
-  padding: 18px;
+  background: color.$white;
+  @include radius.card-radius;
+  @include spacing.card-padding;
 }
 
 .cardHeader {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: spacing.$space-16;
 }
 
 .courseInfo,
 .professorInfo {
-  color: #a3a2b1;
-  font-size: 14px;
-  font-family: 'SUIT';
-  font-weight: 500;
-  line-height: 1.6;
+  color: color.$gray-100;
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
   word-wrap: break-word;
 }
 
@@ -32,28 +33,25 @@
 .courseNameWrapper {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: spacing.$space-8;
 }
 
 .courseName {
-  color: #2b2b2b;
-  font-size: 18px;
-  font-family: 'SUIT';
-  font-weight: 700;
-  line-height: 1.6;
+  color: color.$black-100;
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
   word-wrap: break-word;
 }
 
 .gradeWrapper {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: spacing.$space-6;
 }
 
 .grade {
-  font-family: 'SUIT';
-  font-size: 18px;
-  font-weight: 700;
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
   line-height: 28.8px;
   word-wrap: break-word;
 
@@ -61,7 +59,7 @@
   &[data-grade='A+'],
   &[data-grade='A0'],
   &[data-grade='A'] {
-    color: #eb5050;
+    color: color.$grade-a;
   }
 
   &[data-grade='P'] {
@@ -75,27 +73,27 @@
   &[data-grade='B+'],
   &[data-grade='B0'],
   &[data-grade='B'] {
-    color: #f6b645;
+    color: color.$grade-b;
   }
 
   // C+, C0, C 모두 포함
   &[data-grade='C+'],
   &[data-grade='C0'],
   &[data-grade='C'] {
-    color: #1fce8e;
+    color: color.$grade-c;
   }
 
   // D+, D0, D 모두 포함
   &[data-grade='D+'],
   &[data-grade='D0'],
   &[data-grade='D'] {
-    color: #7f7e8a;
+    color: color.$grade-d;
     .completed & {
       color: color.$gray-100;
     }
   }
   &[data-grade='F'] {
-    color: color.$gray-500;
+    color: color.$grade-f;
     .completed & {
       color: color.$gray-100;
     }
@@ -103,8 +101,7 @@
 }
 
 .score {
-  color: #2b2b2b;
-  font-size: 14px;
-  font-family: 'SUIT';
-  font-weight: 500;
+  color: color.$black-100;
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
 }

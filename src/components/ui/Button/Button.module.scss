@@ -1,6 +1,8 @@
 @use '@/styles/typography' as typography;
 @use '@/styles/color' as colors;
 @use '@/styles/device.scss' as device;
+@use '@/styles/spacing' as spacing;
+@use '@/styles/radius' as radius;
 @use 'sass:color';
 
 .base {
@@ -8,7 +10,7 @@
   align-items: center;
   justify-content: center;
   border: none;
-  border-radius: 10px;
+  @include radius.button-radius;
   @include typography.body-lg;
   @include typography.font-weight-bold;
   cursor: pointer;
@@ -46,14 +48,14 @@
 // Sizes
 .size-md {
   height: 64px;
-  padding: 0 18px;
+  padding: 0 spacing.$space-18;
   @include typography.body-lg;
   @include typography.font-weight-bold;
 }
 
 .size-lg {
   height: 72px;
-  padding: 0 32px;
+  padding: 0 spacing.$space-32;
   font-size: 20px;
   line-height: 32px;
 }
@@ -80,16 +82,16 @@
 // Fixed position
 .fixed {
   position: fixed;
-  bottom: 36px;
+  bottom: spacing.$space-36;
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
   padding-bottom: env(safe-area-inset-bottom);
-  width: calc(600px - 32px); // 최대 너비에서 좌우 패딩 제외
-  max-width: calc(100% - 32px); // 화면이 작을 때는 여백 남기기
+  width: calc(600px - spacing.$space-32); // 최대 너비에서 좌우 패딩 제외
+  max-width: calc(100% - spacing.$space-32); // 화면이 작을 때는 여백 남기기
 
   @include device.compact {
-    left: 16px;
+    left: spacing.$space-16;
     transform: none;
   }
 }
@@ -108,16 +110,16 @@
 }
 
 .variant-kakao {
-  background-color: #f9e000;
-  color: #371d1e;
+  background-color: colors.$kakao-yellow;
+  color: colors.$kakao-text;
   font-size: 18px;
   font-weight: 700;
   line-height: 28.8px;
-  gap: 8px; // 아이콘과 텍스트 사이 간격
-  padding-left: 16px; // 왼쪽 여백 유지
+  gap: spacing.$space-8; // 아이콘과 텍스트 사이 간격
+  padding-left: spacing.$space-16; // 왼쪽 여백 유지
 
   &:hover:not(:disabled) {
-    background-color: color.adjust(#f9e000, $lightness: 5%);
+    background-color: color.adjust(colors.$kakao-yellow, $lightness: 5%);
   }
 }
 

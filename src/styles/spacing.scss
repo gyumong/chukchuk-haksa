@@ -1,0 +1,65 @@
+// Spacing System (2px based scale)
+// Temporary - will be replaced by Figma tokens
+
+// Base spacing values
+$space-2: 2px;
+$space-4: 4px;
+$space-6: 6px;
+$space-8: 8px;
+$space-12: 12px;
+$space-16: 16px;
+$space-18: 18px;
+$space-20: 20px;
+$space-24: 24px;
+$space-30: 30px;
+$space-32: 32px;
+$space-36: 36px;
+$space-40: 40px;
+$space-48: 48px;
+
+// Common spacing patterns as mixins
+@mixin padding-xs {
+  padding: $space-8;
+}
+
+@mixin padding-sm {
+  padding: $space-12;
+}
+
+@mixin padding-md {
+  padding: $space-16;
+}
+
+@mixin padding-lg {
+  padding: $space-18;
+}
+
+@mixin padding-xl {
+  padding: $space-24;
+}
+
+// Card padding patterns
+@mixin card-padding {
+  padding: $space-18;
+}
+
+@mixin card-padding-large {
+  padding: $space-18 $space-32;
+}
+
+@mixin card-padding-compact {
+  padding: $space-16;
+}
+
+// Button padding patterns
+@mixin button-padding-sm {
+  padding: $space-8 $space-16;
+}
+
+@mixin button-padding-md {
+  padding: $space-12 $space-24;
+}
+
+@mixin button-padding-lg {
+  padding: $space-16 $space-32;
+}
