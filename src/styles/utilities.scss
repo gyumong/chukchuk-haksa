@@ -5,6 +5,7 @@
 @use './spacing.scss' as spacing;
 @use './radius.scss' as radius;
 @use './typography.scss' as typography;
+@use './device.scss' as device;
 
 // Common card style
 @mixin card-base {
@@ -124,4 +125,109 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+// Layout Container Patterns
+@mixin mobile-container {
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@mixin full-height-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+@mixin app-layout {
+  @include mobile-container;
+  @include full-height-layout;
+  background-color: color.$background-color;
+}
+
+// Content Patterns
+@mixin content-padding {
+  padding: 0 spacing.$space-20;
+}
+
+@mixin content-padding-responsive {
+  padding: 0 spacing.$space-20;
+  
+  @include device.compact {
+    padding: 0 spacing.$space-16;
+  }
+}
+
+// Funnel-specific patterns
+@mixin funnel-container {
+  @include mobile-container;
+  @include full-height-layout;
+  padding: spacing.$space-24;
+  
+  @include device.compact {
+    padding: spacing.$space-16;
+  }
+}
+
+@mixin funnel-page-spacing {
+  padding-top: spacing.$space-66;
+}
+
+// Safe area patterns
+@mixin safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+// Viewport height patterns
+@mixin viewport-height-container {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+// Spacing utility patterns
+@mixin spacing-bottom($size: 'medium') {
+  @if $size == 'small' {
+    margin-bottom: spacing.$space-8;
+  } @else if $size == 'medium' {
+    margin-bottom: spacing.$space-20;
+  } @else if $size == 'large' {
+    margin-bottom: spacing.$space-24;
+  }
+}
+
+// Center content patterns
+@mixin center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+// Fixed position button pattern
+@mixin fixed-bottom-button {
+  position: fixed;
+  bottom: spacing.$space-36;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  @include safe-area-bottom;
+  width: calc(600px - spacing.$space-32);
+  max-width: calc(100% - spacing.$space-32);
+
+  @include device.compact {
+    left: spacing.$space-16;
+    transform: none;
+  }
+}
+
+// Layout utility for main pages
+@mixin main-layout {
+  @include mobile-container;
+}
+
+// Layout utility for setting pages
+@mixin setting-layout {
+  @include mobile-container;
+  @include content-padding;
 }

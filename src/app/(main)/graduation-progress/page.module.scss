@@ -1,6 +1,7 @@
 @use '@/styles/color.scss' as color;
 @use '@/styles/spacing.scss' as spacing;
+@use '@/styles/utilities.scss' as utilities;
 
 .container {
-  padding: spacing.$space-20;
+  @include utilities.content-padding;
 }

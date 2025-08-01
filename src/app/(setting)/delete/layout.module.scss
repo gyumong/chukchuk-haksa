@@ -1,15 +1,7 @@
-@use '@/styles/color.scss' as color;
-@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/utilities' as utilities;
 
 .container {
-  display: flex;
-  flex-direction: column;
-  background-color: color.$background-color;
+  @include utilities.setting-layout;
+  @include utilities.full-height-layout;
   height: 100vh;
-  max-width: 600px; // 최대 너비 600px로 제한
-  margin: 0 auto; // 중앙 정렬
-}
-
-.content {
-  padding: 0 spacing.$space-20;
 }

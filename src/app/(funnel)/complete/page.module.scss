@@ -1,6 +1,7 @@
 @use '@/styles/color.scss' as colors;
 @use '@/styles/spacing.scss' as spacing;
 @use '@/styles/typography.scss' as typography;
+@use '@/styles/utilities.scss' as utilities;
 .container {
   /* 컨테이너 레벨에서 기준 크기 정의 */
   --content-base: min(226px, 60vw);
@@ -11,17 +12,13 @@
 
 .content {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include utilities.flex-center-column;
   padding-top: calc(5vh);
 }
 
 /* contentItem는 일러스트 래핑용 */
 .contentItem {
-  display: flex;
-  justify-content: center;
-  width: 100%;
+  @include utilities.center-content;
   height: min(426px, 50vh);
 }
 

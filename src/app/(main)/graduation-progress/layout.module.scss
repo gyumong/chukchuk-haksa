@@ -1,9 +1,8 @@
+@use '@/styles/utilities' as utilities;
 @use '@/styles/color.scss' as color;
 
 .container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  @include utilities.full-height-layout;
   background-color: color.$gray-300;
 }
 

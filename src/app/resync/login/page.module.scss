@@ -1,9 +1,10 @@
 @use '@/styles/color.scss' as color;
 @use '@/styles/typography.scss' as typography;
 @use '@/styles/spacing.scss' as spacing;
+@use '@/styles/utilities.scss' as utilities;
 
 .container {
-  padding-top: spacing.$space-66;
+  @include utilities.funnel-page-spacing;
 }
 
 .formContainer {
