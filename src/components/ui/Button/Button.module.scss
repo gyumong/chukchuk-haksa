@@ -3,6 +3,7 @@
 @use '@/styles/device.scss' as device;
 @use '@/styles/spacing' as spacing;
 @use '@/styles/radius' as radius;
+@use '@/styles/utilities' as utilities;
 @use 'sass:color';
 
 .base {
@@ -86,7 +87,7 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
-  padding-bottom: env(safe-area-inset-bottom);
+  @include utilities.safe-area-bottom;
   width: calc(600px - spacing.$space-32); // 최대 너비에서 좌우 패딩 제외
   max-width: calc(100% - spacing.$space-32); // 화면이 작을 때는 여백 남기기
 
@@ -112,9 +113,8 @@
 .variant-kakao {
   background-color: colors.$kakao-yellow;
   color: colors.$kakao-text;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 28.8px;
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
   gap: spacing.$space-8; // 아이콘과 텍스트 사이 간격
   padding-left: spacing.$space-16; // 왼쪽 여백 유지
 

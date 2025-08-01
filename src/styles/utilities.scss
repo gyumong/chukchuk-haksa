@@ -175,8 +175,12 @@
 }
 
 // Safe area patterns
-@mixin safe-area-bottom {
-  padding-bottom: env(safe-area-inset-bottom);
+@mixin safe-area-bottom($additional-spacing: null) {
+  @if $additional-spacing {
+    padding-bottom: calc(env(safe-area-inset-bottom) + #{$additional-spacing});
+  } @else {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
 
 // Viewport height patterns
@@ -211,7 +215,7 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
-  @include safe-area-bottom;
+  @include safe-area-bottom(spacing.$space-36);
   width: calc(600px - spacing.$space-32);
   max-width: calc(100% - spacing.$space-32);
 

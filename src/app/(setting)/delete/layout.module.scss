@@ -3,5 +3,4 @@
 .container {
   @include utilities.setting-layout;
   @include utilities.full-height-layout;
-  height: 100vh;
 }

@@ -3,7 +3,6 @@
 .container {
   @include utilities.mobile-container;
   @include utilities.full-height-layout;
-  height: 100vh;
 }
 
 .content {

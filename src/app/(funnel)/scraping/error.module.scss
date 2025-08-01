@@ -1,3 +1,4 @@
+@use '@/styles/utilities.scss' as utilities;
 
 .container {
   display: flex;
@@ -6,5 +7,5 @@
   min-height: 100dvh;
   align-items: center;
   padding-top: 16.6dvh;
-  padding-bottom: env(safe-area-inset-bottom);
+  @include utilities.safe-area-bottom;
 }

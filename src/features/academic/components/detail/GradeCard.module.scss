@@ -52,7 +52,6 @@
 .grade {
   @include typography.body-lg;
   @include typography.font-weight-bold;
-  line-height: 28.8px;
   word-wrap: break-word;
 
   // A+, A0, A 모두 포함
