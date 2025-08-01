@@ -58,8 +58,8 @@
 
 .label {
   color: colors.$gray-100;
-  /* 3) 폰트 크기: var(--base-size) 기반 비율 */
-  font-size: calc(var(--base-size) * 0.071);
+  /* 반응형 폰트 크기: 14px~16px 범위에서 base-size에 비례 */
+  font-size: clamp(14px, calc(var(--base-size) * 0.071), 16px);
   font-family: 'SUIT';
   font-weight: 400;
   line-height: 1.4;

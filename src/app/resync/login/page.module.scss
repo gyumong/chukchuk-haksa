@@ -3,14 +3,14 @@
 @use '@/styles/spacing.scss' as spacing;
 
 .container {
-  padding-top: spacing.$space-48;
+  padding-top: spacing.$space-66;
 }
 
 .formContainer {
   display: flex;
   flex-direction: column;
   gap: spacing.$space-12;
-  margin-top: spacing.$space-48;
+  margin-top: 68px; /* 68px - resync 페이지 특정 값, 토큰화 보류 */
 }
 
 .errorMessage {
