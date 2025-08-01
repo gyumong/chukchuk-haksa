@@ -1,11 +1,13 @@
+@use '@/styles/spacing.scss' as spacing;
+
 .spacingTop {
-  margin-bottom: 8px;
+  margin-bottom: spacing.$space-8;
 }
 
 .spacingMedium {
-  margin-bottom: 20px;
+  margin-bottom: spacing.$space-20;
 }
 
 .spacingLarge {
-  margin-bottom: 24px;
+  margin-bottom: spacing.$space-24;
 }

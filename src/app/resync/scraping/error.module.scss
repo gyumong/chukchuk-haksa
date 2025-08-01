@@ -1,3 +1,5 @@
+@use '@/styles/spacing.scss' as spacing;
+
 .container {
   display: flex;
   height: calc(var(--vh) * 1);

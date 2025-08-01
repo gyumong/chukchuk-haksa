@@ -1,3 +1,5 @@
+@use '@/styles/spacing' as spacing;
+@use '@/styles/radius' as radius;
 @use '@/styles/color.scss' as color;
 @use '@/styles/typography.scss' as typography;
 
@@ -6,8 +8,8 @@
   height: 100px;
   background: color.$black-100;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.05);
-  border-radius: 16px;
-  padding: 18px 30px;
+  border-radius: radius.$radius-md;
+  padding: spacing.$space-18 spacing.$space-30;
   box-sizing: border-box;
 
   display: flex;
@@ -19,10 +21,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1px;
+  gap: spacing.$space-1;
 
   .label {
-    color: white;
+    color: color.$white;
     @include typography.body-md;
     @include typography.font-weight-regular;
   }
@@ -36,7 +38,7 @@
 
 .divider {
   width: 1px;
-  height: 27px;
-  background-color: #505050;
-  margin: 0 28px;
+  height: spacing.$space-27;
+  background-color: color.$gray-700;
+  margin: 0 spacing.$space-28;
 }

@@ -1,3 +1,5 @@
+@use '@/styles/typography' as typography;
+
 .container {
   display: flex;
   justify-content: space-between;
@@ -6,10 +8,8 @@
 }
 
 .label {
-  font-family: 'SUIT';
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 28.8px;
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
 }
 
 .icon {

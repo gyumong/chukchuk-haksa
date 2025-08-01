@@ -1,8 +1,10 @@
+@use '@/styles/spacing.scss' as spacing;
+
 .container {
   display: flex;
   height: calc(var(--vh) * 1);
   flex-direction: column;
   align-items: center;
-  padding-top: 66px;
+  padding-top: spacing.$space-48;
   padding-bottom: env(safe-area-inset-bottom);
 }

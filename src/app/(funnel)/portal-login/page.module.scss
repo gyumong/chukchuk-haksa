@@ -1,3 +1,5 @@
+@use '@/styles/spacing.scss' as spacing;
+
 .container {
-  padding-top: 66px;
+  padding-top: spacing.$space-48;
 }

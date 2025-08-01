@@ -1,9 +1,11 @@
+@use '@/styles/spacing.scss' as spacing;
+
 .container {
   display: flex;
   flex-direction: column;
-  padding-top: 66px;
+  padding-top: spacing.$space-48;
 }
 
 .agreementList {
-  margin-top: 32px;
+  margin-top: spacing.$space-32;
 }

@@ -1,5 +1,6 @@
 @use '@/styles/typography.scss' as typography;
 @use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
 
 .container {
   width: 100%;
@@ -7,13 +8,13 @@
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  padding: 12px 0;
+  padding: spacing.$space-12 0;
 }
 
 .leftContent {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: spacing.$space-12;
 }
 
 .title {
@@ -26,6 +27,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: spacing.$space-24;
+  height: spacing.$space-24;
 }

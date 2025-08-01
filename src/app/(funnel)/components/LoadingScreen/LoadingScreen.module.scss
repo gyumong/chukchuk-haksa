@@ -1,23 +1,27 @@
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/radius.scss' as radius;
+
 .wrapper {
   min-height: 100vh;
-  background: white;
+  background: color.$white;
   display: flex;
   flex-direction: column;
 }
 
 .statusBar {
-  height: 44px;
-  padding: 14px 14px 12px 20px;
-  background: white;
+  height: spacing.$space-48;
+  padding: spacing.$space-16 spacing.$space-16 spacing.$space-12 spacing.$space-20;
+  background: color.$white;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   span {
-    color: #202020;
-    font-size: 15px;
-    font-family: 'Pretendard';
-    font-weight: 700;
+    color: color.$black-100;
+    @include typography.body-sm;
+    @include typography.font-weight-bold;
   }
 }
 
@@ -26,13 +30,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 141px 38px 0;
+  padding: 141px spacing.$space-40 0;
 }
 
 .videoContainer {
   width: 300px;
   height: 300px;
-  margin-bottom: 40px;
+  margin-bottom: spacing.$space-40;
 }
 
 .video {
@@ -45,56 +49,49 @@
   text-align: center;
 
   h1 {
-    color: #2b2b2b;
-    font-size: 24px;
-    font-family: 'Paperlogy';
-    font-weight: 700;
-    line-height: 36px;
-    margin-bottom: 46px;
+    color: color.$black-100;
+    @include typography.title-lg;
+    @include typography.font-weight-bold;
+    margin-bottom: spacing.$space-48;
   }
 
   p {
-    color: #616168;
-    font-size: 16px;
-    font-family: 'SUIT';
-    font-weight: 400;
-    line-height: 25.6px;
+    color: color.$gray-400;
+    @include typography.body-lg;
+    @include typography.font-weight-regular;
   }
 }
 
 .bottomBar {
-  height: 34px;
-  padding: 21px 0 8px;
+  height: spacing.$space-36;
+  padding: spacing.$space-24 0 spacing.$space-8;
   display: flex;
   justify-content: center;
 }
 
 .indicator {
   width: 135px;
-  height: 5px;
-  background: #202020;
-  border-radius: 100px;
+  height: spacing.$space-6;
+  background: color.$black-100;
+  @include radius.radius-full;
 }
 
+// Duplicate textContainer with animation states
 .textContainer {
   text-align: center;
   transition: opacity 0.3s ease;
 
   h1 {
-    color: #2b2b2b;
-    font-size: 24px;
-    font-family: 'Paperlogy';
-    font-weight: 700;
-    line-height: 36px;
-    margin-bottom: 46px;
+    color: color.$black-100;
+    @include typography.title-lg;
+    @include typography.font-weight-bold;
+    margin-bottom: spacing.$space-48;
   }
 
   p {
-    color: #616168;
-    font-size: 16px;
-    font-family: 'SUIT';
-    font-weight: 400;
-    line-height: 25.6px;
+    color: color.$gray-400;
+    @include typography.body-lg;
+    @include typography.font-weight-regular;
     white-space: pre-line;
   }
 
@@ -108,8 +105,7 @@
 }
 
 .time {
-  color: #202020;
-  font-size: 15px;
-  font-family: 'Pretendard';
-  font-weight: 700;
+  color: color.$black-100;
+  @include typography.body-sm;
+  @include typography.font-weight-bold;
 }

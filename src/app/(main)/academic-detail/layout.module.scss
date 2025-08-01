@@ -1,4 +1,5 @@
 @use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
 
 .container {
   display: flex;
@@ -8,9 +9,9 @@
 
   max-width: 600px; // 최대 너비 600px로 제한
   margin: 0 auto; // 중앙 정렬
-  padding-bottom: 100px;
+  padding-bottom: spacing.$space-48;
 }
 
 .content {
-  padding: 0 20px;
+  padding: 0 spacing.$space-20;
 }

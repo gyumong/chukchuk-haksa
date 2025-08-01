@@ -1,7 +1,9 @@
+@use '@/styles/spacing.scss' as spacing;
+
 .spacingTop {
-  margin-bottom: 8px;
+  margin-bottom: spacing.$space-8;
 }
 
 .spacingBottom {
-  margin-bottom: 28px;
+  margin-bottom: 28px; // Custom spacing - no direct token match
 }

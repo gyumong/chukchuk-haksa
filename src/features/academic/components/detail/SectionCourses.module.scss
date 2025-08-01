@@ -1,18 +1,20 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
 .sectionTitle {
-  color: #7f7e8a;
-  font-size: 16px;
-  font-family: 'SUIT';
-  font-weight: 700;
-  line-height: 1.6; /* or 25.6px */
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+  color: color.$gray-500;
   word-wrap: break-word;
 }
 
 .spacing {
-  margin-bottom: 12px;
+  margin-bottom: spacing.$space-12;
 }
 
 .cardsContainer {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: spacing.$space-12;
 }
