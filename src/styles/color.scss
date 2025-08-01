@@ -9,6 +9,7 @@ $gray-300: #eff0f7;
 $gray-400: #616168;
 $gray-500: #7f7e8a;
 $gray-600: #616168;
+$gray-700: #505050;
 
 $background-color: #e8e9ef;
 // Purple Scale
@@ -22,6 +23,23 @@ $red-100: #ff5751;
 $red-200: #feafac;
 $red-300: #ff5751;
 $red-400: #eb5050;
+
+// Grade Colors (Temporary - will be replaced by Figma tokens)
+$grade-a: #eb5050;
+$grade-b: #f6b645;
+$grade-c: #1fce8e;
+$grade-d: #a3a2b1;
+$grade-f: #ff5751;
+
+// Brand Colors (Temporary - will be replaced by Figma tokens)
+$kakao-yellow: #f9e000;
+$kakao-text: #371d1e;
+
+// Semantic Colors (Temporary - will be replaced by Figma tokens)
+$success: #1fce8e;
+$warning: #f6b645;
+$error: #ff5751;
+$info: #7f71fb;
 
 // Text Color Utility Classes
 .text {

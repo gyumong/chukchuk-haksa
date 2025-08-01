@@ -1,10 +1,14 @@
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: white;
+  background-color: color.$white;
   z-index: 100;
   overflow-y: auto;
   display: flex;
@@ -13,63 +17,61 @@
 
 .content {
   flex: 1;
-  padding: 20px;
+  padding: spacing.$space-20;
   overflow-y: auto;
-  color: #2b2b2b;
-  font-family: 'SUIT';
+  color: color.$black-100;
+  @include typography.body-sm;
+  @include typography.font-weight-regular;
 }
 
 .intro {
-  font-size: 14px;
-  line-height: 22.4px;
-  font-weight: 400;
-  margin-bottom: 24px;
+  @include typography.body-sm;
+  @include typography.font-weight-regular;
+  margin-bottom: spacing.$space-24;
 
   .bold {
-    font-weight: 700;
+    @include typography.font-weight-bold;
   }
 }
 
 .serviceName {
-  font-weight: 600;
+  @include typography.font-weight-semibold;
 }
 
 .text {
-  margin-left: 4px;
+  margin-left: spacing.$space-4;
 }
 
 .section {
-  margin-bottom: 32px;
+  margin-bottom: spacing.$space-32;
 
   h2 {
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 25.6px;
-    margin-bottom: 16px;
+    @include typography.body-lg;
+    @include typography.font-weight-bold;
+    margin-bottom: spacing.$space-16;
   }
 
   .sectionContent {
-    font-size: 14px;
-    line-height: 22.4px;
-    font-weight: 400;
+    @include typography.body-sm;
+    @include typography.font-weight-regular;
 
     h3 {
-      font-weight: 400;
-      margin-bottom: 8px;
+      @include typography.font-weight-regular;
+      margin-bottom: spacing.$space-8;
     }
 
     ul {
-      margin-bottom: 16px;
-      padding-left: 16px;
+      margin-bottom: spacing.$space-16;
+      padding-left: spacing.$space-16;
 
       ul {
-        margin-top: 8px;
-        margin-bottom: 8px;
-        padding-left: 16px;
+        margin-top: spacing.$space-8;
+        margin-bottom: spacing.$space-8;
+        padding-left: spacing.$space-16;
       }
 
       li {
-        margin-bottom: 8px;
+        margin-bottom: spacing.$space-8;
 
         &:last-child {
           margin-bottom: 0;
@@ -78,20 +80,18 @@
     }
 
     p {
-      margin-bottom: 12px;
+      margin-bottom: spacing.$space-12;
     }
   }
 }
 .agree {
-  color: #2b2b2b;
-  font-family: 'SUIT';
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 22.4px;
+  color: color.$black-100;
+  @include typography.body-sm;
+  @include typography.font-weight-regular;
   white-space: nowrap;
   text-align: center;
-  padding: 16px 0;
-  border-top: 1px solid #f4f4f4;
+  padding: spacing.$space-16 0;
+  border-top: 1px solid color.$gray-300;
 }
 
 .bottomIndicator {
@@ -99,6 +99,6 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 34px;
+  height: spacing.$space-36;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
 }

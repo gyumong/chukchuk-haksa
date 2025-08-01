@@ -1,9 +1,13 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
 .sliderContainer {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 12px;
-  padding: 16px 0;
+  gap: spacing.$space-12;
+  padding: spacing.$space-16 0;
   width: 100%;
   overflow-x: auto;
   -ms-overflow-style: none;
@@ -19,17 +23,15 @@
   border: none;
   padding: 0;
   cursor: pointer;
-  font-size: 18px;
-  font-family: 'SUIT', sans-serif;
-  line-height: 28.8px;
-  color: #7f7e8a;
-  font-weight: 300;
+  @include typography.body-lg;
+  @include typography.font-weight-light;
+  color: color.$gray-500;
   white-space: nowrap;
   transition: all 0.2s ease;
 
   &.active {
-    color: #7f71fb;
-    font-weight: 700;
+    color: color.$purple-100;
+    @include typography.font-weight-bold;
   }
 
   &:hover {

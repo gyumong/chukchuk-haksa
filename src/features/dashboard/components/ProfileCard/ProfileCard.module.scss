@@ -1,20 +1,22 @@
 @use '@/styles/color.scss' as color;
 @use '@/styles/typography.scss' as typography;
+@use '@/styles/spacing' as spacing;
+@use '@/styles/radius' as radius;
 .container {
   width: 100%;
   height: 115px;
-  padding: 7px 0;
+  padding: spacing.$space-6 0;
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: spacing.$space-16;
 }
 
 .profileImage {
   width: 102px;
   height: 102px;
-  background: white;
-  border-radius: 16px;
+  background: color.$white;
+  @include radius.card-radius;
   overflow: hidden;
   flex-shrink: 0;
 

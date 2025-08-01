@@ -1,13 +1,5 @@
-@use '@/styles/device.scss' as device;
+@use '@/styles/utilities' as utilities;
 
 .container {
-  width: 100%;
-  padding: 24px;
-  min-height: 100vh;
-  max-width: 600px; // 최대 너비 600px로 제한
-  margin: 0 auto; // 중앙 정렬
-
-  @include device.compact {
-    padding: 16px;
-  }
+  @include utilities.funnel-container;
 }

@@ -1,8 +1,11 @@
 @use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
 .container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: spacing.$space-16;
 }
 
 .courseItem {
@@ -15,52 +18,44 @@
 .courseInfo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: spacing.$space-8;
 }
 
 .courseName {
-  font-family: 'SUIT';
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 25.6px;
-  color: #2b2b2b;
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+  color: color.$black-100;
 
   .completed & {
-    color: white;
+    color: color.$white;
   }
 }
 
 .semester {
-  font-family: 'SUIT';
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 22.4px;
-  color: #a3a2b1;
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+  color: color.$gray-100;
 }
 
 .courseGrade {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: spacing.$space-8;
 }
 
 .credits {
-  font-family: 'SUIT';
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 22.4px;
-  color: #7f71fb;
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+  color: color.$purple-100;
 
   .completed & {
-    color: #c8c3f7;
+    color: #c8c3f7; // Custom purple shade - no direct token match
   }
 }
 
 .grade {
-  font-family: 'SUIT';
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 22.4px;
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
   min-width: 22px;
   text-align: right;
 
@@ -68,7 +63,7 @@
   &[data-grade='A+'],
   &[data-grade='A0'],
   &[data-grade='A'] {
-    color: #eb5050;
+    color: color.$grade-a;
   }
 
   &[data-grade='P'] {
@@ -82,27 +77,27 @@
   &[data-grade='B+'],
   &[data-grade='B0'],
   &[data-grade='B'] {
-    color: #f6b645;
+    color: color.$grade-b;
   }
 
   // C+, C0, C 모두 포함
   &[data-grade='C+'],
   &[data-grade='C0'],
   &[data-grade='C'] {
-    color: #1fce8e;
+    color: color.$grade-c;
   }
 
   // D+, D0, D 모두 포함
   &[data-grade='D+'],
   &[data-grade='D0'],
   &[data-grade='D'] {
-    color: #7f7e8a;
+    color: color.$gray-500;
     .completed & {
       color: color.$gray-100;
     }
   }
   &[data-grade='F'] {
-    color: color.$gray-500;
+    color: color.$grade-f;
     .completed & {
       color: color.$gray-100;
     }

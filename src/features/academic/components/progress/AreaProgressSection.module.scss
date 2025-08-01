@@ -1,3 +1,5 @@
+@use '@/styles/spacing.scss' as spacing;
+
 .spacing {
-  margin-bottom: 12px;
+  margin-bottom: spacing.$space-12;
 }

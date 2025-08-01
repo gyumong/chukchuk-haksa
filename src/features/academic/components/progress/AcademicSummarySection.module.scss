@@ -1,11 +1,12 @@
 @use '@/styles/typography.scss' as typography;
+@use '@/styles/spacing.scss' as spacing;
 
 .title {
   @include typography.body-lg;
   @include typography.font-weight-bold;
-  margin-bottom: 12px;
+  margin-bottom: spacing.$space-12;
 }
 
 .spacing {
-  margin-bottom: 12px;
+  margin-bottom: spacing.$space-12;
 }

@@ -51,3 +51,7 @@
 @mixin font-weight-regular {
   font-weight: 400;
 }
+
+@mixin font-weight-light {
+  font-weight: 300;
+}

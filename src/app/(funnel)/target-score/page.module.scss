@@ -1,8 +1,9 @@
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/utilities.scss' as utilities;
+
 .container {
-  display: flex;
+  @include utilities.flex-center-column;
   height: calc(var(--vh) * 1);
-  flex-direction: column;
-  align-items: center;
-  padding-top: 66px;
-  padding-bottom: env(safe-area-inset-bottom);
+  @include utilities.funnel-page-spacing;
+  @include utilities.safe-area-bottom;
 }

@@ -1,13 +1,10 @@
-@use '@/styles/color.scss' as color;
+@use '@/styles/utilities' as utilities;
 
 .container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  max-width: 600px; // 최대 너비 600px로 제한
-  margin: 0 auto; // 중앙 정렬
+  @include utilities.mobile-container;
+  @include utilities.full-height-layout;
 }
 
 .content {
-  padding: 0 20px;
+  @include utilities.content-padding;
 }

@@ -1,19 +1,21 @@
 @use '@/styles/color.scss' as color;
 @use '@/styles/typography.scss' as typography;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/utilities.scss' as utilities;
 
 .container {
-  padding-top: 66px;
+  @include utilities.funnel-page-spacing;
 }
 
 .formContainer {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 68px;
+  gap: spacing.$space-12;
+  margin-top: 68px; /* 68px - resync 페이지 특정 값, 토큰화 보류 */
 }
 
 .errorMessage {
-  margin-top: 12px;
+  margin-top: spacing.$space-12;
   text-align: left;
 
   p {

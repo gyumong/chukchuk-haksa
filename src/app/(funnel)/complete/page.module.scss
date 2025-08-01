@@ -1,5 +1,7 @@
-// TODO 폰트 반응형 토큰 적용
 @use '@/styles/color.scss' as colors;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/utilities.scss' as utilities;
 .container {
   /* 컨테이너 레벨에서 기준 크기 정의 */
   --content-base: min(226px, 60vw);
@@ -10,17 +12,13 @@
 
 .content {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include utilities.flex-center-column;
   padding-top: calc(5vh);
 }
 
 /* contentItem는 일러스트 래핑용 */
 .contentItem {
-  display: flex;
-  justify-content: center;
-  width: 100%;
+  @include utilities.center-content;
   height: min(426px, 50vh);
 }
 
@@ -57,8 +55,8 @@
 
 .label {
   color: colors.$gray-100;
-  /* 3) 폰트 크기: var(--base-size) 기반 비율 */
-  font-size: calc(var(--base-size) * 0.071);
+  /* 반응형 폰트 크기: 14px~16px 범위에서 base-size에 비례 */
+  font-size: clamp(14px, calc(var(--base-size) * 0.071), 16px);
   font-family: 'SUIT';
   font-weight: 400;
   line-height: 1.4;
@@ -78,12 +76,10 @@
 .wrongInfoButton {
   /* 컨테이너의 기준 크기 사용 */
   margin-top: calc(var(--content-base) * 0.133); // 30/226 ≈ 0.133
+  @include typography.body-sm;
+  @include typography.font-weight-regular;
   color: colors.$gray-100;
-  font-size: clamp(14px, calc(var(--content-base) * 0.071), 16px);
-  font-family: 'SUIT';
-  font-weight: 400;
   text-decoration: underline;
-  line-height: 1.6;
   background: none;
   border: none;
   cursor: pointer;

@@ -1,3 +1,5 @@
+@use '@/styles/utilities.scss' as utilities;
+
 .mainBanner {
   max-width: 335px;
   width: 100%;
@@ -8,7 +10,5 @@
 
 .mainBannerContainer {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include utilities.flex-center;
 }
