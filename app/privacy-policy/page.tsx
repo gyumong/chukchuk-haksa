@@ -17,7 +17,7 @@ export default function PrivacyPolicyPage() {
         </p>
 
         <section className={styles.section}>
-          <h2>1. 수집 항목 및 목적</h2>  
+          <h2>1. 수집 항목 및 목적</h2>
           <div className={styles.sectionContent}>
             <h3>1) 수집 항목</h3>
             <ul>
