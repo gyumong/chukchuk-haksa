@@ -1,0 +1,95 @@
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/device.scss' as device;
+
+.container {
+  min-height: 100vh;
+  background-color: color.$white;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  padding: spacing.$space-20;
+  color: color.$black-100;
+  @include typography.body-sm;
+  @include typography.font-weight-regular;
+
+  @include device.expanded {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: spacing.$space-32;
+  }
+}
+
+.intro {
+  @include typography.body-sm;
+  @include typography.font-weight-regular;
+  margin-bottom: spacing.$space-24;
+
+  .bold {
+    @include typography.font-weight-bold;
+  }
+}
+
+.section {
+  margin-bottom: spacing.$space-32;
+
+  h2 {
+    @include typography.body-lg;
+    @include typography.font-weight-bold;
+    margin-bottom: spacing.$space-16;
+  }
+
+  .sectionContent {
+    @include typography.body-sm;
+    @include typography.font-weight-regular;
+
+    h3 {
+      @include typography.font-weight-regular;
+      margin-bottom: spacing.$space-8;
+    }
+
+    ul {
+      margin-bottom: spacing.$space-16;
+      padding-left: spacing.$space-16;
+
+      ul {
+        margin-top: spacing.$space-8;
+        margin-bottom: spacing.$space-8;
+        padding-left: spacing.$space-16;
+      }
+
+      li {
+        margin-bottom: spacing.$space-8;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    p {
+      margin-bottom: spacing.$space-12;
+    }
+  }
+}
+
+.lastSection {
+  margin-top: spacing.$space-40;
+  padding-top: spacing.$space-24;
+  border-top: 1px solid color.$gray-300;
+
+  p {
+    @include typography.body-sm;
+    @include typography.font-weight-regular;
+    color: color.$gray-700;
+    margin-bottom: spacing.$space-8;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
