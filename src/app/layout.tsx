@@ -4,6 +4,7 @@ import localFont from 'next/font/local';
 import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/react';
 import QueryProvider from '@/shared/providers/queryProvider';
+import MaintenancePage from '@/components/MaintenancePage';
 import '../styles/global.scss';
 
 export const metadata: Metadata = {
@@ -58,10 +59,17 @@ const suit = localFont({
 });
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
+  const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true';
+  const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE;
+
   return (
     <html lang="ko">
       <body className={`${paperlogy.variable} ${suit.variable} antialiased`}>
-        <QueryProvider>{children}</QueryProvider>
+        {isMaintenanceMode ? (
+          <MaintenancePage message={maintenanceMessage} />
+        ) : (
+          <QueryProvider>{children}</QueryProvider>
+        )}
         <Analytics />
         {/* Cloudflare Web Analytics: 스크립트 삽입 */}
         <Script

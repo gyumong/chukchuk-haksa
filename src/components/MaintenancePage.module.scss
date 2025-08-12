@@ -1,0 +1,34 @@
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/color.scss' as colors;
+@use '@/styles/utilities.scss' as utilities;
+
+.container {
+  display: flex;
+  height: calc(var(--vh) * 1);
+  flex-direction: column;
+  min-height: 100dvh;
+  align-items: center;
+  justify-content: center;
+  padding-top: 16.6dvh;
+  @include utilities.safe-area-bottom;
+}
+
+.errorImage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  @include typography.title-lg;
+  @include typography.font-weight-bold;
+  text-align: center;
+  color: colors.$black-100;
+}
+
+.errorMessage {
+  @include typography.title-lg;
+  @include typography.font-weight-bold;
+  text-align: center;
+  white-space: pre-line;
+}
