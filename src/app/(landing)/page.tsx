@@ -6,20 +6,20 @@ import { kakaoLogin } from '@/lib/auth';
 
 const landingImages: ImageProps[] = [
   {
-    src: '/images/illustrations/LandingStart.png',
+    src: '/images/illustrations/Landing1.png',
     alt: '척척학사 메인 랜딩 이미지',
     width: 375,
     height: 1412,
     priority: true,
   },
   {
-    src: '/images/illustrations/LandingSecond.png',
-    alt: '간편연동을 통해 쉽게 졸업요건 관리 설명 이미지',
+    src: '/images/illustrations/Landing2.png',
+    alt: '간편 연동을 통해 학과별 학기별 졸업요건을 쉽게 확인해보아요',
     width: 375,
     height: 731,
   },
   {
-    src: '/images/illustrations/LandingThird.png',
+    src: '/images/illustrations/Landing3.png',
     alt: '수강 완료 리스트 확인 페이지 이미지',
     width: 375,
     height: 650,
@@ -31,8 +31,14 @@ const landingImages: ImageProps[] = [
     height: 684,
   },
   {
-    src: '/images/illustrations/Landing5.png',
-    alt: '척척학사 유도 이미지',
+    src: '/images/illustrations/Landing5-1.png',
+    alt: '시간표 설계 이미지',
+    width: 375,
+    height: 684,
+  },
+  {
+    src: '/images/illustrations/Landing6.png',
+    alt: '최종 랜딩 이미지',
     width: 375,
     height: 719,
   },
