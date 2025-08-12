@@ -1,0 +1,10 @@
+@use '@/styles/utilities' as utilities;
+
+.container {
+  @include utilities.mobile-container;
+  @include utilities.full-height-layout;
+}
+
+.content {
+  @include utilities.content-padding;
+}

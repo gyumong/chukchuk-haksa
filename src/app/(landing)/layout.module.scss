@@ -1,0 +1,12 @@
+@use '@/styles/utilities' as utilities;
+
+.container {
+  @include utilities.mobile-container;
+  @include utilities.full-height-layout;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

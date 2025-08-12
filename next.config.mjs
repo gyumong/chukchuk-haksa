@@ -17,7 +17,7 @@ const nextConfig = {
   sassOptions: {
     // import.meta.dirname는 node v20.11 이상 부터 가능
     // @example https://nodejs.org/api/esm.html#importmetadirname
-    includePaths: [path.join(import.meta.dirname, 'styles')],
+    includePaths: [path.join(import.meta.dirname, 'src')],
   },
   webpack: config => {
     // Grab the existing rule that handles SVG imports
@@ -45,6 +45,17 @@ const nextConfig = {
     config.resolve.alias['@'] = path.resolve(import.meta.dirname);
 
     return config;
+  },
+  experimental: {
+    optimizePackageImports: ['@/components/ui/Icon'],
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+    },
   },
 };
 

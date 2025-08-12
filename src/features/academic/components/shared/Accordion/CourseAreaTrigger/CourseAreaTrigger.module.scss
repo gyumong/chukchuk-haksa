@@ -1,0 +1,67 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/radius.scss' as radius;
+
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  @include spacing.card-padding;
+  cursor: pointer;
+  background: color.$white;
+  @include radius.card-radius;
+
+  &.completed {
+    background: color.$black-100;
+  }
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  gap: spacing.$space-8;
+}
+
+.title {
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+  color: color.$black-100;
+
+  .completed & {
+    color: color.$purple-200;
+  }
+}
+
+.credits {
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+  color: color.$gray-100;
+  display: flex;
+  align-items: center;
+
+  .completed & {
+    color: color.$white;
+  }
+}
+
+.checkIcon {
+  width: spacing.$space-18;
+  height: spacing.$space-18;
+  margin-left: spacing.$space-8;
+}
+
+.arrow {
+  width: spacing.$space-24;
+  height: spacing.$space-24;
+  transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+
+  &.expanded {
+    transform: rotate(180deg);
+  }
+
+  &.completed {
+    color: color.$white;
+  }
+}

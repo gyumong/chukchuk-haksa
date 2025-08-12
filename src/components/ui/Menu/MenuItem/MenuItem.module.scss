@@ -1,0 +1,18 @@
+@use '@/styles/typography' as typography;
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.label {
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+}

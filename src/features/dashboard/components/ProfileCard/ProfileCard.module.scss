@@ -1,0 +1,96 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/spacing' as spacing;
+@use '@/styles/radius' as radius;
+.container {
+  width: 100%;
+  height: 115px;
+  padding: spacing.$space-6 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: spacing.$space-16;
+}
+
+.profileImage {
+  width: 102px;
+  height: 102px;
+  background: color.$white;
+  @include radius.card-radius;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nameWrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  .name {
+    color: color.$purple-100;
+    @include typography.title-exlg;
+    @include typography.font-weight-bold;
+  }
+
+  .suffix {
+    color: #2b2b2b;
+    font-size: 28px;
+    font-family: 'Paperlogy';
+    font-weight: 700;
+    line-height: 42px;
+  }
+}
+
+.details {
+  color: #2b2b2b;
+  font-size: 16px;
+  font-family: 'SUIT';
+  font-weight: 700;
+  line-height: 25.6px;
+
+  .divider {
+    margin: 0 8px;
+  }
+}
+
+.gradeWrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .grade {
+    color: color.$black-100;
+    @include typography.body-md;
+    @include typography.font-weight-bold;
+  }
+}
+
+.statusBadge {
+  height: 24px;
+  padding: 0 10px;
+  background: #dad6fe;
+  border-radius: 15.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  span {
+    color: color.$purple-100;
+    font-size: 14px;
+    font-family: 'SUIT';
+    font-weight: 700;
+    line-height: 22.4px;
+  }
+}

@@ -1,0 +1,40 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+.sliderContainer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: spacing.$space-12;
+  padding: spacing.$space-16 0;
+  width: 100%;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.semesterButton {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  @include typography.body-lg;
+  @include typography.font-weight-light;
+  color: color.$gray-500;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+
+  &.active {
+    color: color.$purple-100;
+    @include typography.font-weight-bold;
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+}

@@ -1,0 +1,14 @@
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/utilities.scss' as utilities;
+
+.spacingTop {
+  @include utilities.spacing-bottom('small');
+}
+
+.spacingMedium {
+  @include utilities.spacing-bottom('medium');
+}
+
+.spacingLarge {
+  @include utilities.spacing-bottom('large');
+}

@@ -1,0 +1,11 @@
+@use '@/styles/utilities.scss' as utilities;
+
+.container {
+  display: flex;
+  height: calc(var(--vh) * 1);
+  flex-direction: column;
+  min-height: 100dvh;
+  align-items: center;
+  padding-top: 16.6dvh;
+  @include utilities.safe-area-bottom;
+}

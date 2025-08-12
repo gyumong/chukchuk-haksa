@@ -1,9 +1,0 @@
-.container {
-  display: flex;
-  height: calc(var(--vh) * 1);
-  flex-direction: column;
-  min-height: 100dvh;
-  align-items: center;
-  padding-top: 16.6dvh;
-  padding-bottom: env(safe-area-inset-bottom);
-}

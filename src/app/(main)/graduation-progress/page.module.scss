@@ -1,0 +1,6 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/utilities.scss' as utilities;
+
+.container {
+  @include utilities.content-padding;
+}

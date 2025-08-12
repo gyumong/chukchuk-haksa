@@ -1,0 +1,11 @@
+@use '@/styles/utilities' as utilities;
+@use '@/styles/spacing.scss' as spacing;
+
+.container {
+  @include utilities.app-layout;
+  @include utilities.safe-area-bottom(spacing.$space-48);
+}
+
+.content {
+  @include utilities.content-padding;
+}

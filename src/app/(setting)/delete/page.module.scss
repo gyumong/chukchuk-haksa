@@ -1,0 +1,12 @@
+@use '@/styles/utilities.scss' as utilities;
+
+.container {
+  @include utilities.flex-center-column;
+  height: calc(var(--vh) * 1);
+  @include utilities.viewport-height-container;
+  @include utilities.safe-area-bottom;
+}
+
+.imageWrapper {
+  margin-top: 10dvh;
+}

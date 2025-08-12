@@ -1,0 +1,105 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-16;
+}
+
+.courseItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 26px;
+}
+
+.courseInfo {
+  display: flex;
+  align-items: center;
+  gap: spacing.$space-8;
+}
+
+.courseName {
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+  color: color.$black-100;
+
+  .completed & {
+    color: color.$white;
+  }
+}
+
+.semester {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+  color: color.$gray-100;
+}
+
+.courseGrade {
+  display: flex;
+  align-items: center;
+  gap: spacing.$space-8;
+}
+
+.credits {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+  color: color.$purple-100;
+
+  .completed & {
+    color: #c8c3f7; // Custom purple shade - no direct token match
+  }
+}
+
+.grade {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+  min-width: 22px;
+  text-align: right;
+
+  // A+, A0, A 모두 포함
+  &[data-grade='A+'],
+  &[data-grade='A0'],
+  &[data-grade='A'] {
+    color: color.$grade-a;
+  }
+
+  &[data-grade='P'] {
+    color: color.$purple-500;
+    .completed & {
+      color: color.$purple-200;
+    }
+  }
+
+  // B+, B0, B 모두 포함
+  &[data-grade='B+'],
+  &[data-grade='B0'],
+  &[data-grade='B'] {
+    color: color.$grade-b;
+  }
+
+  // C+, C0, C 모두 포함
+  &[data-grade='C+'],
+  &[data-grade='C0'],
+  &[data-grade='C'] {
+    color: color.$grade-c;
+  }
+
+  // D+, D0, D 모두 포함
+  &[data-grade='D+'],
+  &[data-grade='D0'],
+  &[data-grade='D'] {
+    color: color.$gray-500;
+    .completed & {
+      color: color.$gray-100;
+    }
+  }
+  &[data-grade='F'] {
+    color: color.$grade-f;
+    .completed & {
+      color: color.$gray-100;
+    }
+  }
+}

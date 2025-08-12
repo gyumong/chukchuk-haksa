@@ -1,0 +1,20 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+.sectionTitle {
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+  color: color.$gray-500;
+  word-wrap: break-word;
+}
+
+.spacing {
+  margin-bottom: spacing.$space-12;
+}
+
+.cardsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-12;
+}

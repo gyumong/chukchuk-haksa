@@ -1,0 +1,22 @@
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-12;
+}
+
+.errorMessage {
+  margin-top: spacing.$space-12;
+  text-align: left;
+
+  p {
+    margin: 0;
+    color: color.$red-100;
+
+    @include typography.body-md;
+    @include typography.font-weight-regular;
+  }
+}

@@ -1,0 +1,37 @@
+// Border Radius System
+// Temporary - will be replaced by Figma tokens
+
+$radius-sm: 10px;   // Buttons, inputs
+$radius-md: 16px;   // Cards, containers
+$radius-lg: 20px;   // Large cards
+$radius-full: 100px; // Circular elements, pills
+
+// Radius utility mixins
+@mixin radius-sm {
+  border-radius: $radius-sm;
+}
+
+@mixin radius-md {
+  border-radius: $radius-md;
+}
+
+@mixin radius-lg {
+  border-radius: $radius-lg;
+}
+
+@mixin radius-full {
+  border-radius: $radius-full;
+}
+
+// Component-specific radius patterns
+@mixin button-radius {
+  border-radius: $radius-sm;
+}
+
+@mixin card-radius {
+  border-radius: $radius-md;
+}
+
+@mixin input-radius {
+  border-radius: $radius-sm;
+}

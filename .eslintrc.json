@@ -1,5 +1,10 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@tanstack/query/recommended",
+    "prettier"
+  ],
   "plugins": ["@typescript-eslint"],
   "rules": {
     "@typescript-eslint/no-explicit-any": [
@@ -34,7 +39,7 @@
     ],
     "@typescript-eslint/array-type": ["error", { "default": "array-simple" }],
     "@typescript-eslint/no-unused-vars": [
-      "error",
+      "warn",
       {
         "ignoreRestSiblings": true,
         "caughtErrors": "none"
@@ -42,14 +47,7 @@
     ],
 
     "no-console": ["warn", { "allow": ["warn", "error"] }],
-    "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
-    "no-restricted-syntax": [
-      "error",
-      {
-        "selector": "CallExpression[callee.object.name='Object'][callee.property.name='entries']",
-        "message": "Object.entries 대신 Object.keys나 Object.values 사용을 고려하세요."
-      }
-    ]
+    "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }]
   },
   "ignorePatterns": [
     ".yarn/**",
@@ -63,6 +61,7 @@
     "coverage/**",
     "*.config.js",
     "*.config.ts",
-    "**/.DS_Store"
+    "**/.DS_Store",
+    "scripts/**"
   ]
 }

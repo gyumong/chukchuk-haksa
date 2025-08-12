@@ -1,0 +1,12 @@
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/utilities.scss' as utilities;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  @include utilities.funnel-page-spacing;
+}
+
+.agreementList {
+  margin-top: spacing.$space-32;
+}

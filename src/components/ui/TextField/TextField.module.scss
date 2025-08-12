@@ -1,0 +1,112 @@
+@use '../../../styles/typography' as typography;
+@use '../../../styles/color' as color;
+@use '../../../styles/spacing' as spacing;
+@use '../../../styles/radius' as radius;
+
+.base {
+  width: 100%;
+  min-height: 64px;
+  padding: 0 spacing.$space-20;
+  box-sizing: border-box;
+  border-radius: radius.$radius-sm;
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+  letter-spacing: -0.02em;
+  color: color.$black-100;
+  transition: all 0.2s ease;
+
+  &::placeholder {
+    font-weight: 300;
+    color: color.$gray-100;
+  }
+}
+
+/* State variants */
+
+.state-error {
+  background: color.$white !important;
+  border: 1px solid color.$red-200 !important;
+
+  &:focus {
+    border-color: color.$red-200 !important;
+    background: color.$white !important;
+  }
+}
+
+.state-typing {
+  background: color.$white;
+  border: 1px solid color.$purple-100;
+
+  &:focus {
+    border-color: color.$purple-100;
+  }
+}
+
+/* Focus variants */
+.focus-before {
+  background: color.$gray-300;
+  border: none;
+
+  &:focus {
+    outline: none;
+    background: color.$white;
+    border: 1px solid color.$purple-100;
+  }
+}
+
+.focus-after {
+  background: color.$white;
+  border: 1px solid color.$purple-300;
+
+  &:focus {
+    outline: none;
+    border-color: color.$purple-300;
+  }
+}
+
+/* Container and helper elements */
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-4;
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.label {
+  @include typography.body-md;
+  @include typography.font-weight-medium;
+  color: color.$black-100;
+}
+
+.errorMessage {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+  color: color.$red-200;
+  margin-top: spacing.$space-4;
+}
+
+.helperText {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+  color: color.$gray-100;
+  margin-top: spacing.$space-4;
+}
+
+/* Delete icon */
+.deleteIcon {
+  position: absolute;
+  right: spacing.$space-16;
+  top: 50%;
+  transform: translateY(-50%);
+  width: spacing.$space-24;
+  height: spacing.$space-24;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}

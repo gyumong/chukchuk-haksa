@@ -1,0 +1,6 @@
+@use '@/styles/utilities' as utilities;
+
+.container {
+  @include utilities.setting-layout;
+  @include utilities.full-height-layout;
+}

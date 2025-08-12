@@ -1,0 +1,14 @@
+@use '@/styles/device.scss' as device;
+@use '@/styles/spacing.scss' as spacing;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-24;
+  padding: spacing.$space-20;
+
+  @include device.compact {
+    padding: spacing.$space-16;
+    gap: spacing.$space-16;
+  }
+}

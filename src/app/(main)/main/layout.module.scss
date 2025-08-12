@@ -1,0 +1,9 @@
+@use '@/styles/utilities' as utilities;
+
+.container {
+  @include utilities.app-layout;
+}
+
+.content {
+  @include utilities.content-padding;
+}

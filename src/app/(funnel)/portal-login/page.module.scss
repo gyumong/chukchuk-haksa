@@ -1,0 +1,6 @@
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/utilities.scss' as utilities;
+
+.container {
+  @include utilities.funnel-page-spacing;
+}

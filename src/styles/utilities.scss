@@ -1,0 +1,237 @@
+// Common utility mixins for patterns found across components
+// Temporary - will be replaced by Figma tokens
+
+@use './color.scss' as color;
+@use './spacing.scss' as spacing;
+@use './radius.scss' as radius;
+@use './typography.scss' as typography;
+@use './device.scss' as device;
+
+// Common card style
+@mixin card-base {
+  background-color: color.$white;
+  @include radius.card-radius;
+  @include spacing.card-padding;
+}
+
+// Button variants
+@mixin button-primary {
+  background-color: color.$purple-100;
+  color: color.$white;
+  @include radius.button-radius;
+  @include spacing.button-padding-md;
+  @include typography.body-md;
+  @include typography.font-weight-semibold;
+  border: none;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: color.$purple-200;
+  }
+  
+  &:disabled {
+    background-color: color.$gray-200;
+    cursor: not-allowed;
+  }
+}
+
+@mixin button-secondary {
+  background-color: color.$white;
+  color: color.$purple-100;
+  border: 1px solid color.$purple-100;
+  @include radius.button-radius;
+  @include spacing.button-padding-md;
+  @include typography.body-md;
+  @include typography.font-weight-semibold;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: color.$purple-300;
+  }
+  
+  &:disabled {
+    border-color: color.$gray-200;
+    color: color.$gray-100;
+    cursor: not-allowed;
+  }
+}
+
+// Grade color utility
+@mixin grade-color($grade) {
+  @if $grade == 'A+' or $grade == 'A' {
+    color: color.$grade-a;
+  } @else if $grade == 'B+' or $grade == 'B' {
+    color: color.$grade-b;
+  } @else if $grade == 'C+' or $grade == 'C' {
+    color: color.$grade-c;
+  } @else if $grade == 'D+' or $grade == 'D' {
+    color: color.$grade-d;
+  } @else {
+    color: color.$grade-f;
+  }
+}
+
+// Kakao login button
+@mixin kakao-button {
+  background-color: color.$kakao-yellow;
+  color: color.$kakao-text;
+  @include radius.button-radius;
+  @include spacing.button-padding-md;
+  @include typography.body-md;
+  @include typography.font-weight-semibold;
+  border: none;
+  cursor: pointer;
+  
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+// Loading spinner
+@mixin loading-spinner {
+  @include radius.radius-full;
+  border: 2px solid color.$gray-300;
+  border-top-color: color.$purple-100;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Error state
+@mixin error-text {
+  color: color.$error;
+  @include typography.body-sm;
+}
+
+// Success state  
+@mixin success-text {
+  color: color.$success;
+  @include typography.body-sm;
+}
+
+// Flex center utilities
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-center-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+// Layout Container Patterns
+@mixin mobile-container {
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@mixin full-height-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+@mixin app-layout {
+  @include mobile-container;
+  @include full-height-layout;
+  background-color: color.$background-color;
+}
+
+// Content Patterns
+@mixin content-padding {
+  padding: 0 spacing.$space-20;
+}
+
+@mixin content-padding-responsive {
+  padding: 0 spacing.$space-20;
+  
+  @include device.compact {
+    padding: 0 spacing.$space-16;
+  }
+}
+
+// Funnel-specific patterns
+@mixin funnel-container {
+  @include mobile-container;
+  @include full-height-layout;
+  padding: spacing.$space-24;
+  
+  @include device.compact {
+    padding: spacing.$space-16;
+  }
+}
+
+@mixin funnel-page-spacing {
+  padding-top: spacing.$space-66;
+}
+
+// Safe area patterns
+@mixin safe-area-bottom($additional-spacing: null) {
+  @if $additional-spacing {
+    padding-bottom: calc(env(safe-area-inset-bottom) + #{$additional-spacing});
+  } @else {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+// Viewport height patterns
+@mixin viewport-height-container {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+// Spacing utility patterns
+@mixin spacing-bottom($size: 'medium') {
+  @if $size == 'small' {
+    margin-bottom: spacing.$space-8;
+  } @else if $size == 'medium' {
+    margin-bottom: spacing.$space-20;
+  } @else if $size == 'large' {
+    margin-bottom: spacing.$space-24;
+  }
+}
+
+// Center content patterns
+@mixin center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+// Fixed position button pattern
+@mixin fixed-bottom-button {
+  position: fixed;
+  bottom: spacing.$space-36;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  @include safe-area-bottom(spacing.$space-36);
+  width: calc(600px - spacing.$space-32);
+  max-width: calc(100% - spacing.$space-32);
+
+  @include device.compact {
+    left: spacing.$space-16;
+    transform: none;
+  }
+}
+
+// Layout utility for main pages
+@mixin main-layout {
+  @include mobile-container;
+}
+
+// Layout utility for setting pages
+@mixin setting-layout {
+  @include mobile-container;
+  @include content-padding;
+}

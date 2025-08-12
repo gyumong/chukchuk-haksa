@@ -1,0 +1,12 @@
+@use '@/styles/utilities' as utilities;
+@use '@/styles/color.scss' as color;
+
+.container {
+  @include utilities.full-height-layout;
+  background-color: color.$gray-300;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+}
