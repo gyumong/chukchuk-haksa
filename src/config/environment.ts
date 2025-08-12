@@ -82,6 +82,10 @@ export const ENV = {
   REDIS_URL: process.env.UPSTASH_REDIS_REST_URL ?? '',
   REDIS_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN ?? '',
   
+  // 유지보수
+  MAINTENANCE_MODE: process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true',
+  MAINTENANCE_MESSAGE: process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE ?? '',
+  
   // 테스트
   TEST_TOKEN: process.env.TEST_TOKEN ?? '',
   TEST_TOKEN2: process.env.TEST_TOKEN2 ?? '',
