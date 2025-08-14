@@ -125,6 +125,7 @@ export class SyncAcademicRecordUseCase {
 
     for (const item of mergedList) {
       const { offering, academic } = item;
+      console.log('offering');
 
       // --- 과목 ID 구하기 ---
       const courseId = courseMap.get(offering.courseCode);
