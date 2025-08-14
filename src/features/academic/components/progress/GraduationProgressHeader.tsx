@@ -15,11 +15,10 @@ export default function GraduationProgressHeader() {
 
   return (
     <>
-      <div className={styles.spacingTop}></div>
-      <SemesterGradeCard 
-        startSemester={academicPeriod.start} 
-        endSemester={academicPeriod.end} 
-        onClick={navigateToLatestSemester} 
+      <SemesterGradeCard
+        startSemester={academicPeriod.start}
+        endSemester={academicPeriod.end}
+        onClick={navigateToLatestSemester}
       />
       <div className={styles.spacingBottom}></div>
     </>
