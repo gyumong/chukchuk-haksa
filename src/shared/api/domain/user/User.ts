@@ -28,12 +28,14 @@ export class User<
    * @name SignInUser
    * @summary 회원 가입 및 로그인
    * @request POST:/api/users/signin
+   * @secure
    */
   signInUser = (data: SignInRequest, params: RequestParams = {}) =>
     this.request<SignInUserData, ErrorResponseWrapper>({
       path: `/api/users/signin`,
       method: "POST",
       body: data,
+      secure: true,
       type: ContentType.Json,
       ...params,
     });

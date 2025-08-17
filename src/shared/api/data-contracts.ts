@@ -167,6 +167,22 @@ export interface TargetGpaApiResponse {
   message?: string;
 }
 
+/** 성공 응답 포맷 */
+export interface SuccessResponseMessageOnlyResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 메시지 응답 DTO */
+  data: MessageOnlyResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
 /** Refresh Response DTO */
 export interface RefreshResponse {
   /** 액세스 토큰 */
@@ -234,11 +250,13 @@ export interface StudentProfileResponse {
    */
   currentSemester: number;
   /** 재학 상태 */
-  status: string;
+  status: "재학" | "휴학" | "졸업" | "제적" | "수료";
   /** 마지막 업데이트 일시 */
   lastUpdatedAt: string;
   /** 학사 정보 마지막 연동 일시 */
   lastSyncedAt: string;
+  /** 재연동 필요 여부 */
+  reconnectionRequired: boolean;
 }
 
 /** 학생의 이수 학기 정보 */
@@ -560,6 +578,8 @@ export interface CourseDetailDto {
    * @format int32
    */
   originalScore?: number;
+  /** 재수강 삭제 여부 */
+  deletedForRetake?: boolean;
 }
 
 /** 수강 과목 목록 */
@@ -611,6 +631,8 @@ export interface SetTargetGpaParams {
 }
 
 export type SetTargetGpaData = TargetGpaApiResponse;
+
+export type ResetStudentDataData = SuccessResponseMessageOnlyResponse;
 
 export type RefreshResponseData = RefreshTokenApiResponse;
 

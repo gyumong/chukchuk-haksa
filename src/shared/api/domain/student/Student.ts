@@ -13,6 +13,7 @@
 import {
   ErrorResponseWrapper,
   GetProfileData,
+  ResetStudentDataData,
   SetTargetGpaData,
   SetTargetGpaParams,
 } from "../../data-contracts";
@@ -35,6 +36,22 @@ export class Student<
       path: `/api/student/target-gpa`,
       method: "POST",
       query: query,
+      secure: true,
+      ...params,
+    });
+  /**
+   * @description 로그인된 사용자의 정보를 초기화합니다.
+   *
+   * @tags Student
+   * @name ResetStudentData
+   * @summary 사용자 정보 초기화
+   * @request POST:/api/student/reset
+   * @secure
+   */
+  resetStudentData = (params: RequestParams = {}) =>
+    this.request<ResetStudentDataData, any>({
+      path: `/api/student/reset`,
+      method: "POST",
       secure: true,
       ...params,
     });
