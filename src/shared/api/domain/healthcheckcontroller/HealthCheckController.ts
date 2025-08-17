@@ -22,11 +22,13 @@ export class HealthCheckController<
    * @tags health-check-controller
    * @name Health
    * @request GET:/health
+   * @secure
    */
   health = (params: RequestParams = {}) =>
     this.request<HealthData, any>({
       path: `/health`,
       method: "GET",
+      secure: true,
       ...params,
     });
 }
