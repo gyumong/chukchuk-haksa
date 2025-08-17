@@ -27,12 +27,14 @@ export class Auth<
    * @name RefreshResponse
    * @summary 토큰 재발급
    * @request POST:/api/auth/refresh
+   * @secure
    */
   refreshResponse = (data: RefreshRequest, params: RequestParams = {}) =>
     this.request<RefreshResponseData, ErrorResponseWrapper>({
       path: `/api/auth/refresh`,
       method: "POST",
       body: data,
+      secure: true,
       type: ContentType.Json,
       format: "json",
       ...params,
