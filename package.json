@@ -45,7 +45,7 @@
     "date-fns": "^4.1.0",
     "iron-session": "^8.0.4",
     "lottie-react": "^2.4.0",
-    "next": "15.2.4",
+    "next": "15.2.8",
     "playwright": "^1.49.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
