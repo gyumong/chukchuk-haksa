@@ -10,6 +10,7 @@ export const StudentProfileSchema = z.object({
   status: z.string().default(''),
   lastUpdatedAt: z.string().default(''),
   lastSyncedAt: z.string().default(''),
+  reconnectionRequired: z.boolean().default(false),
 });
 
 export type StudentProfile = z.infer<typeof StudentProfileSchema>;
