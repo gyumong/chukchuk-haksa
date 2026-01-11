@@ -578,8 +578,8 @@ export interface CourseDetailDto {
    * @format int32
    */
   originalScore?: number;
-  /** 재수강 삭제 여부 */
-  deletedForRetake?: boolean;
+  /** 재수강 삭제 과목 여부 */
+  isRetakeDelete?: boolean;
 }
 
 /** 수강 과목 목록 */
