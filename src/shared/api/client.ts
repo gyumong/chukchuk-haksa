@@ -7,6 +7,7 @@ import {
   SuwonScraping as SuwonScrapingApi,
   User as UserApi,
 } from '@/shared/api/domain';
+import { getUserMessage } from '../user-messages';
 import { createApiConfig } from './configs/httpConfig';
 import type { ErrorResponseWrapper } from './data-contracts';
 import { ApiError } from './errors';
@@ -38,6 +39,9 @@ export const createApiClient = <T extends new (...args: any) => any>(ApiClass: T
 
           return res;
         } catch (error) {
+          if (error instanceof ApiError) {
+            throw error;
+          }
           // swagger-client에서 throw한 HttpResponse일 수 있음
           if (error && typeof error === 'object' && 'status' in error && 'error' in error) {
             throw createApiError(error);
@@ -48,7 +52,7 @@ export const createApiClient = <T extends new (...args: any) => any>(ApiClass: T
           throw new ApiError(
             error instanceof Error ? error.message : '네트워크 오류가 발생했습니다',
             'NETWORK_ERROR',
-            0
+            500
           );
         }
       };
@@ -92,10 +96,14 @@ export function assertValidResponse<TData>(
 }
 
 function createApiError(response: any): ApiError {
-  const status = response.status || 0;
-  const errorData = response.error?.error || {};
-  const message = errorData.message || '알 수 없는 오류가 발생했습니다';
-  const code = errorData.code || '';
+  const status = response?.status || 500;
+  const raw = response?.error;
 
-  return new ApiError(message, code, status);
+  const appCode = raw?.code ?? raw?.error?.code ?? raw?.data?.code ?? raw?.error?.error?.code ?? '';
+
+  const message = raw?.message ?? raw?.error?.message ?? raw?.data?.message ?? raw?.error?.error?.message ?? '';
+
+  const fallback = getUserMessage(status, String(appCode || ''), '알 수 없는 오류가 발생했습니다');
+
+  return new ApiError(message || fallback, '', status, String(appCode || ''));
 }
