@@ -5,6 +5,7 @@ export const StudentProfileSchema = z.object({
   studentCode: z.string().default(''),
   departmentName: z.string().default(''),
   majorName: z.string().default(''),
+  dualMajorName: z.string().optional(),
   gradeLevel: z.number().default(0),
   currentSemester: z.number().default(0),
   status: z.string().default(''),

@@ -1,5 +1,20 @@
+@use '@/styles/typography.scss' as typography;
 @use '@/styles/spacing.scss' as spacing;
 
 .spacing {
   margin-bottom: spacing.$space-12;
+}
+
+.dualMajorHeader {
+  margin-top: 28px;
+}
+
+.dualMajorTitle {
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+  margin-bottom: spacing.$space-12;
+}
+
+.dualMajorSpacing {
+  margin-bottom: spacing.$space-20;
 }
