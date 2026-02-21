@@ -108,6 +108,11 @@ export interface ScrapingResponse {
   taskId?: string;
   /** 학생 정보 요약 */
   studentInfo?: StudentInfo;
+  /**
+   * 포털 연동 상태
+   * @example "SUCCESS / ALREADY_CONNECTED"
+   */
+  status?: string;
 }
 
 /** 학생 정보 요약 */
@@ -239,6 +244,8 @@ export interface StudentProfileResponse {
   departmentName: string;
   /** 전공 이름 */
   majorName: string;
+  /** 복수전공 이름 */
+  dualMajorName?: string;
   /**
    * 학년
    * @format int32
@@ -291,12 +298,28 @@ export interface StudentSemesterListApiResponse {
   message?: string;
 }
 
-/** 학기 성적 요약 정보 */
-export interface SemesterGradeResponse {
+/** 학기별 성적 목록 응답 */
+export interface SemesterGradesApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 응답 데이터 */
+  data: SemesterSummaryResponse[];
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+/** 학기 요약 정보 (성적 포함) */
+export interface SemesterSummaryResponse {
   /**
    * 이수 연도
    * @format int32
-   * @example 2024
+   * @example 2023
    */
   year: number;
   /**
@@ -310,51 +333,35 @@ export interface SemesterGradeResponse {
    * @format int32
    * @example 15
    */
-  earnedCredits: number;
+  earnedCredits?: number | null;
   /**
    * 신청 학점
    * @format int32
    * @example 18
    */
-  attemptedCredits: number;
+  attemptedCredits?: number | null;
   /**
    * 학기 GPA (평점 평균)
    * @example 3.85
    */
-  semesterGpa: number;
+  semesterGpa?: number | null;
   /**
    * 석차
    * @format int32
    * @example 5
    */
-  classRank: number | null;
+  classRank?: number | null;
   /**
    * 전체 학생 수
    * @format int32
    * @example 150
    */
-  totalStudents: number | null;
+  totalStudents?: number | null;
   /**
    * 백분율
    * @example 92.4
    */
-  percentile: number;
-}
-
-/** 학기별 성적 목록 응답 */
-export interface SemesterGradesApiResponse {
-  /**
-   * 성공 여부
-   * @example true
-   */
-  success: boolean;
-  /** 응답 데이터 */
-  data: SemesterGradeResponse[];
-  /**
-   * 메시지
-   * @example "요청 성공"
-   */
-  message?: string;
+  percentile?: number | null;
 }
 
 /** 졸업 요건 영역별 이수 현황 */
@@ -370,7 +377,9 @@ export interface AreaProgressDto {
     | "전핵"
     | "전선"
     | "일선"
-    | "복선";
+    | "복선"
+    | "복핵"
+    | "복교";
   /**
    * 해당 영역에서 필요한 학점
    * @format int32
@@ -457,6 +466,8 @@ export interface GraduationProgressApiResponse {
 export interface GraduationProgressResponse {
   /** 졸업 요건 영역별 이수 현황 */
   graduationProgress: AreaProgressDto[];
+  /** 특정 학과/연도 예외로 기존과 다른 졸업요건이 적용되는지 여부 */
+  hasDifferentGraduationRequirement: boolean;
 }
 
 /** 학업 요약 정보 응답 */
@@ -544,7 +555,9 @@ export interface CourseDetailDto {
     | "전핵"
     | "전선"
     | "일선"
-    | "복선";
+    | "복선"
+    | "복핵"
+    | "복교";
   /**
    * 학점
    * @format int32
@@ -590,6 +603,56 @@ export interface Courses {
   liberal: CourseDetailDto[];
 }
 
+/** 학기 성적 요약 정보 */
+export interface SemesterGradeResponse {
+  /**
+   * 이수 연도
+   * @format int32
+   * @example 2024
+   */
+  year: number;
+  /**
+   * 학기 코드 (10: 1학기, 15: 여름학기, 20: 2학기, 25: 겨울학기)
+   * @format int32
+   * @example 10
+   */
+  semester: number;
+  /**
+   * 취득 학점
+   * @format int32
+   * @example 15
+   */
+  earnedCredits: number;
+  /**
+   * 신청 학점
+   * @format int32
+   * @example 18
+   */
+  attemptedCredits: number;
+  /**
+   * 학기 GPA (평점 평균)
+   * @example 3.85
+   */
+  semesterGpa: number;
+  /**
+   * 석차
+   * @format int32
+   * @example 5
+   */
+  classRank: number | null;
+  /**
+   * 전체 학생 수
+   * @format int32
+   * @example 150
+   */
+  totalStudents: number | null;
+  /**
+   * 백분율
+   * @example 92.4
+   */
+  percentile: number;
+}
+
 /** 회원 탈퇴 응답 포맷 */
 export interface DeleteUserApiResponse {
   /**
@@ -625,6 +688,10 @@ export interface SetTargetGpaParams {
   /**
    * 목표 GPA
    * @format double
+   * @min 0
+   * @exclusiveMin false
+   * @max 4.5
+   * @exclusiveMax false
    * @example 3.8
    */
   targetGpa?: number;
@@ -635,6 +702,8 @@ export type SetTargetGpaData = TargetGpaApiResponse;
 export type ResetStudentDataData = SuccessResponseMessageOnlyResponse;
 
 export type RefreshResponseData = RefreshTokenApiResponse;
+
+export type SentryTestData = any;
 
 export type HealthData = string;
 
