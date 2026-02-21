@@ -3,6 +3,7 @@
 import {
   DashboardAcademicSummaryCard,
   GraduationRequirementCard,
+  DualMajorRequirementCard,
   ProfileCard,
   SyncUpdateButton,
 } from '@/features/dashboard/components';
@@ -25,6 +26,10 @@ const Home = () => {
       <div className="gap-18"></div>
       <AsyncBoundary>
         <GraduationRequirementCard />
+      </AsyncBoundary>
+      <div className="gap-8"></div>
+      <AsyncBoundary>
+        <DualMajorRequirementCard />
       </AsyncBoundary>
     </>
   );

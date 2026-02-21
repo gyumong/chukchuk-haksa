@@ -4,7 +4,7 @@ import type {
   CourseDto,
   CourseDetailDto,
   AcademicSummaryResponse,
-  SemesterGradeResponse,
+  SemesterSummaryResponse,
   Courses,
   AcademicRecordResponse,
   GraduationProgressResponse
@@ -15,7 +15,7 @@ export type AreaProgress = AreaProgressDto;
 export type Course = CourseDto;
 export type CourseDetail = CourseDetailDto;
 export type AcademicSummary = AcademicSummaryResponse;
-export type SemesterGrade = SemesterGradeResponse;
+export type SemesterGrade = SemesterSummaryResponse;
 export type CoursesByType = Courses;
 export type AcademicRecordData = AcademicRecordResponse;
 
