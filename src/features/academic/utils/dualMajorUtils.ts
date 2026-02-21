@@ -9,14 +9,14 @@ export const DUAL_MAJOR_AREA_TYPES = ['복선', '복핵', '복교'] as const;
  * 주전공 관련 영역인지 확인
  */
 export function isMainMajorArea(areaType: CourseAreaType): boolean {
-  return !(DUAL_MAJOR_AREA_TYPES as ReadonlyArray<CourseAreaType>).includes(areaType);
+  return !(DUAL_MAJOR_AREA_TYPES as readonly CourseAreaType[]).includes(areaType);
 }
 
 /**
  * 복수전공 관련 영역인지 확인
  */
 export function isDualMajorArea(areaType: CourseAreaType): boolean {
-  return (DUAL_MAJOR_AREA_TYPES as ReadonlyArray<CourseAreaType>).includes(areaType);
+  return (DUAL_MAJOR_AREA_TYPES as readonly CourseAreaType[]).includes(areaType);
 }
 
 /**
