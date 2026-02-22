@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { ROUTES } from '@/constants/routes';
 import { getAcademicPeriod, getLatestSemester } from '../utils/semesterUtils';
-import { getCourseAreaDisplayName, isAreaCompleted } from '../utils/courseAreaUtils';
+import { getCourseAreaDisplayName, isAreaCompleted, sortAreasByCompletion } from '../utils/courseAreaUtils';
+import { isDualMajorArea } from '../utils/dualMajorUtils';
 import type { SemesterGrade, AreaProgress } from '../types/graduation';
 
 /**
@@ -40,15 +41,19 @@ export function useSemesterProgress(semesterGrades: SemesterGrade[]) {
  * 영역별 진도 관련 비즈니스 로직을 처리하는 훅
  */
 export function useAreaProgress(areaProgress: AreaProgress[]) {
-  const progressWithDisplayInfo = useMemo(() => {
-    return areaProgress.map(area => ({
+  const { mainMajorAreas, dualMajorAreas } = useMemo(() => {
+    const areasWithInfo = areaProgress.map(area => ({
       ...area,
       displayName: getCourseAreaDisplayName(area.areaType),
       isCompleted: isAreaCompleted(area),
+      isDualMajor: isDualMajorArea(area.areaType),
     }));
+
+    return {
+      mainMajorAreas: sortAreasByCompletion(areasWithInfo.filter(area => !area.isDualMajor)),
+      dualMajorAreas: sortAreasByCompletion(areasWithInfo.filter(area => area.isDualMajor)),
+    };
   }, [areaProgress]);
 
-  return {
-    progressWithDisplayInfo,
-  };
+  return { mainMajorAreas, dualMajorAreas };
 }

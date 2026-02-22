@@ -2,3 +2,5 @@ export { default as DashboardAcademicSummaryCard } from './DashboardAcademicSumm
 export { default as ProfileCard } from './ProfileCard/ProfileCard';
 export { default as SyncUpdateButton } from './SyncUpdateButton/SyncUpdateButton';
 export { default as GraduationRequirementCard } from './GraduationRequirementCard/GraduationRequirementCard';
+export { default as DualMajorRequirementCard } from './DualMajorRequirementCard/DualMajorRequirementCard';
+export { default as RequirementCard } from './RequirementCard/RequirementCard';

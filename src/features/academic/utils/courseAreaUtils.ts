@@ -15,8 +15,17 @@ export function getCourseAreaDisplayName(areaType: CourseAreaType): string {
     전선: '전공선택',
     일선: '일반선택',
     복선: '복수전공선택',
+    복핵: '복수전공핵심',
+    복교: '복수전공교양',
   };
   return areaNames[areaType] || areaType;
+}
+
+/**
+ * 완료된 영역이 앞으로 오도록 정렬
+ */
+export function sortAreasByCompletion<T extends { isCompleted: boolean }>(areas: T[]): T[] {
+  return [...areas].sort((a, b) => Number(b.isCompleted) - Number(a.isCompleted));
 }
 
 /**
