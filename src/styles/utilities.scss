@@ -143,7 +143,7 @@
 @mixin app-layout {
   @include mobile-container;
   @include full-height-layout;
-  background-color: color.$background-color;
+  background-color: color.$white;
 }
 
 // Content Patterns
