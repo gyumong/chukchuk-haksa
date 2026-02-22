@@ -1,0 +1,57 @@
+name: Back Merge main → dev
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  back-merge:
+    name: Create back merge PR
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create back merge PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${context.repo.owner}:main`,
+              base: 'dev',
+            });
+
+            if (prs.length > 0) {
+              console.log('Back merge PR already exists:', prs[0].html_url);
+              return;
+            }
+
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'chore: back merge main → dev',
+              body: [
+                '## Back Merge',
+                '',
+                'main 브랜치의 변경사항을 dev로 동기화합니다.',
+                '',
+                '> 이 PR은 GitHub Actions에 의해 자동 생성되었습니다.',
+              ].join('\n'),
+              head: 'main',
+              base: 'dev',
+            });
+
+            console.log('Created back merge PR:', pr.html_url);
