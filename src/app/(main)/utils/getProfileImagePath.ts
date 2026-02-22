@@ -17,5 +17,9 @@ export function getProfileImagePath(status: string, grade?: number): string {
     return PROFILE_IMAGES.ON_LEAVE;
   }
 
+  if (normalizedStatus === '졸업') {
+    return PROFILE_IMAGES.ENROLLED.GRADE_4;
+  }
+
   return PROFILE_IMAGES.DEFAULT;
 }
