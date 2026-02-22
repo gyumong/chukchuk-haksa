@@ -11,10 +11,14 @@
   @include spacing.card-padding;
   cursor: pointer;
   background: color.$white;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid color.$gray-300;
   @include radius.card-radius;
 
   &.completed {
     background: color.$black-100;
+    box-shadow: none;
+    border: none;
   }
 }
 
