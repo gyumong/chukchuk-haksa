@@ -15,7 +15,7 @@
 .profileImage {
   width: 102px;
   height: 102px;
-  background: color.$white;
+  background: color.$gray-300;
   @include radius.card-radius;
   overflow: hidden;
   flex-shrink: 0;
