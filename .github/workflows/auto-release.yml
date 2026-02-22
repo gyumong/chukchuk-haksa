@@ -27,14 +27,34 @@ jobs:
           LATEST=$(git tag --sort=-version:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -1)
           echo "tag=${LATEST:-v0.0.0}" >> $GITHUB_OUTPUT
 
-      - name: Bump minor version
+      - name: Determine version bump from commits
         id: next_tag
         run: |
           LATEST="${{ steps.latest_tag.outputs.tag }}"
           MAJOR=$(echo $LATEST | cut -d. -f1 | tr -d 'v')
           MINOR=$(echo $LATEST | cut -d. -f2)
           PATCH=$(echo $LATEST | cut -d. -f3)
-          NEXT="v${MAJOR}.$((MINOR + 1)).0"
+
+          # 마지막 태그 이후 커밋 메시지 수집
+          COMMITS=$(git log ${LATEST}..HEAD --pretty=format:"%s")
+          echo "Commits since ${LATEST}:"
+          echo "$COMMITS"
+
+          # BREAKING CHANGE 또는 feat!: → major
+          if echo "$COMMITS" | grep -qiE '(BREAKING CHANGE|^feat!:|^fix!:|^refactor!:)'; then
+            NEXT="v$((MAJOR + 1)).0.0"
+            BUMP="major"
+          # feat: → minor
+          elif echo "$COMMITS" | grep -qE '^feat(\(.+\))?:'; then
+            NEXT="v${MAJOR}.$((MINOR + 1)).0"
+            BUMP="minor"
+          # fix:, perf:, refactor:, style:, chore:, ci:, docs: → patch
+          else
+            NEXT="v${MAJOR}.${MINOR}.$((PATCH + 1))"
+            BUMP="patch"
+          fi
+
+          echo "Bump type: ${BUMP} → ${NEXT}"
           echo "tag=${NEXT}" >> $GITHUB_OUTPUT
 
       - name: Create tag
