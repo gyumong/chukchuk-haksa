@@ -2,7 +2,6 @@ import React from 'react';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import Script from 'next/script';
-import { Analytics } from '@vercel/analytics/react';
 import QueryProvider from '@/shared/providers/queryProvider';
 import MaintenancePage from '@/components/MaintenancePage';
 import '../styles/global.scss';
@@ -70,7 +69,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         ) : (
           <QueryProvider>{children}</QueryProvider>
         )}
-        <Analytics />
         {/* Cloudflare Web Analytics: 스크립트 삽입 */}
         <Script
           src="https://static.cloudflareinsights.com/beacon.min.js"

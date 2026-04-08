@@ -19,14 +19,9 @@
     "api:gen": "swagger-typescript-api generate -p ./swagger/openapi-dev.json -o ./src/shared/api --modular --module-name-first-tag --templates ./swagger/templates --name index.ts --extract-response-body --extract-request-params",
     "api:move": "node scripts/move-api-domains.mjs",
     "api:update": "yarn api:fetch && yarn api:gen && yarn api:move",
-    "env:pull": "vercel env pull",
-    "env:pull:dev": "vercel env pull .env.development --environment development",
-    "env:pull:staging": "vercel env pull .env.staging --environment staging",
-    "env:pull:prod": "vercel env pull .env.production --environment production",
-    "env:list": "vercel env ls",
-    "env:list:dev": "vercel env ls --environment development",
-    "env:list:staging": "vercel env ls --environment staging",
-    "env:list:prod": "vercel env ls --environment production",
+    "build:worker": "opennextjs-cloudflare build",
+    "preview": "yarn build && yarn build:worker && opennextjs-cloudflare preview",
+    "deploy": "yarn build && yarn build:worker && opennextjs-cloudflare deploy",
     "codemod:router": "jscodeshift -t codemods/useRouter-to-useInternalRouter.js . --ignore-pattern='**/node_modules/**' --ignore-pattern='**/.next/**' --ignore-pattern='**/dist/**' --extensions=ts,tsx --parser=tsx"
   },
   "dependencies": {
@@ -39,21 +34,20 @@
     "@supabase/supabase-js": "^2.46.1",
     "@tanstack/react-query": "^5.76.1",
     "@tanstack/react-query-devtools": "^5.76.1",
-    "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "cookies-next": "4.3.0",
     "date-fns": "^4.1.0",
     "iron-session": "^8.0.4",
     "lottie-react": "^2.4.0",
-    "next": "15.2.8",
+    "next": "15.2.9",
     "playwright": "^1.49.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "sharp": "^0.34.1",
     "uuid": "^11.0.3",
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1",
     "@svgr/webpack": "^8.1.0",
     "@tanstack/eslint-plugin-query": "^5.74.7",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
@@ -75,7 +69,8 @@
     "supabase": "2.9.6",
     "swagger-typescript-api": "^13.1.1",
     "typescript": "5.6.3",
-    "vitest": "^3.0.5"
+    "vitest": "^3.0.5",
+    "wrangler": "^4"
   },
   "packageManager": "yarn@4.5.0",
   "resolutions": {
