@@ -24,7 +24,7 @@ export async function GET(request: Request) {
     const redirectUri = getRedirectUri();
 
     const idToken = await getKakaoToken(code, redirectUri);
-    const user = await authService.login(idToken, nonce, false);
+    const user = await authService.login(idToken, nonce, 'KAKAO', false);
 
     const isPortalLinked = user.isPortalLinked;
     const accessToken = user.accessToken;

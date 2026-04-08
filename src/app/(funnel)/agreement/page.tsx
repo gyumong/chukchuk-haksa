@@ -25,7 +25,7 @@ const Agreement = () => {
   }, []);
 
   const handleAgree = useCallback(() => {
-    router.push(`${ROUTES.FUNNEL.SCRAPING}`);
+    router.push(`${ROUTES.FUNNEL.COMPLETE}`);
   }, []);
 
   return (

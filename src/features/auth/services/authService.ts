@@ -17,10 +17,10 @@ export const authService = {
   },
 
   // 로그인 처리
-  async login(idToken: string, nonce: string, saveTokens = true) {
+  async login(idToken: string, nonce: string, provider: 'KAKAO' | 'APPLE' = 'KAKAO', saveTokens = true) {
     try {
       const response = await ApiResponseHandler.handleAsyncResponse<SignInApiResponse>(
-        userApi.signInUser({ id_token: idToken, nonce })
+        userApi.signInUser({ provider, id_token: idToken, nonce })
       );
       
       const { accessToken, refreshToken, isPortalLinked } = response.data;
