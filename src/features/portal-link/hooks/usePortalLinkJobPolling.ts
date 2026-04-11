@@ -7,10 +7,12 @@ export function usePortalLinkJobPolling(jobId: string | null) {
   return useQuery({
     queryKey: ['portal-link-job', jobId],
     queryFn: () => getJobStatus(jobId!),
-    enabled: !!jobId,
+    enabled: Boolean(jobId),
     refetchInterval: query => {
       const status = query.state.data?.data?.status;
-      if (status === 'succeeded' || status === 'failed') return false;
+      if (status === 'succeeded' || status === 'failed') {
+        return false;
+      }
       return POLLING_INTERVAL_MS;
     },
   });

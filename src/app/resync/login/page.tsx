@@ -8,6 +8,7 @@ import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { usePortalLinkMutation } from '@/features/portal-link/hooks';
 import { RESYNC_JOB_ID_KEY } from '@/constants/portal-link';
+import { generateIdempotencyKey } from '@/shared/api/utils/idempotency';
 import { FunnelHeadline, SchoolCard } from '../../(funnel)/components';
 import styles from './page.module.scss';
 
@@ -24,7 +25,8 @@ export default function PortalLogin() {
     try {
       setErrorMessage('');
 
-      const result = await linkMutation.mutateAsync({ username, password });
+      const idempotencyKey = generateIdempotencyKey();
+      const result = await linkMutation.mutateAsync({ username, password, idempotencyKey });
       const jobId = result.data?.job_id;
 
       if (jobId) {

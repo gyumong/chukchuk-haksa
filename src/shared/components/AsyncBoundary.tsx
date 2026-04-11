@@ -23,7 +23,6 @@ const AsyncBoundary = ({ children, keys, suspenseFallback, customErrorFallback }
       }
 
       const { error } = props;
-      console.log('error', error);
 
       // 에러 타입에 따라 적절한 폴백 컴포넌트 렌더링
       if (error instanceof ApiError) {

@@ -64,7 +64,6 @@ export function getPortalLinked(): boolean | null {
 }
 
 export function setPortalLinked(isLinked: boolean) {
-  console.log('setPortalLinked', isLinked);
   if (typeof window === 'undefined') {
     return;
   }

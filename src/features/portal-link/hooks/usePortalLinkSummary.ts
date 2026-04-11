@@ -5,6 +5,6 @@ export function usePortalLinkSummary(jobId: string | null, jobStatus: string | u
   return useQuery({
     queryKey: ['portal-link-summary', jobId],
     queryFn: () => getJobSummary(jobId!),
-    enabled: !!jobId && jobStatus === 'succeeded',
+    enabled: Boolean(jobId) && jobStatus === 'succeeded',
   });
 }
