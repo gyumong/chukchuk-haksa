@@ -3,7 +3,7 @@
 @use '@/styles/spacing.scss' as spacing;
 
 .container {
-  @include utilities.full-height-layout;
+  @include utilities.app-layout;
   background-color: color.$white;
 }
 
