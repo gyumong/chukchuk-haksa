@@ -2,7 +2,7 @@ name: Deploy to Cloudflare Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -27,7 +27,7 @@ jobs:
       NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
       NEXT_PUBLIC_MAINTENANCE_MODE: ${{ vars.NEXT_PUBLIC_MAINTENANCE_MODE }}
       NEXT_PUBLIC_MAINTENANCE_MESSAGE: ${{ vars.NEXT_PUBLIC_MAINTENANCE_MESSAGE }}
-      NEXT_PUBLIC_DEPLOY_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
+      NEXT_PUBLIC_DEPLOY_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/dev' && 'staging' || 'preview' }}
       REST_API_KEY: ${{ secrets.REST_API_KEY }}
       CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
       SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
@@ -77,5 +77,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy .open-next --project-name=chukchuk-haksa --branch=${{ github.head_ref || github.ref_name }}
+          command: pages deploy .open-next --project-name=cchaksa --branch=${{ github.head_ref || github.ref_name }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
