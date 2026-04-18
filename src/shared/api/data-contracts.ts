@@ -73,20 +73,31 @@ export interface MessageOnlyResponse {
   message?: string;
 }
 
-/** 성공 응답 포맷 */
-export interface SuccessResponseMessageOnlyResponse {
+/** 에러 상세 정보 */
+export interface ErrorDetail {
+  /**
+   * 에러 코드
+   * @example "U01"
+   */
+  code: string;
+  /**
+   * 에러 메시지
+   * @example "해당 사용자를 찾을 수 없습니다."
+   */
+  message: string;
+  /** 에러 추가 정보 */
+  details?: object | null;
+}
+
+/** API 에러 응답 포맷 */
+export interface ErrorResponseWrapper {
   /**
    * 성공 여부
-   * @example true
+   * @example false
    */
   success: boolean;
-  /** 메시지 응답 DTO */
-  data: MessageOnlyResponse;
-  /**
-   * 메시지
-   * @example "요청 성공"
-   */
-  message?: string;
+  /** 에러 상세 정보 */
+  error?: ErrorDetail;
 }
 
 /** 회원가입 및 로그인 응답 */
@@ -124,33 +135,6 @@ export interface SignInResponse {
   isPortalLinked: boolean;
 }
 
-/** 에러 상세 정보 */
-export interface ErrorDetail {
-  /**
-   * 에러 코드
-   * @example "U01"
-   */
-  code: string;
-  /**
-   * 에러 메시지
-   * @example "해당 사용자를 찾을 수 없습니다."
-   */
-  message: string;
-  /** 에러 추가 정보 */
-  details?: object | null;
-}
-
-/** API 에러 응답 포맷 */
-export interface ErrorResponseWrapper {
-  /**
-   * 성공 여부
-   * @example false
-   */
-  success: boolean;
-  /** 에러 상세 정보 */
-  error?: ErrorDetail;
-}
-
 /** 소셜 로그인 요청 정보 */
 export interface SignInRequest {
   /**
@@ -169,6 +153,22 @@ export interface SignInRequest {
 
 /** 목표 GPA 설정 응답 */
 export interface TargetGpaApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 메시지 응답 DTO */
+  data: MessageOnlyResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+/** 성공 응답 포맷 */
+export interface SuccessResponseMessageOnlyResponse {
   /**
    * 성공 여부
    * @example true
@@ -737,7 +737,7 @@ export interface DeleteUserApiResponse {
 
 export type CreatePortalLinkJobData = SuccessResponseAcceptedResponse;
 
-export type HandleCallbackData = SuccessResponseMessageOnlyResponse;
+export type HandleCallbackData = MessageOnlyResponse;
 
 export type SignInUserData = SignInApiResponse;
 
@@ -762,15 +762,7 @@ export type RefreshResponseData = RefreshTokenApiResponse;
 
 export type SentryTestData = any;
 
-export interface GetJobStatusParams {
-  jobId: string;
-}
-
 export type GetJobStatusData = SuccessResponseJobStatusResponse;
-
-export interface GetJobSummaryParams {
-  jobId: string;
-}
 
 export type GetJobSummaryData = SuccessResponseJobSummaryResponse;
 

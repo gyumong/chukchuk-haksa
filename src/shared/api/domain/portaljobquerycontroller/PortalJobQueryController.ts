@@ -10,12 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import {
-  GetJobStatusData,
-  GetJobStatusParams,
-  GetJobSummaryData,
-  GetJobSummaryParams,
-} from "../../data-contracts";
+import { GetJobStatusData, GetJobSummaryData } from "../../data-contracts";
 import { HttpClient, RequestParams } from "../../http-client";
 
 export class PortalJobQueryController<
@@ -29,7 +24,7 @@ export class PortalJobQueryController<
    * @request GET:/portal/link/jobs/{jobId}
    * @secure
    */
-  getJobStatus = ({ jobId }: GetJobStatusParams, params: RequestParams = {}) =>
+  getJobStatus = (jobId: string, params: RequestParams = {}) =>
     this.request<GetJobStatusData, any>({
       path: `/portal/link/jobs/${jobId}`,
       method: "GET",
@@ -44,10 +39,7 @@ export class PortalJobQueryController<
    * @request GET:/portal/link/jobs/{jobId}/summary
    * @secure
    */
-  getJobSummary = (
-    { jobId }: GetJobSummaryParams,
-    params: RequestParams = {},
-  ) =>
+  getJobSummary = (jobId: string, params: RequestParams = {}) =>
     this.request<GetJobSummaryData, any>({
       path: `/portal/link/jobs/${jobId}/summary`,
       method: "GET",

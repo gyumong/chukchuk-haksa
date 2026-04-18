@@ -25,7 +25,7 @@ export async function submitPortalLink({ username, password, idempotencyKey }: S
 
 export async function getJobStatus(jobId: string) {
   const response = await ApiResponseHandler.handleAsyncResponse<SuccessResponseJobStatusResponse>(
-    portalJobQueryApi.getJobStatus({ jobId })
+    portalJobQueryApi.getJobStatus(jobId)
   );
 
   return response;
@@ -33,7 +33,7 @@ export async function getJobStatus(jobId: string) {
 
 export async function getJobSummary(jobId: string) {
   const response = await ApiResponseHandler.handleAsyncResponse<SuccessResponseJobSummaryResponse>(
-    portalJobQueryApi.getJobSummary({ jobId })
+    portalJobQueryApi.getJobSummary(jobId)
   );
 
   return response;
