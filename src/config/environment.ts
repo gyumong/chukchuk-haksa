@@ -98,11 +98,7 @@ export const ENV = {
   // 유지보수
   MAINTENANCE_MODE: process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true',
   MAINTENANCE_MESSAGE: process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE ?? '',
-  
-  // 테스트
-  TEST_TOKEN: process.env.TEST_TOKEN ?? '',
-  TEST_TOKEN2: process.env.TEST_TOKEN2 ?? '',
-  
+
   // 서버
   PORT: Number(process.env.PORT) || 3000,
 } as const;

@@ -19,7 +19,4 @@ export const SENTRY_AUTH_TOKEN = process.env.SENTRY_AUTH_TOKEN ?? '';
 export const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL ?? '';
 export const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN ?? '';
 
-export const TEST_TOKEN = process.env.TEST_TOKEN ?? '';
-export const TEST_TOKEN2 = process.env.TEST_TOKEN2 ?? '';
-
 export const PORT = Number(process.env.PORT) || 3000;
