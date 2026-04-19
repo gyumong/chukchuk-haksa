@@ -8,6 +8,7 @@ import { StudentProfileSchema } from '../schema';
 
 export function useProfileQuery() {
   const router = useInternalRouter();
+  // eslint-disable-next-line @tanstack/query/exhaustive-deps -- router는 side-effect용이라 queryKey에 포함 X. 후속 리팩터에서 redirect 로직을 컴포넌트로 분리 예정.
   return useSuspenseQuery({
     queryKey: dashboardQueryKeys.profile,
     queryFn: async () => {
