@@ -2,7 +2,14 @@ name: Deploy to Cloudflare Workers
 
 on:
   push:
-    branches: [main, dev]
+    branches: [main, dev, refactor/async-api]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deploy environment'
+        type: choice
+        options: [staging, production]
+        default: staging
 
 concurrency:
   group: cloudflare-workers-${{ github.ref }}
@@ -24,7 +31,7 @@ jobs:
       NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
       NEXT_PUBLIC_MAINTENANCE_MODE: ${{ vars.NEXT_PUBLIC_MAINTENANCE_MODE }}
       NEXT_PUBLIC_MAINTENANCE_MESSAGE: ${{ vars.NEXT_PUBLIC_MAINTENANCE_MESSAGE }}
-      NEXT_PUBLIC_DEPLOY_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+      NEXT_PUBLIC_DEPLOY_ENV: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
       REST_API_KEY: ${{ secrets.REST_API_KEY }}
       CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
       SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
@@ -71,4 +78,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --env ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+          command: deploy --env ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
