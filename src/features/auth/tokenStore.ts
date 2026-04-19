@@ -8,7 +8,7 @@ export function getAccessTokenStore(): string | null {
 }
 
 export function setAccessTokenStore(token: string | null): void {
-  if (currentToken === token) return;
+  if (currentToken === token) {return;}
   currentToken = token;
   listeners.forEach(listener => listener(token));
 }
@@ -23,7 +23,7 @@ export function subscribeAccessTokenStore(listener: Listener): () => void {
 let inFlightRefresh: Promise<string | null> | null = null;
 
 export async function refreshAccessTokenStore(): Promise<string | null> {
-  if (inFlightRefresh) return inFlightRefresh;
+  if (inFlightRefresh) {return inFlightRefresh;}
 
   inFlightRefresh = (async () => {
     try {

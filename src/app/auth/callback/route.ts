@@ -25,9 +25,7 @@ export async function GET(request: Request) {
     const redirectUri = getRedirectUri();
 
     const idToken = await getKakaoToken(code, redirectUri);
-    const user = await authService.login(idToken, nonce, 'KAKAO', false);
-
-    const { accessToken, refreshToken, isPortalLinked } = user;
+    const { accessToken, refreshToken, isPortalLinked } = await authService.login(idToken, nonce, 'KAKAO');
 
     if (isPortalLinked === undefined || !refreshToken) {
       throw new AuthError('User is missing or malformed.');

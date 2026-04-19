@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     (async () => {
       try {
         const response = await fetch('/api/session', { credentials: 'include' });
-        if (cancelled) return;
+        if (cancelled) {return;}
 
         if (!response.ok) {
           setAccessTokenStore(null);
@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           accessToken?: string;
           isPortalLinked?: boolean;
         };
-        if (cancelled) return;
+        if (cancelled) {return;}
 
         setAccessTokenStore(data.accessToken ?? null);
         setIsPortalLinked(typeof data.isPortalLinked === 'boolean' ? data.isPortalLinked : null);
@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           console.error('[AuthContext] hydrate failed', error);
         }
       } finally {
-        if (!cancelled) setIsReady(true);
+        if (!cancelled) {setIsReady(true);}
       }
     })();
 

@@ -2,7 +2,6 @@
 
 import { useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { setPortalLinked } from '@/lib/auth/token';
 import { type RoutePath, useInternalRouter } from '@/hooks/useInternalRouter';
 
 const SuccessContent = () => {
@@ -18,11 +17,6 @@ const SuccessContent = () => {
         if (!response.ok) {
           router.replace('/');
           return;
-        }
-
-        const data = (await response.json()) as { isPortalLinked?: boolean };
-        if (typeof data.isPortalLinked === 'boolean') {
-          setPortalLinked(data.isPortalLinked);
         }
         router.replace(redirect);
       } catch (error) {
