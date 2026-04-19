@@ -23,10 +23,12 @@ export default function ScrapingPage() {
   useEffect(() => {
     if (summaryData?.data?.studentInfo) {
       setStudentInfo(summaryData.data.studentInfo);
-      setUser({ username: summaryData.data.studentInfo.studentCode ?? '' });
+      if (jobId) {
+        setUser({ id: jobId });
+      }
       router.push(`${ROUTES.FUNNEL.AGREEMENT}`);
     }
-  }, [summaryData, setStudentInfo, router]);
+  }, [summaryData, setStudentInfo, router, jobId]);
 
   useEffect(() => {
     if (jobStatus === 'failed' && jobDetail) {

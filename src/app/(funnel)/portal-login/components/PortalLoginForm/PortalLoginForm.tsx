@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { FixedButton, TextField } from '@/components/ui';
 import { usePortalLinkMutation } from '@/features/portal-link/hooks';
-import { generateIdempotencyKey } from '@/shared/api/utils/idempotency';
+import { generateIdempotencyKey } from '@/shared/utils/idempotency';
 import { useFunnelContext } from '../../../contexts';
 import styles from './PortalLoginForm.module.scss';
 

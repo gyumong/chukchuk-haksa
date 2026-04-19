@@ -16,9 +16,5 @@ export function getPortalLinkErrorMessage(job: JobStatusResponse): string {
     return ERROR_MESSAGES_BY_CODE[job.error_code];
   }
 
-  if (job.error_message) {
-    return job.error_message;
-  }
-
   return DEFAULT_ERROR_MESSAGE;
 }

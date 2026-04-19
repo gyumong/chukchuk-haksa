@@ -1,10 +1,8 @@
 @use '@/styles/utilities' as utilities;
-@use '@/styles/color.scss' as color;
 @use '@/styles/spacing.scss' as spacing;
 
 .container {
   @include utilities.app-layout;
-  background-color: color.$white;
 }
 
 .content {
