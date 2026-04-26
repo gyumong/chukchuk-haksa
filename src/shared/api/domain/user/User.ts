@@ -22,7 +22,7 @@ export class User<
   SecurityDataType = unknown,
 > extends HttpClient<SecurityDataType> {
   /**
-   * @description 사용자가 카카오 소셜 로그인으로 회원가입 및 로그인을 진행합니다.
+   * @description 사용자가 OIDC 소셜 로그인으로 회원가입 및 로그인을 진행합니다.
    *
    * @tags User
    * @name SignInUser

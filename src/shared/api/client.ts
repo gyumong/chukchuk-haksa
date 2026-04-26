@@ -2,9 +2,10 @@ import {
   AcademicRecordController as AcademicRecordApi,
   Auth as AuthApi,
   Graduation as GraduationApi,
+  PortalJobQueryController as PortalJobQueryApi,
+  PortalLinkController as PortalLinkApi,
   SemesterController as SemesterRecordApi,
   Student as StudentApi,
-  SuwonScraping as SuwonScrapingApi,
   User as UserApi,
 } from '@/shared/api/domain';
 import { getUserMessage } from '../user-messages';
@@ -75,7 +76,8 @@ export const academicRecordApi = createApiClient(AcademicRecordApi);
 export const authApi = createApiClient(AuthApi);
 export const graduationApi = createApiClient(GraduationApi);
 export const semesterRecordApi = createApiClient(SemesterRecordApi);
-export const suwonScrapingApi = createApiClient(SuwonScrapingApi);
+export const portalLinkApi = createApiClient(PortalLinkApi);
+export const portalJobQueryApi = createApiClient(PortalJobQueryApi);
 
 // 응답 검증 유틸리티 (필요하면 사용)
 export function assertValidResponse<TData>(

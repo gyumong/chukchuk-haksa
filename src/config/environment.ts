@@ -1,17 +1,30 @@
 /**
- * Vercel 환경 기반 설정 관리
+ * 배포 환경 기반 설정 관리
  * 환경변수를 우선으로 하고, fallback만 제공
  */
 
 /**
- * 현재 환경 감지 (Vercel 우선)
+ * 현재 환경 감지 (Vercel / Cloudflare Pages 병행)
  */
 export function getEnvironment() {
-  // Vercel 환경변수가 있으면 우선 사용
+  // 명시적 환경변수 우선
+  if (process.env.NEXT_PUBLIC_DEPLOY_ENV) {
+    return process.env.NEXT_PUBLIC_DEPLOY_ENV;
+  }
+
+  // Vercel 환경
   if (process.env.VERCEL_ENV) {
     return process.env.VERCEL_ENV;
   }
-  
+
+  // Cloudflare Pages 환경
+  if (process.env.CF_PAGES_BRANCH === 'main') {
+    return 'production';
+  }
+  if (process.env.CF_PAGES) {
+    return 'preview';
+  }
+
   // 로컬 개발 환경
   if (process.env.NODE_ENV === 'development') {
     return 'development';
@@ -21,7 +34,7 @@ export function getEnvironment() {
 }
 
 /**
- * API Base URL 가져오기 (Vercel 환경변수 우선)
+ * API Base URL 가져오기 (환경변수 우선)
  */
 export function getApiBaseUrl() {
   // 환경변수가 설정되어 있으면 사용
@@ -55,7 +68,7 @@ export function getFrontendUrl() {
  * 환경변수 중앙 관리
  */
 export const ENV = {
-  // URLs (Vercel 환경변수 기반)
+  // URLs
   API_BASE_URL: getApiBaseUrl(),
   FRONTEND_URL: getFrontendUrl(),
   
@@ -85,11 +98,7 @@ export const ENV = {
   // 유지보수
   MAINTENANCE_MODE: process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true',
   MAINTENANCE_MESSAGE: process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE ?? '',
-  
-  // 테스트
-  TEST_TOKEN: process.env.TEST_TOKEN ?? '',
-  TEST_TOKEN2: process.env.TEST_TOKEN2 ?? '',
-  
+
   // 서버
   PORT: Number(process.env.PORT) || 3000,
 } as const;

@@ -6,38 +6,38 @@ import { captureException } from '@sentry/nextjs';
 import { FixedButton, TextField } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
-import { suwonScrapingApi } from '@/shared/api/client';
-import { ApiResponseHandler } from '@/shared/api/utils/response-handler';
-import type { PortalLoginApiResponse } from '@/shared/api/data-contracts';
+import { usePortalLinkMutation } from '@/features/portal-link/hooks';
+import { RESYNC_JOB_ID_KEY } from '@/constants/portal-link';
+import { generateIdempotencyKey } from '@/shared/utils/idempotency';
 import { FunnelHeadline, SchoolCard } from '../../(funnel)/components';
 import styles from './page.module.scss';
 
 export default function PortalLogin() {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const router = useInternalRouter();
+  const linkMutation = usePortalLinkMutation();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
-      setIsLoading(true);
       setErrorMessage('');
 
-      const response = await ApiResponseHandler.handleAsyncResponse<PortalLoginApiResponse>(
-        suwonScrapingApi.login({ username, password })
-      );
+      const idempotencyKey = generateIdempotencyKey();
+      const result = await linkMutation.mutateAsync({ username, password, idempotencyKey });
+      const jobId = result.data?.job_id;
 
-      // 로그인 성공 시 스크래핑 페이지로 이동
-      router.push(`${ROUTES.RESYNC.SCRAPING}`);
+      if (jobId) {
+        sessionStorage.setItem(RESYNC_JOB_ID_KEY, jobId);
+        router.push(`${ROUTES.RESYNC.SCRAPING}`);
+      } else {
+        setErrorMessage('연동 요청에 실패했습니다. 다시 시도해주세요.');
+      }
     } catch (err: any) {
-      console.log(err);
       captureException(err);
-      setErrorMessage(err.message);
-    } finally {
-      setIsLoading(false);
+      setErrorMessage(err.message ?? '알 수 없는 오류가 발생했어요\n잠시후 다시 시도해주세요');
     }
   };
 
@@ -74,7 +74,7 @@ export default function PortalLogin() {
           </div>
         )}
 
-        <FixedButton type="submit" disabled={!username || !password || isLoading} isLoading={isLoading}>
+        <FixedButton type="submit" disabled={!username || !password || linkMutation.isPending} isLoading={linkMutation.isPending}>
           학업 이력 동기화하기
         </FixedButton>
       </form>

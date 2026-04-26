@@ -11,8 +11,7 @@ const withBundleAnalyzer = withBundleAnalyzerFn({
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 60 * 60 * 24 * 365, // 1년
+    unoptimized: true,
   },
   sassOptions: {
     // import.meta.dirname는 node v20.11 이상 부터 가능

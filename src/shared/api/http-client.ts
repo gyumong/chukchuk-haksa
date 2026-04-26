@@ -10,8 +10,6 @@
  * ---------------------------------------------------------------
  */
 
-import { getApiBaseUrl } from '@/config/environment';
-
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
 
@@ -64,7 +62,7 @@ export enum ContentType {
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-  public baseUrl: string = getApiBaseUrl();
+  public baseUrl: string = "https://dev.api.cchaksa.com";
   private securityData: SecurityDataType | null = null;
   private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private abortControllers = new Map<CancelToken, AbortController>();
