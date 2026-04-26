@@ -101,4 +101,7 @@ export const ENV = {
 
   // 서버
   PORT: Number(process.env.PORT) || 3000,
+
+  // 포털 연동 폴링 타임아웃 (ms). 환경변수 미설정 시 3분.
+  PORTAL_LINK_TIMEOUT_MS: Number(process.env.NEXT_PUBLIC_PORTAL_LINK_TIMEOUT_MS) || 3 * 60 * 1000,
 } as const;

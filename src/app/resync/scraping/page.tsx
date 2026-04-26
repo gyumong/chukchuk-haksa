@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { usePortalLinkJobPolling } from '@/features/portal-link/hooks';
-import { getPortalLinkErrorMessage } from '@/features/portal-link/utils/errorMapping';
+import { getPortalLinkErrorMessage, TIMEOUT_ERROR_MESSAGE } from '@/features/portal-link/utils/errorMapping';
 import { RESYNC_JOB_ID_KEY } from '@/constants/portal-link';
 import LoadingScreen from '../../(funnel)/components/LoadingScreen/LoadingScreen';
 
@@ -18,7 +18,7 @@ export default function ScrapingPage() {
     return null;
   });
 
-  const { data: jobStatusData } = usePortalLinkJobPolling(jobId);
+  const { data: jobStatusData, isTimedOut } = usePortalLinkJobPolling(jobId);
   const jobStatus = jobStatusData?.data?.status;
   const jobDetail = jobStatusData?.data;
 
@@ -36,6 +36,13 @@ export default function ScrapingPage() {
       setErrorMessage(message);
     }
   }, [jobStatus, jobDetail]);
+
+  useEffect(() => {
+    if (isTimedOut) {
+      sessionStorage.removeItem(RESYNC_JOB_ID_KEY);
+      setErrorMessage(TIMEOUT_ERROR_MESSAGE);
+    }
+  }, [isTimedOut]);
 
   if (errorMessage) {
     throw new Error(errorMessage);

@@ -5,7 +5,7 @@ import { setUser } from '@sentry/nextjs';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { usePortalLinkJobPolling, usePortalLinkSummary } from '@/features/portal-link/hooks';
-import { getPortalLinkErrorMessage } from '@/features/portal-link/utils/errorMapping';
+import { getPortalLinkErrorMessage, TIMEOUT_ERROR_MESSAGE } from '@/features/portal-link/utils/errorMapping';
 import { useFunnelContext } from '../contexts';
 import LoadingScreen from '../components/LoadingScreen/LoadingScreen';
 
@@ -14,7 +14,7 @@ export default function ScrapingPage() {
   const router = useInternalRouter();
   const { jobId, setStudentInfo } = useFunnelContext();
 
-  const { data: jobStatusData } = usePortalLinkJobPolling(jobId);
+  const { data: jobStatusData, isTimedOut } = usePortalLinkJobPolling(jobId);
   const jobStatus = jobStatusData?.data?.status;
   const jobDetail = jobStatusData?.data;
 
@@ -36,6 +36,12 @@ export default function ScrapingPage() {
       setErrorMessage(message);
     }
   }, [jobStatus, jobDetail]);
+
+  useEffect(() => {
+    if (isTimedOut) {
+      setErrorMessage(TIMEOUT_ERROR_MESSAGE);
+    }
+  }, [isTimedOut]);
 
   if (errorMessage) {
     throw new Error(errorMessage);
