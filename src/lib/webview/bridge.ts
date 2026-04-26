@@ -5,19 +5,25 @@ type WebViewWindow = {
 };
 
 const getWebViewWindow = (): WebViewWindow | null => {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === 'undefined') {
+    return null;
+  }
   return window as unknown as WebViewWindow;
 };
 
 export const isInWebView = (): boolean => {
   const w = getWebViewWindow();
-  if (!w) return false;
+  if (!w) {
+    return false;
+  }
   return Boolean(w.ReactNativeWebView || w.webkit?.messageHandlers?.bridge || w.Android);
 };
 
 export const postBridgeMessage = (message: string): void => {
   const w = getWebViewWindow();
-  if (!w) return;
+  if (!w) {
+    return;
+  }
 
   if (w.ReactNativeWebView?.postMessage) {
     w.ReactNativeWebView.postMessage(message);

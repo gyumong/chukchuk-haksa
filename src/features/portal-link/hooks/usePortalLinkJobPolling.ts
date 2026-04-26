@@ -31,5 +31,5 @@ export function usePortalLinkJobPolling(jobId: string | null) {
     },
   });
 
-  return { ...query, isTimedOut };
+  return { data: query.data, isTimedOut };
 }
