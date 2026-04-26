@@ -19,4 +19,14 @@ export const ROUTES = {
   GRADUATION_PROGRESS: '/graduation-progress',
   SETTING: '/setting',
   DELETE: '/delete',
+  // /mpa/* 는 네이티브 앱이 WebView로 임베드하는 라우트.
+  // HOME/ME 만 Next.js 페이지로 존재하고, 나머지 URL 은 JS bridge 로
+  // 전달되어 네이티브 측이 해석한다.
+  MPA: {
+    HOME: '/mpa/home',
+    ME: '/mpa/me',
+    GRADUATION_PROGRESS: '/mpa/graduation-progress',
+    RESYNC_LOGIN: '/mpa/resync/login',
+    DELETE: '/mpa/delete',
+  },
 } as const;
