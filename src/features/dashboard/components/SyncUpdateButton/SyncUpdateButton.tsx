@@ -8,12 +8,20 @@ import { useProfileQuery } from '@/features/dashboard/apis/queries/useProfileQue
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import styles from './SyncUpdateButton.module.scss';
 
-const SyncUpdateButton = () => {
+interface SyncUpdateButtonProps {
+  onNavigate?: () => void;
+}
+
+const SyncUpdateButton = ({ onNavigate }: SyncUpdateButtonProps = {}) => {
   const { data } = useProfileQuery();
   const router = useInternalRouter();
   const formattedLastSyncedAt = data.lastSyncedAt ? format(new Date(data.lastSyncedAt), 'yy년 M월 d일 HH:mm') : '';
 
   const handleResyncLogin = () => {
+    if (onNavigate) {
+      onNavigate();
+      return;
+    }
     router.push(ROUTES.RESYNC.LOGIN);
   };
 
