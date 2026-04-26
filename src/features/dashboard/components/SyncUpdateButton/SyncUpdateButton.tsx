@@ -11,7 +11,7 @@ import styles from './SyncUpdateButton.module.scss';
 const SyncUpdateButton = () => {
   const { data } = useProfileQuery();
   const router = useInternalRouter();
-  const formattedLastSyncedAt = data.lastUpdatedAt ? format(new Date(data.lastUpdatedAt), 'yy년 M월 d일 HH:mm') : '';
+  const formattedLastSyncedAt = data.lastSyncedAt ? format(new Date(data.lastSyncedAt), 'yy년 M월 d일 HH:mm') : '';
 
   const handleResyncLogin = () => {
     router.push(ROUTES.RESYNC.LOGIN);
