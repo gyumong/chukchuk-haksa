@@ -8,10 +8,13 @@ import {
   ProfileCard,
   SyncUpdateButton,
 } from '@/features/dashboard/components';
+import { useRefreshProfileOnVisible } from '@/features/dashboard/hooks/useRefreshProfileOnVisible';
 import { navigateNative } from '@/lib/webview';
 import AsyncBoundary from '@/shared/components/AsyncBoundary';
 
 const MpaHome = () => {
+  useRefreshProfileOnVisible();
+
   const goGraduation = () => navigateNative(ROUTES.MPA.GRADUATION_PROGRESS);
   const goResync = () => navigateNative(ROUTES.MPA.RESYNC_LOGIN);
 
