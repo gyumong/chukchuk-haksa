@@ -1,3 +1,4 @@
+import { ENV } from '@/config/environment';
 import type { JobStatusResponse } from '@/shared/api/data-contracts';
 
 const ERROR_MESSAGES_BY_CODE: Record<string, string> = {
@@ -11,7 +12,8 @@ const ERROR_MESSAGES_BY_CODE: Record<string, string> = {
 
 const DEFAULT_ERROR_MESSAGE = '알 수 없는 오류가 발생했어요\n잠시후 다시 시도해주세요';
 
-export const TIMEOUT_ERROR_MESSAGE = '연동 응답이 3분 이상 없어 자동으로 실패 처리되었어요.\n잠시 후 다시 시도해주세요.';
+const portalLinkTimeoutMinutes = Math.max(1, Math.round(ENV.PORTAL_LINK_TIMEOUT_MS / 60000));
+export const TIMEOUT_ERROR_MESSAGE = `연동 응답이 ${portalLinkTimeoutMinutes}분 이상 없어 자동으로 실패 처리되었어요.\n잠시 후 다시 시도해주세요.`;
 
 export function getPortalLinkErrorMessage(job: JobStatusResponse): string {
   if (job.error_code && ERROR_MESSAGES_BY_CODE[job.error_code]) {

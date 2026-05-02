@@ -1,7 +1,11 @@
+import { captureException } from '@sentry/nextjs';
+
+type BridgePostMessage = (message: string) => void;
+
 type WebViewWindow = {
-  ReactNativeWebView?: { postMessage?: (message: string) => void };
-  webkit?: { messageHandlers?: { bridge?: { postMessage?: (message: string) => void } } };
-  Android?: { postMessage?: (message: string) => void };
+  ReactNativeWebView?: { postMessage?: BridgePostMessage };
+  webkit?: { messageHandlers?: { bridge?: { postMessage?: BridgePostMessage } } };
+  Android?: { postMessage?: BridgePostMessage };
 };
 
 const getWebViewWindow = (): WebViewWindow | null => {
@@ -11,12 +15,25 @@ const getWebViewWindow = (): WebViewWindow | null => {
   return window as unknown as WebViewWindow;
 };
 
+const resolveBridgePostMessage = (w: WebViewWindow): BridgePostMessage | null => {
+  if (typeof w.ReactNativeWebView?.postMessage === 'function') {
+    return w.ReactNativeWebView.postMessage.bind(w.ReactNativeWebView);
+  }
+  if (typeof w.webkit?.messageHandlers?.bridge?.postMessage === 'function') {
+    return w.webkit.messageHandlers.bridge.postMessage.bind(w.webkit.messageHandlers.bridge);
+  }
+  if (typeof w.Android?.postMessage === 'function') {
+    return w.Android.postMessage.bind(w.Android);
+  }
+  return null;
+};
+
 export const isInWebView = (): boolean => {
   const w = getWebViewWindow();
   if (!w) {
     return false;
   }
-  return Boolean(w.ReactNativeWebView || w.webkit?.messageHandlers?.bridge || w.Android);
+  return resolveBridgePostMessage(w) !== null;
 };
 
 export const postBridgeMessage = (message: string): void => {
@@ -25,22 +42,23 @@ export const postBridgeMessage = (message: string): void => {
     return;
   }
 
-  if (w.ReactNativeWebView?.postMessage) {
-    w.ReactNativeWebView.postMessage(message);
-    return;
-  }
-  if (w.webkit?.messageHandlers?.bridge?.postMessage) {
-    w.webkit.messageHandlers.bridge.postMessage(message);
-    return;
-  }
-  if (w.Android?.postMessage) {
-    w.Android.postMessage(message);
+  const post = resolveBridgePostMessage(w);
+  if (!post) {
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.warn('[bridge] no native bridge detected; message dropped:', message);
+    }
     return;
   }
 
-  if (process.env.NODE_ENV !== 'production') {
-    // eslint-disable-next-line no-console
-    console.warn('[bridge] no native bridge detected; message dropped:', message);
+  try {
+    post(message);
+  } catch (err) {
+    captureException(err, { extra: { bridgeMessage: message } });
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.warn('[bridge] postMessage threw; swallowed to protect UI:', message, err);
+    }
   }
 };
 

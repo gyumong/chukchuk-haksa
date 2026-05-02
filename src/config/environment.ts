@@ -64,6 +64,13 @@ export function getFrontendUrl() {
   return 'http://localhost:3000';
 }
 
+const PORTAL_LINK_DEFAULT_TIMEOUT_MS = 3 * 60 * 1000;
+const parsedPortalLinkTimeoutMs = Number(process.env.NEXT_PUBLIC_PORTAL_LINK_TIMEOUT_MS);
+const portalLinkTimeoutMs =
+  Number.isFinite(parsedPortalLinkTimeoutMs) && parsedPortalLinkTimeoutMs > 0
+    ? parsedPortalLinkTimeoutMs
+    : PORTAL_LINK_DEFAULT_TIMEOUT_MS;
+
 /**
  * 환경변수 중앙 관리
  */
@@ -102,6 +109,6 @@ export const ENV = {
   // 서버
   PORT: Number(process.env.PORT) || 3000,
 
-  // 포털 연동 폴링 타임아웃 (ms). 환경변수 미설정 시 3분.
-  PORTAL_LINK_TIMEOUT_MS: Number(process.env.NEXT_PUBLIC_PORTAL_LINK_TIMEOUT_MS) || 3 * 60 * 1000,
+  // 포털 연동 폴링 타임아웃 (ms). 환경변수 미설정/비정상 값(음수, NaN 등)은 기본 3분.
+  PORTAL_LINK_TIMEOUT_MS: portalLinkTimeoutMs,
 } as const;
