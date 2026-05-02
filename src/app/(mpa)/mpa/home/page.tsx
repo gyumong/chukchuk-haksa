@@ -1,5 +1,6 @@
 'use client';
 
+import { ROUTES } from '@/constants/routes';
 import {
   DashboardAcademicSummaryCard,
   GraduationRequirementCard,
@@ -8,10 +9,14 @@ import {
   SyncUpdateButton,
 } from '@/features/dashboard/components';
 import { useRefreshProfileOnVisible } from '@/features/dashboard/hooks/useRefreshProfileOnVisible';
+import { navigateNative } from '@/lib/webview';
 import AsyncBoundary from '@/shared/components/AsyncBoundary';
 
-const Home = () => {
+const MpaHome = () => {
   useRefreshProfileOnVisible();
+
+  const goGraduation = () => navigateNative(ROUTES.MPA.GRADUATION_PROGRESS);
+  const goResync = () => navigateNative(ROUTES.MPA.RESYNC_LOGIN);
 
   return (
     <>
@@ -24,18 +29,18 @@ const Home = () => {
       </AsyncBoundary>
       <div className="gap-8"></div>
       <AsyncBoundary>
-        <SyncUpdateButton />
+        <SyncUpdateButton onNavigate={goResync} />
       </AsyncBoundary>
       <div className="gap-18"></div>
       <AsyncBoundary>
-        <GraduationRequirementCard />
+        <GraduationRequirementCard onNavigate={goGraduation} />
       </AsyncBoundary>
       <div className="gap-8"></div>
       <AsyncBoundary>
-        <DualMajorRequirementCard />
+        <DualMajorRequirementCard onNavigate={goGraduation} />
       </AsyncBoundary>
     </>
   );
 };
 
-export default Home;
+export default MpaHome;

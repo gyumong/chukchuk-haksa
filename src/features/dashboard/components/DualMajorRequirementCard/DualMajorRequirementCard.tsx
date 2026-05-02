@@ -9,7 +9,11 @@ import RequirementCard from '../RequirementCard/RequirementCard';
 /**
  * 복수전공 졸업 요건 정보를 보여주는 카드 컴포넌트
  */
-const DualMajorRequirementCard = () => {
+interface DualMajorRequirementCardProps {
+  onNavigate?: () => void;
+}
+
+const DualMajorRequirementCard = ({ onNavigate }: DualMajorRequirementCardProps = {}) => {
   const router = useInternalRouter();
 
   const { data: profileData } = useProfileQuery();
@@ -30,13 +34,15 @@ const DualMajorRequirementCard = () => {
   const title = `${admissionYear}학번 ${dualMajorName} 졸업요건`;
   const { earnedCredits, requiredCredits } = calculateDualMajorCredits(dualMajorProgress);
 
+  const handleNavigate = onNavigate ?? (() => router.push(ROUTES.GRADUATION_PROGRESS));
+
   return (
     <RequirementCard
       majorTypeLabel="복수전공"
       title={title}
       earnedCredits={earnedCredits}
       requiredCredits={requiredCredits}
-      onNavigate={() => router.push(ROUTES.GRADUATION_PROGRESS)}
+      onNavigate={handleNavigate}
     />
   );
 };

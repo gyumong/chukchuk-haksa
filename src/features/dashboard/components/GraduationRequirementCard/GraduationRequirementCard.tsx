@@ -13,7 +13,11 @@ import RequirementCard from '../RequirementCard/RequirementCard';
  * - useAcademicSummaryQuery: 학업 요약 정보 (이수 학점, 필수 학점)
  */
 
-const GraduationRequirementCard = () => {
+interface GraduationRequirementCardProps {
+  onNavigate?: () => void;
+}
+
+const GraduationRequirementCard = ({ onNavigate }: GraduationRequirementCardProps = {}) => {
   const router = useInternalRouter();
 
   const { data: profileData } = useProfileQuery();
@@ -27,13 +31,15 @@ const GraduationRequirementCard = () => {
   const departmentName = getDepartmentName(profileData);
   const title = `${admissionYear}학번 ${departmentName} 졸업요건`;
 
+  const handleNavigate = onNavigate ?? (() => router.push(ROUTES.GRADUATION_PROGRESS));
+
   return (
     <RequirementCard
       majorTypeLabel="주전공"
       title={title}
       earnedCredits={summaryData.totalEarnedCredits}
       requiredCredits={summaryData.requiredCredits}
-      onNavigate={() => router.push(ROUTES.GRADUATION_PROGRESS)}
+      onNavigate={handleNavigate}
     />
   );
 };
