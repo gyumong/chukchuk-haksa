@@ -9,8 +9,8 @@ import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { usePortalLinkMutation } from '@/features/portal-link/hooks';
 import { RESYNC_JOB_ID_KEY } from '@/constants/portal-link';
 import { generateIdempotencyKey } from '@/shared/utils/idempotency';
-import { FunnelHeadline, SchoolCard } from '../../../../(funnel)/components';
-import styles from '../../../../resync/login/page.module.scss';
+import { FunnelHeadline, SchoolCard } from '@/app/(funnel)/components';
+import styles from '@/app/resync/login/page.module.scss';
 
 export default function MpaResyncLogin() {
   const [username, setUsername] = useState<string>('');

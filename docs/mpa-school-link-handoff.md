@@ -14,8 +14,10 @@
 ```
 앱 (ac/re 보유, cchaksa_session 없음)
   │
-  ├─ ① POST /api/session  body: { accessToken, refreshToken, isPortalLinked }
-  │  └─ BFF: sealData → Set-Cookie: cchaksa_session
+  ├─ ① POST /api/session
+  │     headers: { x-native-bridge-secret: <합의된 시크릿> }
+  │     body:    { accessToken, refreshToken, isPortalLinked }
+  │  └─ BFF: 시크릿 검증 → sealData → Set-Cookie: cchaksa_session
   │
   ├─ ② WebView open  /mpa/resync/login
   │  └─ (mpa) layout 의 ProtectedRoute → GET /api/session → 200 OK → 폼 렌더
@@ -33,10 +35,11 @@
 
 | 변경 | 파일 | 비고 |
 |---|---|---|
-| `POST /api/session` 익스체인지 추가 | `src/app/api/session/route.ts` | 토큰 진위 검증은 TODO (백엔드 의존) |
+| `POST /api/session` 익스체인지 추가 | `src/app/api/session/route.ts` | 시크릿 헤더 게이트 + 토큰 진위 검증 TODO (백엔드 의존) |
+| `NATIVE_SESSION_EXCHANGE_SECRET` 환경변수 도입 | `src/config/environment.ts` | 미설정 시 POST 엔드포인트 503 반환 (안전 디폴트) |
 | `ROUTES.MPA.RESYNC_SCRAPING` 추가 | `src/constants/routes.ts` | `/mpa/resync/scraping` |
 | `/mpa/resync/login` 페이지 신설 | `src/app/(mpa)/mpa/resync/login/page.tsx` | 기존 `/resync/login` 흐름 mpa 컨텍스트로 복제. 성공 시 `/mpa/resync/scraping` 이동 |
-| `/mpa/resync/scraping` 페이지 신설 | `src/app/(mpa)/mpa/resync/scraping/page.tsx` | succeeded 시 `postBridgeMessage('done:portal-link')` |
+| `/mpa/resync/scraping` 페이지 신설 | `src/app/(mpa)/mpa/resync/scraping/page.tsx` | succeeded 시 `isInWebView()` 분기: webview 면 `postBridgeMessage('done:portal-link')`, 아니면 `/main` fallback. 에러/타임아웃은 throw 대신 `ErrorScreen` 인라인 렌더 |
 
 `(mpa)` route group layout 은 `ProtectedRoute(requirePortalLinked=false)` 이므로, 학교 인증 전(=신규 사용자) 상태에서도 페이지 접근 가능.
 
@@ -110,6 +113,7 @@ iOS 14+ 의 ITP(Intelligent Tracking Prevention) 가 app-bound 로 등록되지 
 ```
 POST https://cchaksa.com/api/session
 Content-Type: application/json
+X-Native-Bridge-Secret: <NATIVE_SESSION_EXCHANGE_SECRET 와 동일한 값>
 
 {
   "accessToken": "<백엔드가 발급한 ac>",
@@ -118,7 +122,11 @@ Content-Type: application/json
 }
 ```
 
-응답: `200 { ok: true, isPortalLinked: boolean }` + `Set-Cookie: cchaksa_session=...`
+응답:
+- `200 { ok: true, isPortalLinked: boolean }` + `Set-Cookie: cchaksa_session=...`
+- `503 { error: "NOT_CONFIGURED" }` — 서버에 `NATIVE_SESSION_EXCHANGE_SECRET` 환경변수 미설정
+- `403 { error: "FORBIDDEN" }` — 헤더 누락/불일치
+- `400 { error: "MISSING_ACCESS_TOKEN" | "MISSING_REFRESH_TOKEN" | "INVALID_JSON" }`
 
 ### M5. 로그아웃 동기화
 
@@ -128,8 +136,9 @@ Content-Type: application/json
 
 | 항목 | 현재 상태 | 완화 책임 |
 |---|---|---|
-| 위조 토큰으로 cchaksa_session 발급 | 가능 (B1 미구현) | 백엔드(B1) |
-| `/api/session` POST 의 CSRF | SameSite=Lax 로 부분 방어. 외부 사이트 form 으로 POST 불가 | 프론트(추가 합의 시 Origin 헤더 검증) |
+| 위조 토큰으로 cchaksa_session 발급 | 시크릿 헤더 게이트로 1차 차단. 시크릿 유출 시 위조 가능 (B1 으로 최종 차단) | 프론트(완료) → 백엔드(B1) |
+| 시크릿 키 관리 | 모바일 바이너리에 박혀 디컴파일 시 노출 위험. 회전 절차 필요 | 인프라 + 모바일 |
+| `/api/session` POST 의 CSRF | SameSite=Lax + 시크릿 헤더 요구 → 사실상 차단 (브라우저는 헤더 모름) | 프론트(완료) |
 | 앱 ↔ BFF 간 토큰 전송 평문 | HTTPS 필수 | 인프라 |
 | WKAppBoundDomains 미등록 | iOS 쿠키 7일~24시간 후 정리 | 모바일(M1) |
 
@@ -141,6 +150,9 @@ Content-Type: application/json
 - [ ] 로컬에서 `POST /api/session` 호출 후 `Set-Cookie: cchaksa_session` 발급 확인 (cURL 또는 Postman)
 - [ ] `/mpa/resync/login` 직접 진입 시 ProtectedRoute 동작 (세션 없으면 `/`)
 - [ ] `/mpa/resync/scraping` succeeded 시 `console` 또는 bridge 모킹으로 `done:portal-link` 송출 확인
+
+### 인프라
+- [ ] staging/production 에 `NATIVE_SESSION_EXCHANGE_SECRET` 시크릿 등록 (`.github/workflows/deploy-cloudflare.yml` 에 추가, 모바일과 동일 값 공유)
 
 ### 백엔드 (B1 구현 후)
 - [ ] 위조 토큰으로 `POST /api/session` 호출 시 401
