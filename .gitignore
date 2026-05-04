@@ -40,7 +40,8 @@ yarn-error.log*
 .wrangler/
 
 # local docs
-docs/
+docs/*
+!docs/mpa-school-link-handoff.md
 
 # typescript
 *.tsbuildinfo
