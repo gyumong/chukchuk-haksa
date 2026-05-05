@@ -41,7 +41,8 @@
 
 **B1 도입 전까지의 노출 면**
 - `POST /api/session` 은 임의의 ac/re 토큰을 그대로 봉인 → 위조 호출 시 쓰레기 cchaksa_session 발급 가능 (백엔드 호출은 401 로 차단되지만 쿠키 자체는 30일 유효)
-- 1차 보호: SameSite=Lax + HttpOnly + HTTPS, 그리고 모바일 외 호출 동기 부족 (엔드포인트 자체가 표면적으로 노출되지 않음)
+- `isPortalLinked` 는 요청 바디에서 받지 않고 항상 `false` 강제 → 위조 호출이 portal-link 통과 상태로 세션 승격하는 경로 차단. 실제 연동 상태는 재로그인(auth callback) 또는 백엔드 me/profile 응답으로만 갱신
+- 발급 시점 CSRF 1차 보호: HTTPS + JSON 본문 요구 + same-origin/CORS 로 외부 페이지의 자동 POST 차단. (SameSite=Lax / HttpOnly 는 *발급된* cchaksa_session 의 후속 보호이지 발급 시점 방어선이 아님 — 서버측 `Origin` 헤더 검증 추가는 후속 강화 트랙)
 
 **재도입 트리거** (필요 시 git history 에서 게이트 코드 복원)
 - 익명·봇 트래픽이 `POST /api/session` 을 무차별 호출하는 패턴 관측
@@ -131,13 +132,13 @@ Content-Type: application/json
 
 {
   "accessToken": "<백엔드가 발급한 ac>",
-  "refreshToken": "<백엔드가 발급한 re>",
-  "isPortalLinked": false
+  "refreshToken": "<백엔드가 발급한 re>"
 }
 ```
 
 응답:
-- `200 { ok: true, isPortalLinked: boolean }` + `Set-Cookie: cchaksa_session=...`
+- `200 { ok: true, isPortalLinked: false }` + `Set-Cookie: cchaksa_session=...`
+  - `isPortalLinked` 는 항상 `false` (위조 방지). 실제 연동 상태는 백엔드 me/profile 응답으로 조회
 - `400 { error: "MISSING_ACCESS_TOKEN" | "MISSING_REFRESH_TOKEN" | "INVALID_JSON" }`
 
 ### M5. 로그아웃 동기화
@@ -148,8 +149,8 @@ Content-Type: application/json
 
 | 항목 | 현재 상태 | 완화 책임 |
 |---|---|---|
-| 위조 토큰으로 cchaksa_session 발급 | 게이트 폐기로 1차 차단 없음. 쓰레기 쿠키 발급은 가능하나 백엔드 호출은 401 (B1 도입 시 sealData 단계에서 차단) | 백엔드(B1) |
-| `/api/session` POST 의 CSRF | SameSite=Lax + HttpOnly 쿠키 + 외부 호출 동기 부재 | 프론트(완료) |
+| 위조 토큰으로 cchaksa_session 발급 | 게이트 폐기로 1차 차단 없음. 쓰레기 쿠키 발급은 가능하나 백엔드 호출은 401, `isPortalLinked` 는 false 강제로 세션 승격 차단 (B1 도입 시 sealData 단계에서 진위 검증) | 백엔드(B1) |
+| `/api/session` POST 의 CSRF | JSON 본문 요구 + same-origin/CORS preflight 로 외부 페이지의 자동 POST 차단. SameSite/HttpOnly 는 *발급된* 쿠키의 후속 보호이지 발급 시점 방어선 아님 | 프론트(완료) → 서버측 `Origin` 검사 후속 |
 | 앱 ↔ BFF 간 토큰 전송 평문 | HTTPS 필수 | 인프라 |
 | WKAppBoundDomains 미등록 | iOS 쿠키 7일~24시간 후 정리 | 모바일(M1) |
 
