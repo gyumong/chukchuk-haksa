@@ -111,8 +111,4 @@ export const ENV = {
 
   // 포털 연동 폴링 타임아웃 (ms). 환경변수 미설정/비정상 값(음수, NaN 등)은 기본 3분.
   PORTAL_LINK_TIMEOUT_MS: portalLinkTimeoutMs,
-
-  // 네이티브 → BFF 토큰 익스체인지(POST /api/session) 게이트 시크릿.
-  // 미설정 시 엔드포인트가 503 으로 비활성화. 모바일 ↔ 백엔드 간 사전 합의 후 주입.
-  NATIVE_SESSION_EXCHANGE_SECRET: process.env.NATIVE_SESSION_EXCHANGE_SECRET ?? null,
 } as const;
