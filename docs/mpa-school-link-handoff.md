@@ -15,9 +15,8 @@
 앱 (ac/re 보유, cchaksa_session 없음)
   │
   ├─ ① POST /api/session
-  │     headers: { x-native-bridge-secret: <합의된 시크릿> }
-  │     body:    { accessToken, refreshToken, isPortalLinked }
-  │  └─ BFF: 시크릿 검증 → sealData → Set-Cookie: cchaksa_session
+  │     body: { accessToken, refreshToken, isPortalLinked }
+  │  └─ BFF: sealData → Set-Cookie: cchaksa_session
   │
   ├─ ② WebView open  /mpa/resync/login
   │  └─ (mpa) layout 의 ProtectedRoute → GET /api/session → 200 OK → 폼 렌더
@@ -31,12 +30,29 @@
   └─ ⑤ 네이티브: webview 닫고 dashboard 갱신
 ```
 
+## 운영 결정 (2026-05-05): 시크릿 게이트 폐기
+
+`x-native-bridge-secret` 헤더 게이트와 `NATIVE_SESSION_EXCHANGE_SECRET` 환경변수는 **코드에서 제거**했다 (`src/app/api/session/route.ts`, `src/config/environment.ts`). 모바일 측은 이 헤더를 부착할 필요가 없고, 인프라 측은 시크릿을 공유·등록할 필요가 없다. 위조 토큰 차단은 백엔드 토큰 진위 검증(B1) 단독 책임으로 통합된다.
+
+**근거**
+- 시크릿이 모바일 바이너리에 박혀 디컴파일·정적 분석으로 곧바로 추출 가능 → 보안 효용 제한적
+- 위조 토큰의 실질 방어선은 어차피 B1. 게이트가 있어도 B1 이 들어오면 중복 방어가 됨
+- 모바일·인프라 양쪽에 시크릿 공유·회전 절차 부담을 강제하기엔 1차 출시 시급도 대비 비용이 큼
+
+**B1 도입 전까지의 노출 면**
+- `POST /api/session` 은 임의의 ac/re 토큰을 그대로 봉인 → 위조 호출 시 쓰레기 cchaksa_session 발급 가능 (백엔드 호출은 401 로 차단되지만 쿠키 자체는 30일 유효)
+- `isPortalLinked` 는 요청 바디에서 받지 않고 항상 `false` 강제 → 위조 호출이 portal-link 통과 상태로 세션 승격하는 경로 차단. 실제 연동 상태는 재로그인(auth callback) 또는 백엔드 me/profile 응답으로만 갱신
+- 발급 시점 CSRF 1차 보호: HTTPS + JSON 본문 요구 + same-origin/CORS 로 외부 페이지의 자동 POST 차단. (SameSite=Lax / HttpOnly 는 *발급된* cchaksa_session 의 후속 보호이지 발급 시점 방어선이 아님 — 서버측 `Origin` 헤더 검증 추가는 후속 강화 트랙)
+
+**재도입 트리거** (필요 시 git history 에서 게이트 코드 복원)
+- 익명·봇 트래픽이 `POST /api/session` 을 무차별 호출하는 패턴 관측
+- B1 도입이 장기 지연되어 위조 차단 수단이 부재한 상태 지속
+
 ## 프론트(웹) 작업 — 본 PR 에 포함
 
 | 변경 | 파일 | 비고 |
 |---|---|---|
-| `POST /api/session` 익스체인지 추가 | `src/app/api/session/route.ts` | 시크릿 헤더 게이트 + 토큰 진위 검증 TODO (백엔드 의존) |
-| `NATIVE_SESSION_EXCHANGE_SECRET` 환경변수 도입 | `src/config/environment.ts` | 미설정 시 POST 엔드포인트 503 반환 (안전 디폴트) |
+| `POST /api/session` 익스체인지 추가 | `src/app/api/session/route.ts` | ac/re → cchaksa_session sealing. 토큰 진위 검증은 B1 (백엔드 의존) |
 | `ROUTES.MPA.RESYNC_SCRAPING` 추가 | `src/constants/routes.ts` | `/mpa/resync/scraping` |
 | `/mpa/resync/login` 페이지 신설 | `src/app/(mpa)/mpa/resync/login/page.tsx` | 기존 `/resync/login` 흐름 mpa 컨텍스트로 복제. 성공 시 `/mpa/resync/scraping` 이동 |
 | `/mpa/resync/scraping` 페이지 신설 | `src/app/(mpa)/mpa/resync/scraping/page.tsx` | succeeded 시 `isInWebView()` 분기: webview 면 `postBridgeMessage('done:portal-link')`, 아니면 `/main` fallback. 에러/타임아웃은 throw 대신 `ErrorScreen` 인라인 렌더 |
@@ -113,19 +129,16 @@ iOS 14+ 의 ITP(Intelligent Tracking Prevention) 가 app-bound 로 등록되지 
 ```
 POST https://cchaksa.com/api/session
 Content-Type: application/json
-X-Native-Bridge-Secret: <NATIVE_SESSION_EXCHANGE_SECRET 와 동일한 값>
 
 {
   "accessToken": "<백엔드가 발급한 ac>",
-  "refreshToken": "<백엔드가 발급한 re>",
-  "isPortalLinked": false
+  "refreshToken": "<백엔드가 발급한 re>"
 }
 ```
 
 응답:
-- `200 { ok: true, isPortalLinked: boolean }` + `Set-Cookie: cchaksa_session=...`
-- `503 { error: "NOT_CONFIGURED" }` — 서버에 `NATIVE_SESSION_EXCHANGE_SECRET` 환경변수 미설정
-- `403 { error: "FORBIDDEN" }` — 헤더 누락/불일치
+- `200 { ok: true, isPortalLinked: false }` + `Set-Cookie: cchaksa_session=...`
+  - `isPortalLinked` 는 항상 `false` (위조 방지). 실제 연동 상태는 백엔드 me/profile 응답으로 조회
 - `400 { error: "MISSING_ACCESS_TOKEN" | "MISSING_REFRESH_TOKEN" | "INVALID_JSON" }`
 
 ### M5. 로그아웃 동기화
@@ -136,9 +149,8 @@ X-Native-Bridge-Secret: <NATIVE_SESSION_EXCHANGE_SECRET 와 동일한 값>
 
 | 항목 | 현재 상태 | 완화 책임 |
 |---|---|---|
-| 위조 토큰으로 cchaksa_session 발급 | 시크릿 헤더 게이트로 1차 차단. 시크릿 유출 시 위조 가능 (B1 으로 최종 차단) | 프론트(완료) → 백엔드(B1) |
-| 시크릿 키 관리 | 모바일 바이너리에 박혀 디컴파일 시 노출 위험. 회전 절차 필요 | 인프라 + 모바일 |
-| `/api/session` POST 의 CSRF | SameSite=Lax + 시크릿 헤더 요구 → 사실상 차단 (브라우저는 헤더 모름) | 프론트(완료) |
+| 위조 토큰으로 cchaksa_session 발급 | 게이트 폐기로 1차 차단 없음. 쓰레기 쿠키 발급은 가능하나 백엔드 호출은 401, `isPortalLinked` 는 false 강제로 세션 승격 차단 (B1 도입 시 sealData 단계에서 진위 검증) | 백엔드(B1) |
+| `/api/session` POST 의 CSRF | JSON 본문 요구 + same-origin/CORS preflight 로 외부 페이지의 자동 POST 차단. SameSite/HttpOnly 는 *발급된* 쿠키의 후속 보호이지 발급 시점 방어선 아님 | 프론트(완료) → 서버측 `Origin` 검사 후속 |
 | 앱 ↔ BFF 간 토큰 전송 평문 | HTTPS 필수 | 인프라 |
 | WKAppBoundDomains 미등록 | iOS 쿠키 7일~24시간 후 정리 | 모바일(M1) |
 
@@ -150,9 +162,6 @@ X-Native-Bridge-Secret: <NATIVE_SESSION_EXCHANGE_SECRET 와 동일한 값>
 - [ ] 로컬에서 `POST /api/session` 호출 후 `Set-Cookie: cchaksa_session` 발급 확인 (cURL 또는 Postman)
 - [ ] `/mpa/resync/login` 직접 진입 시 ProtectedRoute 동작 (세션 없으면 `/`)
 - [ ] `/mpa/resync/scraping` succeeded 시 `console` 또는 bridge 모킹으로 `done:portal-link` 송출 확인
-
-### 인프라
-- [ ] staging/production 에 `NATIVE_SESSION_EXCHANGE_SECRET` 시크릿 등록 (`.github/workflows/deploy-cloudflare.yml` 에 추가, 모바일과 동일 값 공유)
 
 ### 백엔드 (B1 구현 후)
 - [ ] 위조 토큰으로 `POST /api/session` 호출 시 401
@@ -169,6 +178,5 @@ X-Native-Bridge-Secret: <NATIVE_SESSION_EXCHANGE_SECRET 와 동일한 값>
 ## 후속 과제
 
 - (B2) session-init token 도입 (보안 강화 트랙)
-- (프론트) `POST /api/session` 에 native-only 식별 헤더 검증 추가 — M2/M3 합의 후
 - (프론트) `done:portal-link` 외 메시지 확장 시 프로토콜 명세를 별도 파일(`docs/webview-bridge-protocol.md`) 로 분리
 - (앱+웹 공동) 세션 만료 중 webview 가 살아있을 때의 처리(앞 답변의 옵션 A/B/C 중 결정) — 1차 운영 후 재논의
