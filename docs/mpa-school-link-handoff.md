@@ -111,8 +111,17 @@ iOS 14+ 의 ITP(Intelligent Tracking Prevention) 가 app-bound 로 등록되지 
 
 | 메시지 | 송출 위치 | 의미 |
 |---|---|---|
-| `navigate:<path>` | `src/lib/webview/bridge.ts` `navigateNative()` | 네이티브가 해당 path 로 화면 전환 (예: `navigate:/mpa/graduation-progress`) |
+| `navigate:<path>` | `src/lib/webview/bridge.ts` `navigateNative()` | 네이티브가 해당 path 로 화면 전환. path 처리 방식은 아래 path 표 참조 |
 | `done:portal-link` | `/mpa/resync/scraping` succeeded 시 | 학교 인증 잡 완료. 네이티브가 webview 닫고 dashboard 등 갱신 |
+
+**`navigate:<path>` path 처리 방식 (모바일 팀 합의 필수)**
+
+| path | 처리 방식 | 게이트 |
+|---|---|---|
+| `/mpa/home`, `/mpa/me`, `/mpa/graduation-progress`, `/mpa/resync/login`, `/mpa/resync/scraping` | **실재하는 Next.js 페이지** — webview 로 그대로 로드 (loadUrl 가능) | FE `ProtectedRoute` |
+| `/mpa/delete` | **dispatch key (Next.js 페이지 없음)** — 네이티브 자체 화면/액션으로 해석. 절대 그대로 loadUrl 금지 (404) | 네이티브 책임 |
+
+`/mpa/graduation-progress` 는 `(mpa)` 레이아웃 + `requirePortalLinked={true}` 게이트 적용. 미연동 사용자는 `/mpa/home` 으로 리다이렉트.
 
 **합의 필요**: `done:portal-link` 수신 시 네이티브 동작. 권장 동작:
 1. webview 컨테이너 dismiss/pop
