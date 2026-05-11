@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { setUser } from '@sentry/nextjs';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
@@ -19,9 +19,14 @@ export default function ScrapingPage() {
   const jobDetail = jobStatusData?.data;
 
   const { data: summaryData } = usePortalLinkSummary(jobId, jobStatus);
+  const handledRef = useRef(false);
 
   useEffect(() => {
+    if (handledRef.current) {
+      return;
+    }
     if (summaryData?.data?.studentInfo) {
+      handledRef.current = true;
       setStudentInfo(summaryData.data.studentInfo);
       if (jobId) {
         setUser({ id: jobId });

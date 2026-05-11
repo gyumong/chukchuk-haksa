@@ -1,4 +1,4 @@
-import styles from '../privacy-policy/PrivacyPolicy.module.scss';
+import styles from '@/app/privacy-policy/PrivacyPolicy.module.scss';
 
 export default function TermsPage() {
   return (

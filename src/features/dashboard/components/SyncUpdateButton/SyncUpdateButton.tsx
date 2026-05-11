@@ -31,7 +31,7 @@ const SyncUpdateButton = ({ onNavigate }: SyncUpdateButtonProps = {}) => {
 
   return (
     <button className={clsx(styles.container, styles.text, '--body-sm-medium')} onClick={handleResyncLogin}>
-      {formattedLastSyncedAt} 업데이트
+      {formattedLastSyncedAt ? `${formattedLastSyncedAt} 업데이트` : '정보 업데이트'}
       <Icon name="refresh" size={16} />
     </button>
   );
