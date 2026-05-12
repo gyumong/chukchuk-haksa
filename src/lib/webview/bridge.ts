@@ -36,10 +36,10 @@ export const isInWebView = (): boolean => {
   return resolveBridgePostMessage(w) !== null;
 };
 
-export const postBridgeMessage = (message: string): void => {
+export const postBridgeMessage = (message: string): boolean => {
   const w = getWebViewWindow();
   if (!w) {
-    return;
+    return false;
   }
 
   const post = resolveBridgePostMessage(w);
@@ -48,20 +48,22 @@ export const postBridgeMessage = (message: string): void => {
       // eslint-disable-next-line no-console
       console.warn('[bridge] no native bridge detected; message dropped:', message);
     }
-    return;
+    return false;
   }
 
   try {
     post(message);
+    return true;
   } catch (err) {
     captureException(err, { extra: { bridgeMessage: message } });
     if (process.env.NODE_ENV !== 'production') {
       // eslint-disable-next-line no-console
       console.warn('[bridge] postMessage threw; swallowed to protect UI:', message, err);
     }
+    return false;
   }
 };
 
-export const navigateNative = (url: string): void => {
-  postBridgeMessage(`navigate:${url}`);
+export const navigateNative = (url: string): boolean => {
+  return postBridgeMessage(`navigate:${url}`);
 };

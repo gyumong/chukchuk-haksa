@@ -9,14 +9,24 @@ import {
   SyncUpdateButton,
 } from '@/features/dashboard/components';
 import { useRefreshProfileOnVisible } from '@/features/dashboard/hooks/useRefreshProfileOnVisible';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { navigateNative } from '@/lib/webview';
 import AsyncBoundary from '@/shared/components/AsyncBoundary';
 
 const MpaHome = () => {
   useRefreshProfileOnVisible();
+  const router = useInternalRouter();
 
-  const goGraduation = () => navigateNative(ROUTES.MPA.GRADUATION_PROGRESS);
-  const goResync = () => navigateNative(ROUTES.MPA.RESYNC_LOGIN);
+  const goGraduation = () => {
+    if (!navigateNative(ROUTES.MPA.GRADUATION_PROGRESS)) {
+      router.push(ROUTES.MPA.GRADUATION_PROGRESS);
+    }
+  };
+  const goResync = () => {
+    if (!navigateNative(ROUTES.MPA.RESYNC_LOGIN)) {
+      router.push(ROUTES.MPA.RESYNC_LOGIN);
+    }
+  };
 
   return (
     <>

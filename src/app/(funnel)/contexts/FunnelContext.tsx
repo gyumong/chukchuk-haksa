@@ -24,14 +24,6 @@ export function FunnelProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useStudentInfo() {
-  const context = useContext(FunnelContext);
-  if (!context) {
-    throw new Error('useStudentInfo must be used within a FunnelProvider');
-  }
-  return context;
-}
-
 export function useFunnelContext() {
   const context = useContext(FunnelContext);
   if (!context) {

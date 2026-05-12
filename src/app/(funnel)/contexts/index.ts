@@ -1,1 +1,1 @@
-export { FunnelProvider, useStudentInfo, useFunnelContext } from './FunnelContext';
+export { FunnelProvider, useFunnelContext } from './FunnelContext';

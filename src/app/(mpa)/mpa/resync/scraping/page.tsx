@@ -22,12 +22,13 @@ export default function MpaScrapingPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useInternalRouter();
 
-  const [jobId] = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      return sessionStorage.getItem(RESYNC_JOB_ID_KEY);
-    }
-    return null;
-  });
+  const [jobId, setJobId] = useState<string | null>(null);
+  const [isJobIdResolved, setIsJobIdResolved] = useState(false);
+
+  useEffect(() => {
+    setJobId(sessionStorage.getItem(RESYNC_JOB_ID_KEY));
+    setIsJobIdResolved(true);
+  }, []);
 
   const { data: jobStatusData, isTimedOut } = usePortalLinkJobPolling(jobId);
   const jobStatus = jobStatusData?.data?.status;
@@ -64,7 +65,7 @@ export default function MpaScrapingPage() {
     router.push(ROUTES.MPA.RESYNC_LOGIN);
   };
 
-  if (!jobId) {
+  if (isJobIdResolved && !jobId) {
     return (
       <div className={errorStyles.container}>
         <ErrorScreen errorMessage={MISSING_JOB_MESSAGE} />

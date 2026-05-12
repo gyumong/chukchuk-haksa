@@ -3,6 +3,7 @@
 import { useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { type RoutePath, useInternalRouter } from '@/hooks/useInternalRouter';
+import styles from './success.module.scss';
 
 const SuccessContent = () => {
   const router = useInternalRouter();
@@ -28,12 +29,12 @@ const SuccessContent = () => {
     hydrate();
   }, [router, searchParams]);
 
-  return <div className="flex items-center justify-center h-screen"></div>;
+  return <div className={styles.container} />;
 };
 
 const SuccessPage = () => {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center h-screen"></div>}>
+    <Suspense fallback={<div className={styles.container} />}>
       <SuccessContent />
     </Suspense>
   );

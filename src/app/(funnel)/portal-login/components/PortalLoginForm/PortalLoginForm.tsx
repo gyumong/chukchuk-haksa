@@ -34,13 +34,16 @@ export function PortalLoginForm({ onSuccess, onError }: PortalLoginFormProps) {
         setJobId(newJobId);
         onSuccess();
       } else {
-        setErrorMessage('연동 요청에 실패했습니다. 다시 시도해주세요.');
+        const fallbackError = new Error('연동 요청에 실패했습니다. 다시 시도해주세요.');
+        setErrorMessage(fallbackError.message);
+        onError?.(fallbackError);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('[PortalLoginForm] 연동 요청 에러', err);
-      const message = err?.message ?? '알 수 없는 오류가 발생했어요\n잠시후 다시 시도해주세요';
+      const errorInstance = err instanceof Error ? err : new Error(String(err));
+      const message = errorInstance.message || '알 수 없는 오류가 발생했어요\n잠시후 다시 시도해주세요';
       setErrorMessage(message);
-      onError?.(err as Error);
+      onError?.(errorInstance);
     }
   };
 

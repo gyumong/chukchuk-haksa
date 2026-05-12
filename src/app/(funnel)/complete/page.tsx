@@ -6,7 +6,7 @@ import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { getSemesterInfo } from '@/lib/utils/semester';
 import { FunnelHeadline } from '../components';
-import { useStudentInfo } from '../contexts';
+import { useFunnelContext } from '../contexts';
 import styles from './page.module.scss';
 
 function InfoRow({ label, value }: { label: string; value: string }) {
@@ -19,7 +19,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 }
 
 export default function Complete() {
-  const { studentInfo } = useStudentInfo();
+  const { studentInfo } = useFunnelContext();
   const router = useInternalRouter();
   const handleNext = () => {
     router.push(`${ROUTES.FUNNEL.TARGET_SCORE}`);

@@ -5,6 +5,8 @@ import type { RefreshTokenApiResponse } from '@/shared/api/data-contracts';
 
 export const dynamic = 'force-dynamic';
 
+const REFRESH_TIMEOUT_MS = 10_000;
+
 export async function POST() {
   const session = await getSession();
 
@@ -12,11 +14,15 @@ export async function POST() {
     return NextResponse.json({ error: 'NO_REFRESH_TOKEN' }, { status: 401 });
   }
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REFRESH_TIMEOUT_MS);
+
   try {
     const response = await fetch(`${getApiBaseUrl()}/api/auth/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken: session.refreshToken }),
+      signal: controller.signal,
     });
 
     if (!response.ok) {
@@ -37,8 +43,14 @@ export async function POST() {
 
     return NextResponse.json({ accessToken: payload.data.accessToken });
   } catch (error) {
-    console.error('[session/refresh] unexpected error', error);
     session.destroy();
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      console.error('[session/refresh] timed out after', REFRESH_TIMEOUT_MS, 'ms');
+      return NextResponse.json({ error: 'REFRESH_TIMEOUT' }, { status: 504 });
+    }
+    console.error('[session/refresh] unexpected error', error);
     return NextResponse.json({ error: 'REFRESH_ERROR' }, { status: 500 });
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
