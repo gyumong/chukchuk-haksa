@@ -1,30 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useInternalRouter, type RoutePath } from '@/hooks/useInternalRouter';
-import { getAccessToken } from '@/lib/auth/token';
+import { useAuth } from '../contexts/AuthContext';
 
 export function useAuthCheck(redirectTo: RoutePath = '/', requirePortalLinked: boolean = false) {
-  const [isChecking, setIsChecking] = useState(true);
   const router = useInternalRouter();
+  const { accessToken, isPortalLinked, isReady } = useAuth();
 
   useEffect(() => {
-    const checkAuth = () => {
-      const token = getAccessToken();
-      
-      if (!token) {
-        router.push(redirectTo);
-        return;
-      }
+    if (!isReady) {return;}
 
-      // TODO: requirePortalLinked 체크 로직 추가 필요
-      if (requirePortalLinked) {
-        // 포털 연동 여부 확인 로직
-      }
+    if (!accessToken) {
+      router.push(redirectTo);
+      return;
+    }
 
-      setIsChecking(false);
-    };
+    if (requirePortalLinked && isPortalLinked === false) {
+      router.push(redirectTo);
+    }
+  }, [accessToken, isPortalLinked, isReady, redirectTo, requirePortalLinked, router]);
 
-    checkAuth();
-  }, [redirectTo, requirePortalLinked, router]);
-
-  return isChecking;
+  return !isReady;
 }

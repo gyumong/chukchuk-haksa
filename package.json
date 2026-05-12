@@ -19,6 +19,9 @@
     "api:gen": "swagger-typescript-api generate -p ./swagger/openapi-dev.json -o ./src/shared/api --modular --module-name-first-tag --templates ./swagger/templates --name index.ts --extract-response-body --extract-request-params",
     "api:move": "node scripts/move-api-domains.mjs",
     "api:update": "yarn api:fetch && yarn api:gen && yarn api:move",
+    "build:worker": "opennextjs-cloudflare build",
+    "preview:cf": "yarn build && yarn build:worker && opennextjs-cloudflare preview",
+    "deploy:cf": "yarn build && yarn build:worker && opennextjs-cloudflare deploy",
     "env:pull": "vercel env pull",
     "env:pull:dev": "vercel env pull .env.development --environment development",
     "env:pull:staging": "vercel env pull .env.staging --environment staging",
@@ -54,6 +57,7 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1",
     "@svgr/webpack": "^8.1.0",
     "@tanstack/eslint-plugin-query": "^5.74.7",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
@@ -75,7 +79,8 @@
     "supabase": "2.9.6",
     "swagger-typescript-api": "^13.1.1",
     "typescript": "5.6.3",
-    "vitest": "^3.0.5"
+    "vitest": "^3.0.5",
+    "wrangler": "^4.59.1"
   },
   "packageManager": "yarn@4.5.0",
   "resolutions": {

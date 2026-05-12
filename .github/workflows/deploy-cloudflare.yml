@@ -1,0 +1,93 @@
+name: Deploy to Cloudflare Workers
+
+on:
+  push:
+    branches: [main, dev, refactor/async-api]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deploy environment'
+        type: choice
+        options: [staging, production]
+        default: staging
+
+concurrency:
+  group: cloudflare-workers-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  resolve-env:
+    runs-on: ubuntu-latest
+    outputs:
+      name: ${{ steps.env.outputs.name }}
+    steps:
+      - id: env
+        run: echo "name=${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    needs: resolve-env
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      deployments: write
+    env:
+      # production 이면 PROD_* secret, 그 외(staging)면 STAGING_* secret 을 사용
+      NEXT_PUBLIC_DEPLOY_ENV: ${{ needs.resolve-env.outputs.name }}
+
+      NEXT_PUBLIC_API_BASE_URL: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_API_BASE_URL || secrets.STAGING_NEXT_PUBLIC_API_BASE_URL }}
+      NEXT_PUBLIC_BASE_URL: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_BASE_URL || secrets.STAGING_NEXT_PUBLIC_BASE_URL }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_SUPABASE_URL || secrets.STAGING_NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_SUPABASE_ANON_KEY || secrets.STAGING_NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      NEXT_PUBLIC_JAVASCRIPT_KEY: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_JAVASCRIPT_KEY || secrets.STAGING_NEXT_PUBLIC_JAVASCRIPT_KEY }}
+      NEXT_PUBLIC_SENTRY_DSN: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_SENTRY_DSN || secrets.STAGING_NEXT_PUBLIC_SENTRY_DSN }}
+
+      REST_API_KEY: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_REST_API_KEY || secrets.STAGING_REST_API_KEY }}
+      CLIENT_SECRET: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_CLIENT_SECRET || secrets.STAGING_CLIENT_SECRET }}
+      SUPABASE_PROJECT_ID: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_SUPABASE_PROJECT_ID || secrets.STAGING_SUPABASE_PROJECT_ID }}
+      SESSION_SECRET: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_SESSION_SECRET || secrets.STAGING_SESSION_SECRET }}
+      SENTRY_AUTH_TOKEN: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_SENTRY_AUTH_TOKEN || secrets.STAGING_SENTRY_AUTH_TOKEN }}
+      UPSTASH_REDIS_REST_URL: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_UPSTASH_REDIS_REST_URL || secrets.STAGING_UPSTASH_REDIS_REST_URL }}
+      UPSTASH_REDIS_REST_TOKEN: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_UPSTASH_REDIS_REST_TOKEN || secrets.STAGING_UPSTASH_REDIS_REST_TOKEN }}
+      LAMBDA_DEV_URL: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_LAMBDA_DEV_URL || secrets.STAGING_LAMBDA_DEV_URL }}
+      AWS_URL: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_AWS_URL || secrets.STAGING_AWS_URL }}
+
+      # 환경 공통 (Variables 탭 값, Secret 아님)
+      NEXT_PUBLIC_MAINTENANCE_MODE: ${{ vars.NEXT_PUBLIC_MAINTENANCE_MODE }}
+      NEXT_PUBLIC_MAINTENANCE_MESSAGE: ${{ vars.NEXT_PUBLIC_MAINTENANCE_MESSAGE }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Get yarn cache directory
+        id: yarn-cache
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+      - name: Cache yarn dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build Cloudflare worker bundle
+        run: yarn build:worker
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --env ${{ needs.resolve-env.outputs.name }}

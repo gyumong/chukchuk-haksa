@@ -1,6 +1,6 @@
 'use client';
 
-import { captureException, setUser } from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { FunnelHeadline, SchoolCard } from '../components';
@@ -10,9 +10,8 @@ import styles from './page.module.scss';
 export default function PortalLogin() {
   const router = useInternalRouter();
 
-  const onSuccess = (studentCode: string) => {
-    setUser({ username: studentCode });
-    router.push(`${ROUTES.FUNNEL.AGREEMENT}`);
+  const onSuccess = () => {
+    router.push(`${ROUTES.FUNNEL.SCRAPING}`);
   };
 
   const onError = (error: Error) => {

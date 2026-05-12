@@ -4,6 +4,7 @@ import localFont from 'next/font/local';
 import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/react';
 import QueryProvider from '@/shared/providers/queryProvider';
+import { AuthProvider } from '@/features/auth/contexts/AuthContext';
 import MaintenancePage from '@/components/MaintenancePage';
 import '../styles/global.scss';
 
@@ -68,7 +69,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         {isMaintenanceMode ? (
           <MaintenancePage message={maintenanceMessage} />
         ) : (
-          <QueryProvider>{children}</QueryProvider>
+          <AuthProvider>
+            <QueryProvider>{children}</QueryProvider>
+          </AuthProvider>
         )}
         <Analytics />
         {/* Cloudflare Web Analytics: 스크립트 삽입 */}

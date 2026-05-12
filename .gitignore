@@ -35,6 +35,14 @@ yarn-error.log*
 # vercel
 .vercel
 
+# cloudflare
+.open-next/
+.wrangler/
+
+# local docs
+docs/*
+!docs/mpa-school-link-handoff.md
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

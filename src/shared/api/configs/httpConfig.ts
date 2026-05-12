@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/nextjs';
-import { getAccessToken } from '@/lib/auth/token';
+import { getAccessTokenStore, refreshAccessTokenStore } from '@/features/auth/tokenStore';
 import { getApiBaseUrl } from '@/config/environment';
 import type { ApiConfig } from '../http-client';
 
@@ -8,34 +8,41 @@ const BASE_URL = getApiBaseUrl();
 export const createApiConfig = (): ApiConfig => ({
   baseUrl: BASE_URL,
   securityWorker: async () => {
-    try {
-      const accessToken = getAccessToken();
-      return accessToken
-        ? {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        : {};
-    } catch {
-      return {};
-    }
+    const accessToken = getAccessTokenStore();
+    return accessToken
+      ? {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      : {};
   },
   baseApiParams: {
     credentials: 'include',
     redirect: 'follow',
     referrerPolicy: 'no-referrer',
   },
-  customFetch: async (...args) => {
+  customFetch: async (input, init) => {
     try {
-      return await fetch(...args);
+      let response = await fetch(input, init);
+
+      if (response.status === 401) {
+        const headers = new Headers(init?.headers);
+        if (headers.has('Authorization')) {
+          const newAccessToken = await refreshAccessTokenStore();
+          if (newAccessToken) {
+            headers.set('Authorization', `Bearer ${newAccessToken}`);
+            response = await fetch(input, { ...init, headers });
+          }
+        }
+      }
+
+      return response;
     } catch (err: any) {
       Sentry.withScope(scope => {
         scope.setLevel('fatal');
-        if (args.length) {
-          const url = typeof args[0] === 'string' ? args[0] : args[0] instanceof URL ? args[0].href : args[0].url;
-          scope.setTag('route', url);
-        }
+        const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+        scope.setTag('route', url);
         Sentry.captureException(err);
       });
       throw err;

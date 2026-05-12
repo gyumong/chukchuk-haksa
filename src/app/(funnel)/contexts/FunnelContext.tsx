@@ -2,25 +2,32 @@
 
 import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { StudentInfo } from '@/shared/api/data-contracts';
+import type { StudentInfoSummary } from '@/shared/api/data-contracts';
 
 interface FunnelContextType {
-  studentInfo: StudentInfo | null;
-  setStudentInfo: (info: StudentInfo) => void;
+  studentInfo: StudentInfoSummary | null;
+  setStudentInfo: (info: StudentInfoSummary) => void;
+  jobId: string | null;
+  setJobId: (id: string) => void;
 }
 
 const FunnelContext = createContext<FunnelContextType | null>(null);
 
 export function FunnelProvider({ children }: { children: ReactNode }) {
-  const [studentInfo, setStudentInfo] = useState<StudentInfo | null>(null);
+  const [studentInfo, setStudentInfo] = useState<StudentInfoSummary | null>(null);
+  const [jobId, setJobId] = useState<string | null>(null);
 
-  return <FunnelContext.Provider value={{ studentInfo, setStudentInfo }}>{children}</FunnelContext.Provider>;
+  return (
+    <FunnelContext.Provider value={{ studentInfo, setStudentInfo, jobId, setJobId }}>
+      {children}
+    </FunnelContext.Provider>
+  );
 }
 
-export function useStudentInfo() {
+export function useFunnelContext() {
   const context = useContext(FunnelContext);
   if (!context) {
-    throw new Error('useStudentInfo must be used within a FunnelProvider');
+    throw new Error('useFunnelContext must be used within a FunnelProvider');
   }
   return context;
 }

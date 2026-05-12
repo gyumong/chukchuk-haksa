@@ -10,6 +10,96 @@
  * ---------------------------------------------------------------
  */
 
+/** 포털 연동 job 생성 요청 */
+export interface LinkRequest {
+  /**
+   * 포털 타입
+   * @example "suwon"
+   */
+  portal_type: string;
+  /**
+   * 포털 아이디
+   * @example "17019013"
+   */
+  username: string;
+  /**
+   * 포털 비밀번호
+   * @example "pw"
+   */
+  password: string;
+}
+
+/** 스크래핑 job 수락 응답 */
+export interface AcceptedResponse {
+  /**
+   * job id
+   * @example "job-123"
+   */
+  job_id?: string;
+  /**
+   * 상태 조회 경로
+   * @example "/portal/link/jobs/job-123"
+   */
+  polling_endpoint?: string;
+  /**
+   * 수락 상태
+   * @example "accepted"
+   */
+  status?: string;
+}
+
+/** 성공 응답 포맷 */
+export interface SuccessResponseAcceptedResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 스크래핑 job 수락 응답 */
+  data: AcceptedResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+/** 메시지 응답 DTO */
+export interface MessageOnlyResponse {
+  /**
+   * 결과 메시지
+   * @example "목표 학점 저장 완료"
+   */
+  message?: string;
+}
+
+/** 에러 상세 정보 */
+export interface ErrorDetail {
+  /**
+   * 에러 코드
+   * @example "U01"
+   */
+  code: string;
+  /**
+   * 에러 메시지
+   * @example "해당 사용자를 찾을 수 없습니다."
+   */
+  message: string;
+  /** 에러 추가 정보 */
+  details?: object | null;
+}
+
+/** API 에러 응답 포맷 */
+export interface ErrorResponseWrapper {
+  /**
+   * 성공 여부
+   * @example false
+   */
+  success: boolean;
+  /** 에러 상세 정보 */
+  error?: ErrorDetail;
+}
+
 /** 회원가입 및 로그인 응답 */
 export interface SignInApiResponse {
   /**
@@ -45,115 +135,20 @@ export interface SignInResponse {
   isPortalLinked: boolean;
 }
 
-/** 에러 상세 정보 */
-export interface ErrorDetail {
-  /**
-   * 에러 코드
-   * @example "U01"
-   */
-  code: string;
-  /**
-   * 에러 메시지
-   * @example "해당 사용자를 찾을 수 없습니다."
-   */
-  message: string;
-  /** 에러 추가 정보 */
-  details?: object | null;
-}
-
-/** API 에러 응답 포맷 */
-export interface ErrorResponseWrapper {
-  /**
-   * 성공 여부
-   * @example false
-   */
-  success: boolean;
-  /** 에러 상세 정보 */
-  error?: ErrorDetail;
-}
-
-/** 카카오 로그인 요청 정보 */
+/** 소셜 로그인 요청 정보 */
 export interface SignInRequest {
-  /** 카카오에서 발급받은 ID 토큰 */
+  /**
+   * OIDC Provider
+   * @example "KAKAO"
+   */
+  provider: "KAKAO" | "APPLE";
+  /** OIDC Provider에서 발급받은 ID 토큰 */
   id_token: string;
   /**
    * 로그인 시 사용한 nonce 값
    * @example "random_nonce_value"
    */
   nonce: string;
-}
-
-/** 포털 데이터 크롤링 응답 */
-export interface ScrapingApiResponse {
-  /**
-   * 성공 여부
-   * @example true
-   */
-  success: boolean;
-  /** 포털 연동 또는 재연동 및 학업 이력 동기화 성공 응답 */
-  data: ScrapingResponse;
-  /**
-   * 메시지
-   * @example "요청 성공"
-   */
-  message?: string;
-}
-
-/** 포털 연동 또는 재연동 및 학업 이력 동기화 성공 응답 */
-export interface ScrapingResponse {
-  /**
-   * 작업 ID
-   * @example "4aabf0d0-1c23-4f3d-845e-24c9c943deed"
-   */
-  taskId?: string;
-  /** 학생 정보 요약 */
-  studentInfo?: StudentInfo;
-  /**
-   * 포털 연동 상태
-   * @example "SUCCESS / ALREADY_CONNECTED"
-   */
-  status?: string;
-}
-
-/** 학생 정보 요약 */
-export interface StudentInfo {
-  name?: string;
-  school?: string;
-  majorName?: string;
-  studentCode?: string;
-  /** @format int32 */
-  gradeLevel?: number;
-  status?: string;
-  /** @format int32 */
-  completedSemesterType?: number;
-}
-
-/** 포털 로그인 응답 */
-export interface PortalLoginApiResponse {
-  /**
-   * 성공 여부
-   * @example true
-   */
-  success: boolean;
-  /** 포털 로그인 응답 */
-  data: PortalLoginResponse;
-  /**
-   * 메시지
-   * @example "요청 성공"
-   */
-  message?: string;
-}
-
-/** 포털 로그인 응답 */
-export type PortalLoginResponse = object;
-
-/** 메시지 응답 DTO */
-export interface MessageOnlyResponse {
-  /**
-   * 결과 메시지
-   * @example "목표 학점 저장 완료"
-   */
-  message?: string;
 }
 
 /** 목표 GPA 설정 응답 */
@@ -216,6 +211,77 @@ export interface RefreshTokenApiResponse {
 export interface RefreshRequest {
   /** Refresh Token */
   refreshToken: string;
+}
+
+/** 스크래핑 job 상태 응답 */
+export interface JobStatusResponse {
+  job_id?: string;
+  portal_type?: string;
+  error_code?: string;
+  error_message?: string;
+  /** @format date-time */
+  created_at?: string;
+  /** @format date-time */
+  updated_at?: string;
+  /** @format date-time */
+  finished_at?: string;
+  status?: string;
+  retryable?: boolean;
+}
+
+/** 성공 응답 포맷 */
+export interface SuccessResponseJobStatusResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 스크래핑 job 상태 응답 */
+  data: JobStatusResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+/** 스크래핑 job 요약 응답 */
+export interface JobSummaryResponse {
+  job_id?: string;
+  /** 포털 학생 요약 정보 */
+  studentInfo?: StudentInfoSummary;
+  /** @format date-time */
+  finished_at?: string;
+  status?: string;
+}
+
+/** 포털 학생 요약 정보 */
+export interface StudentInfoSummary {
+  name?: string;
+  school?: string;
+  majorName?: string;
+  studentCode?: string;
+  /** @format int32 */
+  gradeLevel?: number;
+  status?: string;
+  /** @format int32 */
+  completedSemesterType?: number;
+}
+
+/** 성공 응답 포맷 */
+export interface SuccessResponseJobSummaryResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 스크래핑 job 요약 응답 */
+  data: JobSummaryResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
 }
 
 /** 학생 프로필 응답 */
@@ -669,20 +735,11 @@ export interface DeleteUserApiResponse {
   message?: string;
 }
 
+export type CreatePortalLinkJobData = SuccessResponseAcceptedResponse;
+
+export type HandleCallbackData = MessageOnlyResponse;
+
 export type SignInUserData = SignInApiResponse;
-
-export type StartScrapingData = ScrapingApiResponse;
-
-export type RefreshAndSyncData = ScrapingApiResponse;
-
-export interface LoginParams {
-  /** 포털 로그인 ID */
-  username: string;
-  /** 포털 로그인 비밀번호 */
-  password: string;
-}
-
-export type LoginData = PortalLoginApiResponse;
 
 export interface SetTargetGpaParams {
   /**
@@ -704,6 +761,10 @@ export type ResetStudentDataData = SuccessResponseMessageOnlyResponse;
 export type RefreshResponseData = RefreshTokenApiResponse;
 
 export type SentryTestData = any;
+
+export type GetJobStatusData = SuccessResponseJobStatusResponse;
+
+export type GetJobSummaryData = SuccessResponseJobSummaryResponse;
 
 export type HealthData = string;
 
