@@ -80,7 +80,7 @@
     "swagger-typescript-api": "^13.1.1",
     "typescript": "5.6.3",
     "vitest": "^3.0.5",
-    "wrangler": "^4.59.1"
+    "wrangler": "4.81.1"
   },
   "packageManager": "yarn@4.5.0",
   "resolutions": {

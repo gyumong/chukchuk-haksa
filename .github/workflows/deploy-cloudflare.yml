@@ -90,4 +90,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.81.1'
+          packageManager: yarn
           command: deploy --env ${{ needs.resolve-env.outputs.name }}
