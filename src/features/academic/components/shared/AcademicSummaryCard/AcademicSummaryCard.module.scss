@@ -2,6 +2,7 @@
 @use '@/styles/typography.scss' as typography;
 @use '@/styles/spacing.scss' as spacing;
 @use '@/styles/radius.scss' as radius;
+@use '@/styles/device.scss' as device;
 
 // TODO 여기도 결국 타이포 반응형 대응
 
@@ -17,9 +18,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @include device.compact {
+    padding: spacing.$space-18 spacing.$space-16;
+  }
 }
 
 .statItem {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -39,8 +46,13 @@
 }
 
 .divider {
+  flex-shrink: 0;
   width: 1px;
   height: 27px;
   background-color: color.$gray-400;
   margin: 0 spacing.$space-30;
+
+  @include device.compact {
+    margin: 0 spacing.$space-12;
+  }
 }
