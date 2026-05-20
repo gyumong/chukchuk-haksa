@@ -8,10 +8,16 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
   redirectTo?: RoutePath;
   requirePortalLinked?: boolean;
+  portalLinkRedirectTo?: RoutePath;
 }
 
-const ProtectedRoute = ({ children, redirectTo = '/', requirePortalLinked = false }: ProtectedRouteProps) => {
-  const isChecking = useAuthCheck(redirectTo, requirePortalLinked);
+const ProtectedRoute = ({
+  children,
+  redirectTo = '/',
+  requirePortalLinked = false,
+  portalLinkRedirectTo,
+}: ProtectedRouteProps) => {
+  const isChecking = useAuthCheck(redirectTo, requirePortalLinked, portalLinkRedirectTo);
 
   if (isChecking) {
     return <></>;
