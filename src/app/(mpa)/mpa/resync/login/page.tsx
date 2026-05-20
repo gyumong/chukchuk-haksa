@@ -1,13 +1,16 @@
 'use client';
 
 import type { FormEvent } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { captureException } from '@sentry/nextjs';
 import { FixedButton, TextField } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { usePortalLinkMutation } from '@/features/portal-link/hooks';
+import { popRetry, stashAttemptUsername } from '@/features/portal-link/utils/credentialRetry';
+import { getMessageByErrorCode } from '@/features/portal-link/utils/errorMapping';
 import { RESYNC_JOB_ID_KEY } from '@/constants/portal-link';
+import { ApiError } from '@/shared/api/errors';
 import { generateIdempotencyKey } from '@/shared/utils/idempotency';
 import { FunnelHeadline, SchoolCard } from '@/app/(funnel)/components';
 import styles from '@/app/resync/login/page.module.scss';
@@ -19,6 +22,16 @@ export default function MpaResyncLogin() {
   const router = useInternalRouter();
   const linkMutation = usePortalLinkMutation();
 
+  useEffect(() => {
+    const { username: retriedUsername, code } = popRetry();
+    if (retriedUsername) {
+      setUsername(retriedUsername);
+    }
+    if (code) {
+      setErrorMessage(getMessageByErrorCode(code));
+    }
+  }, []);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -26,6 +39,7 @@ export default function MpaResyncLogin() {
       setErrorMessage('');
 
       const idempotencyKey = generateIdempotencyKey();
+      stashAttemptUsername(username);
       const result = await linkMutation.mutateAsync({ username, password, idempotencyKey });
       const jobId = result.data?.job_id;
 
@@ -35,9 +49,15 @@ export default function MpaResyncLogin() {
       } else {
         setErrorMessage('연동 요청에 실패했습니다. 다시 시도해주세요.');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       captureException(err);
-      setErrorMessage(err.message ?? '알 수 없는 오류가 발생했어요\n잠시후 다시 시도해주세요');
+      const message =
+        err instanceof ApiError
+          ? err.userMessage
+          : err instanceof Error && err.message
+            ? err.message
+            : '알 수 없는 오류가 발생했어요\n잠시후 다시 시도해주세요';
+      setErrorMessage(message);
     }
   };
 
