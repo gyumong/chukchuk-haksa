@@ -1,14 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { FixedButton } from '@/components/ui';
+import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
-import { usePortalLinkJobPolling } from '@/features/portal-link/hooks';
-import { getPortalLinkErrorMessage, TIMEOUT_ERROR_MESSAGE } from '@/features/portal-link/utils/errorMapping';
+import { usePortalLinkFailure, usePortalLinkJobPolling } from '@/features/portal-link/hooks';
+import { clearRetry } from '@/features/portal-link/utils/credentialRetry';
 import { RESYNC_JOB_ID_KEY } from '@/constants/portal-link';
-import LoadingScreen from '../../(funnel)/components/LoadingScreen/LoadingScreen';
+import ErrorScreen from '@/app/(funnel)/components/ErrorScreen/ErrorScreen';
+import LoadingScreen from '@/app/(funnel)/components/LoadingScreen/LoadingScreen';
+import styles from './error.module.scss';
+
+const MISSING_JOB_MESSAGE = '연동 정보를 찾을 수 없습니다. 다시 로그인해주세요.';
 
 export default function ScrapingPage() {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useInternalRouter();
 
   const [jobId, setJobId] = useState<string | null>(null);
@@ -23,34 +28,46 @@ export default function ScrapingPage() {
   const jobStatus = jobStatusData?.data?.status;
   const jobDetail = jobStatusData?.data;
 
+  const clearJobId = useCallback(() => {
+    sessionStorage.removeItem(RESYNC_JOB_ID_KEY);
+  }, []);
+
   useEffect(() => {
     if (jobStatus === 'succeeded') {
-      sessionStorage.removeItem(RESYNC_JOB_ID_KEY);
-      router.push('/main');
+      clearJobId();
+      clearRetry();
+      router.push(ROUTES.MAIN);
     }
-  }, [jobStatus, router]);
+  }, [jobStatus, router, clearJobId]);
 
-  useEffect(() => {
-    if (jobStatus === 'failed' && jobDetail) {
-      sessionStorage.removeItem(RESYNC_JOB_ID_KEY);
-      const message = getPortalLinkErrorMessage(jobDetail);
-      setErrorMessage(message);
-    }
-  }, [jobStatus, jobDetail]);
+  const { failureMessage } = usePortalLinkFailure({
+    jobStatus,
+    jobDetail,
+    isTimedOut,
+    loginRoute: ROUTES.RESYNC.LOGIN,
+    onCleanup: clearJobId,
+  });
 
-  useEffect(() => {
-    if (isTimedOut) {
-      sessionStorage.removeItem(RESYNC_JOB_ID_KEY);
-      setErrorMessage(TIMEOUT_ERROR_MESSAGE);
-    }
-  }, [isTimedOut]);
+  const handleRetry = () => {
+    router.push(ROUTES.RESYNC.LOGIN);
+  };
 
-  if (errorMessage) {
-    throw new Error(errorMessage);
+  if (failureMessage) {
+    return (
+      <div className={styles.container}>
+        <ErrorScreen errorMessage={failureMessage} />
+        <FixedButton onClick={handleRetry}>다시 시도하기</FixedButton>
+      </div>
+    );
   }
 
   if (isJobIdResolved && !jobId) {
-    throw new Error('연동 정보를 찾을 수 없습니다. 다시 로그인해주세요.');
+    return (
+      <div className={styles.container}>
+        <ErrorScreen errorMessage={MISSING_JOB_MESSAGE} />
+        <FixedButton onClick={handleRetry}>다시 시도하기</FixedButton>
+      </div>
+    );
   }
 
   return <LoadingScreen />;

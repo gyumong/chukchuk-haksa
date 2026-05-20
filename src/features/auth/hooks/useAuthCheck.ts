@@ -2,7 +2,11 @@ import { useEffect } from 'react';
 import { useInternalRouter, type RoutePath } from '@/hooks/useInternalRouter';
 import { useAuth } from '../contexts/AuthContext';
 
-export function useAuthCheck(redirectTo: RoutePath = '/', requirePortalLinked: boolean = false) {
+export function useAuthCheck(
+  redirectTo: RoutePath = '/',
+  requirePortalLinked: boolean = false,
+  portalLinkRedirectTo: RoutePath = redirectTo
+) {
   const router = useInternalRouter();
   const { accessToken, isPortalLinked, isReady } = useAuth();
 
@@ -15,9 +19,9 @@ export function useAuthCheck(redirectTo: RoutePath = '/', requirePortalLinked: b
     }
 
     if (requirePortalLinked && isPortalLinked === false) {
-      router.push(redirectTo);
+      router.push(portalLinkRedirectTo);
     }
-  }, [accessToken, isPortalLinked, isReady, redirectTo, requirePortalLinked, router]);
+  }, [accessToken, isPortalLinked, isReady, redirectTo, requirePortalLinked, portalLinkRedirectTo, router]);
 
   return !isReady;
 }

@@ -14,7 +14,7 @@ export default function FunnelLayout({ children }: PropsWithChildren) {
   };
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute requirePortalLinked={true} portalLinkRedirectTo={ROUTES.FUNNEL.PORTAL_LOGIN}>
       <div className={styles.container}>
         <TopNavigation.Preset
           title="수원대학교"
