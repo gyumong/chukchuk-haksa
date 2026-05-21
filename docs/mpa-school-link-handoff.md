@@ -114,7 +114,7 @@ iOS 14+ 의 ITP(Intelligent Tracking Prevention) 가 app-bound 로 등록되지 
 | 메시지 | 송출 위치 | 의미 |
 |---|---|---|
 | `navigate:<path>` | `src/lib/webview/bridge.ts` `navigateNative()` | 네이티브가 해당 path 로 화면 전환. path 처리 방식은 아래 path 표 참조 |
-| `navigateBack` | `src/hooks/useInternalRouter.ts` `back()` (웹뷰 & 비-funnel 경로) | 웹 화면의 `<` 뒤로가기 버튼 탭. 네이티브가 뒤로가기를 주관 |
+| `navigateBack` | `src/hooks/useInternalRouter.ts` `back()` (웹뷰) | 웹 `<` 뒤로가기 버튼 탭 **알림**. 실제 뒤로가기는 웹이 `router.back()` 으로 수행하고, 네이티브는 이동하지 않고 UI 동기화(앱바 등)에만 사용 |
 | `done:portal-link` | `/mpa/resync/scraping` succeeded 시 | 학교 인증 잡 완료. 네이티브가 webview 닫고 dashboard 등 갱신 |
 
 **`navigate:<path>` path 처리 방식 (모바일 팀 합의 필수)**
@@ -130,11 +130,10 @@ iOS 14+ 의 ITP(Intelligent Tracking Prevention) 가 app-bound 로 등록되지 
 1. webview 컨테이너 dismiss/pop
 2. 직전 화면(예: 마이페이지·홈)에서 프로필/학사 정보 갱신 트리거
 
-**합의 필요 (`navigateBack`)**: 웹의 `<` 뒤로가기 버튼 탭 시 송출(colon 없는 단일 토큰이라 `navigate:<path>` 파서와 비충돌). 수신 시 권장 동작:
-1. webview history depth(`WebView.canGoBack()` / `WKWebView.backForwardList`)가 1 이상이면 `webView.goBack()` 으로 웹 내부 한 단계 뒤로
-2. depth 0 이면 네이티브 내비 스택 pop 또는 webview dismiss
-3. 상세 근거: `webview-mpa-request-response.md` 권장사항 #2·#3, 시나리오 A/C
-4. `(funnel)` 경로(`/portal-login`,`/scraping`,`/agreement`,`/complete`,`/target-score`)는 웹이 송출하지 않음(퍼널 자체 흐름 보호)
+**합의 필요 (`navigateBack`)**: 웹의 `<` 뒤로가기 버튼 탭 시 송출(colon 없는 단일 토큰이라 `navigate:<path>` 파서와 비충돌). **실제 뒤로가기는 웹이 `router.back()` 으로 직접 수행한다.** 따라서:
+1. **네이티브는 이 메시지로 `webView.goBack()` 이나 스택 pop 을 하면 안 된다** — 웹이 이미 뒤로 가므로 두 단계 back(중복 이동)이 된다.
+2. 네이티브는 이 알림을 **UI 동기화 용도로만** 사용한다(예: 앱바 타이틀/뒤로가기 표시 갱신).
+3. 웹 내부 히스토리가 없는 루트에서의 webview 종료 처리는 이 메시지로 다루지 않는다(별도 신호 필요 — 현재 미정, 후속 트랙). 참고: `webview-mpa-request-response.md`
 
 ### M4. POST /api/session 익스체인지 호출 시점
 
