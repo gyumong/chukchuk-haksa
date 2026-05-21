@@ -1,5 +1,7 @@
 * {
   box-sizing: border-box;
+  /* 안드로이드/iOS 웹뷰에서 요소 탭 시 나타나는 파란 하이라이트 제거 */
+  -webkit-tap-highlight-color: transparent;
 }
 
 html,

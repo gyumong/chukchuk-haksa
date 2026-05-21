@@ -67,3 +67,9 @@ export const postBridgeMessage = (message: string): boolean => {
 export const navigateNative = (url: string): boolean => {
   return postBridgeMessage(`navigate:${url}`);
 };
+
+// 웹 화면의 < 뒤로가기 버튼 탭을 네이티브에 위임한다. colon 없는 단일 토큰이라
+// 기존 navigate:<path> 파서와 충돌하지 않는다. 프로토콜: docs/mpa-school-link-handoff.md M3.
+export const navigateBack = (): boolean => {
+  return postBridgeMessage('navigateBack');
+};
