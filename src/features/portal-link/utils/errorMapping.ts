@@ -48,6 +48,6 @@ export function classifyPortalLinkFailure(job: JobStatusResponse): PortalLinkFai
   if (INELIGIBLE_CODES.has(code)) {
     return { kind: 'ineligible', code, message: getMessageByErrorCode(code), shouldCapture: false };
   }
-  // 미상 코드는 관측이 필요한 시스템 이상으로 분류
-  return { kind: 'system', code, message: DEFAULT_ERROR_MESSAGE, shouldCapture: true };
+  // 미상 코드는 관측이 필요한 시스템 이상으로 분류. 매핑된 메시지가 있으면 활용, 없으면 기본 메시지.
+  return { kind: 'system', code, message: getMessageByErrorCode(code), shouldCapture: true };
 }
