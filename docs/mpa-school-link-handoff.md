@@ -42,7 +42,7 @@
 
 **B1 도입 전까지의 노출 면**
 - `POST /api/session` 은 임의의 ac/re 토큰을 그대로 봉인 → 위조 호출 시 쓰레기 cchaksa_session 발급 가능 (백엔드 호출은 401 로 차단되지만 쿠키 자체는 30일 유효)
-- `isPortalLinked` 는 요청 바디에서 받지 않고 항상 `false` 강제 → 위조 호출이 portal-link 통과 상태로 세션 승격하는 경로 차단. 실제 연동 상태는 재로그인(auth callback) 또는 백엔드 me/profile 응답으로만 갱신
+- `isPortalLinked` 는 POST 요청 바디에서 받지 않고 항상 `false` 강제 → 위조 호출이 portal-link 통과 상태로 세션 승격하는 경로 차단. 실제 연동 상태는 **`GET /api/session` 핸들러가 백엔드 `GET /api/student/profile` 를 probe (3s timeout) 해서 200 응답 시 세션을 `true` 로 승격**. 한 번 승격되면 이후 호출은 추가 probe 없이 즉시 응답. 재로그인(auth callback) 경로에서도 동일하게 갱신됨
 - 발급 시점 CSRF 1차 보호: HTTPS + JSON 본문 요구 + same-origin/CORS 로 외부 페이지의 자동 POST 차단. (SameSite=Lax / HttpOnly 는 *발급된* cchaksa_session 의 후속 보호이지 발급 시점 방어선이 아님 — 서버측 `Origin` 헤더 검증 추가는 후속 강화 트랙)
 
 **재도입 트리거** (필요 시 git history 에서 게이트 코드 복원)
@@ -113,12 +113,28 @@ iOS 14+ 의 ITP(Intelligent Tracking Prevention) 가 app-bound 로 등록되지 
 
 | 메시지 | 송출 위치 | 의미 |
 |---|---|---|
-| `navigate:<path>` | `src/lib/webview/bridge.ts` `navigateNative()` | 네이티브가 해당 path 로 화면 전환 (예: `navigate:/mpa/graduation-progress`) |
+| `navigate:<path>` | `src/lib/webview/bridge.ts` `navigateNative()` | 네이티브가 해당 path 로 화면 전환. path 처리 방식은 아래 path 표 참조 |
+| `navigateBack` | `src/hooks/useInternalRouter.ts` `back()` (웹뷰 & 비-funnel 경로) | 웹 화면의 `<` 뒤로가기 버튼 탭. 네이티브가 뒤로가기를 주관 |
 | `done:portal-link` | `/mpa/resync/scraping` succeeded 시 | 학교 인증 잡 완료. 네이티브가 webview 닫고 dashboard 등 갱신 |
 
-**합의 필요**: `done:portal-link` 수신 시 네이티브 동작. 권장 동작:
+**`navigate:<path>` path 처리 방식 (모바일 팀 합의 필수)**
+
+| path | 처리 방식 | 게이트 |
+|---|---|---|
+| `/mpa/home`, `/mpa/me`, `/mpa/graduation-progress`, `/mpa/resync/login`, `/mpa/resync/scraping` | **실재하는 Next.js 페이지** — webview 로 그대로 로드 (loadUrl 가능) | FE `ProtectedRoute` |
+| `/mpa/delete` | **dispatch key (Next.js 페이지 없음)** — 네이티브 자체 화면/액션으로 해석. 절대 그대로 loadUrl 금지 (404) | 네이티브 책임 |
+
+`/mpa/graduation-progress` 는 `(mpa)` 레이아웃 + `requirePortalLinked={true}` 게이트 적용. 미연동 사용자는 `/mpa/home` 으로 리다이렉트.
+
+**합의 필요 (`done:portal-link`)**: 수신 시 네이티브 동작. 권장 동작:
 1. webview 컨테이너 dismiss/pop
 2. 직전 화면(예: 마이페이지·홈)에서 프로필/학사 정보 갱신 트리거
+
+**합의 필요 (`navigateBack`)**: 웹의 `<` 뒤로가기 버튼 탭 시 송출(colon 없는 단일 토큰이라 `navigate:<path>` 파서와 비충돌). 수신 시 권장 동작:
+1. webview history depth(`WebView.canGoBack()` / `WKWebView.backForwardList`)가 1 이상이면 `webView.goBack()` 으로 웹 내부 한 단계 뒤로
+2. depth 0 이면 네이티브 내비 스택 pop 또는 webview dismiss
+3. 상세 근거: `webview-mpa-request-response.md` 권장사항 #2·#3, 시나리오 A/C
+4. `(funnel)` 경로(`/portal-login`,`/scraping`,`/agreement`,`/complete`,`/target-score`)는 웹이 송출하지 않음(퍼널 자체 흐름 보호)
 
 ### M4. POST /api/session 익스체인지 호출 시점
 
