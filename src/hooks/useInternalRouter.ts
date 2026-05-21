@@ -1,12 +1,8 @@
 import { useMemo } from 'react';
 import type { NavigateOptions } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
-import { ROUTES } from '@/constants/routes';
-import { navigateBack } from '@/lib/webview';
-
-// (funnel) 그룹 경로. 이 경로들에서는 뒤로가기를 네이티브에 위임하지 않고 웹이 자체 처리한다.
-// 현재 funnel 은 back() 을 호출하지 않으나, 향후 추가 시 퍼널 전체가 닫히는 것을 막는 방어 가드.
-const FUNNEL_PATHS = new Set<string>(Object.values(ROUTES.FUNNEL));
+import type { ROUTES } from '@/constants/routes';
+import { isInWebView, navigateBack } from '@/lib/webview';
 
 export const useInternalRouter = () => {
   const router = useRouter();
@@ -65,12 +61,10 @@ export const useInternalRouter = () => {
       },
 
       back: () => {
-        // usePathname() 은 이 훅을 쓰는 다수 컴포넌트를 매 라우팅마다 리렌더시키므로 쓰지 않고,
-        // 클릭 시점(클라이언트)에만 현재 경로를 읽어 구독 없이 판정한다.
-        const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-        // 비-funnel 경로 & 웹뷰면 navigateBack 을 네이티브로 송출하고 위임. 그 외엔 기존대로 router.back().
-        if (!FUNNEL_PATHS.has(pathname) && navigateBack()) {
-          return;
+        // 실제 뒤로가기는 항상 웹이 수행한다. 웹뷰일 때는 네이티브에도 알려(앱바 동기화 등) 주지만,
+        // 네이티브는 이 알림으로 직접 이동하지 않는다(이동 시 router.back() 과 중복). 프로토콜: M3.
+        if (isInWebView()) {
+          navigateBack();
         }
         router.back();
       },
