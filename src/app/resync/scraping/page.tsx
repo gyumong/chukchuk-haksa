@@ -30,6 +30,7 @@ export default function ScrapingPage() {
 
   const clearJobId = useCallback(() => {
     sessionStorage.removeItem(RESYNC_JOB_ID_KEY);
+    setJobId(null);
   }, []);
 
   useEffect(() => {

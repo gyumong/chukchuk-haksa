@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { captureException } from '@sentry/nextjs';
 import { getSession } from '@/lib/auth/session';
 import { getApiBaseUrl } from '@/config/environment';
 
@@ -21,7 +22,14 @@ async function probePortalLinked(accessToken: string): Promise<boolean> {
       cache: 'no-store',
     });
     return response.ok;
-  } catch {
+  } catch (error) {
+    // 타임아웃(AbortError)은 예상된 경로라 캡처하지 않고, 그 외 네트워크/예외만 관측한다.
+    if (!(error instanceof Error && error.name === 'AbortError')) {
+      captureException(error, {
+        tags: { scope: 'session', action: 'probePortalLinked' },
+        extra: { endpoint: '/api/student/profile', timeoutMs: PORTAL_LINKED_PROBE_TIMEOUT_MS },
+      });
+    }
     return false;
   } finally {
     clearTimeout(timeoutId);
