@@ -42,7 +42,7 @@
 
 **B1 도입 전까지의 노출 면**
 - `POST /api/session` 은 임의의 ac/re 토큰을 그대로 봉인 → 위조 호출 시 쓰레기 cchaksa_session 발급 가능 (백엔드 호출은 401 로 차단되지만 쿠키 자체는 30일 유효)
-- `isPortalLinked` 는 POST 요청 바디에서 받지 않고 항상 `false` 강제 → 위조 호출이 portal-link 통과 상태로 세션 승격하는 경로 차단. 실제 연동 상태는 **`GET /api/session` 핸들러가 백엔드 `GET /api/student/profile` 를 probe (3s timeout) 해서 200 응답 시 세션을 `true` 로 승격**. 한 번 승격되면 이후 호출은 추가 probe 없이 즉시 응답. 재로그인(auth callback) 경로에서도 동일하게 갱신됨
+- `isPortalLinked` 는 POST 요청 바디에서 받지 않고 백엔드 probe 결과로 결정 → 위조 호출이 portal-link 통과 상태로 세션 승격하는 경로 차단. **`POST /api/session` 핸들러가 sealData 직전 백엔드 `GET /api/student/profile` 를 probe (3s timeout) 해서 200 응답 시 세션을 `true` 로 봉인.** POST probe 가 실패(타임아웃·네트워크)하면 `false` 로 봉인되고, 이후 `GET /api/session` 호출에서 동일한 probe 로 재시도 (fallback). 한 번 승격되면 추가 probe 없이 즉시 응답. 재로그인(auth callback) 경로에서도 동일하게 갱신됨
 - 발급 시점 CSRF 1차 보호: HTTPS + JSON 본문 요구 + same-origin/CORS 로 외부 페이지의 자동 POST 차단. (SameSite=Lax / HttpOnly 는 *발급된* cchaksa_session 의 후속 보호이지 발급 시점 방어선이 아님 — 서버측 `Origin` 헤더 검증 추가는 후속 강화 트랙)
 
 **재도입 트리거** (필요 시 git history 에서 게이트 코드 복원)
