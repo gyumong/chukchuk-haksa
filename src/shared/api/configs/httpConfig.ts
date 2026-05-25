@@ -5,6 +5,22 @@ import type { ApiConfig } from '../http-client';
 
 const BASE_URL = getApiBaseUrl();
 
+// iOS WKWebView 가 connection pool 에 남은 죽은 connection 을 재사용할 때 즉시 TCP RST 를
+// 받아 `TypeError: Load failed` 를 ~10ms 만에 throw 하는 케이스가 관측됨 (Sentry CCHAKSA-56).
+// AWS API Gateway 처럼 짧은 idle timeout 을 가진 백엔드에서 흔하고, Chromium 은 자체 retry
+// 로 가려지지만 WebKit 은 노출됨. 한 번 재시도하면 새 connection 이 만들어져 풀의 stale
+// entry 를 우회 → 일시적 NETWORK_ERROR 회복. 두 번째도 throw 면 진짜 망 문제로 보고 propagate.
+async function fetchWithStaleConnRetry(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  try {
+    return await fetch(input, init);
+  } catch (err: unknown) {
+    if (err instanceof TypeError) {
+      return fetch(input, init);
+    }
+    throw err;
+  }
+}
+
 export const createApiConfig = (): ApiConfig => ({
   baseUrl: BASE_URL,
   securityWorker: async () => {
@@ -24,7 +40,7 @@ export const createApiConfig = (): ApiConfig => ({
   },
   customFetch: async (input, init) => {
     try {
-      let response = await fetch(input, init);
+      let response = await fetchWithStaleConnRetry(input, init);
 
       if (response.status === 401) {
         const headers = new Headers(init?.headers);
@@ -32,7 +48,7 @@ export const createApiConfig = (): ApiConfig => ({
           const newAccessToken = await refreshAccessTokenStore();
           if (newAccessToken) {
             headers.set('Authorization', `Bearer ${newAccessToken}`);
-            response = await fetch(input, { ...init, headers });
+            response = await fetchWithStaleConnRetry(input, { ...init, headers });
           }
         }
       }
