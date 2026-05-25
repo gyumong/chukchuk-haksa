@@ -50,16 +50,17 @@ async function probeStudentProfile(accessToken: string): Promise<ProbeResult> {
 // GET /api/session: 클라이언트 하이드레이션 진입점.
 // 1. 쿠키에서 토큰 꺼냄
 // 2. 백엔드 probe 로 유효성 검증
-// 3. probe 가 명시적 401 또는 'error'(타임아웃·5xx) 이고 refreshToken 있으면 서버 측에서 refresh 실행
-// 4. 회복 불가능하면 결과에 따라 분기:
-//    - 'unauthorized' + refresh 실패 → 세션 폐기 + 401 응답 (확정 만료)
-//    - 'error' + refresh 실패        → 세션 유지 + 현재 토큰 그대로 응답 (백엔드 일시 장애 추정)
+// 3. probe 가 'ok' 가 아니면(만료·timeout·5xx 등) refresh 시도
+// 4. refresh 실패 시 세션 폐기 + 401 응답 → 클라이언트가 로그아웃 흐름 진입
 //
-// 'error' 분기에서도 refresh 시도하는 이유 — 백엔드가 만료 JWT 처리 중 hang 해서 probe 가 timeout 으로
-// 'error' 떨어지는 케이스 관측됨 (Sentry CCHAKSA-56). 이 경우 토큰이 사실상 만료라 refresh 가 필요한데
-// probe 가 401 을 못 받아서 회복 못 함. 'error' 에서도 refresh 시도하면 백엔드 hang 우회 가능
-// (refresh 엔드포인트는 expired-token hang 영향 없음). 다만 진짜 일시 장애일 수 있으니 refresh 실패 시
-// 세션은 유지.
+// probe 가 'error' (타임아웃·5xx) 일 때도 refresh 시도하는 이유 — 백엔드가 만료 JWT 처리 중 hang 해서
+// probe 가 401 을 못 받고 timeout 으로 'error' 떨어지는 케이스 관측됨 (Sentry CCHAKSA-56).
+// refresh 엔드포인트는 별도 refreshToken 으로 호출되어 expired-token hang 영향 없음 → 새 토큰 발급 가능.
+//
+// refresh 실패 시 분기 단순화: probe 가 'unauthorized' 든 'error' 든 무조건 세션 폐기.
+// 사용자가 깨진 화면에 갇히는 것보다 로그인 화면으로 보내는 게 명확. 진짜 백엔드 일시 장애여도
+// 로그인 시도 자체가 분명한 액션을 제공 (정상이면 재로그인 후 정상, 백엔드 다운이면 로그인도 실패해서 인지 가능).
+//
 // isPortalLinked 는 probe 결과(`'ok'`)로만 true 로 승격 — 클라이언트 임의 값 신뢰 안 함.
 export async function GET() {
   const session = await getSession();
@@ -70,21 +71,12 @@ export async function GET() {
 
   let probe = await probeStudentProfile(session.accessToken);
 
-  if (probe === 'unauthorized' || probe === 'error') {
+  if (probe !== 'ok') {
     const refreshed = session.refreshToken ? await refreshTokensFromBackend(session.refreshToken) : null;
 
     if (!refreshed) {
-      if (probe === 'unauthorized') {
-        // 명시적 401 → 토큰 확정 만료. 세션 폐기 후 클라이언트 로그아웃 흐름.
-        session.destroy();
-        return NextResponse.json({ error: 'SESSION_EXPIRED' }, { status: 401 });
-      }
-      // probe === 'error' + refresh 실패 → 백엔드 일시 장애 추정. 세션 유지, 현재 토큰 반환.
-      // 다음 GET 에서 자연스럽게 재시도됨.
-      return NextResponse.json({
-        accessToken: session.accessToken,
-        isPortalLinked: session.isPortalLinked ?? false,
-      });
+      session.destroy();
+      return NextResponse.json({ error: 'SESSION_EXPIRED' }, { status: 401 });
     }
 
     session.accessToken = refreshed.accessToken;
