@@ -6,8 +6,13 @@ import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { useSetTargetGpaMutation } from '@/features/student/apis/queries/useSetTargetGpaMutation';
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
+import { isInWebView, postBridgeMessage } from '@/lib/webview';
 import { FunnelHeadline, ScoreInput } from '../components';
 import styles from './page.module.scss';
+
+// MPA(webview) 진입의 첫 연동 완료 신호. 네이티브가 webview 닫고 dashboard 갱신.
+// 프로토콜: docs/mpa-school-link-handoff.md
+const BRIDGE_DONE_PORTAL_LINK = 'done:portal-link';
 
 export default function TargetScorePage() {
   const [score, setScore] = useState('3.5');
@@ -17,7 +22,11 @@ export default function TargetScorePage() {
   const handleSubmit = async () => {
     try {
       await mutation.mutateAsync(parseFloat(score));
-      router.push(`${ROUTES.MAIN}`);
+      if (isInWebView()) {
+        postBridgeMessage(BRIDGE_DONE_PORTAL_LINK);
+      } else {
+        router.push(`${ROUTES.MAIN}`);
+      }
     } catch (error) {
       console.error('Failed to set target score:', error);
       alert(error instanceof Error ? error.message : '목표 학점 설정에 실패했습니다.');
