@@ -116,6 +116,7 @@ iOS 14+ 의 ITP(Intelligent Tracking Prevention) 가 app-bound 로 등록되지 
 | `navigate:<path>` | `src/lib/webview/bridge.ts` `navigateNative()` | 네이티브가 해당 path 로 화면 전환. path 처리 방식은 아래 path 표 참조 |
 | `navigateBack` | `src/hooks/useInternalRouter.ts` `back()` (웹뷰) | 웹 `<` 뒤로가기 버튼 탭 **알림**. 실제 뒤로가기는 웹이 `router.back()` 으로 수행하고, 네이티브는 이동하지 않고 UI 동기화(앱바 등)에만 사용 |
 | `done:portal-link` | `/mpa/resync/scraping` succeeded 시 | 학교 인증 잡 완료. 네이티브가 webview 닫고 dashboard 등 갱신 |
+| `skip:portal-link` | `/mpa/portal-login` 의 "즉시 학교 연동이 불가하신가요?" 다이얼로그 확인 버튼 | 사용자가 학교 인증 없이 진입 의사 표시 (신입생·편입생 등). 네이티브가 webview dismiss + 시간표 만들기 화면으로 전환. `done:portal-link` 와 구분 — `done` 은 인증 성공 완료, `skip` 은 인증 건너뜀 |
 
 **`navigate:<path>` path 처리 방식 (모바일 팀 합의 필수)**
 
@@ -129,6 +130,11 @@ iOS 14+ 의 ITP(Intelligent Tracking Prevention) 가 app-bound 로 등록되지 
 **합의 필요 (`done:portal-link`)**: 수신 시 네이티브 동작. 권장 동작:
 1. webview 컨테이너 dismiss/pop
 2. 직전 화면(예: 마이페이지·홈)에서 프로필/학사 정보 갱신 트리거
+
+**합의 필요 (`skip:portal-link`)**: 수신 시 네이티브 동작. 권장 동작:
+1. webview 컨테이너 dismiss/pop
+2. 시간표 만들기(또는 학교 연동 없이 사용 가능한 진입 화면)로 전환
+3. 사용자 상태는 "미인증" 으로 유지 — 이후 학교 인증 진입 경로는 별도 UI 에서 제공
 
 **합의 필요 (`navigateBack`)**: 웹의 `<` 뒤로가기 버튼 탭 시 송출(colon 없는 단일 토큰이라 `navigate:<path>` 파서와 비충돌). **실제 뒤로가기는 웹이 `router.back()` 으로 직접 수행한다.** 따라서:
 1. **네이티브는 이 메시지로 `webView.goBack()` 이나 스택 pop 을 하면 안 된다** — 웹이 이미 뒤로 가므로 두 단계 back(중복 이동)이 된다.

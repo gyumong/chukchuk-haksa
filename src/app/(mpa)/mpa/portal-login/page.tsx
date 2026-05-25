@@ -4,7 +4,7 @@
 import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { captureException } from '@sentry/nextjs';
-import { FixedButton, TextField } from '@/components/ui';
+import { ConfirmDialog, FixedButton, TextField } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { usePortalLinkMutation } from '@/features/portal-link/hooks';
@@ -13,15 +13,32 @@ import { getMessageByErrorCode } from '@/features/portal-link/utils/errorMapping
 import { PORTAL_LOGIN_JOB_ID_KEY } from '@/constants/portal-link';
 import { ApiError } from '@/shared/api/errors';
 import { generateIdempotencyKey } from '@/shared/utils/idempotency';
+import { isInWebView, postBridgeMessage } from '@/lib/webview';
 import { FunnelHeadline, SchoolCard } from '@/app/(funnel)/components';
-import styles from '@/app/resync/login/page.module.scss';
+import sharedStyles from '@/app/resync/login/page.module.scss';
+import styles from './page.module.scss';
+
+// 신입생·편입생 등 즉시 학교 인증이 불가한 사용자가 "확인" 으로 학교 연동 건너뛰기 선택 시
+// 네이티브에 송출. 네이티브가 webview dismiss + 시간표 만들기 화면으로 전환.
+// 프로토콜: docs/mpa-school-link-handoff.md M3.
+const BRIDGE_SKIP_PORTAL_LINK = 'skip:portal-link';
 
 export default function MpaPortalLogin() {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isSkipDialogOpen, setIsSkipDialogOpen] = useState<boolean>(false);
   const router = useInternalRouter();
   const linkMutation = usePortalLinkMutation();
+
+  const handleSkipConfirm = () => {
+    setIsSkipDialogOpen(false);
+    // 네이티브에 학교 연동 건너뛰기 의사 전달. webview 환경 아니면 noop —
+    // (mpa) 라우트는 webview 전용이라 사실상 도달 안 함, 안전망 차원.
+    if (isInWebView()) {
+      postBridgeMessage(BRIDGE_SKIP_PORTAL_LINK);
+    }
+  };
 
   useEffect(() => {
     const { username: retriedUsername, code } = popRetry();
@@ -63,13 +80,13 @@ export default function MpaPortalLogin() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={sharedStyles.container}>
       <FunnelHeadline
         title="재학 중인 학교<br/>계정을 연동해주세요"
         description="척척학사에서 수집하는 개인 정보는<br/>학교 연동 후 즉시 폐기됩니다."
       />
 
-      <form onSubmit={handleSubmit} className={styles.formContainer}>
+      <form onSubmit={handleSubmit} className={sharedStyles.formContainer}>
         <SchoolCard schoolName="수원대학교" />
 
         <TextField
@@ -88,12 +105,18 @@ export default function MpaPortalLogin() {
         />
 
         {errorMessage && (
-          <div className={styles.errorMessage}>
+          <div className={sharedStyles.errorMessage}>
             {errorMessage.split('\n').map((line, i) => (
               <p key={i}>{line}</p>
             ))}
           </div>
         )}
+
+        <button type="button" className={styles.skipLink} onClick={() => setIsSkipDialogOpen(true)}>
+          즉시 학교 연동이 불가하신가요?
+          <br />
+          (ex. 신입생, 편입생)
+        </button>
 
         <FixedButton
           type="submit"
@@ -103,6 +126,13 @@ export default function MpaPortalLogin() {
           학업 이력 동기화하기
         </FixedButton>
       </form>
+
+      <ConfirmDialog
+        isOpen={isSkipDialogOpen}
+        message={`학교 연동없이 이용시\n'시간표 만들기'만 이용 가능합니다.`}
+        onConfirm={handleSkipConfirm}
+        onClose={() => setIsSkipDialogOpen(false)}
+      />
     </div>
   );
 }
