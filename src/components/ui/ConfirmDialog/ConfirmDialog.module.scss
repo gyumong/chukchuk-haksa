@@ -11,6 +11,7 @@
   justify-content: center;
   padding: spacing.$space-24;
   background-color: rgba(0, 0, 0, 0.5);
+
   // FixedButton 등 page 내 position: fixed 요소들보다 위에 떠야 함.
   z-index: 1000;
 }

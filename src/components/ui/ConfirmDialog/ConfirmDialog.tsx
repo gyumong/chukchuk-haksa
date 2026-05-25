@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useId } from 'react';
 import styles from './ConfirmDialog.module.scss';
 
 interface ConfirmDialogProps {
@@ -27,6 +27,10 @@ export function ConfirmDialog({
   onConfirm,
   onClose,
 }: ConfirmDialogProps) {
+  // 같은 페이지에 ConfirmDialog 가 2개 이상 마운트될 때 id 중복으로 aria-labelledby 가
+  // 잘못 연결되지 않도록 인스턴스마다 고유 id 생성.
+  const titleId = useId();
+
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -50,10 +54,10 @@ export function ConfirmDialog({
         className={styles.dialog}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="confirm-dialog-title"
+        aria-labelledby={titleId}
         onClick={e => e.stopPropagation()}
       >
-        <h2 id="confirm-dialog-title" className={styles.title}>
+        <h2 id={titleId} className={styles.title}>
           {title}
         </h2>
         <p className={styles.message}>{message}</p>

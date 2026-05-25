@@ -49,7 +49,12 @@ export default function MpaPortalLoginScrapingPage() {
     sessionStorage.removeItem(PORTAL_LOGIN_JOB_ID_KEY);
     clearRetry();
     if (isInWebView()) {
-      postBridgeMessage(BRIDGE_DONE_PORTAL_LINK);
+      const posted = postBridgeMessage(BRIDGE_DONE_PORTAL_LINK);
+      if (!posted) {
+        // 브리지 송출 실패(race/예외) 시 사용자가 scraping 화면에 정지하지 않도록
+        // 비-webview 경로와 동일한 fallback 으로 이동. Sentry 캡쳐는 bridge.ts 내부.
+        router.push(ROUTES.MAIN);
+      }
     } else {
       router.push(ROUTES.MAIN);
     }

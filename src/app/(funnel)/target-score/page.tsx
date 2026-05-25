@@ -23,7 +23,12 @@ export default function TargetScorePage() {
     try {
       await mutation.mutateAsync(parseFloat(score));
       if (isInWebView()) {
-        postBridgeMessage(BRIDGE_DONE_PORTAL_LINK);
+        const posted = postBridgeMessage(BRIDGE_DONE_PORTAL_LINK);
+        if (!posted) {
+          // 브리지 송출 실패(race/예외) 시 사용자가 webview 에 정지하지 않도록
+          // 기존 브라우저 경로와 동일한 fallback 으로 이동. Sentry 캡쳐는 bridge.ts 내부.
+          router.push(`${ROUTES.MAIN}`);
+        }
       } else {
         router.push(`${ROUTES.MAIN}`);
       }
