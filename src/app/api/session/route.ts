@@ -7,8 +7,32 @@ import { getApiBaseUrl } from '@/config/environment';
 export const dynamic = 'force-dynamic';
 
 const STUDENT_PROFILE_PROBE_TIMEOUT_MS = 3_000;
+// fast path 에서 토큰 잔여 시간 안전 마진. exp 가 지금 + 이 값 보다 멀리 있어야 probe 생략.
+// 60s 는 임의 — 너무 짧으면 fast path 도중 만료될 위험, 너무 길면 fast path 적중률 떨어짐.
+const FAST_PATH_TOKEN_BUFFER_MS = 60_000;
 
 type ProbeResult = 'ok' | 'unauthorized' | 'error';
+
+// JWT 의 exp 클레임을 디코드해 토큰 만료 여유를 검사한다. 서명 검증 안 함 —
+// 위조 토큰 차단은 백엔드 책임이고, 여기선 fast-path 자격 판정용으로만 쓴다.
+// 형식 이상·exp 없음·디코드 실패는 모두 false 반환해 기존 probe 경로로 폴백.
+function hasTokenTimeLeft(accessToken: string, bufferMs: number): boolean {
+  try {
+    const parts = accessToken.split('.');
+    if (parts.length < 2) {
+      return false;
+    }
+    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
+    const payload = JSON.parse(Buffer.from(padded, 'base64').toString('utf-8')) as { exp?: number };
+    if (typeof payload.exp !== 'number') {
+      return false;
+    }
+    return payload.exp * 1000 > Date.now() + bufferMs;
+  } catch {
+    return false;
+  }
+}
 
 // 백엔드 `/api/student/profile` 호출 결과를 세 종류로 분류해서 반환한다.
 // - 'ok' (200)            → accessToken 유효 + 사용자가 portal-link 완료된 상태
@@ -67,6 +91,20 @@ export async function GET() {
 
   if (!session.accessToken) {
     return NextResponse.json({ error: 'UNAUTHENTICATED' }, { status: 401 });
+  }
+
+  // Fast path: 이미 portal-link 승격됐고 토큰이 충분히 남아있으면 백엔드 probe 생략.
+  // 매 GET 마다 도는 probeStudentProfile (~200ms~3s) 이 isPortalLinked 변경 체감 지연의 주범.
+  // - isPortalLinked === true 일 때만 적용 (false → true 승격은 여전히 probe 필요)
+  // - JWT exp 가 충분히 남았으면 만료 가능성 낮음 — backend revoke 케이스는 다음 API 호출의
+  //   401 fallback 에서 잡혀 refresh 자동 발동 (이미 그 경로 존재)
+  // - 쿠키 maxAge 롤링 위해 session.save() 는 유지 (encrypt 만 수행, 네트워크 없음)
+  if (session.isPortalLinked === true && hasTokenTimeLeft(session.accessToken, FAST_PATH_TOKEN_BUFFER_MS)) {
+    await session.save();
+    return NextResponse.json({
+      accessToken: session.accessToken,
+      isPortalLinked: session.isPortalLinked,
+    });
   }
 
   let probe = await probeStudentProfile(session.accessToken);
