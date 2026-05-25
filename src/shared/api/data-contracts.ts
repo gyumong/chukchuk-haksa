@@ -133,6 +133,12 @@ export interface SignInResponse {
    * @example true
    */
   isPortalLinked: boolean;
+  /**
+   * Amplitude 등 분석 도구 사용자 식별자 (사용자 PK UUID).
+   * 백엔드 필드 키 확정 전 placeholder — 확정 후 yarn api:gen 으로 갱신될 때 정정 가능.
+   * 미응답 시 undefined → 분석 wire-up 자동 skip.
+   */
+  analyticsId?: string;
 }
 
 /** 소셜 로그인 요청 정보 */

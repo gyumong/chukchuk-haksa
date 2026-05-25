@@ -194,6 +194,7 @@ export async function GET() {
   return NextResponse.json({
     accessToken: session.accessToken,
     isPortalLinked: session.isPortalLinked ?? false,
+    analyticsId: session.analyticsId,
   });
 }
 

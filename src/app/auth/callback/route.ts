@@ -25,7 +25,11 @@ export async function GET(request: Request) {
     const redirectUri = getRedirectUri();
 
     const idToken = await getKakaoToken(code, redirectUri);
-    const { accessToken, refreshToken, isPortalLinked } = await authService.login(idToken, nonce, 'KAKAO');
+    const { accessToken, refreshToken, isPortalLinked, analyticsId } = await authService.login(
+      idToken,
+      nonce,
+      'KAKAO'
+    );
 
     if (typeof isPortalLinked !== 'boolean' || !refreshToken) {
       throw new AuthError('User is missing or malformed.');
@@ -35,6 +39,11 @@ export async function GET(request: Request) {
     session.accessToken = accessToken;
     session.refreshToken = refreshToken;
     session.isPortalLinked = isPortalLinked;
+    // analyticsId 는 옵셔널 — 백엔드 미준비 시 undefined 로 graceful degrade.
+    // AuthContext hydration 에서 setAnalyticsUser 가 ID 존재 시에만 호출됨.
+    if (analyticsId) {
+      session.analyticsId = analyticsId;
+    }
     await session.save();
 
     await deleteCookie('state');

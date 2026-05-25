@@ -9,12 +9,12 @@ export const authService = {
       userApi.signInUser({ provider, id_token: idToken, nonce })
     );
 
-    const { accessToken, refreshToken, isPortalLinked } = response.data;
+    const { accessToken, refreshToken, isPortalLinked, analyticsId } = response.data;
 
     if (!accessToken) {
       throw new AuthError('Access token is missing');
     }
 
-    return { accessToken, refreshToken, isPortalLinked };
+    return { accessToken, refreshToken, isPortalLinked, analyticsId };
   },
 };
