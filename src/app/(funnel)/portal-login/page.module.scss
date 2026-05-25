@@ -3,4 +3,8 @@
 
 .container {
   @include utilities.funnel-page-spacing;
+  // iOS WebView 에서 키보드가 올라올 때 비밀번호 입력칸이 가려지지 않도록
+  // 페이지 하단에 스크롤 여유를 확보한다. position: fixed 버튼이 키보드와 함께
+  // 시야를 막는 구조라, 입력 필드가 키보드 위로 스크롤될 수 있는 영역이 필요.
+  padding-bottom: 360px;
 }
