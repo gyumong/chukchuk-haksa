@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { queryClient } from '@/shared/api/configs/queryClient';
 import {
   getAccessTokenStore,
   refreshAccessTokenStore,
@@ -26,6 +27,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     return subscribeAccessTokenStore(token => setAccessTokenState(token));
   }, []);
+
+  // 인증된 적 있다가 token 이 null 로 떨어진 경우 (= 만료 → refresh 실패) React Query 캐시 wipe.
+  // 보호 페이지가 unmount 되는 동안 stale 데이터를 다음 세션이 잘못 재사용하는 사고 방지.
+  const previousTokenRef = useRef<string | null>(accessToken);
+  useEffect(() => {
+    if (previousTokenRef.current !== null && accessToken === null) {
+      queryClient.clear();
+    }
+    previousTokenRef.current = accessToken;
+  }, [accessToken]);
 
   useEffect(() => {
     let cancelled = false;

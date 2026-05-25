@@ -1,19 +1,25 @@
 import { NextResponse } from 'next/server';
 import { captureException } from '@sentry/nextjs';
 import { getSession } from '@/lib/auth/session';
+import { refreshTokensFromBackend } from '@/lib/auth/refreshToken';
 import { getApiBaseUrl } from '@/config/environment';
 
 export const dynamic = 'force-dynamic';
 
-const PORTAL_LINKED_PROBE_TIMEOUT_MS = 3_000;
+const STUDENT_PROFILE_PROBE_TIMEOUT_MS = 3_000;
 
-// isPortalLinked 는 클라이언트가 전달한 값을 신뢰하지 않고, 백엔드 probe 결과로만 결정한다.
-// POST 시점(세션 생성)에서도 probe 를 실행해 첫 응답부터 정확한 값을 반환하며,
-// POST probe 가 실패(타임아웃·네트워크)한 경우 GET 핸들러가 동일한 probe 로 재시도(fallback)한다.
-// 한 번 true 로 승격되면 이후 호출은 추가 백엔드 호출 없이 즉시 응답한다.
-async function probePortalLinked(accessToken: string): Promise<boolean> {
+type ProbeResult = 'ok' | 'unauthorized' | 'error';
+
+// 백엔드 `/api/student/profile` 호출 결과를 세 종류로 분류해서 반환한다.
+// - 'ok' (200)            → accessToken 유효 + 사용자가 portal-link 완료된 상태
+// - 'unauthorized' (401)  → accessToken 만료/무효. refresh 가 필요한 신호
+// - 'error' (그 외)       → 백엔드/네트워크 일시 오류. 상태 변경 없이 fallback 으로 처리
+//
+// GET 에서 토큰 유효성 검증과 isPortalLinked 승격을 한 번의 백엔드 호출로 수행하고,
+// POST 에서 세션 생성 시 isPortalLinked 초기값을 결정한다.
+async function probeStudentProfile(accessToken: string): Promise<ProbeResult> {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), PORTAL_LINKED_PROBE_TIMEOUT_MS);
+  const timeoutId = setTimeout(() => controller.abort(), STUDENT_PROFILE_PROBE_TIMEOUT_MS);
   try {
     const response = await fetch(`${getApiBaseUrl()}/api/student/profile`, {
       method: 'GET',
@@ -21,21 +27,34 @@ async function probePortalLinked(accessToken: string): Promise<boolean> {
       signal: controller.signal,
       cache: 'no-store',
     });
-    return response.ok;
+    if (response.status === 401) {
+      return 'unauthorized';
+    }
+    if (response.ok) {
+      return 'ok';
+    }
+    return 'error';
   } catch (error) {
-    // 타임아웃(AbortError)은 예상된 경로라 캡처하지 않고, 그 외 네트워크/예외만 관측한다.
     if (!(error instanceof Error && error.name === 'AbortError')) {
       captureException(error, {
-        tags: { scope: 'session', action: 'probePortalLinked' },
-        extra: { endpoint: '/api/student/profile', timeoutMs: PORTAL_LINKED_PROBE_TIMEOUT_MS },
+        tags: { scope: 'session', action: 'probeStudentProfile' },
+        extra: { endpoint: '/api/student/profile', timeoutMs: STUDENT_PROFILE_PROBE_TIMEOUT_MS },
       });
     }
-    return false;
+    return 'error';
   } finally {
     clearTimeout(timeoutId);
   }
 }
 
+// GET /api/session: 클라이언트 하이드레이션 진입점.
+// 1. 쿠키에서 토큰 꺼냄
+// 2. 백엔드 probe 로 유효성 검증
+// 3. 만료(401) 이고 refreshToken 있으면 서버 측에서 refresh 실행 → 다시 probe
+// 4. 회복 불가능하면 세션 폐기 후 401 응답 → 클라이언트가 로그아웃 흐름 진입
+//
+// 이로써 클라이언트가 만료된 토큰으로 첫 API 호출하다 401 받아 fallback UI 도배되는 케이스를 차단.
+// isPortalLinked 는 probe 결과(`'ok'`)로만 true 로 승격 — 클라이언트 임의 값 신뢰 안 함.
 export async function GET() {
   const session = await getSession();
 
@@ -43,13 +62,34 @@ export async function GET() {
     return NextResponse.json({ error: 'UNAUTHENTICATED' }, { status: 401 });
   }
 
-  if (session.isPortalLinked !== true) {
-    const linked = await probePortalLinked(session.accessToken);
-    if (linked) {
-      session.isPortalLinked = true;
-      await session.save();
+  let probe = await probeStudentProfile(session.accessToken);
+
+  if (probe === 'unauthorized') {
+    const refreshed = session.refreshToken ? await refreshTokensFromBackend(session.refreshToken) : null;
+
+    if (!refreshed) {
+      session.destroy();
+      return NextResponse.json({ error: 'SESSION_EXPIRED' }, { status: 401 });
+    }
+
+    session.accessToken = refreshed.accessToken;
+    session.refreshToken = refreshed.refreshToken;
+
+    // 새 토큰으로 probe 재시도 — 유효성 재확인 + isPortalLinked 판단.
+    probe = await probeStudentProfile(session.accessToken);
+
+    if (probe === 'unauthorized') {
+      // refresh 가 발급한 토큰조차 거부 → 백엔드 상태 이상. 세션 폐기.
+      session.destroy();
+      return NextResponse.json({ error: 'SESSION_EXPIRED' }, { status: 401 });
     }
   }
+
+  if (probe === 'ok' && session.isPortalLinked !== true) {
+    session.isPortalLinked = true;
+  }
+
+  await session.save();
 
   return NextResponse.json({
     accessToken: session.accessToken,
@@ -71,7 +111,7 @@ interface SessionExchangeBody {
 // 네이티브 앱이 보유한 ac/re 토큰을 cchaksa_session 쿠키로 익스체인지.
 // 시퀀스: docs/mpa-school-link-handoff.md
 // isPortalLinked 는 요청 바디에서 받지 않고 백엔드 probe 결과로 결정 — 클라이언트 임의 값으로
-// 세션 승격되는 경로 차단. probe 가 실패하면 false 로 저장되고 GET 핸들러가 다음 호출 때 재시도.
+// 세션 승격되는 경로 차단. probe 가 일시 실패(`'error'`)면 false 로 저장되고, 다음 GET 에서 재시도.
 // TODO(backend): 토큰 진위 검증 엔드포인트가 추가되면 sealData 직전 호출해 위조 토큰 차단.
 export async function POST(request: Request) {
   let body: SessionExchangeBody;
@@ -90,7 +130,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'MISSING_REFRESH_TOKEN' }, { status: 400 });
   }
 
-  const isPortalLinked = await probePortalLinked(accessToken);
+  const probe = await probeStudentProfile(accessToken);
+  const isPortalLinked = probe === 'ok';
 
   const session = await getSession();
   session.accessToken = accessToken;
