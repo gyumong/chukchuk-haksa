@@ -1,0 +1,21 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+// 학교 연동하기 FixedButton 위에 노출되는 "즉시 학교 연동이 불가하신가요?" skip 링크.
+// 페이지 이동 아닌 액션(다이얼로그 오픈)이므로 button 요소에 link 스타일만 적용.
+.skipLink {
+  display: block;
+  width: 100%;
+  margin-top: spacing.$space-16;
+  padding: spacing.$space-12;
+  background: none;
+  border: none;
+  text-align: center;
+  color: color.$purple-100;
+  text-decoration: underline;
+  cursor: pointer;
+
+  @include typography.body-sm;
+  @include typography.font-weight-regular;
+}
