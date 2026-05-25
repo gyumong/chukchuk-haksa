@@ -43,14 +43,17 @@ export default function MpaPortalLoginScrapingPage() {
     if (jobStatus !== 'succeeded') {
       return;
     }
-    clearJobId();
+    // 성공 시엔 jobId state 를 null 로 만들지 않음. 그러면 아래 MISSING_JOB_MESSAGE 가드가
+    // 잘못 트리거되어 webview bridge 송출 직후(=native dismiss 전) "연동 정보를 찾을 수 없어요"
+    // 화면이 표출됨. 폴링은 'succeeded' 시 refetchInterval 에서 자동 정지하므로 state 유지해도 안전.
+    sessionStorage.removeItem(PORTAL_LOGIN_JOB_ID_KEY);
     clearRetry();
     if (isInWebView()) {
       postBridgeMessage(BRIDGE_DONE_PORTAL_LINK);
     } else {
       router.push(ROUTES.MAIN);
     }
-  }, [jobStatus, router, clearJobId]);
+  }, [jobStatus, router]);
 
   const { failureMessage } = usePortalLinkFailure({
     jobStatus,
