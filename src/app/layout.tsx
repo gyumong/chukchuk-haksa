@@ -5,6 +5,7 @@ import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/react';
 import QueryProvider from '@/shared/providers/queryProvider';
 import { AuthProvider } from '@/features/auth/contexts/AuthContext';
+import { AnalyticsProvider } from '@/lib/analytics';
 import MaintenancePage from '@/components/MaintenancePage';
 import '../styles/global.scss';
 
@@ -70,7 +71,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           <MaintenancePage message={maintenanceMessage} />
         ) : (
           <AuthProvider>
-            <QueryProvider>{children}</QueryProvider>
+            <AnalyticsProvider>
+              <QueryProvider>{children}</QueryProvider>
+            </AnalyticsProvider>
           </AuthProvider>
         )}
         <Analytics />

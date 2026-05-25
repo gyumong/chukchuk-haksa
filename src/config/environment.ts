@@ -97,6 +97,7 @@ export const ENV = {
   // 모니터링
   SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN ?? '',
   SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN ?? '',
+  AMPLITUDE_API_KEY: process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY ?? '',
   
   // 캐시
   REDIS_URL: process.env.UPSTASH_REDIS_REST_URL ?? '',
