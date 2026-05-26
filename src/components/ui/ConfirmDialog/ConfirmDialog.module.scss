@@ -1,4 +1,5 @@
 @use '@/styles/color.scss' as color;
+@use '@/styles/device.scss' as device;
 @use '@/styles/spacing.scss' as spacing;
 @use '@/styles/typography.scss' as typography;
 @use '@/styles/radius.scss' as radius;
@@ -24,6 +25,11 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 
   @include radius.radius-md;
+
+  // 태블릿·데스크톱에선 다이얼로그가 너무 좁아 보이지 않도록 살짝 넓힘.
+  @include device.medium-expanded {
+    max-width: 400px;
+  }
 }
 
 .title {

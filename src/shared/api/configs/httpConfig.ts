@@ -11,10 +11,16 @@ const BASE_URL = getApiBaseUrl();
 // 로 가려지지만 WebKit 은 노출됨. 한 번 재시도하면 새 connection 이 만들어져 풀의 stale
 // entry 를 우회 → 일시적 NETWORK_ERROR 회복. 두 번째도 throw 면 진짜 망 문제로 보고 propagate.
 async function fetchWithStaleConnRetry(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  // POST/PATCH/DELETE 등 비멱등 메서드는 재시도 금지 — 첫 요청이 서버에 반영된 뒤 응답 경로에서
+  // TypeError 가 났을 수 있어, 동일 요청을 한 번 더 보내면 중복 쓰기 위험. idempotency key 가
+  // 있는 portal-link 같은 호출은 백엔드 단에서 중복 제거되지만, 안전을 위해 일률적으로 멱등 메서드만 재시도.
+  const method = (init?.method ?? (input instanceof Request ? input.method : 'GET')).toUpperCase();
+  const canRetry = method === 'GET' || method === 'HEAD' || method === 'OPTIONS';
+
   try {
     return await fetch(input, init);
   } catch (err: unknown) {
-    if (err instanceof TypeError) {
+    if (err instanceof TypeError && canRetry) {
       return fetch(input, init);
     }
     throw err;

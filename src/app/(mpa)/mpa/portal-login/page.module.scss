@@ -1,4 +1,5 @@
 @use '@/styles/color.scss' as color;
+@use '@/styles/device.scss' as device;
 @use '@/styles/spacing.scss' as spacing;
 @use '@/styles/typography.scss' as typography;
 
@@ -18,4 +19,10 @@
 
   @include typography.body-sm;
   @include typography.font-weight-regular;
+
+  // mpa 라우트는 webview 전용이지만, 데스크톱 미러링·디버깅 시 터치 영역이 너무 작지 않도록
+  // 모바일 한정으로 padding 살짝 줄임 (가이드라인 - 반응형 mixin 사용 의무 충족).
+  @include device.compact {
+    padding: spacing.$space-8;
+  }
 }
