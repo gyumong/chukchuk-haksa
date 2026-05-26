@@ -36,7 +36,11 @@ export default function MpaPortalLogin() {
     // 네이티브에 학교 연동 건너뛰기 의사 전달. webview 환경 아니면 noop —
     // (mpa) 라우트는 webview 전용이라 사실상 도달 안 함, 안전망 차원.
     if (isInWebView()) {
-      postBridgeMessage(BRIDGE_SKIP_PORTAL_LINK);
+      const posted = postBridgeMessage(BRIDGE_SKIP_PORTAL_LINK);
+      if (!posted) {
+        // bridge 송출 실패 시 사용자가 다이얼로그 닫힌 채 무반응 상태에 갇히지 않도록 인라인 에러 노출.
+        setErrorMessage('요청 처리에 실패했어요. 다시 시도해주세요.');
+      }
     }
   };
 
@@ -105,7 +109,7 @@ export default function MpaPortalLogin() {
         />
 
         {errorMessage && (
-          <div className={sharedStyles.errorMessage}>
+          <div className={sharedStyles.errorMessage} role="alert" aria-live="polite">
             {errorMessage.split('\n').map((line, i) => (
               <p key={i}>{line}</p>
             ))}

@@ -113,7 +113,7 @@ export async function GET() {
     const refreshed = session.refreshToken ? await refreshTokensFromBackend(session.refreshToken) : null;
 
     if (!refreshed) {
-      session.destroy();
+      await session.destroy();
       return NextResponse.json({ error: 'SESSION_EXPIRED' }, { status: 401 });
     }
 
@@ -125,7 +125,7 @@ export async function GET() {
 
     if (probe === 'unauthorized') {
       // refresh 가 발급한 토큰조차 거부 → 백엔드 상태 이상. 세션 폐기.
-      session.destroy();
+      await session.destroy();
       return NextResponse.json({ error: 'SESSION_EXPIRED' }, { status: 401 });
     }
     // probe === 'error' 면 새 토큰 그대로 유지 — 다음 호출에서 다시 시도.
@@ -145,7 +145,7 @@ export async function GET() {
 
 export async function DELETE() {
   const session = await getSession();
-  session.destroy();
+  await session.destroy();
   return NextResponse.json({ ok: true });
 }
 
