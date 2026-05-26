@@ -10,25 +10,6 @@
  * ---------------------------------------------------------------
  */
 
-/** 포털 연동 job 생성 요청 */
-export interface LinkRequest {
-  /**
-   * 포털 타입
-   * @example "suwon"
-   */
-  portal_type: string;
-  /**
-   * 포털 아이디
-   * @example "17019013"
-   */
-  username: string;
-  /**
-   * 포털 비밀번호
-   * @example "pw"
-   */
-  password: string;
-}
-
 /** 스크래핑 job 수락 응답 */
 export interface AcceptedResponse {
   /**
@@ -46,31 +27,6 @@ export interface AcceptedResponse {
    * @example "accepted"
    */
   status?: string;
-}
-
-/** 성공 응답 포맷 */
-export interface SuccessResponseAcceptedResponse {
-  /**
-   * 성공 여부
-   * @example true
-   */
-  success: boolean;
-  /** 스크래핑 job 수락 응답 */
-  data: AcceptedResponse;
-  /**
-   * 메시지
-   * @example "요청 성공"
-   */
-  message?: string;
-}
-
-/** 메시지 응답 DTO */
-export interface MessageOnlyResponse {
-  /**
-   * 결과 메시지
-   * @example "목표 학점 저장 완료"
-   */
-  message?: string;
 }
 
 /** 에러 상세 정보 */
@@ -98,6 +54,34 @@ export interface ErrorResponseWrapper {
   success: boolean;
   /** 에러 상세 정보 */
   error?: ErrorDetail;
+}
+
+/** 포털 연동 job 생성 요청 */
+export interface LinkRequest {
+  /**
+   * 포털 타입
+   * @example "suwon"
+   */
+  portal_type: string;
+  /**
+   * 포털 아이디
+   * @example "17019013"
+   */
+  username: string;
+  /**
+   * 포털 비밀번호
+   * @example "pw"
+   */
+  password: string;
+}
+
+/** 메시지 응답 DTO */
+export interface MessageOnlyResponse {
+  /**
+   * 결과 메시지
+   * @example "목표 학점 저장 완료"
+   */
+  message?: string;
 }
 
 /** 회원가입 및 로그인 응답 */
@@ -229,22 +213,6 @@ export interface JobStatusResponse {
   retryable?: boolean;
 }
 
-/** 성공 응답 포맷 */
-export interface SuccessResponseJobStatusResponse {
-  /**
-   * 성공 여부
-   * @example true
-   */
-  success: boolean;
-  /** 스크래핑 job 상태 응답 */
-  data: JobStatusResponse;
-  /**
-   * 메시지
-   * @example "요청 성공"
-   */
-  message?: string;
-}
-
 /** 스크래핑 job 요약 응답 */
 export interface JobSummaryResponse {
   job_id?: string;
@@ -266,22 +234,6 @@ export interface StudentInfoSummary {
   status?: string;
   /** @format int32 */
   completedSemesterType?: number;
-}
-
-/** 성공 응답 포맷 */
-export interface SuccessResponseJobSummaryResponse {
-  /**
-   * 성공 여부
-   * @example true
-   */
-  success: boolean;
-  /** 스크래핑 job 요약 응답 */
-  data: JobSummaryResponse;
-  /**
-   * 메시지
-   * @example "요청 성공"
-   */
-  message?: string;
 }
 
 /** 학생 프로필 응답 */
@@ -445,7 +397,8 @@ export interface AreaProgressDto {
     | "일선"
     | "복선"
     | "복핵"
-    | "복교";
+    | "복교"
+    | "기타";
   /**
    * 해당 영역에서 필요한 학점
    * @format int32
@@ -623,7 +576,10 @@ export interface CourseDetailDto {
     | "일선"
     | "복선"
     | "복핵"
-    | "복교";
+    | "복교"
+    | "기타";
+  /** 포털 원본 이수 구분 */
+  rawAreaType?: string | null;
   /**
    * 학점
    * @format int32
@@ -667,6 +623,8 @@ export interface Courses {
   major: CourseDetailDto[];
   /** 교양 과목 목록 */
   liberal: CourseDetailDto[];
+  /** 기타 과목 목록 */
+  etc: CourseDetailDto[];
 }
 
 /** 학기 성적 요약 정보 */
@@ -735,7 +693,7 @@ export interface DeleteUserApiResponse {
   message?: string;
 }
 
-export type CreatePortalLinkJobData = SuccessResponseAcceptedResponse;
+export type CreatePortalLinkJobData = AcceptedResponse;
 
 export type HandleCallbackData = MessageOnlyResponse;
 
@@ -762,9 +720,9 @@ export type RefreshResponseData = RefreshTokenApiResponse;
 
 export type SentryTestData = any;
 
-export type GetJobStatusData = SuccessResponseJobStatusResponse;
+export type GetJobStatusData = JobStatusResponse;
 
-export type GetJobSummaryData = SuccessResponseJobSummaryResponse;
+export type GetJobSummaryData = JobSummaryResponse;
 
 export type HealthData = string;
 

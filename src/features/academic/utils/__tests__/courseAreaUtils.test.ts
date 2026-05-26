@@ -63,6 +63,27 @@ describe('isAreaCompleted', () => {
     const area = makeArea({ earnedCredits: 18, requiredCredits: 18, completedElectiveCourses: 0, requiredElectiveCourses: 0 });
     expect(isAreaCompleted(area)).toBe(true);
   });
+
+  it('requiredElectiveCourses가 null이면 학점만 충족해도 완료 (기타 영역)', () => {
+    const area = makeArea({
+      areaType: '기타',
+      earnedCredits: 3,
+      requiredCredits: 0,
+      completedElectiveCourses: 2,
+      requiredElectiveCourses: null as unknown as number,
+    });
+    expect(isAreaCompleted(area)).toBe(true);
+  });
+
+  it('requiredElectiveCourses가 null이어도 학점이 미달이면 미완료', () => {
+    const area = makeArea({
+      earnedCredits: 5,
+      requiredCredits: 18,
+      completedElectiveCourses: 2,
+      requiredElectiveCourses: null as unknown as number,
+    });
+    expect(isAreaCompleted(area)).toBe(false);
+  });
 });
 
 describe('getCourseAreaDisplayName', () => {
@@ -80,5 +101,9 @@ describe('getCourseAreaDisplayName', () => {
 
   it('일선 → 일반선택', () => {
     expect(getCourseAreaDisplayName('일선')).toBe('일반선택');
+  });
+
+  it('기타 → 기타', () => {
+    expect(getCourseAreaDisplayName('기타')).toBe('기타');
   });
 });

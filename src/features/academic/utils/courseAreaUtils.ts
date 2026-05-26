@@ -6,7 +6,7 @@ import type { CourseAreaType, AreaProgress } from '../types/graduation';
 export function getCourseAreaDisplayName(areaType: CourseAreaType): string {
   const areaNames: Record<CourseAreaType, string> = {
     중핵: '중핵교양',
-    기교: '기초교양', 
+    기교: '기초교양',
     선교: '선택교양',
     소교: '소양교양',
     전교: '전공교양',
@@ -17,6 +17,7 @@ export function getCourseAreaDisplayName(areaType: CourseAreaType): string {
     복선: '복수전공선택',
     복핵: '복수전공핵심',
     복교: '복수전공교양',
+    기타: '기타',
   };
   return areaNames[areaType] || areaType;
 }
@@ -34,6 +35,7 @@ export function sortAreasByCompletion<T extends { isCompleted: boolean }>(areas:
 export function isAreaCompleted(area: AreaProgress): boolean {
   return (
     area.earnedCredits >= area.requiredCredits &&
-    area.completedElectiveCourses >= area.requiredElectiveCourses
+    (area.requiredElectiveCourses == null ||
+      area.completedElectiveCourses >= area.requiredElectiveCourses)
   );
 }

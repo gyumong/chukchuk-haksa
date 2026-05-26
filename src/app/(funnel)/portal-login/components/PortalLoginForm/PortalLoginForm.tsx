@@ -42,7 +42,7 @@ export function PortalLoginForm({ onSuccess, onError }: PortalLoginFormProps) {
 
     try {
       const result = await linkMutation.mutateAsync({ username, password, idempotencyKey });
-      const newJobId = result.data?.job_id;
+      const newJobId = result?.job_id;
 
       if (newJobId) {
         setJobId(newJobId);
