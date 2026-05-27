@@ -80,10 +80,14 @@ async function probeStudentProfile(accessToken: string): Promise<ProbeResult> {
 // 1. 쿠키에서 토큰 꺼냄
 // 2. 백엔드 probe 로 유효성 검증
 // 3. probe 분기:
-//    - 'ok'          → isPortalLinked true 로 승격, 200
-//    - 'not-linked'  → 토큰 유효, 학생 프로필만 없음. refresh 없이 isPortalLinked false 로 200
-//    - 'unauthorized'/'error' → 토큰 문제 가능성. refresh 시도
-// 4. refresh 실패 또는 refresh 후 재-probe 가 'unauthorized' 면 세션 폐기 + 401
+//    - 'ok'                      → isPortalLinked true 로 승격, 200
+//    - 'not-linked'              → 토큰 유효, 학생 프로필만 없음. refresh 없이 false 로 200
+//    - session 이 unlinked 라고 자체 선언 + probe 가 'unauthorized'/'error'
+//        → fresh signin 직후 백엔드가 spec 외 status 반환하는 케이스 (401, 5xx 등).
+//           토큰 무효 신호가 아니라 미연동 사용자 응답일 뿐이므로 refresh/destroy 없이 false 로 200
+//    - 그 외 'unauthorized'/'error' (linked 상태에서 probe 실패) → 토큰 문제 가능성. refresh 시도
+// 4. refresh 실패 또는 refresh 후 재-probe 가 'unauthorized' (그리고 unlinked 자체 선언 아니면)
+//    → 세션 폐기 + 401
 //
 // probe 가 'error' (타임아웃·5xx) 일 때도 refresh 시도하는 이유 — 백엔드가 만료 JWT 처리 중 hang 해서
 // probe 가 401 을 못 받고 timeout 으로 'error' 떨어지는 케이스 관측됨 (Sentry CCHAKSA-56).
@@ -93,9 +97,12 @@ async function probeStudentProfile(accessToken: string): Promise<ProbeResult> {
 // 처리하면 갓 signin 한 미연동 사용자가 /auth/success → GET /api/session → 401 → '/' 리다이렉트로
 // 튕기는 버그가 발생. /portal-login 으로 보내야 하는 신호일 뿐 세션 무효 신호가 아님.
 //
-// refresh 실패 시 분기 단순화: probe 가 'unauthorized' 든 'error' 든 무조건 세션 폐기.
-// 사용자가 깨진 화면에 갇히는 것보다 로그인 화면으로 보내는 게 명확. 진짜 백엔드 일시 장애여도
-// 로그인 시도 자체가 분명한 액션을 제공 (정상이면 재로그인 후 정상, 백엔드 다운이면 로그인도 실패해서 인지 가능).
+// 추가: 백엔드가 spec 과 달리 미연동 사용자에게 401/5xx 를 줘도 (실제 production 관측) session 이
+// 자체적으로 isPortalLinked:false 라고 선언한 상태면 — 그 토큰은 방금 signin/refresh 로 발급된
+// 신선한 토큰이므로 토큰 무효 신호로 해석하면 안 됨. destroy 하지 않고 false 로 응답.
+//
+// refresh 실패 시 분기 단순화: probe 가 'unauthorized' 든 'error' 든 무조건 세션 폐기 (단, 위의
+// unlinked 선언 케이스 제외). 사용자가 깨진 화면에 갇히는 것보다 로그인 화면으로 보내는 게 명확.
 //
 // isPortalLinked 는 probe 결과(`'ok'`)로만 true 로 승격 — 클라이언트 임의 값 신뢰 안 함.
 export async function GET() {
@@ -126,6 +133,17 @@ export async function GET() {
     if (session.isPortalLinked !== false) {
       session.isPortalLinked = false;
     }
+    await session.save();
+    return NextResponse.json({
+      accessToken: session.accessToken,
+      isPortalLinked: false,
+    });
+  }
+
+  // session 이 unlinked 라고 자체 선언한 상태에서 probe 가 실패하면 — backend 가 spec 외
+  // status (401/5xx) 로 미연동 사용자를 표현했을 가능성이 큼. 토큰은 fresh 한데 destroy 하면
+  // 사용자가 / 로 튕김. 토큰 신뢰하고 false 로 응답.
+  if (probe !== 'ok' && session.isPortalLinked === false) {
     await session.save();
     return NextResponse.json({
       accessToken: session.accessToken,
