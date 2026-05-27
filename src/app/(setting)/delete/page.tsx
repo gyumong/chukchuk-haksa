@@ -1,6 +1,5 @@
 'use client';
 
-import { setCookie } from 'cookies-next';
 import Image from 'next/image';
 import { FunnelHeadline } from '@/app/(funnel)/components';
 import { FixedButton } from '@/components/ui';
@@ -8,11 +7,6 @@ import { useProfileQuery } from '@/features/dashboard/apis/queries/useProfileQue
 import { useAuth } from '@/features/auth/contexts/AuthContext';
 import { useDeleteUserMutation } from '@/features/user/apis/queries/useDeleteUserMutation';
 import styles from './page.module.scss';
-
-// 탈퇴 직후 재로그인 시 백엔드가 portal_link 잔존으로 isPortalLinked:true 를 돌려주는 케이스
-// 대비. /auth/callback 이 이 마커를 보면 강제로 학교 연동 화면으로 보낸다. 30분이면 충분.
-const POST_DELETE_COOKIE = 'cchaksa_post_delete';
-const POST_DELETE_TTL_SECONDS = 30 * 60;
 
 const DeletePage = () => {
   const mutation = useDeleteUserMutation();
@@ -26,13 +20,8 @@ const DeletePage = () => {
 
     try {
       await mutation.mutateAsync();
-      setCookie(POST_DELETE_COOKIE, '1', {
-        maxAge: POST_DELETE_TTL_SECONDS,
-        sameSite: 'lax',
-        path: '/',
-      });
-      // 서버 세션 + 인메모리 토큰 + React Query 캐시 폐기. AuthContext 가 hard navigate 직후
-      // 빈 상태로 마운트되도록 보장.
+      // 서버 세션 + 인메모리 토큰 + React Query 캐시 폐기. BFF 리팩토링 (docs/bff-auth-refactor.md)
+      // 이후 누락된 정리. AuthContext 가 hard navigate 직후 빈 상태로 마운트되도록 보장.
       await clearAuth();
       alert('탈퇴가 완료되었습니다.');
       window.location.replace('/');
