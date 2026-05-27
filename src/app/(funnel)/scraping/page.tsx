@@ -5,6 +5,7 @@ import { setUser } from '@sentry/nextjs';
 import { FixedButton } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
+import { useAuth } from '@/features/auth/contexts/AuthContext';
 import { usePortalLinkFailure, usePortalLinkJobPolling, usePortalLinkSummary } from '@/features/portal-link/hooks';
 import { clearRetry } from '@/features/portal-link/utils/credentialRetry';
 import { useFunnelContext } from '../contexts';
@@ -17,6 +18,7 @@ const MISSING_JOB_MESSAGE = '연동 정보를 찾을 수 없습니다. 다시 �
 export default function ScrapingPage() {
   const router = useInternalRouter();
   const { jobId, setStudentInfo } = useFunnelContext();
+  const { hydrate } = useAuth();
 
   const { data: jobStatusData, isTimedOut } = usePortalLinkJobPolling(jobId);
   const jobStatus = jobStatusData?.data?.status;
@@ -43,9 +45,14 @@ export default function ScrapingPage() {
       if (jobId) {
         setUser({ id: jobId });
       }
-      router.push(`${ROUTES.FUNNEL.AGREEMENT}`);
+      // 학교 연동 성공 시점에 AuthContext 와 cchaksa_session 쿠키의 isPortalLinked 를
+      // 백엔드 probe 기반으로 false → true 로 승격. 이게 없으면 /target-score 와 /main 의
+      // ProtectedRoute(requirePortalLinked=true) 가 stale false 를 보고 사용자를 / 로 튕김.
+      void hydrate().finally(() => {
+        router.push(`${ROUTES.FUNNEL.AGREEMENT}`);
+      });
     }
-  }, [summaryData, setStudentInfo, router, jobId]);
+  }, [summaryData, setStudentInfo, router, jobId, hydrate]);
 
   const handleRetry = () => {
     router.push(`${ROUTES.FUNNEL.PORTAL_LOGIN}`);

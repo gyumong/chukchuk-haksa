@@ -15,9 +15,32 @@ interface AuthContextValue {
   isReady: boolean;
   clearAuth: () => Promise<void>;
   refresh: () => Promise<string | null>;
+  // 외부에서 명시적으로 /api/session 재호출이 필요할 때 (e.g. 학교 연동 완료 직후 isPortalLinked
+  // 를 false → true 로 승격해야 하는 시점). 마운트 시 자동 hydrate 와 동일한 로직.
+  hydrate: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
+
+async function fetchSessionState(): Promise<{ accessToken: string | null; isPortalLinked: boolean | null } | null> {
+  try {
+    const response = await fetch('/api/session', { credentials: 'include' });
+    if (!response.ok) {
+      return { accessToken: null, isPortalLinked: null };
+    }
+    const data = (await response.json()) as {
+      accessToken?: string;
+      isPortalLinked?: boolean;
+    };
+    return {
+      accessToken: data.accessToken ?? null,
+      isPortalLinked: typeof data.isPortalLinked === 'boolean' ? data.isPortalLinked : null,
+    };
+  } catch (error) {
+    console.error('[AuthContext] session fetch failed', error);
+    return null;
+  }
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [accessToken, setAccessTokenState] = useState<string | null>(() => getAccessTokenStore());
@@ -41,31 +64,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      try {
-        const response = await fetch('/api/session', { credentials: 'include' });
-        if (cancelled) {return;}
-
-        if (!response.ok) {
-          setAccessTokenStore(null);
-          setIsPortalLinked(null);
-          return;
-        }
-
-        const data = (await response.json()) as {
-          accessToken?: string;
-          isPortalLinked?: boolean;
-        };
-        if (cancelled) {return;}
-
-        setAccessTokenStore(data.accessToken ?? null);
-        setIsPortalLinked(typeof data.isPortalLinked === 'boolean' ? data.isPortalLinked : null);
-      } catch (error) {
-        if (!cancelled) {
-          console.error('[AuthContext] hydrate failed', error);
-        }
-      } finally {
-        if (!cancelled) {setIsReady(true);}
+      const result = await fetchSessionState();
+      if (cancelled) {
+        return;
       }
+      if (result !== null) {
+        setAccessTokenStore(result.accessToken);
+        setIsPortalLinked(result.isPortalLinked);
+      }
+      setIsReady(true);
     })();
 
     return () => {
@@ -85,8 +92,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refresh = useCallback(() => refreshAccessTokenStore(), []);
 
+  const hydrate = useCallback(async () => {
+    const result = await fetchSessionState();
+    if (result !== null) {
+      setAccessTokenStore(result.accessToken);
+      setIsPortalLinked(result.isPortalLinked);
+    }
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ accessToken, isPortalLinked, isReady, clearAuth, refresh }}>
+    <AuthContext.Provider value={{ accessToken, isPortalLinked, isReady, clearAuth, refresh, hydrate }}>
       {children}
     </AuthContext.Provider>
   );
