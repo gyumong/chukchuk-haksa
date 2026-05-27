@@ -35,11 +35,14 @@ export default function ScrapingPage() {
 
   useEffect(() => {
     if (jobStatus === 'succeeded') {
-      clearJobId();
+      // 성공 시엔 jobId state 를 null 로 만들지 않음. setJobId(null) + router.push 가
+      // 같은 tick 에 배치되면 unmount 전 재렌더에서 MISSING_JOB_MESSAGE 가 깜빡일 수 있음.
+      // 폴링은 'succeeded' 시 refetchInterval 에서 자동 정지하므로 state 유지해도 안전.
+      sessionStorage.removeItem(RESYNC_JOB_ID_KEY);
       clearRetry();
       router.push(ROUTES.MAIN);
     }
-  }, [jobStatus, router, clearJobId]);
+  }, [jobStatus, router]);
 
   const { failureMessage } = usePortalLinkFailure({
     jobStatus,

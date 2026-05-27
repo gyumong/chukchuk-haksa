@@ -1,0 +1,80 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/device.scss' as device;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/radius.scss' as radius;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: spacing.$space-24;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  // FixedButton 등 page 내 position: fixed 요소들보다 위에 떠야 함.
+  z-index: 1000;
+}
+
+.dialog {
+  width: 100%;
+  max-width: 320px;
+  padding: spacing.$space-24;
+  background-color: color.$white;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+
+  @include radius.radius-md;
+
+  // 태블릿·데스크톱에선 다이얼로그가 너무 좁아 보이지 않도록 살짝 넓힘.
+  @include device.medium-expanded {
+    max-width: 400px;
+  }
+}
+
+.title {
+  margin: 0 0 spacing.$space-12;
+  text-align: center;
+  color: color.$black-100;
+
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+}
+
+.message {
+  margin: 0 0 spacing.$space-24;
+  text-align: center;
+  color: color.$gray-500;
+  white-space: pre-line;
+
+  @include typography.body-md;
+  @include typography.font-weight-regular;
+}
+
+.buttons {
+  display: flex;
+  gap: spacing.$space-8;
+}
+
+.cancelButton,
+.confirmButton {
+  flex: 1;
+  padding: spacing.$space-12;
+  border: none;
+  cursor: pointer;
+
+  @include typography.body-md;
+  @include typography.font-weight-semibold;
+  @include radius.radius-sm;
+}
+
+.cancelButton {
+  background-color: color.$white;
+  color: color.$black-100;
+  border: 1px solid color.$gray-200;
+}
+
+.confirmButton {
+  background-color: color.$black-100;
+  color: color.$white;
+}

@@ -1,12 +1,13 @@
 'use client';
 
+// /mpa/resync/scraping 과 동일 흐름. portal-login entry point 의 후행 페이지. 프로토콜: docs/mpa-school-link-handoff.md
 import { useCallback, useEffect, useState } from 'react';
 import { FixedButton } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { usePortalLinkFailure, usePortalLinkJobPolling } from '@/features/portal-link/hooks';
 import { clearRetry } from '@/features/portal-link/utils/credentialRetry';
-import { RESYNC_JOB_ID_KEY } from '@/constants/portal-link';
+import { PORTAL_LOGIN_JOB_ID_KEY } from '@/constants/portal-link';
 import { isInWebView, postBridgeMessage } from '@/lib/webview';
 import ErrorScreen from '@/app/(funnel)/components/ErrorScreen/ErrorScreen';
 import LoadingScreen from '@/app/(funnel)/components/LoadingScreen/LoadingScreen';
@@ -18,14 +19,14 @@ const BRIDGE_DONE_PORTAL_LINK = 'done:portal-link';
 
 const MISSING_JOB_MESSAGE = '연동 정보를 찾을 수 없어요\n다시 로그인해주세요';
 
-export default function MpaScrapingPage() {
+export default function MpaPortalLoginScrapingPage() {
   const router = useInternalRouter();
 
   const [jobId, setJobId] = useState<string | null>(null);
   const [isJobIdResolved, setIsJobIdResolved] = useState(false);
 
   useEffect(() => {
-    setJobId(sessionStorage.getItem(RESYNC_JOB_ID_KEY));
+    setJobId(sessionStorage.getItem(PORTAL_LOGIN_JOB_ID_KEY));
     setIsJobIdResolved(true);
   }, []);
 
@@ -34,7 +35,7 @@ export default function MpaScrapingPage() {
   const jobDetail = jobStatusData?.data;
 
   const clearJobId = useCallback(() => {
-    sessionStorage.removeItem(RESYNC_JOB_ID_KEY);
+    sessionStorage.removeItem(PORTAL_LOGIN_JOB_ID_KEY);
     setJobId(null);
   }, []);
 
@@ -45,10 +46,15 @@ export default function MpaScrapingPage() {
     // 성공 시엔 jobId state 를 null 로 만들지 않음. 그러면 아래 MISSING_JOB_MESSAGE 가드가
     // 잘못 트리거되어 webview bridge 송출 직후(=native dismiss 전) "연동 정보를 찾을 수 없어요"
     // 화면이 표출됨. 폴링은 'succeeded' 시 refetchInterval 에서 자동 정지하므로 state 유지해도 안전.
-    sessionStorage.removeItem(RESYNC_JOB_ID_KEY);
+    sessionStorage.removeItem(PORTAL_LOGIN_JOB_ID_KEY);
     clearRetry();
     if (isInWebView()) {
-      postBridgeMessage(BRIDGE_DONE_PORTAL_LINK);
+      const posted = postBridgeMessage(BRIDGE_DONE_PORTAL_LINK);
+      if (!posted) {
+        // 브리지 송출 실패(race/예외) 시 사용자가 scraping 화면에 정지하지 않도록
+        // 비-webview 경로와 동일한 fallback 으로 이동. Sentry 캡쳐는 bridge.ts 내부.
+        router.push(ROUTES.MAIN);
+      }
     } else {
       router.push(ROUTES.MAIN);
     }
@@ -58,12 +64,12 @@ export default function MpaScrapingPage() {
     jobStatus,
     jobDetail,
     isTimedOut,
-    loginRoute: ROUTES.MPA.RESYNC_LOGIN,
+    loginRoute: ROUTES.MPA.PORTAL_LOGIN,
     onCleanup: clearJobId,
   });
 
   const handleRetry = () => {
-    router.push(ROUTES.MPA.RESYNC_LOGIN);
+    router.push(ROUTES.MPA.PORTAL_LOGIN);
   };
 
   if (isJobIdResolved && !jobId) {

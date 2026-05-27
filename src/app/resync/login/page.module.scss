@@ -1,10 +1,19 @@
 @use '@/styles/color.scss' as color;
+@use '@/styles/device.scss' as device;
 @use '@/styles/typography.scss' as typography;
 @use '@/styles/spacing.scss' as spacing;
 @use '@/styles/utilities.scss' as utilities;
 
 .container {
   @include utilities.funnel-page-spacing;
+
+  // iOS WebView 에서 키보드가 올라올 때 비밀번호 입력칸이 가려지지 않도록
+  // 페이지 하단에 스크롤 여유를 확보한다. position: fixed 버튼이 키보드와 함께
+  // 시야를 막는 구조라, 입력 필드가 키보드 위로 스크롤될 수 있는 영역이 필요.
+  // 데스크톱 뷰포트엔 키보드가 안 올라오므로 compact 한정.
+  @include device.compact {
+    padding-bottom: 360px;
+  }
 }
 
 .formContainer {

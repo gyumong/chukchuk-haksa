@@ -1,0 +1,28 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/device.scss' as device;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+// 학교 연동하기 FixedButton 위에 노출되는 "즉시 학교 연동이 불가하신가요?" skip 링크.
+// 페이지 이동 아닌 액션(다이얼로그 오픈)이므로 button 요소에 link 스타일만 적용.
+.skipLink {
+  display: block;
+  width: 100%;
+  margin-top: spacing.$space-16;
+  padding: spacing.$space-12;
+  background: none;
+  border: none;
+  text-align: center;
+  color: color.$purple-100;
+  text-decoration: underline;
+  cursor: pointer;
+
+  @include typography.body-sm;
+  @include typography.font-weight-regular;
+
+  // mpa 라우트는 webview 전용이지만, 데스크톱 미러링·디버깅 시 터치 영역이 너무 작지 않도록
+  // 모바일 한정으로 padding 살짝 줄임 (가이드라인 - 반응형 mixin 사용 의무 충족).
+  @include device.compact {
+    padding: spacing.$space-8;
+  }
+}
