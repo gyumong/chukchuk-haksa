@@ -6,6 +6,7 @@ import { Analytics } from '@vercel/analytics/react';
 import QueryProvider from '@/shared/providers/queryProvider';
 import { AuthProvider } from '@/features/auth/contexts/AuthContext';
 import { AnalyticsProvider } from '@/lib/analytics';
+import { RemoteConfigProvider } from '@/lib/remote-config';
 import MaintenancePage from '@/components/MaintenancePage';
 import '../styles/global.scss';
 
@@ -72,7 +73,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         ) : (
           <AuthProvider>
             <AnalyticsProvider>
-              <QueryProvider>{children}</QueryProvider>
+              <RemoteConfigProvider>
+                <QueryProvider>{children}</QueryProvider>
+              </RemoteConfigProvider>
             </AnalyticsProvider>
           </AuthProvider>
         )}

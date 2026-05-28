@@ -47,6 +47,7 @@
     "class-variance-authority": "^0.7.1",
     "cookies-next": "4.3.0",
     "date-fns": "^4.1.0",
+    "firebase": "^12.13.0",
     "iron-session": "^8.0.4",
     "lottie-react": "^2.4.0",
     "next": "15.2.8",
