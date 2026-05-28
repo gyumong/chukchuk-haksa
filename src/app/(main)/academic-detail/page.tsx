@@ -30,6 +30,13 @@ function AcademicRecordContent({ year, semester }: { year: number; semester: num
 
       <div className={styles.spacingLarge}></div>
       <SectionCourses title="교양" courses={academicRecord.courses.liberal} />
+
+      {academicRecord.courses.etc.length > 0 && (
+        <>
+          <div className={styles.spacingLarge}></div>
+          <SectionCourses title="기타" courses={academicRecord.courses.etc} />
+        </>
+      )}
     </>
   );
 }

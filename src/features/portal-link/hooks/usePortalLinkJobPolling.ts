@@ -26,7 +26,7 @@ export function usePortalLinkJobPolling(jobId: string | null) {
     queryFn: () => getJobStatus(jobId!),
     enabled: Boolean(jobId) && !isTimedOut,
     refetchInterval: q => {
-      const status = q.state.data?.data?.status;
+      const status = q.state.data?.status;
       if (status === 'succeeded' || status === 'failed') {
         return false;
       }

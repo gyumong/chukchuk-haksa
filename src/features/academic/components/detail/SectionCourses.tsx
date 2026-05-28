@@ -19,7 +19,7 @@ const SectionCourses = ({ title, courses }: SectionCoursesProps) => {
           <GradeCard
             key={course.courseCode}
             courseCode={course.courseCode || ''}
-            courseType={course.areaType || ''}
+            courseType={course.rawAreaType ?? course.areaType ?? ''}
             credits={course.credits || 0}
             professor={course.professor || ''}
             courseName={course.courseName || ''}

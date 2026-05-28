@@ -2,6 +2,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { ROUTES } from '@/constants';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { studentApi } from '@/shared/api/client';
+import type { StudentProfileApiResponse } from '@/shared/api/data-contracts';
 import { ApiResponseHandler } from '@/shared/api/utils/response-handler';
 import { dashboardQueryKeys } from '../queryKey';
 import { StudentProfileSchema } from '../schema';
@@ -12,7 +13,9 @@ export function useProfileQuery() {
   return useSuspenseQuery({
     queryKey: dashboardQueryKeys.profile,
     queryFn: async () => {
-      const response = await ApiResponseHandler.handleAsyncResponse(studentApi.getProfile());
+      const response = await ApiResponseHandler.handleAsyncResponse<StudentProfileApiResponse>(
+        studentApi.getProfile()
+      );
       const profile = StudentProfileSchema.parse(response.data);
 
       if (profile.reconnectionRequired) {
