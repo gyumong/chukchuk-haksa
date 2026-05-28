@@ -1,8 +1,30 @@
 import { NextResponse } from 'next/server';
 import { captureException } from '@sentry/nextjs';
+import { fetchAnalyticsIdFromBackend } from '@/lib/auth/analyticsId';
 import { getSession } from '@/lib/auth/session';
 import { refreshTokensFromBackend } from '@/lib/auth/refreshToken';
 import { getApiBaseUrl } from '@/config/environment';
+import type { SessionData } from '@/lib/auth/session';
+import type { IronSession } from 'iron-session';
+
+// 모든 GET 성공 응답이 동일한 모양(accessToken/isPortalLinked/analyticsId)을 보장하는 헬퍼.
+// session.analyticsId 가 비어 있고 토큰이 유효하면 한 번 lazy fetch — 기존 세션(PR-A 이전 발급)과
+// MPA POST 익스체인지 직후 첫 GET 에서 식별자를 자동 채움. fetch 실패 시 null 유지 — 클라이언트가
+// wire-up 을 자동 skip 하므로 사용자 가시 에러 없음.
+async function respondWithAuthenticated(session: IronSession<SessionData>) {
+  if (!session.analyticsId && session.accessToken) {
+    const fetched = await fetchAnalyticsIdFromBackend(session.accessToken);
+    if (fetched) {
+      session.analyticsId = fetched;
+    }
+  }
+  await session.save();
+  return NextResponse.json({
+    accessToken: session.accessToken,
+    isPortalLinked: session.isPortalLinked ?? false,
+    analyticsId: session.analyticsId ?? null,
+  });
+}
 
 export const dynamic = 'force-dynamic';
 
@@ -119,11 +141,7 @@ export async function GET() {
   //   401 fallback 에서 잡혀 refresh 자동 발동 (이미 그 경로 존재)
   // - 쿠키 maxAge 롤링 위해 session.save() 는 유지 (encrypt 만 수행, 네트워크 없음)
   if (session.isPortalLinked === true && hasTokenTimeLeft(session.accessToken, FAST_PATH_TOKEN_BUFFER_MS)) {
-    await session.save();
-    return NextResponse.json({
-      accessToken: session.accessToken,
-      isPortalLinked: session.isPortalLinked,
-    });
+    return respondWithAuthenticated(session);
   }
 
   let probe = await probeStudentProfile(session.accessToken);
@@ -133,22 +151,14 @@ export async function GET() {
     if (session.isPortalLinked !== false) {
       session.isPortalLinked = false;
     }
-    await session.save();
-    return NextResponse.json({
-      accessToken: session.accessToken,
-      isPortalLinked: false,
-    });
+    return respondWithAuthenticated(session);
   }
 
   // session 이 unlinked 라고 자체 선언한 상태에서 probe 가 실패하면 — backend 가 spec 외
   // status (401/5xx) 로 미연동 사용자를 표현했을 가능성이 큼. 토큰은 fresh 한데 destroy 하면
   // 사용자가 / 로 튕김. 토큰 신뢰하고 false 로 응답.
   if (probe !== 'ok' && session.isPortalLinked === false) {
-    await session.save();
-    return NextResponse.json({
-      accessToken: session.accessToken,
-      isPortalLinked: false,
-    });
+    return respondWithAuthenticated(session);
   }
 
   if (probe !== 'ok') {
@@ -176,11 +186,7 @@ export async function GET() {
       if (session.isPortalLinked !== false) {
         session.isPortalLinked = false;
       }
-      await session.save();
-      return NextResponse.json({
-        accessToken: session.accessToken,
-        isPortalLinked: false,
-      });
+      return respondWithAuthenticated(session);
     }
     // probe === 'error' 면 새 토큰 그대로 유지 — 다음 호출에서 다시 시도.
   }
@@ -189,13 +195,7 @@ export async function GET() {
     session.isPortalLinked = true;
   }
 
-  await session.save();
-
-  return NextResponse.json({
-    accessToken: session.accessToken,
-    isPortalLinked: session.isPortalLinked ?? false,
-    analyticsId: session.analyticsId,
-  });
+  return respondWithAuthenticated(session);
 }
 
 export async function DELETE() {
@@ -231,13 +231,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'MISSING_REFRESH_TOKEN' }, { status: 400 });
   }
 
-  const probe = await probeStudentProfile(accessToken);
+  // probe 와 analyticsId fetch 는 서로 독립 — 병렬로 latency 단축.
+  // MPA WebView 첫 진입 시 식별자를 즉시 채워, 다음 GET 부터 분석 wire-up 정상 동작.
+  const [probe, analyticsId] = await Promise.all([
+    probeStudentProfile(accessToken),
+    fetchAnalyticsIdFromBackend(accessToken),
+  ]);
   const isPortalLinked = probe === 'ok';
 
   const session = await getSession();
   session.accessToken = accessToken;
   session.refreshToken = refreshToken;
   session.isPortalLinked = isPortalLinked;
+  // 명시적 설정/해제 — 동일 쿠키에서 다른 사용자로 재익스체인지될 경우 이전 analyticsId leak 방지.
+  if (analyticsId) {
+    session.analyticsId = analyticsId;
+  } else {
+    delete session.analyticsId;
+  }
   await session.save();
 
   return NextResponse.json({ ok: true, isPortalLinked });

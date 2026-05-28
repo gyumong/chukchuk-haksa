@@ -73,15 +73,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     previousTokenRef.current = accessToken;
   }, [accessToken]);
 
-  // Amplitude identity wire-up: analyticsId 가 있으면 setUserId 호출. accessToken/isPortalLinked
-  // 와 동일 동기 블록에서 처리해 race 방지 (보호 페이지가 API 호출 시작하기 전에 식별자 채움).
-  // MPA WebView 도 같은 hydration 경로를 거치므로 별도 처리 불필요.
+  // Amplitude identity wire-up: accessToken/isPortalLinked 와 동일 동기 블록에서 처리해 race
+  // 방지 (보호 페이지가 API 호출 시작하기 전에 식별자 채움). MPA WebView 도 같은 hydration
+  // 경로를 거치므로 별도 처리 불필요. analyticsId 가 null 인 경우 — 세션 만료 등 암묵적
+  // 로그아웃 — SDK 의 user_id 도 클리어해 다음 익명 트래픽이 이전 사용자로 잘못 잡히지 않게 함
+  // (device_id 는 유지; 전체 reset 은 명시적 clearAuth 가 담당).
   const applySessionState = useCallback((result: SessionState) => {
     setAccessTokenStore(result.accessToken);
     setIsPortalLinked(result.isPortalLinked);
-    if (result.analyticsId) {
-      setAnalyticsUser(result.analyticsId);
-    }
+    setAnalyticsUser(result.analyticsId);
     setAnalyticsIdState(result.analyticsId);
   }, []);
 

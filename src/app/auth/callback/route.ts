@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { fetchAnalyticsIdFromBackend } from '@/lib/auth/analyticsId';
 import { getRedirectUri } from '@/lib/auth/client';
 import { getKakaoToken } from '@/lib/auth/kakao';
 import { getRedirectPathForUser } from '@/lib/auth/redirect';
@@ -25,7 +26,7 @@ export async function GET(request: Request) {
     const redirectUri = getRedirectUri();
 
     const idToken = await getKakaoToken(code, redirectUri);
-    const { accessToken, refreshToken, isPortalLinked, analyticsId } = await authService.login(
+    const { accessToken, refreshToken, isPortalLinked } = await authService.login(
       idToken,
       nonce,
       'KAKAO'
@@ -35,14 +36,19 @@ export async function GET(request: Request) {
       throw new AuthError('User is missing or malformed.');
     }
 
+    // analyticsId 는 별도 엔드포인트(`GET /api/users/analytics-id`)에서 fetch.
+    // 실패·타임아웃 시 null — wire-up 자동 skip, 익명 추적으로 graceful degrade.
+    const analyticsId = await fetchAnalyticsIdFromBackend(accessToken);
+
     const session = await getSession();
     session.accessToken = accessToken;
     session.refreshToken = refreshToken;
     session.isPortalLinked = isPortalLinked;
-    // analyticsId 는 옵셔널 — 백엔드 미준비 시 undefined 로 graceful degrade.
-    // AuthContext hydration 에서 setAnalyticsUser 가 ID 존재 시에만 호출됨.
+    // 명시적 설정/해제 — 이전 사용자의 analyticsId 가 남는 leak 방지 (재로그인 시 다른 계정).
     if (analyticsId) {
       session.analyticsId = analyticsId;
+    } else {
+      delete session.analyticsId;
     }
     await session.save();
 

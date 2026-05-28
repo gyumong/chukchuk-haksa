@@ -41,13 +41,16 @@ export function initAnalytics(): void {
 /**
  * 로그인/세션 hydration 직후 호출. analyticsId 는 서버가 발급한 사용자 PK UUID.
  * 카카오 ID 나 학번 같은 의미있는 식별자는 PII 위험이 있으므로 절대 전달하지 말 것.
+ *
+ * null/undefined 전달 시 user_id 만 클리어 (device_id 는 유지) — 세션 만료 등 *암묵적*
+ * 로그아웃 경로에서 사용. 전체 reset 은 clearAuth 의 `resetAnalytics` 가 담당.
  */
-export function setAnalyticsUser(analyticsId: string): void {
+export function setAnalyticsUser(analyticsId: string | null | undefined): void {
   ensureInit();
   if (typeof window === 'undefined') {
     return;
   }
-  amplitude.setUserId(analyticsId);
+  amplitude.setUserId(analyticsId ?? undefined);
 }
 
 /**
