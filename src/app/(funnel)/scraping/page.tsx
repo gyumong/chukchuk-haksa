@@ -8,6 +8,7 @@ import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { useAuth } from '@/features/auth/contexts/AuthContext';
 import { usePortalLinkFailure, usePortalLinkJobPolling, usePortalLinkSummary } from '@/features/portal-link/hooks';
 import { clearRetry } from '@/features/portal-link/utils/credentialRetry';
+import { EVENTS, useTrackView } from '@/lib/analytics';
 import { useFunnelContext } from '../contexts';
 import ErrorScreen from '../components/ErrorScreen/ErrorScreen';
 import LoadingScreen from '../components/LoadingScreen/LoadingScreen';
@@ -16,6 +17,7 @@ import styles from './error.module.scss';
 const MISSING_JOB_MESSAGE = '연동 정보를 찾을 수 없습니다. 다시 시도해주세요.';
 
 export default function ScrapingPage() {
+  useTrackView(EVENTS.UNIV_SYNC_LOADING_VIEW);
   const router = useInternalRouter();
   const { jobId, setStudentInfo } = useFunnelContext();
   const { hydrate } = useAuth();

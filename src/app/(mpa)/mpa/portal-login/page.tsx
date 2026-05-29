@@ -11,6 +11,7 @@ import { usePortalLinkMutation } from '@/features/portal-link/hooks';
 import { popRetry, stashAttemptUsername } from '@/features/portal-link/utils/credentialRetry';
 import { getMessageByErrorCode } from '@/features/portal-link/utils/errorMapping';
 import { PORTAL_LOGIN_JOB_ID_KEY } from '@/constants/portal-link';
+import { EVENTS, track, useTrackView } from '@/lib/analytics';
 import { ApiError } from '@/shared/api/errors';
 import { generateIdempotencyKey } from '@/shared/utils/idempotency';
 import { isInWebView, postBridgeMessage } from '@/lib/webview';
@@ -24,6 +25,7 @@ import styles from './page.module.scss';
 const BRIDGE_SKIP_PORTAL_LINK = 'skip:portal-link';
 
 export default function MpaPortalLogin() {
+  useTrackView(EVENTS.UNIV_SYNC_LOGIN_VIEW);
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -56,6 +58,7 @@ export default function MpaPortalLogin() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    track(EVENTS.UNIV_SYNC_BTN_TAP);
 
     try {
       setErrorMessage('');

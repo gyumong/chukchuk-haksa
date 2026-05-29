@@ -8,6 +8,7 @@ import { Icon } from '@/components/ui';
 import { ROUTES } from '@/constants';
 import { useProfileQuery } from '@/features/dashboard/apis/queries/useProfileQuery';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
+import { EVENTS, track } from '@/lib/analytics';
 import styles from './SyncUpdateButton.module.scss';
 
 interface SyncUpdateButtonProps {
@@ -22,6 +23,7 @@ const SyncUpdateButton = ({ onNavigate }: SyncUpdateButtonProps = {}) => {
     parsedLastSyncedAt && isValid(parsedLastSyncedAt) ? format(parsedLastSyncedAt, 'yy년 M월 d일 HH:mm') : '';
 
   const handleResyncLogin = () => {
+    track(EVENTS.HOME_UNIV_RESYNC_BTN_TAP);
     if (onNavigate) {
       onNavigate();
       return;

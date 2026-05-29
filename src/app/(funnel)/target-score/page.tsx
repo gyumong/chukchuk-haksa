@@ -6,6 +6,7 @@ import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { useSetTargetGpaMutation } from '@/features/student/apis/queries/useSetTargetGpaMutation';
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
+import { EVENTS, track } from '@/lib/analytics';
 import { isInWebView, postBridgeMessage } from '@/lib/webview';
 import { FunnelHeadline, ScoreInput } from '../components';
 import styles from './page.module.scss';
@@ -20,8 +21,10 @@ export default function TargetScorePage() {
   const mutation = useSetTargetGpaMutation();
 
   const handleSubmit = async () => {
+    const gpa = parseFloat(score);
+    track(EVENTS.UNIV_SYNC_SET_GPA_BTN_TAP, { gpa });
     try {
-      await mutation.mutateAsync(parseFloat(score));
+      await mutation.mutateAsync(gpa);
       if (isInWebView()) {
         const posted = postBridgeMessage(BRIDGE_DONE_PORTAL_LINK);
         if (!posted) {

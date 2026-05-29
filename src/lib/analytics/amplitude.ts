@@ -64,3 +64,31 @@ export function resetAnalytics(): void {
   }
   amplitude.reset();
 }
+
+/**
+ * 이벤트 전송 내부 헬퍼. 타입 안전 wrapper 는 `events.ts` 의 `track()` 이며,
+ * 호출부는 항상 그쪽을 사용한다. SDK 직접 호출 차단을 위해 internal 로 분리.
+ */
+export function trackEvent(name: string, properties?: Record<string, unknown>): void {
+  ensureInit();
+  if (typeof window === 'undefined') {
+    return;
+  }
+  amplitude.track(name, properties);
+}
+
+/**
+ * UserProperties 설정 내부 헬퍼. Identify API 로 user-level attach — event properties 와 분리되어
+ * 사용자 단위로 유지된다. 타입 안전 wrapper 는 `userProperties.ts` 의 `setUserProperties()`.
+ */
+export function setUserPropertiesInternal(props: Record<string, string | number | boolean>): void {
+  ensureInit();
+  if (typeof window === 'undefined') {
+    return;
+  }
+  const identify = new amplitude.Identify();
+  for (const [key, value] of Object.entries(props)) {
+    identify.set(key, value);
+  }
+  amplitude.identify(identify);
+}

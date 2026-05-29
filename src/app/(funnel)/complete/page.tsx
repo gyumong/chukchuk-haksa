@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { FixedButton } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
+import { EVENTS, useTrackView } from '@/lib/analytics';
 import { getSemesterInfo } from '@/lib/utils/semester';
 import { FunnelHeadline } from '../components';
 import { useFunnelContext } from '../contexts';
@@ -19,6 +20,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 }
 
 export default function Complete() {
+  useTrackView(EVENTS.UNIV_SYNC_COMPLETE_VIEW);
   const { studentInfo } = useFunnelContext();
   const router = useInternalRouter();
   const handleNext = () => {
