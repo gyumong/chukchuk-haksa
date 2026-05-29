@@ -1,4 +1,5 @@
 import { academicRecordApi, studentApi } from '@/shared/api/client';
+import type { AcademicSummaryApiResponse, StudentProfileApiResponse } from '@/shared/api/data-contracts';
 import { ApiResponseHandler } from '@/shared/api/utils/response-handler';
 import { StudentProfileSchema } from './schema';
 
@@ -6,7 +7,7 @@ import { StudentProfileSchema } from './schema';
  * 학생 프로필 정보를 API로부터 가져오고, 도메인 모델로 매핑한다.
  */
 export async function fetchStudentProfile() {
-  const response = await ApiResponseHandler.handleAsyncResponse(
+  const response = await ApiResponseHandler.handleAsyncResponse<StudentProfileApiResponse>(
     studentApi.getProfile()
   );
   const parsed = StudentProfileSchema.parse(response.data);
@@ -17,8 +18,7 @@ export async function fetchStudentProfile() {
  * 학생의 학업 요약 정보를 API로부터 가져온다.
  */
 export async function fetchAcademicSummary() {
-  const response = await ApiResponseHandler.handleAsyncResponse(
+  return ApiResponseHandler.handleAsyncResponse<AcademicSummaryApiResponse>(
     academicRecordApi.getAcademicSummary()
   );
-  return response;
 }

@@ -34,6 +34,10 @@ describe('isDualMajorArea', () => {
   it('중핵은 복수전공 영역이 아니다', () => {
     expect(isDualMajorArea('중핵')).toBe(false);
   });
+
+  it('기타는 복수전공 영역이 아니다', () => {
+    expect(isDualMajorArea('기타')).toBe(false);
+  });
 });
 
 describe('isMainMajorArea', () => {
@@ -43,6 +47,10 @@ describe('isMainMajorArea', () => {
 
   it('복선은 주전공 영역이 아니다', () => {
     expect(isMainMajorArea('복선')).toBe(false);
+  });
+
+  it('기타는 주전공 영역에 포함된다', () => {
+    expect(isMainMajorArea('기타')).toBe(true);
   });
 });
 

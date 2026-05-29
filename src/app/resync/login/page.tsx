@@ -41,7 +41,7 @@ export default function PortalLogin() {
       const idempotencyKey = generateIdempotencyKey();
       stashAttemptUsername(username);
       const result = await linkMutation.mutateAsync({ username, password, idempotencyKey });
-      const jobId = result.data?.job_id;
+      const jobId = result?.job_id;
 
       if (jobId) {
         sessionStorage.setItem(RESYNC_JOB_ID_KEY, jobId);

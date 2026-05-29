@@ -31,8 +31,8 @@ export default function MpaPortalLoginScrapingPage() {
   }, []);
 
   const { data: jobStatusData, isTimedOut } = usePortalLinkJobPolling(jobId);
-  const jobStatus = jobStatusData?.data?.status;
-  const jobDetail = jobStatusData?.data;
+  const jobStatus = jobStatusData?.status;
+  const jobDetail = jobStatusData;
 
   const clearJobId = useCallback(() => {
     sessionStorage.removeItem(PORTAL_LOGIN_JOB_ID_KEY);

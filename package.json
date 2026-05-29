@@ -33,6 +33,7 @@
     "codemod:router": "jscodeshift -t codemods/useRouter-to-useInternalRouter.js . --ignore-pattern='**/node_modules/**' --ignore-pattern='**/.next/**' --ignore-pattern='**/dist/**' --extensions=ts,tsx --parser=tsx"
   },
   "dependencies": {
+    "@amplitude/analytics-browser": "^2.42.4",
     "@next/bundle-analyzer": "^15.3.0",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/core": "^1.30.1",
@@ -46,6 +47,7 @@
     "class-variance-authority": "^0.7.1",
     "cookies-next": "4.3.0",
     "date-fns": "^4.1.0",
+    "firebase": "^12.13.0",
     "iron-session": "^8.0.4",
     "lottie-react": "^2.4.0",
     "next": "15.2.8",

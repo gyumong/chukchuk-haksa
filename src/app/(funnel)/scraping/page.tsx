@@ -21,8 +21,8 @@ export default function ScrapingPage() {
   const { hydrate } = useAuth();
 
   const { data: jobStatusData, isTimedOut } = usePortalLinkJobPolling(jobId);
-  const jobStatus = jobStatusData?.data?.status;
-  const jobDetail = jobStatusData?.data;
+  const jobStatus = jobStatusData?.status;
+  const jobDetail = jobStatusData;
 
   const { data: summaryData } = usePortalLinkSummary(jobId, jobStatus);
   const handledRef = useRef(false);
@@ -38,10 +38,10 @@ export default function ScrapingPage() {
     if (handledRef.current) {
       return;
     }
-    if (summaryData?.data?.studentInfo) {
+    if (summaryData?.studentInfo) {
       handledRef.current = true;
       clearRetry();
-      setStudentInfo(summaryData.data.studentInfo);
+      setStudentInfo(summaryData.studentInfo);
       if (jobId) {
         setUser({ id: jobId });
       }
