@@ -1,7 +1,7 @@
 import { type FirebaseApp, getApps, initializeApp } from 'firebase/app';
 import { fetchAndActivate, getRemoteConfig, getValue, type RemoteConfig } from 'firebase/remote-config';
 import { ENV, getEnvironment } from '@/config/environment';
-import { REMOTE_CONFIG_DEFAULTS, type RemoteConfigKey } from './keys';
+import { REMOTE_CONFIG_DEFAULTS, type RemoteConfigKey } from '@/lib/remote-config/keys';
 
 // Firebase SDK 직접 import 는 이 모듈에서만. 다른 코드는 wrapper 함수만 사용.
 // 향후 다른 RemoteConfig 제공자로 교체할 때 한 곳만 수정하면 됨.
