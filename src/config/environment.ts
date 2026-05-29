@@ -98,7 +98,16 @@ export const ENV = {
   SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN ?? '',
   SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN ?? '',
   AMPLITUDE_API_KEY: process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY ?? '',
-  
+
+  // Firebase RemoteConfig (Web 신설, prod 환경만 활성화)
+  // 키 미설정 시 SDK init 자체를 silent skip — `useRemoteConfig` 가 defaultValue 그대로 반환.
+  FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY ?? '',
+  FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ?? '',
+  FIREBASE_PROJECT_ID: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? '',
+  FIREBASE_STORAGE_BUCKET: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ?? '',
+  FIREBASE_MESSAGING_SENDER_ID: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ?? '',
+  FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID ?? '',
+
   // 캐시
   REDIS_URL: process.env.UPSTASH_REDIS_REST_URL ?? '',
   REDIS_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN ?? '',
