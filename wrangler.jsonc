@@ -13,10 +13,19 @@
   },
   "env": {
     "staging": {
-      "name": "cchaksa-staging"
+      "name": "cchaksa-staging",
+      "vars": {
+        // dv.cchaksa.com 용 Amplitude dev 프로젝트 키. NEXT_PUBLIC_* 는 클라 번들에 포함되어
+        // 어차피 노출되므로 리포에 두는 것이 표준 (Firebase apiKey 와 동일 성격).
+        "NEXT_PUBLIC_AMPLITUDE_API_KEY": "b930df62bcdcf24dae1baa269dc35649"
+      }
     },
     "production": {
-      "name": "cchaksa"
+      "name": "cchaksa",
+      "vars": {
+        // TODO: prod Amplitude 프로젝트 키 발급 후 채울 것. 미설정 시 SDK 가 silent skip.
+        // "NEXT_PUBLIC_AMPLITUDE_API_KEY": "<prod-key>"
+      }
     }
   }
 }

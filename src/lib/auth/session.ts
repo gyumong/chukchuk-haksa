@@ -8,6 +8,9 @@ export interface SessionData {
   accessToken?: string;
   refreshToken?: string;
   isPortalLinked?: boolean;
+  // Amplitude setUserId 에 그대로 전달되는 사용자 PK UUID. 백엔드 SignInResponse 에서 수신.
+  // 백엔드 실제 키 확정 후 data-contracts 매핑만 조정. 키 없으면 undefined 로 graceful degrade.
+  analyticsId?: string;
 }
 
 export const sessionOptions: SessionOptions = {

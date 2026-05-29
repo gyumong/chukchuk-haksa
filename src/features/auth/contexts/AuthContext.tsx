@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { queryClient } from '@/shared/api/configs/queryClient';
+import { resetAnalytics, setAnalyticsUser } from '@/lib/analytics';
 import {
   getAccessTokenStore,
   refreshAccessTokenStore,
@@ -12,6 +13,8 @@ import {
 interface AuthContextValue {
   accessToken: string | null;
   isPortalLinked: boolean | null;
+  /** Amplitude 등 분석 도구 식별자 (사용자 PK UUID). 미응답 시 null. */
+  analyticsId: string | null;
   isReady: boolean;
   clearAuth: () => Promise<void>;
   refresh: () => Promise<string | null>;
@@ -22,19 +25,27 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-async function fetchSessionState(): Promise<{ accessToken: string | null; isPortalLinked: boolean | null } | null> {
+interface SessionState {
+  accessToken: string | null;
+  isPortalLinked: boolean | null;
+  analyticsId: string | null;
+}
+
+async function fetchSessionState(): Promise<SessionState | null> {
   try {
     const response = await fetch('/api/session', { credentials: 'include' });
     if (!response.ok) {
-      return { accessToken: null, isPortalLinked: null };
+      return { accessToken: null, isPortalLinked: null, analyticsId: null };
     }
     const data = (await response.json()) as {
       accessToken?: string;
       isPortalLinked?: boolean;
+      analyticsId?: string;
     };
     return {
       accessToken: data.accessToken ?? null,
       isPortalLinked: typeof data.isPortalLinked === 'boolean' ? data.isPortalLinked : null,
+      analyticsId: data.analyticsId ?? null,
     };
   } catch (error) {
     console.error('[AuthContext] session fetch failed', error);
@@ -45,6 +56,7 @@ async function fetchSessionState(): Promise<{ accessToken: string | null; isPort
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [accessToken, setAccessTokenState] = useState<string | null>(() => getAccessTokenStore());
   const [isPortalLinked, setIsPortalLinked] = useState<boolean | null>(null);
+  const [analyticsId, setAnalyticsIdState] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -61,6 +73,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     previousTokenRef.current = accessToken;
   }, [accessToken]);
 
+  // Amplitude identity wire-up: accessToken/isPortalLinked 와 동일 동기 블록에서 처리해 race
+  // 방지 (보호 페이지가 API 호출 시작하기 전에 식별자 채움). MPA WebView 도 같은 hydration
+  // 경로를 거치므로 별도 처리 불필요. analyticsId 가 null 인 경우 — 세션 만료 등 암묵적
+  // 로그아웃 — SDK 의 user_id 도 클리어해 다음 익명 트래픽이 이전 사용자로 잘못 잡히지 않게 함
+  // (device_id 는 유지; 전체 reset 은 명시적 clearAuth 가 담당).
+  const applySessionState = useCallback((result: SessionState) => {
+    setAccessTokenStore(result.accessToken);
+    setIsPortalLinked(result.isPortalLinked);
+    setAnalyticsUser(result.analyticsId);
+    setAnalyticsIdState(result.analyticsId);
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -69,8 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
       if (result !== null) {
-        setAccessTokenStore(result.accessToken);
-        setIsPortalLinked(result.isPortalLinked);
+        applySessionState(result);
       }
       setIsReady(true);
     })();
@@ -78,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [applySessionState]);
 
   const clearAuth = useCallback(async () => {
     try {
@@ -86,8 +109,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('[AuthContext] clearAuth request failed', error);
     }
+    // 순서 critical: reset 이 토큰 store 초기화보다 먼저 — reset 이 새 device_id 를 발급하므로
+    // 이후 익명 트래픽이 새 device 로 잡힘. 같은 브라우저에서 다른 계정으로 재로그인해도
+    // 이전 유저 이벤트와 섞이지 않음.
+    resetAnalytics();
     setAccessTokenStore(null);
     setIsPortalLinked(null);
+    setAnalyticsIdState(null);
   }, []);
 
   const refresh = useCallback(() => refreshAccessTokenStore(), []);
@@ -95,13 +123,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const hydrate = useCallback(async () => {
     const result = await fetchSessionState();
     if (result !== null) {
-      setAccessTokenStore(result.accessToken);
-      setIsPortalLinked(result.isPortalLinked);
+      applySessionState(result);
     }
-  }, []);
+  }, [applySessionState]);
 
   return (
-    <AuthContext.Provider value={{ accessToken, isPortalLinked, isReady, clearAuth, refresh, hydrate }}>
+    <AuthContext.Provider value={{ accessToken, isPortalLinked, analyticsId, isReady, clearAuth, refresh, hydrate }}>
       {children}
     </AuthContext.Provider>
   );
