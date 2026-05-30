@@ -33,6 +33,7 @@ export class Graduation<
       path: `/api/graduation/progress`,
       method: "GET",
       secure: true,
+      format: "json",
       ...params,
     });
 }

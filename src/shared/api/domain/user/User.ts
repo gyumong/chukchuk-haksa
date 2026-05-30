@@ -13,6 +13,7 @@
 import {
   DeleteUserData,
   ErrorResponseWrapper,
+  GetAnalyticsIdData,
   SignInRequest,
   SignInUserData,
 } from "../../data-contracts";
@@ -28,15 +29,31 @@ export class User<
    * @name SignInUser
    * @summary 회원 가입 및 로그인
    * @request POST:/api/users/signin
-   * @secure
    */
   signInUser = (data: SignInRequest, params: RequestParams = {}) =>
     this.request<SignInUserData, ErrorResponseWrapper>({
       path: `/api/users/signin`,
       method: "POST",
       body: data,
-      secure: true,
       type: ContentType.Json,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description 로그인된 사용자의 Amplitude 사용자 식별자를 조회합니다.
+   *
+   * @tags User
+   * @name GetAnalyticsId
+   * @summary 사용자 분석 식별자 조회
+   * @request GET:/api/users/analytics-id
+   * @secure
+   */
+  getAnalyticsId = (params: RequestParams = {}) =>
+    this.request<GetAnalyticsIdData, ErrorResponseWrapper>({
+      path: `/api/users/analytics-id`,
+      method: "GET",
+      secure: true,
+      format: "json",
       ...params,
     });
   /**
@@ -53,6 +70,7 @@ export class User<
       path: `/api/users/delete`,
       method: "DELETE",
       secure: true,
+      format: "json",
       ...params,
     });
 }
