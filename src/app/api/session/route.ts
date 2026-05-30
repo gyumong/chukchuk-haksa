@@ -246,7 +246,8 @@ export async function POST(request: Request) {
   // 이게 없으면 이미 연동된 사용자가 cold start 직후 미연동으로 오판되고, 그 false 가 세션에 저장돼
   // 이후 GET 의 'unlinked 자체 선언' 분기(아래 GET 주석 참조)가 refresh 를 건너뛰어 false 가 고착,
   // 네이티브가 "학교 연동을 하시겠습니까?" 프롬프트를 잘못 띄운다. (GET 의 refresh+re-probe 와 동일 원리.)
-  // 'not-linked'(404)는 정상 미연동이라 refresh 하지 않는다. refresh 실패 시엔 기존 동작 유지(다음 진입 재시도).
+  // 'not-linked'(404)는 정상 미연동이라 refresh 하지 않는다. refresh 실패/재-probe 불확정이면
+  // 아래에서 isPortalLinked 를 저장하지 않고 unset 으로 남겨 다음 GET 이 정상 refresh 로 복구한다.
   if (probe !== 'ok' && probe !== 'not-linked') {
     const refreshed = await refreshTokensFromBackend(refreshToken);
     if (refreshed) {
@@ -259,12 +260,20 @@ export async function POST(request: Request) {
     }
   }
 
-  const isPortalLinked = probe === 'ok';
+  // probe 가 확정적일 때만 저장한다. 'ok'→true, 'not-linked'→false. 'error'/'unauthorized'(refresh
+  // 후에도 불확정)는 undefined 로 두고 session 에 굳히지 않는다 — false 를 저장하면 GET 의 'unlinked
+  // 자체 선언' 분기가 refresh 를 건너뛰어 만료 토큰+false 가 고착되므로, unset 으로 남겨 다음 GET 이
+  // 정상 refresh 경로를 타게 한다.
+  const isPortalLinked = probe === 'ok' ? true : probe === 'not-linked' ? false : undefined;
 
   const session = await getSession();
   session.accessToken = activeAccessToken;
   session.refreshToken = activeRefreshToken;
-  session.isPortalLinked = isPortalLinked;
+  if (isPortalLinked === undefined) {
+    delete session.isPortalLinked;
+  } else {
+    session.isPortalLinked = isPortalLinked;
+  }
   // 명시적 설정/해제 — 동일 쿠키에서 다른 사용자로 재익스체인지될 경우 이전 analyticsId leak 방지.
   if (analyticsId) {
     session.analyticsId = analyticsId;
@@ -273,5 +282,5 @@ export async function POST(request: Request) {
   }
   await session.save();
 
-  return NextResponse.json({ ok: true, isPortalLinked });
+  return NextResponse.json({ ok: true, isPortalLinked: isPortalLinked ?? false });
 }
