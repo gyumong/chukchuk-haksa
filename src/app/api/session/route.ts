@@ -212,7 +212,8 @@ interface SessionExchangeBody {
 // 네이티브 앱이 보유한 ac/re 토큰을 cchaksa_session 쿠키로 익스체인지.
 // 시퀀스: docs/mpa-school-link-handoff.md
 // isPortalLinked 는 요청 바디에서 받지 않고 백엔드 probe 결과로 결정 — 클라이언트 임의 값으로
-// 세션 승격되는 경로 차단. probe 가 일시 실패(`'error'`)면 false 로 저장되고, 다음 GET 에서 재시도.
+// 세션 승격되는 경로 차단. probe 가 만료(401)/일시오류(timeout·5xx)면 refreshToken 으로 재발급 후
+// 재-probe 한다 (GET 과 동일) — cold start 직후 연동 사용자가 미연동으로 오판되는 것을 막는다.
 // TODO(backend): 토큰 진위 검증 엔드포인트가 추가되면 sealData 직전 호출해 위조 토큰 차단.
 export async function POST(request: Request) {
   let body: SessionExchangeBody;
@@ -233,16 +234,46 @@ export async function POST(request: Request) {
 
   // probe 와 analyticsId fetch 는 서로 독립 — 병렬로 latency 단축.
   // MPA WebView 첫 진입 시 식별자를 즉시 채워, 다음 GET 부터 분석 wire-up 정상 동작.
-  const [probe, analyticsId] = await Promise.all([
+  let activeAccessToken = accessToken;
+  let activeRefreshToken = refreshToken;
+  let [probe, analyticsId] = await Promise.all([
     probeStudentProfile(accessToken),
     fetchAnalyticsIdFromBackend(accessToken),
   ]);
-  const isPortalLinked = probe === 'ok';
+
+  // cold start 등으로 native 가 보유한 accessToken 이 만료(401)거나 백엔드 일시오류(timeout·5xx)면,
+  // 단일 probe 결과로 isPortalLinked=false 를 굳히지 않는다 — refreshToken 으로 재발급 후 재-probe.
+  // 이게 없으면 이미 연동된 사용자가 cold start 직후 미연동으로 오판되고, 그 false 가 세션에 저장돼
+  // 이후 GET 의 'unlinked 자체 선언' 분기(아래 GET 주석 참조)가 refresh 를 건너뛰어 false 가 고착,
+  // 네이티브가 "학교 연동을 하시겠습니까?" 프롬프트를 잘못 띄운다. (GET 의 refresh+re-probe 와 동일 원리.)
+  // 'not-linked'(404)는 정상 미연동이라 refresh 하지 않는다. refresh 실패/재-probe 불확정이면
+  // 아래에서 isPortalLinked 를 저장하지 않고 unset 으로 남겨 다음 GET 이 정상 refresh 로 복구한다.
+  if (probe !== 'ok' && probe !== 'not-linked') {
+    const refreshed = await refreshTokensFromBackend(refreshToken);
+    if (refreshed) {
+      activeAccessToken = refreshed.accessToken;
+      activeRefreshToken = refreshed.refreshToken;
+      [probe, analyticsId] = await Promise.all([
+        probeStudentProfile(activeAccessToken),
+        fetchAnalyticsIdFromBackend(activeAccessToken),
+      ]);
+    }
+  }
+
+  // probe 가 확정적일 때만 저장한다. 'ok'→true, 'not-linked'→false. 'error'/'unauthorized'(refresh
+  // 후에도 불확정)는 undefined 로 두고 session 에 굳히지 않는다 — false 를 저장하면 GET 의 'unlinked
+  // 자체 선언' 분기가 refresh 를 건너뛰어 만료 토큰+false 가 고착되므로, unset 으로 남겨 다음 GET 이
+  // 정상 refresh 경로를 타게 한다.
+  const isPortalLinked = probe === 'ok' ? true : probe === 'not-linked' ? false : undefined;
 
   const session = await getSession();
-  session.accessToken = accessToken;
-  session.refreshToken = refreshToken;
-  session.isPortalLinked = isPortalLinked;
+  session.accessToken = activeAccessToken;
+  session.refreshToken = activeRefreshToken;
+  if (isPortalLinked === undefined) {
+    delete session.isPortalLinked;
+  } else {
+    session.isPortalLinked = isPortalLinked;
+  }
   // 명시적 설정/해제 — 동일 쿠키에서 다른 사용자로 재익스체인지될 경우 이전 analyticsId leak 방지.
   if (analyticsId) {
     session.analyticsId = analyticsId;
@@ -251,5 +282,5 @@ export async function POST(request: Request) {
   }
   await session.save();
 
-  return NextResponse.json({ ok: true, isPortalLinked });
+  return NextResponse.json({ ok: true, isPortalLinked: isPortalLinked ?? false });
 }
