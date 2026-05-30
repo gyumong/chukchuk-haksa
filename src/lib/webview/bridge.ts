@@ -80,3 +80,9 @@ export const navigateBack = (): boolean => {
 export const redirectToHome = (): boolean => {
   return postBridgeMessage('redirectToHome');
 };
+
+// /mpa/me 의 '탈퇴하기' → 네이티브에 계정 탈퇴 플로우 진입을 위임한다. 네이티브가 탈퇴 확인/처리
+// 화면을 자체적으로 띄운다 (웹뷰는 라우팅하지 않음). 기존 navigate:/mpa/delete dispatch 를 대체.
+export const withdraw = (): boolean => {
+  return postBridgeMessage('withdraw');
+};

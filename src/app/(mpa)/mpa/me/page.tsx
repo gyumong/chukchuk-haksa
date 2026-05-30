@@ -2,8 +2,7 @@
 
 import { Icon } from '@/components/ui';
 import { Menu } from '@/components/ui/Menu';
-import { ROUTES } from '@/constants/routes';
-import { navigateNative } from '@/lib/webview';
+import { withdraw } from '@/lib/webview';
 
 const MpaMePage = () => {
   const menuItems = [
@@ -11,7 +10,7 @@ const MpaMePage = () => {
       label: '탈퇴하기',
       color: '#FF5751',
       icon: <Icon name="arrow-right" size={24} />,
-      onClick: () => navigateNative(ROUTES.MPA.DELETE),
+      onClick: () => withdraw(),
     },
   ];
 
