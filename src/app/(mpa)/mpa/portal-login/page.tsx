@@ -13,30 +13,25 @@ import { getMessageByErrorCode } from '@/features/portal-link/utils/errorMapping
 import { PORTAL_LOGIN_JOB_ID_KEY } from '@/constants/portal-link';
 import { ApiError } from '@/shared/api/errors';
 import { generateIdempotencyKey } from '@/shared/utils/idempotency';
-import { isInWebView, postBridgeMessage } from '@/lib/webview';
+import { isInWebView, redirectToHome } from '@/lib/webview';
 import { FunnelHeadline, SchoolCard } from '@/app/(funnel)/components';
 import sharedStyles from '@/app/resync/login/page.module.scss';
 import styles from './page.module.scss';
-
-// 신입생·편입생 등 즉시 학교 인증이 불가한 사용자가 "확인" 으로 학교 연동 건너뛰기 선택 시
-// 네이티브에 송출. 네이티브가 webview dismiss + 시간표 만들기 화면으로 전환.
-// 프로토콜: docs/mpa-school-link-handoff.md M3.
-const BRIDGE_SKIP_PORTAL_LINK = 'skip:portal-link';
 
 export default function MpaPortalLogin() {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [isSkipDialogOpen, setIsSkipDialogOpen] = useState<boolean>(false);
+  const [isUnavailableDialogOpen, setIsUnavailableDialogOpen] = useState<boolean>(false);
   const router = useInternalRouter();
   const linkMutation = usePortalLinkMutation();
 
-  const handleSkipConfirm = () => {
-    setIsSkipDialogOpen(false);
-    // 네이티브에 학교 연동 건너뛰기 의사 전달. webview 환경 아니면 noop —
+  const handleUnavailableConfirm = () => {
+    setIsUnavailableDialogOpen(false);
+    // 학교 인증이 불가한 사용자가 "확인" 시 네이티브 앱 홈으로 이동 위임. webview 환경 아니면 noop —
     // (mpa) 라우트는 webview 전용이라 사실상 도달 안 함, 안전망 차원.
     if (isInWebView()) {
-      const posted = postBridgeMessage(BRIDGE_SKIP_PORTAL_LINK);
+      const posted = redirectToHome();
       if (!posted) {
         // bridge 송출 실패 시 사용자가 다이얼로그 닫힌 채 무반응 상태에 갇히지 않도록 인라인 에러 노출.
         setErrorMessage('요청 처리에 실패했어요. 다시 시도해주세요.');
@@ -116,7 +111,7 @@ export default function MpaPortalLogin() {
           </div>
         )}
 
-        <button type="button" className={styles.skipLink} onClick={() => setIsSkipDialogOpen(true)}>
+        <button type="button" className={styles.skipLink} onClick={() => setIsUnavailableDialogOpen(true)}>
           즉시 학교 연동이 불가하신가요?
           <br />
           (ex. 신입생, 편입생)
@@ -132,10 +127,10 @@ export default function MpaPortalLogin() {
       </form>
 
       <ConfirmDialog
-        isOpen={isSkipDialogOpen}
+        isOpen={isUnavailableDialogOpen}
         message={`학교 연동없이 이용시\n'시간표 만들기'만 이용 가능합니다.`}
-        onConfirm={handleSkipConfirm}
-        onClose={() => setIsSkipDialogOpen(false)}
+        onConfirm={handleUnavailableConfirm}
+        onClose={() => setIsUnavailableDialogOpen(false)}
       />
     </div>
   );
