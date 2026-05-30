@@ -29,6 +29,22 @@ export interface AcceptedResponse {
   status?: string;
 }
 
+/** 포털 링크 job 생성 수락 응답 */
+export interface PortalLinkAcceptedApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 스크래핑 job 수락 응답 */
+  data: AcceptedResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
 /** 에러 상세 정보 */
 export interface ErrorDetail {
   /**
@@ -80,6 +96,22 @@ export interface MessageOnlyResponse {
   /**
    * 결과 메시지
    * @example "목표 학점 저장 완료"
+   */
+  message?: string;
+}
+
+/** 포털 링크 내부 콜백 처리 응답 */
+export interface PortalLinkCallbackApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 메시지 응답 DTO */
+  data: MessageOnlyResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
    */
   message?: string;
 }
@@ -213,6 +245,22 @@ export interface JobStatusResponse {
   retryable?: boolean;
 }
 
+/** 포털 링크 job 상태 조회 응답 */
+export interface PortalLinkJobStatusApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 스크래핑 job 상태 응답 */
+  data: JobStatusResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
 /** 스크래핑 job 요약 응답 */
 export interface JobSummaryResponse {
   job_id?: string;
@@ -221,6 +269,22 @@ export interface JobSummaryResponse {
   /** @format date-time */
   finished_at?: string;
   status?: string;
+}
+
+/** 포털 링크 job 요약 조회 응답 */
+export interface PortalLinkJobSummaryApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 스크래핑 job 요약 응답 */
+  data: JobSummaryResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
 }
 
 /** 포털 학생 요약 정보 */
@@ -234,6 +298,31 @@ export interface StudentInfoSummary {
   status?: string;
   /** @format int32 */
   completedSemesterType?: number;
+}
+
+/** 사용자 분석 식별자 조회 응답 */
+export interface AnalyticsIdApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 사용자 분석 식별자 응답 */
+  data: AnalyticsIdResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+/** 사용자 분석 식별자 응답 */
+export interface AnalyticsIdResponse {
+  /**
+   * Amplitude 사용자 식별자
+   * @example "550e8400-e29b-41d4-a716-446655440000"
+   */
+  analyticsId: string;
 }
 
 /** 학생 프로필 응답 */
@@ -693,9 +782,9 @@ export interface DeleteUserApiResponse {
   message?: string;
 }
 
-export type CreatePortalLinkJobData = AcceptedResponse;
+export type CreatePortalLinkJobData = PortalLinkAcceptedApiResponse;
 
-export type HandleCallbackData = MessageOnlyResponse;
+export type HandleCallbackData = PortalLinkCallbackApiResponse;
 
 export type SignInUserData = SignInApiResponse;
 
@@ -718,13 +807,13 @@ export type ResetStudentDataData = SuccessResponseMessageOnlyResponse;
 
 export type RefreshResponseData = RefreshTokenApiResponse;
 
-export type SentryTestData = any;
+export type GetJobStatusData = PortalLinkJobStatusApiResponse;
 
-export type GetJobStatusData = JobStatusResponse;
-
-export type GetJobSummaryData = JobSummaryResponse;
+export type GetJobSummaryData = PortalLinkJobSummaryApiResponse;
 
 export type HealthData = string;
+
+export type GetAnalyticsIdData = AnalyticsIdApiResponse;
 
 export type GetProfileData = StudentProfileApiResponse;
 

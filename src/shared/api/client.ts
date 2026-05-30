@@ -2,8 +2,7 @@ import {
   AcademicRecordController as AcademicRecordApi,
   Auth as AuthApi,
   Graduation as GraduationApi,
-  PortalJobQueryController as PortalJobQueryApi,
-  PortalLinkController as PortalLinkApi,
+  PortalLink as PortalLinkApi,
   SemesterController as SemesterRecordApi,
   Student as StudentApi,
   User as UserApi,
@@ -77,7 +76,8 @@ export const authApi = createApiClient(AuthApi);
 export const graduationApi = createApiClient(GraduationApi);
 export const semesterRecordApi = createApiClient(SemesterRecordApi);
 export const portalLinkApi = createApiClient(PortalLinkApi);
-export const portalJobQueryApi = createApiClient(PortalJobQueryApi);
+// PortalJobQueryController 가 PortalLink 태그로 병합됨 — getJobStatus/getJobSummary 도 PortalLink 가 보유.
+export const portalJobQueryApi = createApiClient(PortalLinkApi);
 
 // 응답 검증 유틸리티 (필요하면 사용)
 export function assertValidResponse<TData>(

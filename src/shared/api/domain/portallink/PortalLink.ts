@@ -39,6 +39,7 @@ export class PortalLink<
       body: data,
       secure: true,
       type: ContentType.Json,
+      format: "json",
       ...params,
     });
   /**
@@ -48,15 +49,14 @@ export class PortalLink<
    * @name HandleCallback
    * @summary [Internal] 스크래핑 결과 콜백 수신
    * @request POST:/internal/scrape-results
-   * @secure
    */
   handleCallback = (data: string, params: RequestParams = {}) =>
     this.request<HandleCallbackData, ErrorResponseWrapper>({
       path: `/internal/scrape-results`,
       method: "POST",
       body: data,
-      secure: true,
       type: ContentType.Json,
+      format: "json",
       ...params,
     });
   /**
@@ -73,6 +73,7 @@ export class PortalLink<
       path: `/portal/link/jobs/${jobId}`,
       method: "GET",
       secure: true,
+      format: "json",
       ...params,
     });
   /**
@@ -89,6 +90,7 @@ export class PortalLink<
       path: `/portal/link/jobs/${jobId}/summary`,
       method: "GET",
       secure: true,
+      format: "json",
       ...params,
     });
 }
