@@ -3,11 +3,13 @@
 import { captureException } from '@sentry/nextjs';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
+import { EVENTS, useTrackView } from '@/lib/analytics';
 import { FunnelHeadline, SchoolCard } from '../components';
 import { PortalLoginForm } from './components/PortalLoginForm/PortalLoginForm';
 import styles from './page.module.scss';
 
 export default function PortalLogin() {
+  useTrackView(EVENTS.UNIV_SYNC_LOGIN_VIEW);
   const router = useInternalRouter();
 
   const onSuccess = () => {

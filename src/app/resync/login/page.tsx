@@ -10,6 +10,7 @@ import { usePortalLinkMutation } from '@/features/portal-link/hooks';
 import { popRetry, stashAttemptUsername } from '@/features/portal-link/utils/credentialRetry';
 import { getMessageByErrorCode } from '@/features/portal-link/utils/errorMapping';
 import { RESYNC_JOB_ID_KEY } from '@/constants/portal-link';
+import { EVENTS, track } from '@/lib/analytics';
 import { ApiError } from '@/shared/api/errors';
 import { generateIdempotencyKey } from '@/shared/utils/idempotency';
 import { FunnelHeadline, SchoolCard } from '../../(funnel)/components';
@@ -34,6 +35,7 @@ export default function PortalLogin() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    track(EVENTS.UNIV_RESYNC_BTN_TAP);
 
     try {
       setErrorMessage('');
