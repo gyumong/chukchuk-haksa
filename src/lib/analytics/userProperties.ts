@@ -7,15 +7,26 @@ import { setUserPropertiesInternal } from '@/lib/analytics/amplitude';
 export const WEB_VERSION = PACKAGE_VERSION;
 
 // 텍소노미 (Notion) — UserProperties.
-// `sys_platform` 은 웹/MPA WebView 둘 다 *절대 set 하지 않음* — 네이티브 앱 책임.
+// `sys_platform` / `sys_app_version` 은 웹/MPA WebView 둘 다 *절대 set 하지 않음* — 네이티브 앱 책임.
 // 크로스 플랫폼 식별은 동일한 analyticsId(user_id) 로 묶이며 device_id 는 분리.
-// `sys_app_version` 도 동일 — 네이티브 책임.
 //
-// TODO(backend): `timetable_count` / `course_count` 는 현재 StudentProfileSchema 에 부재 +
-// 시간표 기능 자체가 native-only. 백엔드가 profile 응답에 노출하거나 별도 endpoint 추가 후
-// `useProfileQuery` queryFn 에서 setUserProperties 호출 추가 (후속 PR).
+// 학번/학과 등 사용자 식별 속성은 제품 결정에 따라 전송한다(인증 시크릿 제외).
+// 프로필 기반 세팅은 UserPropertiesSync 컴포넌트가 담당. 키 이름은 Notion 텍소노미와 대조해 확정할 것.
+// TODO(backend): `timetable_count` / `course_count` 는 StudentProfileSchema 부재 + native-only → 백엔드 노출 후 추가.
 interface AllowedUserProperties {
   sys_web_version?: string;
+  /** 학번 */
+  student_code?: string;
+  /** 학과 (departmentName) */
+  department?: string;
+  /** 전공 (majorName) */
+  major?: string;
+  /** 입학년도 (학번 앞 2자리) */
+  admission_year?: string;
+  /** 학년 */
+  grade_level?: number;
+  /** 복수전공명 (있을 때만) */
+  dual_major?: string;
 }
 
 // 타입 안전 wrapper — 정의되지 않은 키 차단. 텍소노미가 확장되면 AllowedUserProperties 에 추가.
