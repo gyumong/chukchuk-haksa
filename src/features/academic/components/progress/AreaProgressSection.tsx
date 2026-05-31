@@ -22,7 +22,7 @@ export default function AreaProgressSection() {
         setIsGeneralElectiveInfoOpen(true);
       }}
     >
-      <Icon name="info" />
+      <Icon name="info" size={20} />
     </button>
   );
 
