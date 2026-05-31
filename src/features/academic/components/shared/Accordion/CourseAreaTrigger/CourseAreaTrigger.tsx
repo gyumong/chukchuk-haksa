@@ -9,7 +9,7 @@ export default function CourseAreaTrigger({
   isCompleted,
   isExpanded,
   requiredElectiveCredits,
-  titleAdornment,
+  trailingAdornment,
   onClick,
 }: CourseAreaTriggerProps) {
   // TODO 선교 의존성 들어내기
@@ -17,7 +17,6 @@ export default function CourseAreaTrigger({
     <div className={`${styles.container} ${isCompleted ? styles.completed : ''}`} onClick={onClick}>
       <div className={styles.info}>
         <span className={styles.title}>{title}</span>
-        {titleAdornment}
         <span className={styles.credits}>
           {requiredElectiveCredits ? (
             <>
@@ -31,6 +30,7 @@ export default function CourseAreaTrigger({
 
           {isCompleted && <Icon name="check-status-on" className={styles.checkIcon} size={18} />}
         </span>
+        {trailingAdornment}
       </div>
       <Icon
         name="arrow-down"

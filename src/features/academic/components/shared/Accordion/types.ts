@@ -10,8 +10,8 @@ interface CourseAreaProps {
   isCompleted: boolean;
   requiredElectiveCredits?: number;
   courses?: Course[];
-  /** 제목 옆에 표시할 부가 요소 (예: 정보 아이콘 버튼). */
-  titleAdornment?: ReactNode;
+  /** 학점 표시 뒤(행 끝)에 붙일 부가 요소 (예: 정보 아이콘 버튼). */
+  trailingAdornment?: ReactNode;
 }
 
 interface CourseAreaTriggerProps {
@@ -23,8 +23,8 @@ interface CourseAreaTriggerProps {
   onClick: () => void;
   requiredElectiveCredits?: number;
   currentElectiveCourses?: number;
-  /** 제목 옆에 표시할 부가 요소. */
-  titleAdornment?: ReactNode;
+  /** 학점 표시 뒤(행 끝)에 붙일 부가 요소. */
+  trailingAdornment?: ReactNode;
 }
 
 interface CourseListProps {

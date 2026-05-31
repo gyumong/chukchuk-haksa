@@ -11,7 +11,7 @@ export default function AreaProgressSection() {
   const { mainMajorAreas, dualMajorAreas } = useAreaProgress(graduationProgress);
   const [isGeneralElectiveInfoOpen, setIsGeneralElectiveInfoOpen] = useState(false);
 
-  // '일반선택'(일선) 영역 제목 옆 정보 아이콘 — 클릭 시 설명 팝업. accordion 토글과 분리(stopPropagation).
+  // '일반선택'(일선) 영역 학점 뒤 정보 아이콘 — 클릭 시 설명 팝업. accordion 토글과 분리(stopPropagation).
   const generalElectiveInfoButton = (
     <button
       type="button"
@@ -38,7 +38,7 @@ export default function AreaProgressSection() {
             requiredElectiveCredits={area.requiredElectiveCourses}
             isCompleted={area.isCompleted}
             courses={area.courses}
-            titleAdornment={area.areaType === '일선' ? generalElectiveInfoButton : undefined}
+            trailingAdornment={area.areaType === '일선' ? generalElectiveInfoButton : undefined}
           />
           {(index < mainMajorAreas.length - 1 || dualMajorAreas.length > 0) && (
             <div className={styles.spacing}></div>
@@ -62,7 +62,7 @@ export default function AreaProgressSection() {
                 requiredElectiveCredits={area.requiredElectiveCourses}
                 isCompleted={area.isCompleted}
                 courses={area.courses}
-                titleAdornment={area.areaType === '일선' ? generalElectiveInfoButton : undefined}
+                trailingAdornment={area.areaType === '일선' ? generalElectiveInfoButton : undefined}
               />
               {index < dualMajorAreas.length - 1 && (
                 <div className={styles.spacing}></div>

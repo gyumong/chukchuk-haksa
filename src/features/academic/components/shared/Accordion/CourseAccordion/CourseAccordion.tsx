@@ -10,7 +10,7 @@ export default function CourseAccordion({
   requiredElectiveCredits,
   isCompleted,
   courses = [],
-  titleAdornment,
+  trailingAdornment,
 }: CourseAreaProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -23,7 +23,7 @@ export default function CourseAccordion({
         isCompleted={isCompleted}
         isExpanded={isExpanded}
         requiredElectiveCredits={requiredElectiveCredits}
-        titleAdornment={titleAdornment}
+        trailingAdornment={trailingAdornment}
         onClick={() => setIsExpanded(!isExpanded)}
       />
       {courses.length > 0 && (
