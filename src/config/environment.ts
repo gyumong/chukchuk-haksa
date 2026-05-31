@@ -98,6 +98,8 @@ export const ENV = {
   SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN ?? '',
   SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN ?? '',
   AMPLITUDE_API_KEY: process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY ?? '',
+  // 에러 웹훅 (서버 전용 시크릿). 미설정 시 /api/client-error 가 no-op — Sentry 와 병행 sink.
+  DISCORD_ERROR_WEBHOOK_URL: process.env.DISCORD_ERROR_WEBHOOK_URL ?? '',
 
   // Firebase RemoteConfig (Web 신설, prod 환경만 활성화)
   // 키 미설정 시 SDK init 자체를 silent skip — `useRemoteConfig` 가 defaultValue 그대로 반환.

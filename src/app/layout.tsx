@@ -8,6 +8,7 @@ import { AuthProvider } from '@/features/auth/contexts/AuthContext';
 import { AnalyticsProvider } from '@/lib/analytics';
 import { RemoteConfigProvider } from '@/lib/remote-config';
 import MaintenancePage from '@/components/MaintenancePage';
+import { GlobalErrorReporter } from '@/lib/error-reporting';
 import '../styles/global.scss';
 
 export const metadata: Metadata = {
@@ -79,6 +80,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
             </AnalyticsProvider>
           </AuthProvider>
         )}
+        <GlobalErrorReporter />
         <Analytics />
         {/* Cloudflare Web Analytics: 스크립트 삽입 */}
         <Script

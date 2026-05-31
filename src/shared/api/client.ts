@@ -8,6 +8,7 @@ import {
   User as UserApi,
 } from '@/shared/api/domain';
 import { getUserMessage } from '../user-messages';
+import { reportClientError } from '@/lib/error-reporting/reportClientError';
 import { createApiConfig } from './configs/httpConfig';
 import type { ErrorResponseWrapper } from './data-contracts';
 import { ApiError } from './errors';
@@ -39,6 +40,8 @@ export const createApiClient = <T extends new (...args: any) => any>(ApiClass: T
 
           return res;
         } catch (error) {
+          // Sentry 와 병행해 Discord 웹훅(서버 프록시)으로도 보고. 동일 시그니처는 throttle 됨.
+          reportClientError(error, { scope: 'api', method: key });
           if (error instanceof ApiError) {
             throw error;
           }
