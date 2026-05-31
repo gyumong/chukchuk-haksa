@@ -41,6 +41,7 @@ jobs:
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_SUPABASE_ANON_KEY || secrets.STAGING_NEXT_PUBLIC_SUPABASE_ANON_KEY }}
       NEXT_PUBLIC_JAVASCRIPT_KEY: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_JAVASCRIPT_KEY || secrets.STAGING_NEXT_PUBLIC_JAVASCRIPT_KEY }}
       NEXT_PUBLIC_SENTRY_DSN: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_SENTRY_DSN || secrets.STAGING_NEXT_PUBLIC_SENTRY_DSN }}
+      NEXT_PUBLIC_AMPLITUDE_API_KEY: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_AMPLITUDE_API_KEY || secrets.STAGING_NEXT_PUBLIC_AMPLITUDE_API_KEY }}
 
       REST_API_KEY: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_REST_API_KEY || secrets.STAGING_REST_API_KEY }}
       CLIENT_SECRET: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_CLIENT_SECRET || secrets.STAGING_CLIENT_SECRET }}

@@ -15,18 +15,18 @@
     "staging": {
       "name": "cchaksa-staging",
       "vars": {
-        // dv.cchaksa.com 용 Amplitude dev 프로젝트 키. NEXT_PUBLIC_* 는 클라 번들에 포함되어
-        // 어차피 노출되므로 리포에 두는 것이 표준 (Firebase apiKey 와 동일 성격).
-        "NEXT_PUBLIC_AMPLITUDE_API_KEY": "b930df62bcdcf24dae1baa269dc35649"
-        // Firebase RemoteConfig 는 prod-only 운영 — staging 에는 키 미설정.
-        // 코드가 getEnvironment() !== 'production' 시 init silent skip 하므로 무해.
+        // NEXT_PUBLIC_* (Amplitude 등 클라 노출 키) 는 `next build` 시 클라 번들로 inline 되므로
+        // 런타임 var 인 여기서는 클라에 반영되지 않는다. CI 빌드 env 로 주입할 것 →
+        // .github/workflows/deploy-cloudflare.yml 의 env + GH secret STAGING_NEXT_PUBLIC_AMPLITUDE_API_KEY.
+        // (Firebase RemoteConfig 는 prod-only — staging 미설정, 코드가 silent skip.)
       }
     },
     "production": {
       "name": "cchaksa",
       "vars": {
-        // TODO: prod Amplitude 프로젝트 키 발급 후 채울 것. 미설정 시 SDK 가 silent skip.
-        // "NEXT_PUBLIC_AMPLITUDE_API_KEY": "<prod-key>",
+        // Amplitude prod 키는 build-time 주입(런타임 var 아님) — GH secret PROD_NEXT_PUBLIC_AMPLITUDE_API_KEY
+        // + deploy-cloudflare.yml env 로 설정. 미설정 시 SDK silent skip.
+        // (주의: 아래 NEXT_PUBLIC_FIREBASE_* 도 동일 — 런타임 var 라 클라 inline 안 됨. 별도 정리 필요.)
 
         // Firebase Web SDK config (chukchuk-haksa 프로젝트).
         //
