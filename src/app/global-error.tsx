@@ -3,10 +3,12 @@
 import { useEffect } from 'react';
 import NextError from 'next/error';
 import * as Sentry from '@sentry/nextjs';
+import { reportClientError } from '@/lib/error-reporting/reportClientError';
 
 export default function GlobalError({ error }: { error: Error & { digest?: string } }) {
   useEffect(() => {
     Sentry.captureException(error);
+    reportClientError(error, { scope: 'global-error-boundary' });
   }, [error]);
 
   return (
