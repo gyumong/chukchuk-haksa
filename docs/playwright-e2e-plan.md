@@ -1,6 +1,7 @@
 # Playwright E2E 자동화 — 계획 문서
 
-> 상태: **Draft.** 구현 시작 전 운영팀/백엔드 협조 사항(§5, §6, §9) 확정 필요.
+> 상태: **결정안 반영 (2026-05-31).** §9 에 코드 조사 기반 결정/추천 정리.
+> Phase 0 은 백엔드 무관 즉시 착수 가능, Phase 1+ 는 백엔드 협조(테스트 계정 토큰·reset) 필요.
 > 관련 문서: `bff-auth-refactor.md` (인증·세션 정책)
 
 ## 목적
@@ -177,18 +178,30 @@ e2e/
 - WebKit 은 핵심 시나리오만 (Phase 1, 2) → CI 시간 절감
 - 시각 회귀는 PR 라벨 (`run-visual`) 있을 때만 — 평시 skip
 
-## 미해결 결정 사항 (실행 전 확정)
+## 미해결 결정 사항 — 코드 조사 후 결정안 (2026-05-31)
 
-| # | 항목 | 결정자 | 메모 |
+> 코드베이스 조사로 아래와 같이 결정/추천. **#3·#5·#6·#7·#8 은 본인 단독 확정 가능, #1·#2·#4 만 백엔드 협조 필요.**
+
+| # | 항목 | 결정자 | 결정안 (근거) |
 |---|---|---|---|
-| 1 | 인증 자동화 방식 (A/B/C/D 중) | 본인 + 백엔드 | C 추천 (§5) |
-| 2 | 테스트 계정 ac/re 토큰 시드 방식 | 본인 + 백엔드 | CI secret / 백엔드 endpoint / 수동 회전 |
-| 3 | CI 실행 환경 (Vercel preview vs CF preview vs 자체 띄움) | 본인 | CF Workers 가 main 이지만 e2e 용 preview 띄울지 |
-| 4 | 데이터 reset 전략 (백엔드 endpoint vs 격리 모드 vs 후처리) | 본인 + 백엔드 | reset endpoint 가 현실적 |
-| 5 | 머지 게이트 시점 (Phase 2 후 활성?) | 본인 + 팀 | 너무 빨리 게이트 잠그면 flaky test 가 머지 막음 |
-| 6 | WebKit 포함 여부 (Phase 2 만? 전체?) | 본인 | 핵심 시나리오만 권장 — CI 시간 vs 회귀 감지 trade-off |
-| 7 | 시각 회귀 / a11y 도입 시점 | 본인 | Phase 6 또는 별도 트랙 |
-| 8 | Playwright Cloud (Microsoft) 사용 여부 | 본인 | 무료 tier 충분, 별도 가입 필요 |
+| 1 | 인증 자동화 방식 (A/B/C/D 중) | 본인 + 백엔드 | **C — `POST /api/session` 토큰 익스체인지.** endpoint 이미 구현(`src/app/api/session/route.ts:217-255`) → FE 변경 0. 옵션 B/D 는 소스에 부재(문서에만 존재), 토큰은 in-memory `tokenStore` 라 클라 주입 불가, A 는 카카오 외부 UI 의존으로 flaky |
+| 2 | 테스트 계정 ac/re 토큰 시드 방식 | 본인 + 백엔드 | **백엔드 발급 → CI secret 주입.** C 의 유일 전제. 만료 시 회전 절차 필요 |
+| 3 | CI 실행 환경 | 본인 | **CI 러너 자체 기동(`next build`+`next start`) + dv 백엔드.** CF preview 파이프라인 부재(deploy=push 전용, env=staging/prod 2종), `environment.ts` 가 미지정 시 `dev.api.cchaksa.com` fallback. Playwright `webServer` 로 기동. Workers 런타임 회귀는 post-merge smoke(`dv.cchaksa.com`)로 보완 |
+| 4 | 데이터 reset 전략 | 본인 + 백엔드 | **백엔드 reset endpoint(env-gated) + `afterEach`.** `isPortalLinked` 가 probe 로만 승격돼 쿠키 삭제로 안 풀림 → Phase 3(unlinked)·4(linked) 양방향 리셋 필요. 범위: `isPortalLinked` 토글 / `target_gpa` 초기화 / 미완료 job 정리 (세션·sessionStorage 는 browser context 격리로 자동) |
+| 5 | 머지 게이트 시점 | 본인 + 팀 | **Phase 2 안정화 후 required 승격.** 현재 PR 게이트는 autofix 뿐 → 조기 required 시 flaky 가 전 PR 차단. 승격은 branch protection 설정(레포 admin) 작업 |
+| 6 | WebKit 포함 범위 | 본인 | **Phase 1·2 핵심 시나리오만.** bridge 가 `addInitScript` 로 모킹 가능(outbound 전용), WKWebView 회귀(CCHAKSA-56류) 가치 있으나 CI 시간 절감 |
+| 7 | 시각 회귀 / a11y 도입 시점 | 본인 | **Phase 6 또는 별도 트랙** (후순위) |
+| 8 | Playwright Cloud (Microsoft) 사용 여부 | 본인 | **초기 skip** — GH Actions 러너로 충분 |
+
+### 백엔드/운영팀 협조 요청 (1건으로 통합)
+
+> e2e 테스트 계정 **2개(연동/미연동)** 에 대해 — (a) 유효한 ac/re 토큰을 받을 방법, (b) 상태 초기화 env-gated reset endpoint (`POST /api/test/reset/{role}` 등).
+
+### 착수 순서 (백엔드 대기 없이 시작)
+
+- **Phase 0** (smoke + 인프라) — 인증·백엔드 **불필요** (`/` → 200). #3·#6·#8 확정만으로 즉시 착수.
+- **Phase 1·2** (인증·보호페이지 새로고침) — #1·#2(테스트 계정 토큰) 필요. read-only 라 reset 불필요.
+- **Phase 3~5** (연동 funnel·resync·MPA) — 추가로 #4(reset) 필요.
 
 ## 참고 자료
 
