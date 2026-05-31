@@ -1,5 +1,6 @@
 @use '@/styles/typography.scss' as typography;
 @use '@/styles/spacing.scss' as spacing;
+@use '@/styles/color.scss' as color;
 
 .spacing {
   margin-bottom: spacing.$space-12;
@@ -20,6 +21,7 @@
 }
 
 // '일반선택' 제목 옆 정보 아이콘 버튼 — 버튼 기본 스타일 제거 + 아이콘 수직 정렬.
+// 색상은 앱 강조 보라(purple-100). info.svg 가 stroke="currentColor" 라 color 가 그대로 적용된다.
 .infoButton {
   display: inline-flex;
   align-items: center;
@@ -27,5 +29,5 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: inherit;
+  color: color.$purple-100;
 }
