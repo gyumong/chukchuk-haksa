@@ -1,0 +1,25 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+// 공용 ConfirmDialog 의 .message(가운데 정렬) 안에서, 설명 본문은 왼쪽 정렬 + 문단 간격.
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-16;
+  text-align: left;
+}
+
+.paragraph {
+  margin: 0;
+  color: color.$gray-500;
+
+  @include typography.body-md;
+  @include typography.font-weight-regular;
+}
+
+.example {
+  color: color.$black-100;
+
+  @include typography.font-weight-bold;
+}

@@ -1,5 +1,6 @@
 @use '@/styles/typography.scss' as typography;
 @use '@/styles/spacing.scss' as spacing;
+@use '@/styles/color.scss' as color;
 
 .spacing {
   margin-bottom: spacing.$space-12;
@@ -17,4 +18,17 @@
 
 .dualMajorSpacing {
   margin-bottom: spacing.$space-20;
+}
+
+// '일반선택' 학점 뒤 정보 아이콘 버튼 — 버튼 기본 스타일 제거 + 아이콘 수직 정렬.
+// info.svg 가 20x20(viewBox 0 0 20)로 제작돼 size={20} 이면 1:1 렌더 → 다운스케일 잘림 없음.
+// 아이콘 색은 info.svg 에 #7F71FB(=purple-100) 로 직접 지정됨. (svg 를 currentColor 로 바꾸면 아래 color 적용)
+.infoButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: color.$purple-100;
 }

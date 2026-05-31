@@ -1,18 +1,21 @@
 'use client';
 
 import { useEffect, useId } from 'react';
+import type { ReactNode } from 'react';
 import styles from './ConfirmDialog.module.scss';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
   /** 다이얼로그 상단 타이틀. 미지정 시 "알림". */
   title?: string;
-  /** 본문 메시지. \n 줄바꿈 지원 (white-space: pre-line). */
-  message: string;
+  /** 본문. 문자열(\n 줄바꿈 지원) 또는 리치 콘텐츠(ReactNode). */
+  message: ReactNode;
   /** 확인 버튼 라벨. 미지정 시 "확인". */
   confirmText?: string;
   /** 취소 버튼 라벨. 미지정 시 "취소". */
   cancelText?: string;
+  /** true 면 취소 버튼을 숨겨 단일 "확인" 정보성 다이얼로그로 동작. */
+  hideCancel?: boolean;
   onConfirm: () => void;
   /** 취소 / 오버레이 클릭 / ESC 키. */
   onClose: () => void;
@@ -24,6 +27,7 @@ export function ConfirmDialog({
   message,
   confirmText = '확인',
   cancelText = '취소',
+  hideCancel = false,
   onConfirm,
   onClose,
 }: ConfirmDialogProps) {
@@ -60,11 +64,13 @@ export function ConfirmDialog({
         <h2 id={titleId} className={styles.title}>
           {title}
         </h2>
-        <p className={styles.message}>{message}</p>
+        <div className={styles.message}>{message}</div>
         <div className={styles.buttons}>
-          <button type="button" className={styles.cancelButton} onClick={onClose}>
-            {cancelText}
-          </button>
+          {!hideCancel && (
+            <button type="button" className={styles.cancelButton} onClick={onClose}>
+              {cancelText}
+            </button>
+          )}
           <button type="button" className={styles.confirmButton} onClick={onConfirm}>
             {confirmText}
           </button>
