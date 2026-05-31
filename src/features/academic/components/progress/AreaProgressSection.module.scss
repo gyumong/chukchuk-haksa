@@ -22,21 +22,13 @@
 
 // '일반선택' 학점 뒤 정보 아이콘 버튼 — 버튼 기본 스타일 제거 + 아이콘 수직 정렬.
 // 색상은 앱 강조 보라(purple-100). info.svg 가 stroke="currentColor" 라 color 가 그대로 적용된다.
+// 아이콘은 다운스케일 시 viewBox 가장자리 stroke 가 잘려 자연 크기(24px)로 둔다.
 .infoButton {
   display: inline-flex;
   align-items: center;
-  flex-shrink: 0; // 좁은 행에서 버튼이 압축돼 아이콘이 잘리는 것 방지.
   padding: 0;
   background: none;
   border: none;
   cursor: pointer;
   color: color.$purple-100;
-}
-
-// SVG 의 원본 width/height(24) 대신 CSS 로 크기를 고정해야 정확히 20px 로 렌더된다
-// (CSS 크기가 SVG presentation 속성보다 우선). display:block 으로 인라인 베이스라인 여백 제거.
-.infoIcon {
-  display: block;
-  width: 20px;
-  height: 20px;
 }
