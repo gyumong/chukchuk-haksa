@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import { HealthData, SentryTestData } from "../../data-contracts";
+import { ErrorResponseWrapper, HealthData } from "../../data-contracts";
 import { HttpClient, RequestParams } from "../../http-client";
 
 export class CheckController<
@@ -22,13 +22,11 @@ export class CheckController<
    * @tags check-controller
    * @name SentryTest
    * @request GET:/sentry-test
-   * @secure
    */
   sentryTest = (params: RequestParams = {}) =>
-    this.request<SentryTestData, any>({
+    this.request<any, ErrorResponseWrapper>({
       path: `/sentry-test`,
       method: "GET",
-      secure: true,
       ...params,
     });
   /**
@@ -37,13 +35,11 @@ export class CheckController<
    * @tags check-controller
    * @name Health
    * @request GET:/health
-   * @secure
    */
   health = (params: RequestParams = {}) =>
     this.request<HealthData, any>({
       path: `/health`,
       method: "GET",
-      secure: true,
       ...params,
     });
 }

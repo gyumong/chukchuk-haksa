@@ -2,13 +2,13 @@ import {
   AcademicRecordController as AcademicRecordApi,
   Auth as AuthApi,
   Graduation as GraduationApi,
-  PortalJobQueryController as PortalJobQueryApi,
-  PortalLinkController as PortalLinkApi,
+  PortalLink as PortalLinkApi,
   SemesterController as SemesterRecordApi,
   Student as StudentApi,
   User as UserApi,
 } from '@/shared/api/domain';
 import { getUserMessage } from '../user-messages';
+import { reportClientError } from '@/lib/error-reporting/reportClientError';
 import { createApiConfig } from './configs/httpConfig';
 import type { ErrorResponseWrapper } from './data-contracts';
 import { ApiError } from './errors';
@@ -40,6 +40,8 @@ export const createApiClient = <T extends new (...args: any) => any>(ApiClass: T
 
           return res;
         } catch (error) {
+          // Sentry 와 병행해 Discord 웹훅(서버 프록시)으로도 보고. 동일 시그니처는 throttle 됨.
+          reportClientError(error, { scope: 'api', method: key });
           if (error instanceof ApiError) {
             throw error;
           }
@@ -77,7 +79,9 @@ export const authApi = createApiClient(AuthApi);
 export const graduationApi = createApiClient(GraduationApi);
 export const semesterRecordApi = createApiClient(SemesterRecordApi);
 export const portalLinkApi = createApiClient(PortalLinkApi);
-export const portalJobQueryApi = createApiClient(PortalJobQueryApi);
+// PortalJobQueryController 가 PortalLink 태그로 병합됨 — getJobStatus/getJobSummary 도 PortalLink 가 보유.
+// 호환용 alias — 새 인스턴스 대신 portalLinkApi 를 재사용해 클라이언트 상태(보안 등)를 공유한다.
+export const portalJobQueryApi = portalLinkApi;
 
 // 응답 검증 유틸리티 (필요하면 사용)
 export function assertValidResponse<TData>(

@@ -5,6 +5,7 @@ import { FixedButton, TextField } from '@/components/ui';
 import { usePortalLinkMutation } from '@/features/portal-link/hooks';
 import { popRetry, stashAttemptUsername } from '@/features/portal-link/utils/credentialRetry';
 import { getMessageByErrorCode } from '@/features/portal-link/utils/errorMapping';
+import { EVENTS, track } from '@/lib/analytics';
 import { ApiError } from '@/shared/api/errors';
 import { generateIdempotencyKey } from '@/shared/utils/idempotency';
 import { useFunnelContext } from '../../../contexts';
@@ -35,6 +36,7 @@ export function PortalLoginForm({ onSuccess, onError }: PortalLoginFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    track(EVENTS.UNIV_SYNC_BTN_TAP);
     setErrorMessage('');
 
     const idempotencyKey = generateIdempotencyKey();

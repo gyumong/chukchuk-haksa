@@ -35,6 +35,7 @@ export class AcademicRecordController<
       path: `/api/academic/summary`,
       method: "GET",
       secure: true,
+      format: "json",
       ...params,
     });
   /**
@@ -55,6 +56,7 @@ export class AcademicRecordController<
       method: "GET",
       query: query,
       secure: true,
+      format: "json",
       ...params,
     });
 }

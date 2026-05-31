@@ -34,6 +34,7 @@ export class SemesterController<
       path: `/api/semester`,
       method: "GET",
       secure: true,
+      format: "json",
       ...params,
     });
   /**
@@ -50,6 +51,7 @@ export class SemesterController<
       path: `/api/semester/grades`,
       method: "GET",
       secure: true,
+      format: "json",
       ...params,
     });
 }

@@ -41,6 +41,14 @@ jobs:
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_SUPABASE_ANON_KEY || secrets.STAGING_NEXT_PUBLIC_SUPABASE_ANON_KEY }}
       NEXT_PUBLIC_JAVASCRIPT_KEY: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_JAVASCRIPT_KEY || secrets.STAGING_NEXT_PUBLIC_JAVASCRIPT_KEY }}
       NEXT_PUBLIC_SENTRY_DSN: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_SENTRY_DSN || secrets.STAGING_NEXT_PUBLIC_SENTRY_DSN }}
+      NEXT_PUBLIC_AMPLITUDE_API_KEY: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_AMPLITUDE_API_KEY || secrets.STAGING_NEXT_PUBLIC_AMPLITUDE_API_KEY }}
+      # Firebase Web SDK config — prod-only (코드가 getEnvironment()!=='production' 시 init skip). staging 은 '' 주입.
+      NEXT_PUBLIC_FIREBASE_API_KEY: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_FIREBASE_API_KEY || '' }}
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || '' }}
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_FIREBASE_PROJECT_ID || '' }}
+      NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || '' }}
+      NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '' }}
+      NEXT_PUBLIC_FIREBASE_APP_ID: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_NEXT_PUBLIC_FIREBASE_APP_ID || '' }}
 
       REST_API_KEY: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_REST_API_KEY || secrets.STAGING_REST_API_KEY }}
       CLIENT_SECRET: ${{ needs.resolve-env.outputs.name == 'production' && secrets.PROD_CLIENT_SECRET || secrets.STAGING_CLIENT_SECRET }}

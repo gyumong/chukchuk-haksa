@@ -15,37 +15,24 @@
     "staging": {
       "name": "cchaksa-staging",
       "vars": {
-        // dv.cchaksa.com 용 Amplitude dev 프로젝트 키. NEXT_PUBLIC_* 는 클라 번들에 포함되어
-        // 어차피 노출되므로 리포에 두는 것이 표준 (Firebase apiKey 와 동일 성격).
-        "NEXT_PUBLIC_AMPLITUDE_API_KEY": "b930df62bcdcf24dae1baa269dc35649"
-        // Firebase RemoteConfig 는 prod-only 운영 — staging 에는 키 미설정.
-        // 코드가 getEnvironment() !== 'production' 시 init silent skip 하므로 무해.
+        // NEXT_PUBLIC_* (Amplitude 등 클라 노출 키) 는 `next build` 시 클라 번들로 inline 되므로
+        // 런타임 var 인 여기서는 클라에 반영되지 않는다. CI 빌드 env 로 주입할 것 →
+        // .github/workflows/deploy-cloudflare.yml 의 env + GH secret STAGING_NEXT_PUBLIC_AMPLITUDE_API_KEY.
+        // (Firebase RemoteConfig 는 prod-only — staging 미설정, 코드가 silent skip.)
       }
     },
     "production": {
       "name": "cchaksa",
       "vars": {
-        // TODO: prod Amplitude 프로젝트 키 발급 후 채울 것. 미설정 시 SDK 가 silent skip.
-        // "NEXT_PUBLIC_AMPLITUDE_API_KEY": "<prod-key>",
-
-        // Firebase Web SDK config (chukchuk-haksa 프로젝트).
+        // NEXT_PUBLIC_* (Amplitude / Firebase 등 클라 노출 키) 는 `next build` 시 클라 번들로 inline
+        // 되므로, 런타임 var 인 여기가 아니라 CI 빌드 env 로 주입한다 → deploy-cloudflare.yml 의 env
+        // + GH secret(PROD_NEXT_PUBLIC_AMPLITUDE_API_KEY, PROD_NEXT_PUBLIC_FIREBASE_* 등).
         //
-        // 보안 모델 — 아래 값들은 secret 이 아닌 공개 식별자임:
-        // - NEXT_PUBLIC_* 는 Next.js 가 클라이언트 번들에 inline 하므로 누구나 DevTools 로 볼 수 있음
-        // - Firebase 공식 가이드: https://firebase.google.com/docs/projects/api-keys — apiKey 는
-        //   "이 프로젝트 식별자" 역할일 뿐이며 secret 으로 취급하지 않음
-        // - 실질 보안은 Firebase Security Rules + GCP API key restrictions 가 담당
-        //
-        // 운영 책임 — GCP Console 에서 다음 제약을 적용해 둘 것 (코드로 강제 불가):
-        // 1. NEXT_PUBLIC_FIREBASE_API_KEY 에 HTTP referrer 제한 — cchaksa.com / *.cchaksa.com 만 허용
-        // 2. API 화이트리스트 — Firebase Remote Config API + 그 외 실제 사용 API 만 허용
-        // (위 제약 미적용 시 키 유출 시 quota 도용 위험 — README 또는 인프라 문서에도 명시 권장)
-        "NEXT_PUBLIC_FIREBASE_API_KEY": "AIzaSyC17SX9tKPXXgSfVlU9i5-N0d8IRzpI38g",
-        "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN": "chukchuk-haksa.firebaseapp.com",
-        "NEXT_PUBLIC_FIREBASE_PROJECT_ID": "chukchuk-haksa",
-        "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET": "chukchuk-haksa.firebasestorage.app",
-        "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "770530895115",
-        "NEXT_PUBLIC_FIREBASE_APP_ID": "1:770530895115:web:678ad6e34d151918742e0e"
+        // Firebase 값은 secret 이 아닌 공개 식별자지만(공식 가이드: apiKey 는 프로젝트 식별자),
+        // 빌드 주입이 필요해 GH secret 으로 관리. 실질 보안은 Firebase Security Rules + GCP API key
+        // restrictions 로 통제 — GCP Console 에서 적용 필수(코드로 강제 불가):
+        // 1. NEXT_PUBLIC_FIREBASE_API_KEY HTTP referrer 제한 — cchaksa.com / *.cchaksa.com 만 허용
+        // 2. API 화이트리스트 — Firebase Remote Config API 등 실제 사용 API 만 허용
       }
     }
   }

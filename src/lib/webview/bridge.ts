@@ -73,3 +73,16 @@ export const navigateNative = (url: string): boolean => {
 export const navigateBack = (): boolean => {
   return postBridgeMessage('navigateBack');
 };
+
+// 웹에서 홈으로 리다이렉트하는 지점을, 웹뷰에선 네이티브 앱 홈 화면으로의 이동으로 위임한다.
+// (웹은 router.push(home), 웹뷰는 이 이벤트만 송출하고 자체 라우팅은 하지 않음.)
+// 학교 인증 '완료' 신호인 done:portal-link 와는 별개 — 이쪽은 단순 홈 이동 의도다.
+export const redirectToHome = (): boolean => {
+  return postBridgeMessage('redirectToHome');
+};
+
+// /mpa/me 의 '탈퇴하기' → 네이티브에 계정 탈퇴 플로우 진입을 위임한다. 네이티브가 탈퇴 확인/처리
+// 화면을 자체적으로 띄운다 (웹뷰는 라우팅하지 않음). 기존 navigate:/mpa/delete dispatch 를 대체.
+export const withdraw = (): boolean => {
+  return postBridgeMessage('withdraw');
+};

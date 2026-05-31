@@ -37,6 +37,7 @@ export class Student<
       method: "POST",
       query: query,
       secure: true,
+      format: "json",
       ...params,
     });
   /**
@@ -49,10 +50,11 @@ export class Student<
    * @secure
    */
   resetStudentData = (params: RequestParams = {}) =>
-    this.request<ResetStudentDataData, any>({
+    this.request<ResetStudentDataData, ErrorResponseWrapper>({
       path: `/api/student/reset`,
       method: "POST",
       secure: true,
+      format: "json",
       ...params,
     });
   /**
@@ -69,6 +71,7 @@ export class Student<
       path: `/api/student/profile`,
       method: "GET",
       secure: true,
+      format: "json",
       ...params,
     });
 }

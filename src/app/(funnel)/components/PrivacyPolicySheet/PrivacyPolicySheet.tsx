@@ -1,4 +1,8 @@
+'use client';
+
+import { useEffect } from 'react';
 import { TopNavigation } from '@/components/ui/TopNavigation';
+import { EVENTS, track } from '@/lib/analytics';
 import styles from './PrivacyPolicySheet.module.scss';
 
 interface PrivacyPolicySheetProps {
@@ -7,6 +11,14 @@ interface PrivacyPolicySheetProps {
 }
 
 export default function PrivacyPolicySheet({ isOpen, onClose }: PrivacyPolicySheetProps) {
+  // isOpen 트랜지션 시 1회 발화. unmount → mount 패턴 아님 (조건부 return null)
+  // 이라 useTrackView 사용 불가 — useEffect 로 isOpen 의존성에 직접 묶음.
+  useEffect(() => {
+    if (isOpen) {
+      track(EVENTS.UNIV_SYNC_TERM_AGREE_BOTTOMSHEET_VIEW);
+    }
+  }, [isOpen]);
+
   if (!isOpen) {
     return null;
   }

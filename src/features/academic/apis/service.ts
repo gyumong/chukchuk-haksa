@@ -16,7 +16,20 @@ export async function fetchAcademicRecord(year: number, semester: number): Promi
   const response = await ApiResponseHandler.handleAsyncResponse<AcademicRecordApiResponse>(
     academicRecordApi.getAcademicRecord({ year, semester })
   );
-  return response.data;
+
+  // 생성된 타입은 courses.major/liberal/etc 를 필수 배열로 선언하지만, 백엔드가 일부 학기에서
+  // 'etc'(기타, PR #202 신규 필드) 등을 생략해 내려준다(런타임 undefined). 이 경우 page 의
+  // `courses.etc.length` 접근이 "Cannot read properties of undefined (reading 'length')" 로
+  // 터진다. 타입 계약(항상 배열)에 맞춰 누락 필드를 빈 배열로 정규화한다.
+  const data = response.data;
+  return {
+    ...data,
+    courses: {
+      major: data.courses?.major ?? [],
+      liberal: data.courses?.liberal ?? [],
+      etc: data.courses?.etc ?? [],
+    },
+  };
 }
 
 /**

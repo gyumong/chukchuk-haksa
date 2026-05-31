@@ -4,10 +4,12 @@ import { useCallback, useState } from 'react';
 import { FixedButton } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
+import { EVENTS, useTrackView } from '@/lib/analytics';
 import { AgreementItem, FunnelHeadline, PrivacyPolicySheet } from '../components';
 import styles from './page.module.scss';
 
 const Agreement = () => {
+  useTrackView(EVENTS.UNIV_SYNC_TERM_AGREE_VIEW);
   const router = useInternalRouter();
   const [isAgreed, setIsAgreed] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);

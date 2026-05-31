@@ -39,8 +39,9 @@ export function initAnalytics(): void {
 }
 
 /**
- * 로그인/세션 hydration 직후 호출. analyticsId 는 서버가 발급한 사용자 PK UUID.
- * 카카오 ID 나 학번 같은 의미있는 식별자는 PII 위험이 있으므로 절대 전달하지 말 것.
+ * 로그인/세션 hydration 직후 호출. analyticsId 는 서버가 발급한 사용자 PK UUID — user_id 로 사용.
+ * 학번/학과 등 사용자 식별 속성은 제품 결정에 따라 UserProperty(텍소노미)로 전송한다
+ * (userProperties.ts / UserPropertiesSync). 단, 비밀번호·카카오 원본 토큰 등 인증 시크릿은 절대 전달 금지.
  *
  * null/undefined 전달 시 user_id 만 클리어 (device_id 는 유지) — 세션 만료 등 *암묵적*
  * 로그아웃 경로에서 사용. 전체 reset 은 clearAuth 의 `resetAnalytics` 가 담당.
@@ -63,4 +64,32 @@ export function resetAnalytics(): void {
     return;
   }
   amplitude.reset();
+}
+
+/**
+ * 이벤트 전송 내부 헬퍼. 타입 안전 wrapper 는 `events.ts` 의 `track()` 이며,
+ * 호출부는 항상 그쪽을 사용한다. SDK 직접 호출 차단을 위해 internal 로 분리.
+ */
+export function trackEvent(name: string, properties?: Record<string, unknown>): void {
+  ensureInit();
+  if (typeof window === 'undefined') {
+    return;
+  }
+  amplitude.track(name, properties);
+}
+
+/**
+ * UserProperties 설정 내부 헬퍼. Identify API 로 user-level attach — event properties 와 분리되어
+ * 사용자 단위로 유지된다. 타입 안전 wrapper 는 `userProperties.ts` 의 `setUserProperties()`.
+ */
+export function setUserPropertiesInternal(props: Record<string, string | number | boolean>): void {
+  ensureInit();
+  if (typeof window === 'undefined') {
+    return;
+  }
+  const identify = new amplitude.Identify();
+  for (const [key, value] of Object.entries(props)) {
+    identify.set(key, value);
+  }
+  amplitude.identify(identify);
 }

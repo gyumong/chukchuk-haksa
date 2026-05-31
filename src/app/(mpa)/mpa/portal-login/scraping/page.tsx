@@ -8,6 +8,7 @@ import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { usePortalLinkFailure, usePortalLinkJobPolling } from '@/features/portal-link/hooks';
 import { clearRetry } from '@/features/portal-link/utils/credentialRetry';
 import { PORTAL_LOGIN_JOB_ID_KEY } from '@/constants/portal-link';
+import { EVENTS, useTrackView } from '@/lib/analytics';
 import { isInWebView, postBridgeMessage } from '@/lib/webview';
 import ErrorScreen from '@/app/(funnel)/components/ErrorScreen/ErrorScreen';
 import LoadingScreen from '@/app/(funnel)/components/LoadingScreen/LoadingScreen';
@@ -20,6 +21,7 @@ const BRIDGE_DONE_PORTAL_LINK = 'done:portal-link';
 const MISSING_JOB_MESSAGE = '연동 정보를 찾을 수 없어요\n다시 로그인해주세요';
 
 export default function MpaPortalLoginScrapingPage() {
+  useTrackView(EVENTS.UNIV_SYNC_LOADING_VIEW);
   const router = useInternalRouter();
 
   const [jobId, setJobId] = useState<string | null>(null);
