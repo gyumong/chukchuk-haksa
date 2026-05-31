@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { captureException } from '@sentry/nextjs';
 import { queryClient } from '@/shared/api/configs/queryClient';
 import { resetAnalytics, setAnalyticsUser } from '@/lib/analytics';
 import {
@@ -48,7 +49,9 @@ async function fetchSessionState(): Promise<SessionState | null> {
       analyticsId: data.analyticsId ?? null,
     };
   } catch (error) {
+    // 세션 재호출 실패도 telemetry 로 추적 (CLAUDE.md: Sentry 에러 트래킹). 로컬 디버그용 console 유지.
     console.error('[AuthContext] session fetch failed', error);
+    captureException(error, { tags: { scope: 'auth', action: 'fetchSessionState' } });
     return null;
   }
 }
