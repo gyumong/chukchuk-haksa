@@ -8,6 +8,7 @@ import {
   SyncUpdateButton,
 } from '@/features/dashboard/components';
 import { useRefreshProfileOnVisible } from '@/features/dashboard/hooks/useRefreshProfileOnVisible';
+import { UserPropertiesSync } from '@/features/dashboard/components/UserPropertiesSync/UserPropertiesSync';
 import AsyncBoundary from '@/shared/components/AsyncBoundary';
 
 const Home = () => {
@@ -15,6 +16,9 @@ const Home = () => {
 
   return (
     <>
+      <AsyncBoundary>
+        <UserPropertiesSync />
+      </AsyncBoundary>
       <AsyncBoundary>
         <ProfileCard />
       </AsyncBoundary>

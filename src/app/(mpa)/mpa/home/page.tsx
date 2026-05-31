@@ -9,6 +9,7 @@ import {
   SyncUpdateButton,
 } from '@/features/dashboard/components';
 import { useRefreshProfileOnVisible } from '@/features/dashboard/hooks/useRefreshProfileOnVisible';
+import { UserPropertiesSync } from '@/features/dashboard/components/UserPropertiesSync/UserPropertiesSync';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { navigateNative } from '@/lib/webview';
 import AsyncBoundary from '@/shared/components/AsyncBoundary';
@@ -30,6 +31,9 @@ const MpaHome = () => {
 
   return (
     <>
+      <AsyncBoundary>
+        <UserPropertiesSync />
+      </AsyncBoundary>
       <AsyncBoundary>
         <ProfileCard />
       </AsyncBoundary>
