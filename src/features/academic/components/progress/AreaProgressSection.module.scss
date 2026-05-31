@@ -18,3 +18,14 @@
 .dualMajorSpacing {
   margin-bottom: spacing.$space-20;
 }
+
+// '일반선택' 제목 옆 정보 아이콘 버튼 — 버튼 기본 스타일 제거 + 아이콘 수직 정렬.
+.infoButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
