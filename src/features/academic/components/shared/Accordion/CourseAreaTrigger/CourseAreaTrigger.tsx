@@ -9,6 +9,7 @@ export default function CourseAreaTrigger({
   isCompleted,
   isExpanded,
   requiredElectiveCredits,
+  completedElectiveCourses,
   trailingAdornment,
   onClick,
 }: CourseAreaTriggerProps) {
@@ -18,15 +19,12 @@ export default function CourseAreaTrigger({
       <div className={styles.info}>
         <span className={styles.title}>{title}</span>
         <span className={styles.credits}>
+          {currentCredits} / {requiredCredits}
           {requiredElectiveCredits ? (
-            <>
-              {requiredElectiveCredits}개 영역 이수 필요 ({currentCredits} / {requiredCredits})
-            </>
-          ) : (
-            <>
-              {currentCredits} / {requiredCredits}
-            </>
-          )}
+            <span className={styles.areaCount}>
+              {completedElectiveCourses ?? 0}개영역 / {requiredElectiveCredits}개영역
+            </span>
+          ) : null}
 
           {isCompleted && <Icon name="check-status-on" className={styles.checkIcon} size={18} />}
         </span>

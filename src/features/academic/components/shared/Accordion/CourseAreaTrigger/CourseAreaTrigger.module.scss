@@ -46,6 +46,19 @@
   }
 }
 
+// 선택교양 헤더의 "{이수}개영역 / {필요}개영역" 보조 표기.
+.areaCount {
+  margin-left: spacing.$space-8;
+  color: color.$gray-100;
+
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+
+  .completed & {
+    color: color.$white;
+  }
+}
+
 .checkIcon {
   width: spacing.$space-18;
   height: spacing.$space-18;

@@ -8,6 +8,9 @@ export default function CourseList({ courses, isCompleted }: CourseListProps) {
         <div key={`${course.courseName}-${index}`} className={styles.courseItem}>
           <div className={styles.courseInfo}>
             <span className={styles.courseName}>{course.courseName}</span>
+            {course.liberalAreaCode != null && (
+              <span className={styles.area}>{course.liberalAreaCode}영역</span>
+            )}
             <span className={styles.semester}>{course.year}-{course.semester}</span>
           </div>
           <div className={styles.courseGrade}>

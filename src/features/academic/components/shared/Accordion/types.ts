@@ -9,6 +9,8 @@ interface CourseAreaProps {
   requiredCredits: number;
   isCompleted: boolean;
   requiredElectiveCredits?: number;
+  /** 이수한 선택 영역 수 (선교: completedElectiveCourses). */
+  completedElectiveCourses?: number;
   courses?: Course[];
   /** 학점 표시 뒤(행 끝)에 붙일 부가 요소 (예: 정보 아이콘 버튼). */
   trailingAdornment?: ReactNode;
@@ -23,6 +25,8 @@ interface CourseAreaTriggerProps {
   onClick: () => void;
   requiredElectiveCredits?: number;
   currentElectiveCourses?: number;
+  /** 이수한 선택 영역 수 (선교: completedElectiveCourses). */
+  completedElectiveCourses?: number;
   /** 학점 표시 뒤(행 끝)에 붙일 부가 요소. */
   trailingAdornment?: ReactNode;
 }
