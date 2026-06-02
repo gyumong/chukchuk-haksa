@@ -8,8 +8,8 @@ export default function CourseAreaTrigger({
   requiredCredits,
   isCompleted,
   isExpanded,
-  requiredElectiveCredits,
-  completedElectiveCourses,
+  requiredElectiveAreas,
+  completedElectiveAreas,
   trailingAdornment,
   onClick,
 }: CourseAreaTriggerProps) {
@@ -20,9 +20,9 @@ export default function CourseAreaTrigger({
         <span className={styles.title}>{title}</span>
         <span className={styles.credits}>
           {currentCredits} / {requiredCredits}
-          {requiredElectiveCredits ? (
+          {requiredElectiveAreas ? (
             <span className={styles.areaCount}>
-              {completedElectiveCourses ?? 0}개영역 / {requiredElectiveCredits}개영역
+              {completedElectiveAreas ?? 0}개영역 / {requiredElectiveAreas}개영역
             </span>
           ) : null}
 

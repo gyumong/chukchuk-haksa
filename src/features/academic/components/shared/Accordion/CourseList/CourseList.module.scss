@@ -41,6 +41,7 @@
 .area {
   @include typography.body-sm;
   @include typography.font-weight-medium;
+
   color: color.$gray-100;
 }
 
