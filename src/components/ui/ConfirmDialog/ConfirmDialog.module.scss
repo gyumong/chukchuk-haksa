@@ -20,7 +20,7 @@
 .dialog {
   width: 100%;
   max-width: 320px;
-  padding: spacing.$space-24;
+  padding: spacing.$space-20;
   background-color: color.$white;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 
@@ -33,7 +33,7 @@
 }
 
 .title {
-  margin: 0 0 spacing.$space-12;
+  margin: 0 0 spacing.$space-20;
   text-align: center;
   color: color.$black-100;
 
@@ -42,7 +42,7 @@
 }
 
 .message {
-  margin: 0 0 spacing.$space-24;
+  margin: 0 0 spacing.$space-20;
   text-align: center;
   color: color.$gray-500;
   white-space: pre-line;

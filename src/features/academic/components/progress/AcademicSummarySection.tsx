@@ -9,7 +9,6 @@ export default function AcademicSummarySection() {
   return (
     <>
       <div className={styles.title}>전체 수강내역</div>
-      <div className={styles.spacing}></div>
       <AcademicSummaryCard
         earnedCredits={academicSummary.totalEarnedCredits}
         gpa={academicSummary.cumulativeGpa}

@@ -1,8 +1,9 @@
 @use '@/styles/color.scss' as color;
 @use '@/styles/spacing.scss' as spacing;
 @use '@/styles/typography.scss' as typography;
-@use '@/styles/radius.scss' as radius;
 
+// 카드 외형(border·shadow·radius)은 바깥 CourseAccordion.container 가 갖는다.
+// 트리거는 헤더 영역(배경·패딩)만 담당해, 펼쳤을 때 과목 리스트와 한 카드로 이어진다.
 .container {
   width: 100%;
   display: flex;
@@ -11,14 +12,9 @@
   @include spacing.card-padding;
   cursor: pointer;
   background: color.$white;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.05);
-  border: 1px solid color.$gray-300;
-  @include radius.card-radius;
 
   &.completed {
     background: color.$black-100;
-    box-shadow: none;
-    border: none;
   }
 }
 

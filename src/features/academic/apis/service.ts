@@ -1,13 +1,16 @@
 import { academicRecordApi, semesterRecordApi, graduationApi } from '@/shared/api/client';
 import { ApiResponseHandler } from '@/shared/api/utils/response-handler';
-import type { 
-  AcademicRecordApiResponse, 
+import type {
+  AcademicRecordApiResponse,
   StudentSemesterListApiResponse,
   AcademicSummaryApiResponse,
   SemesterGradesApiResponse,
-  GraduationProgressApiResponse
+  GraduationProgressApiResponse,
+  GraduationProgressResponse,
+  LanguageCertRequirementApiResponse,
+  LanguageCertRequirementResponse
 } from '@/shared/api/data-contracts';
-import type { AcademicRecordData, AcademicSummary, SemesterGrade, AreaProgress } from '../types/graduation';
+import type { AcademicRecordData, AcademicSummary, SemesterGrade } from '../types/graduation';
 
 /**
  * 학기별 성적 및 수강 과목 정보를 API로부터 가져온다.
@@ -63,13 +66,27 @@ export async function fetchSemesterGrades(): Promise<SemesterGrade[]> {
 }
 
 /**
- * 졸업 진도 정보를 API로부터 가져온다. (서버 스키마 그대로 사용)
+ * 졸업 진도 응답 전체를 가져온다.
+ * 영역별 이수현황(graduationProgress) 외에 외국어 인증 충족 여부(languageCertFulfilled)·
+ * 포털 새로고침 필요 여부(languageCertNeedsRefresh) 등 메타데이터를 포함한다.
+ * 영역 배열만 필요한 소비부는 useGraduationProgressQuery 의 select 로 추출한다.
  */
-export async function fetchGraduationProgress(): Promise<AreaProgress[]> {
+export async function fetchGraduationProgressResponse(): Promise<GraduationProgressResponse> {
   const response = await ApiResponseHandler.handleAsyncResponse<GraduationProgressApiResponse>(
     graduationApi.getGraduationProgress()
   );
-  
-  // 서버 응답을 그대로 반환
-  return response.data.graduationProgress;
+
+  return response.data;
+}
+
+/**
+ * 외국어 인증 기준(학과·입학년도별 시험 통과 기준)을 가져온다.
+ * 미매핑 학과도 200 으로 내려오며 matchStatus='UNMAPPED' 로 구분된다.
+ */
+export async function fetchLanguageCertRequirement(): Promise<LanguageCertRequirementResponse> {
+  const response = await ApiResponseHandler.handleAsyncResponse<LanguageCertRequirementApiResponse>(
+    graduationApi.getLanguageCertRequirement()
+  );
+
+  return response.data;
 }
