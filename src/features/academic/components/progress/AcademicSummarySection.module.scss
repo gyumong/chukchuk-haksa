@@ -1,10 +1,12 @@
+@use '@/styles/color.scss' as color;
 @use '@/styles/typography.scss' as typography;
 @use '@/styles/spacing.scss' as spacing;
 
 .title {
-  @include typography.body-lg;
+  @include typography.body-md;
   @include typography.font-weight-bold;
-  margin-bottom: spacing.$space-12;
+  margin-bottom: spacing.$space-14;
+  color: color.$gray-500;
 }
 
 .spacing {

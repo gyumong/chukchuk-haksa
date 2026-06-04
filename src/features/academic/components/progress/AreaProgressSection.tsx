@@ -35,7 +35,8 @@ export default function AreaProgressSection() {
             title={area.displayName}
             currentCredits={area.earnedCredits}
             requiredCredits={area.requiredCredits}
-            requiredElectiveCredits={area.requiredElectiveCourses}
+            requiredElectiveAreas={area.requiredElectiveCourses}
+            completedElectiveAreas={area.completedElectiveCourses}
             isCompleted={area.isCompleted}
             courses={area.courses}
             trailingAdornment={area.areaType === '일선' ? generalElectiveInfoButton : undefined}
@@ -59,7 +60,8 @@ export default function AreaProgressSection() {
                 title={area.displayName}
                 currentCredits={area.earnedCredits}
                 requiredCredits={area.requiredCredits}
-                requiredElectiveCredits={area.requiredElectiveCourses}
+                requiredElectiveAreas={area.requiredElectiveCourses}
+                completedElectiveAreas={area.completedElectiveCourses}
                 isCompleted={area.isCompleted}
                 courses={area.courses}
                 trailingAdornment={area.areaType === '일선' ? generalElectiveInfoButton : undefined}

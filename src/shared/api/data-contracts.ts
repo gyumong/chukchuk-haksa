@@ -552,6 +552,12 @@ export interface CourseDto {
    * @example 10
    */
   semester: number;
+  /**
+   * 교양/선교 영역 세부 코드 (LiberalArtsAreaCode). 선교 영역 등 sub-area가 정의된 과목에 한해 노출되며, 그 외 영역에서는 응답에서 omit된다.
+   * @format int32
+   * @example 7
+   */
+  liberalAreaCode?: number | null;
 }
 
 /** 졸업 요건 진행 상황 응답 */
@@ -574,8 +580,104 @@ export interface GraduationProgressApiResponse {
 export interface GraduationProgressResponse {
   /** 졸업 요건 영역별 이수 현황 */
   graduationProgress: AreaProgressDto[];
+  /** 외국어 졸업 인증 통과 여부. 새 크롤러 동기화 전이면 null */
+  languageCertFulfilled?: boolean | null;
+  /** 외국어 졸업 인증 정보를 확인하려면 포털 새로고침이 필요한지 여부 */
+  languageCertNeedsRefresh: boolean;
   /** 특정 학과/연도 예외로 기존과 다른 졸업요건이 적용되는지 여부 */
   hasDifferentGraduationRequirement: boolean;
+}
+
+/** 외국어 인증 기준 조회 응답 */
+export interface LanguageCertRequirementApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 외국어 인증 기준 응답 */
+  data: LanguageCertRequirementResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+/** 외국어 인증 기준 응답 */
+export interface LanguageCertRequirementResponse {
+  /**
+   * 기준 조회에 사용된 학과 코드
+   * @example "2000514"
+   */
+  departmentCode?: string;
+  /**
+   * 기준 조회에 사용된 학과명
+   * @example "컴퓨터SW"
+   */
+  departmentName?: string;
+  /**
+   * 입학년도
+   * @format int32
+   * @example 2021
+   */
+  admissionYear?: number;
+  /**
+   * 외국어 인증 정책 그룹 키
+   * @example "ICT_OTHER"
+   */
+  policyGroupKey?: string | null;
+  /**
+   * 외국어 인증 정책 그룹명
+   * @example "ICT융합대학 그외학부"
+   */
+  policyGroupName?: string | null;
+  /** 학과-정책 매핑 상태 */
+  matchStatus?: "VERIFIED" | "INFERRED" | "UNMAPPED";
+  /**
+   * 매핑 비고
+   * @example "컴퓨터SW 21학번 이후 기준"
+   */
+  note?: string;
+  /** 시험별 통과 기준 */
+  requirements?: Requirement[];
+}
+
+/** 시험별 통과 기준 */
+export interface Requirement {
+  /** 시험 종류 */
+  testType?:
+    | "TOEIC"
+    | "TOEFL_IBT"
+    | "TEPS"
+    | "OPIC"
+    | "TOEIC_SPEAKING"
+    | "JPT_JLPT"
+    | "NEW_HSK"
+    | "TORFL_FLEX"
+    | "DELF";
+  /**
+   * 최소 점수
+   * @format int32
+   * @example 650
+   */
+  minimumScore?: number | null;
+  /**
+   * 최소 등급
+   * @example "IM1"
+   */
+  minimumGrade?: string | null;
+  /**
+   * 표시 문구
+   * @example "TOEIC 650점 이상"
+   */
+  displayText?: string;
+  /**
+   * 표시 순서
+   * @format int32
+   * @example 1
+   */
+  sortOrder?: number;
 }
 
 /** 학업 요약 정보 응답 */
@@ -822,6 +924,8 @@ export type GetSemesterRecordData = StudentSemesterListApiResponse;
 export type GetSemesterGradesData = SemesterGradesApiResponse;
 
 export type GetGraduationProgressData = GraduationProgressApiResponse;
+
+export type GetLanguageCertRequirementData = LanguageCertRequirementApiResponse;
 
 export type GetAcademicSummaryData = AcademicSummaryApiResponse;
 

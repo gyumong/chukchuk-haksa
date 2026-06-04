@@ -6,4 +6,5 @@ export const academicQueryKeys = {
   summary: () => [...academicQueryKeys.all, 'summary'] as const,
   semesterGrades: () => [...academicQueryKeys.all, 'semesterGrades'] as const,
   graduationProgress: () => [...academicQueryKeys.all, 'graduationProgress'] as const,
+  languageCertRequirement: () => [...academicQueryKeys.all, 'languageCertRequirement'] as const,
 } as const;

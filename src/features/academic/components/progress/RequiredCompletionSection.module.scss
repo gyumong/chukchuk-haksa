@@ -1,0 +1,57 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/radius.scss' as radius;
+
+.title {
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+
+  margin-top: spacing.$space-28;
+  margin-bottom: spacing.$space-14;
+  color: color.$gray-500;
+}
+
+// '외국어인증제도' 행 카드 — 시험명(좌) + 완료/미완료 상태 + 안내 아이콘.
+.row {
+  display: flex;
+  align-items: center;
+  gap: spacing.$space-8;
+  background-color: color.$white;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid color.$gray-300;
+
+  @include spacing.card-padding;
+  @include radius.card-radius;
+}
+
+.name {
+  color: color.$black-100;
+
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+}
+
+.status {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+}
+
+.incomplete {
+  color: color.$gray-100;
+}
+
+.completed {
+  color: color.$purple-100;
+}
+
+// info.svg 가 #7F71FB(purple-100) 로 직접 색 지정됨 — AreaProgressSection.infoButton 과 동일 패턴.
+.infoButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: color.$purple-100;
+}
