@@ -20,11 +20,13 @@ export default function RequiredCompletionSection() {
     <>
       <div className={styles.title}>필수 이수내역</div>
 
-      <div className={styles.row}>
+      <div className={`${styles.row} ${isFulfilled ? styles.completedCard : ''}`}>
         <span className={styles.name}>외국어인증제도</span>
-        <span className={`${styles.status} ${isFulfilled ? styles.completed : styles.incomplete}`}>
-          {isFulfilled ? '완료' : '미완료'}
-        </span>
+        {isFulfilled ? (
+          <Icon name="check-status-on" className={styles.check} size={20} />
+        ) : (
+          <span className={`${styles.status} ${styles.incomplete}`}>미완료</span>
+        )}
         <button
           type="button"
           className={styles.infoButton}

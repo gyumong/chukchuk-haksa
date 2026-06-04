@@ -6,18 +6,13 @@
   margin-bottom: spacing.$space-12;
 }
 
-.dualMajorHeader {
-  margin-top: 28px;
-}
-
+// 섹션 헤더 — '전체 수강내역'·'필수 이수내역' 과 동일 스타일(body-md·bold·gray-500·여백)로 통일.
 .dualMajorTitle {
-  @include typography.body-lg;
+  @include typography.body-md;
   @include typography.font-weight-bold;
-  margin-bottom: spacing.$space-12;
-}
-
-.dualMajorSpacing {
-  margin-bottom: spacing.$space-20;
+  margin-top: spacing.$space-28;
+  margin-bottom: spacing.$space-14;
+  color: color.$gray-500;
 }
 
 // '일반선택' 학점 뒤 정보 아이콘 버튼 — 버튼 기본 스타일 제거 + 아이콘 수직 정렬.

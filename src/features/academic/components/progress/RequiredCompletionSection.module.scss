@@ -25,6 +25,22 @@
   @include radius.card-radius;
 }
 
+// 외국어인증 '완료' 시 — 완료 아코디언 카드(CourseAreaTrigger.completed)와 동일한 다크/퍼플 외형으로 통일.
+.completedCard {
+  background-color: color.$black-100;
+  border-color: color.$black-100;
+}
+
+.completedCard .name {
+  color: color.$purple-200;
+}
+
+// 완료 다크 카드에선 (i) 안내 아이콘을 흰색으로. info.svg 가 stroke 색(#7F71FB) 고정이라
+// color/currentColor 로는 못 바꿔 filter 로 흰색화(다른 info 아이콘 사용처엔 영향 없음).
+.completedCard .infoButton {
+  filter: brightness(0) invert(1);
+}
+
 .name {
   color: color.$black-100;
 
@@ -41,8 +57,9 @@
   color: color.$gray-100;
 }
 
-.completed {
-  color: color.$purple-100;
+// 완료 ✓ 아이콘(check-status-on) — 다른 완료 카드와 동일.
+.check {
+  flex-shrink: 0;
 }
 
 // info.svg 가 #7F71FB(purple-100) 로 직접 색 지정됨 — AreaProgressSection.infoButton 과 동일 패턴.
