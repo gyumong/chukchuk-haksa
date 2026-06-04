@@ -10,6 +10,7 @@
 .dualMajorTitle {
   @include typography.body-md;
   @include typography.font-weight-bold;
+
   margin-top: spacing.$space-28;
   margin-bottom: spacing.$space-14;
   color: color.$gray-500;

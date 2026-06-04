@@ -23,7 +23,11 @@ export default function RequiredCompletionSection() {
       <div className={`${styles.row} ${isFulfilled ? styles.completedCard : ''}`}>
         <span className={styles.name}>외국어인증제도</span>
         {isFulfilled ? (
-          <Icon name="check-status-on" className={styles.check} size={20} />
+          <>
+            <Icon name="check-status-on" className={styles.check} size={20} />
+            {/* ✓ 아이콘엔 텍스트가 없어 스크린 리더용 대체 텍스트 제공 (Icon 은 aria-label 미전달) */}
+            <span className={styles.srOnly}>완료</span>
+          </>
         ) : (
           <span className={`${styles.status} ${styles.incomplete}`}>미완료</span>
         )}

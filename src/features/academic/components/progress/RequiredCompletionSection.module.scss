@@ -62,6 +62,19 @@
   flex-shrink: 0;
 }
 
+// 완료 상태를 스크린 리더에 알리는 시각적 숨김 텍스트(✓ 아이콘엔 대체 텍스트가 없으므로).
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 // info.svg 가 #7F71FB(purple-100) 로 직접 색 지정됨 — AreaProgressSection.infoButton 과 동일 패턴.
 .infoButton {
   display: inline-flex;
