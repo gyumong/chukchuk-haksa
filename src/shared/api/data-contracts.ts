@@ -300,6 +300,31 @@ export interface StudentInfoSummary {
   completedSemesterType?: number;
 }
 
+/** 내 사용자 정보 조회 응답 */
+export interface MeApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 내 사용자 정보 응답 */
+  data: MeResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+/** 내 사용자 정보 응답 */
+export interface MeResponse {
+  /**
+   * 포털 연동 여부
+   * @example true
+   */
+  isPortalLinked: boolean;
+}
+
 /** 사용자 분석 식별자 조회 응답 */
 export interface AnalyticsIdApiResponse {
   /**
@@ -914,6 +939,8 @@ export type GetJobStatusData = PortalLinkJobStatusApiResponse;
 export type GetJobSummaryData = PortalLinkJobSummaryApiResponse;
 
 export type HealthData = string;
+
+export type GetMeData = MeApiResponse;
 
 export type GetAnalyticsIdData = AnalyticsIdApiResponse;
 
