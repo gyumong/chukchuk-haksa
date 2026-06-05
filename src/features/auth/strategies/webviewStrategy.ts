@@ -20,7 +20,12 @@ async function hydrate(): Promise<SessionState | null> {
 }
 
 async function clear(): Promise<void> {
-  signalNativeLogout();
+  // best-effort: AuthStrategy.clear 계약상 throw 하지 않는다.
+  try {
+    signalNativeLogout();
+  } catch (error) {
+    console.error('[auth:webview] signalNativeLogout failed', error);
+  }
 }
 
 export const webviewStrategy: AuthStrategy = {

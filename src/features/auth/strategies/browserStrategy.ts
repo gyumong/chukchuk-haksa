@@ -16,9 +16,9 @@ async function hydrate(): Promise<SessionState | null> {
       analyticsId?: string;
     };
     return {
-      accessToken: data.accessToken ?? null,
+      accessToken: typeof data.accessToken === 'string' ? data.accessToken : null,
       isPortalLinked: typeof data.isPortalLinked === 'boolean' ? data.isPortalLinked : null,
-      analyticsId: data.analyticsId ?? null,
+      analyticsId: typeof data.analyticsId === 'string' ? data.analyticsId : null,
     };
   } catch (error) {
     console.error('[auth:browser] session fetch failed', error);

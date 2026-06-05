@@ -89,14 +89,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [applySessionState, strategy]);
 
   const clearAuth = useCallback(async () => {
-    await strategy.clear();
-    // 순서 critical: reset 이 토큰 store 초기화보다 먼저 — reset 이 새 device_id 를 발급하므로
-    // 이후 익명 트래픽이 새 device 로 잡힘. 같은 브라우저에서 다른 계정으로 재로그인해도
-    // 이전 유저 이벤트와 섞이지 않음.
-    resetAnalytics();
-    setAccessTokenStore(null);
-    setIsPortalLinked(null);
-    setAnalyticsIdState(null);
+    try {
+      await strategy.clear();
+    } catch (error) {
+      // clear 가 실패해도 아래 로컬 정리는 항상 수행해 부분 로그아웃 상태를 막는다.
+      console.error('[AuthContext] strategy.clear() failed', error);
+    } finally {
+      // 순서 critical: reset 이 토큰 store 초기화보다 먼저 — reset 이 새 device_id 를 발급하므로
+      // 이후 익명 트래픽이 새 device 로 잡힘. 같은 브라우저에서 다른 계정으로 재로그인해도
+      // 이전 유저 이벤트와 섞이지 않음.
+      resetAnalytics();
+      setAccessTokenStore(null);
+      setIsPortalLinked(null);
+      setAnalyticsIdState(null);
+    }
   }, [strategy]);
 
   const refresh = useCallback(() => refreshAccessTokenStore(), []);

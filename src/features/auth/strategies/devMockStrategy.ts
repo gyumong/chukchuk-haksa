@@ -39,17 +39,24 @@ export function getDevMockStrategy(): AuthStrategy | null {
   if (!token) {
     return null;
   }
-  const portalRaw = sessionStorage.getItem(PORTAL_KEY);
-  const isPortalLinked = portalRaw === null ? true : portalRaw !== 'false';
-  const state: SessionState = { accessToken: token, isPortalLinked, analyticsId: null };
+  // hydrate/refreshTransport 는 호출 시점마다 sessionStorage 를 읽어 clear() 이후 stale 토큰 노출을 방지한다.
+  const readState = (): SessionState | null => {
+    const currentToken = sessionStorage.getItem(TOKEN_KEY);
+    if (!currentToken) {
+      return null;
+    }
+    const portalRaw = sessionStorage.getItem(PORTAL_KEY);
+    const isPortalLinked = portalRaw === null ? true : portalRaw !== 'false';
+    return { accessToken: currentToken, isPortalLinked, analyticsId: null };
+  };
 
   return {
-    hydrate: async () => state,
+    hydrate: async () => readState(),
     clear: async () => {
       sessionStorage.removeItem(TOKEN_KEY);
       sessionStorage.removeItem(PORTAL_KEY);
     },
-    // 정적 테스트 토큰 — 401 시 같은 토큰을 돌려준다(httpConfig 는 1회만 재시도하므로 루프 없음).
-    refreshTransport: async () => token,
+    // 호출 시점의 토큰 반환(401 시 같은 토큰; httpConfig 는 1회만 재시도하므로 루프 없음).
+    refreshTransport: async () => sessionStorage.getItem(TOKEN_KEY),
   };
 }
