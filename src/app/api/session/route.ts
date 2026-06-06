@@ -176,9 +176,22 @@ export async function GET() {
     probe = await probeStudentProfile(session.accessToken);
 
     if (probe === 'unauthorized') {
-      // refresh 가 발급한 토큰조차 거부 → 백엔드 상태 이상. 세션 폐기.
-      await session.destroy();
-      return NextResponse.json({ error: 'SESSION_EXPIRED' }, { status: 401 });
+      // refresh 가 발급한 fresh 토큰조차 /api/student/profile 에서 401 → 두 갈래로 해석한다.
+      // - 이미 portal-link 가 확정됐던 세션(isPortalLinked === true): 새 토큰인데도 거부됨 →
+      //   백엔드 상태 이상으로 보고 세션 폐기.
+      // - portal-link 가 확정된 적 없는 세션(예: MPA POST 익스체인지가 불확정 probe 로 isPortalLinked
+      //   를 unset 으로 남긴 미연동 사용자): fresh 토큰이 거부되는 건 토큰이 죽어서가 아니라 백엔드가
+      //   spec(404) 대신 401 로 '미연동'을 표현하는 것 → web signin 경로가 isPortalLinked:false 를
+      //   심는 것과 동일하게 false 로 200 응답한다. destroy 하면 webview 가 /mpa/portal-login 진입
+      //   직후 '/' 로 강제 리다이렉트된다 (web 은 callback 이 false 를 심어 위 self-declaration 분기로 보호됨).
+      if (session.isPortalLinked === true) {
+        await session.destroy();
+        return NextResponse.json({ error: 'SESSION_EXPIRED' }, { status: 401 });
+      }
+      if (session.isPortalLinked !== false) {
+        session.isPortalLinked = false;
+      }
+      return respondWithAuthenticated(session);
     }
 
     if (probe === 'not-linked') {
