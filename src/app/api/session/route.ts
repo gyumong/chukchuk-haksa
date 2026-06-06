@@ -28,7 +28,7 @@ async function respondWithAuthenticated(session: IronSession<SessionData>) {
 
 export const dynamic = 'force-dynamic';
 
-const STUDENT_PROFILE_PROBE_TIMEOUT_MS = 3_000;
+const PORTAL_LINK_PROBE_TIMEOUT_MS = 3_000;
 // fast path 에서 토큰 잔여 시간 안전 마진. exp 가 지금 + 이 값 보다 멀리 있어야 probe 생략.
 // 60s 는 임의 — 너무 짧으면 fast path 도중 만료될 위험, 너무 길면 fast path 적중률 떨어짐.
 const FAST_PATH_TOKEN_BUFFER_MS = 60_000;
@@ -56,20 +56,25 @@ function hasTokenTimeLeft(accessToken: string, bufferMs: number): boolean {
   }
 }
 
-// 백엔드 `/api/student/profile` 호출 결과를 네 종류로 분류해서 반환한다.
-// - 'ok' (200)            → accessToken 유효 + 사용자가 portal-link 완료된 상태
-// - 'unauthorized' (401)  → accessToken 만료/무효. refresh 가 필요한 신호
-// - 'not-linked' (404)    → accessToken 유효 + 학생 프로필 없음 (S01, STUDENT_NOT_FOUND).
-//                            funnel 로 보내야 할 정상 상태이지 세션 destroy 사유가 아님.
-// - 'error' (그 외)       → 백엔드/네트워크 일시 오류 (5xx, timeout). refresh 시도해 expired-JWT hang 회복.
+// 백엔드 `GET /api/users/me` 한 번으로 토큰 유효성과 portal-link 여부를 함께 판정한다.
+// /api/users/me 는 "포털 연동 여부 조회"가 목적이라, 유효 토큰이면 연동/미연동과 무관하게
+// 200 + { data: { isPortalLinked } } 를 돌려준다 → 토큰 유효성(200 vs 401)과 연동 상태(isPortalLinked)를
+// 깨끗이 분리한다. (구 /api/student/profile probe 는 미연동을 404, production 에선 401 로 표현해
+// 토큰 무효와 구분되지 않았고, 그 모호함이 미연동 webview 사용자의 세션을 destroy 시켜 '/' 로 튕기는
+// 버그의 원인이었다.)
+// - 'ok' (200 + isPortalLinked:true)          → 토큰 유효 + 연동 완료
+// - 'not-linked' (200 + isPortalLinked:false)  → 토큰 유효 + 미연동. funnel 로 보내야 할 정상 상태이지
+//                                                 세션 destroy 사유가 아님
+// - 'unauthorized' (401)                       → accessToken 만료/무효. refresh 가 필요한 신호
+// - 'error' (그 외/타임아웃/형식이상)          → 백엔드/네트워크 일시 오류 (5xx, timeout). refresh 시도해 hang 회복
 //
-// GET 에서 토큰 유효성 검증과 isPortalLinked 승격을 한 번의 백엔드 호출로 수행하고,
+// GET 에서 토큰 유효성 검증과 isPortalLinked 판정을 한 번의 백엔드 호출로 수행하고,
 // POST 에서 세션 생성 시 isPortalLinked 초기값을 결정한다.
-async function probeStudentProfile(accessToken: string): Promise<ProbeResult> {
+async function probePortalLinkStatus(accessToken: string): Promise<ProbeResult> {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), STUDENT_PROFILE_PROBE_TIMEOUT_MS);
+  const timeoutId = setTimeout(() => controller.abort(), PORTAL_LINK_PROBE_TIMEOUT_MS);
   try {
-    const response = await fetch(`${getApiBaseUrl()}/api/student/profile`, {
+    const response = await fetch(`${getApiBaseUrl()}/api/users/me`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${accessToken}` },
       signal: controller.signal,
@@ -78,18 +83,24 @@ async function probeStudentProfile(accessToken: string): Promise<ProbeResult> {
     if (response.status === 401) {
       return 'unauthorized';
     }
-    if (response.status === 404) {
-      return 'not-linked';
+    if (!response.ok) {
+      return 'error';
     }
-    if (response.ok) {
-      return 'ok';
+    // 응답 래퍼: { success, data: { isPortalLinked }, message }. data.isPortalLinked 가 boolean 일 때만
+    // 신뢰한다. 형식 이상·파싱 실패는 'error' 로 떨궈 refresh 경로가 처리하게 한다.
+    const body = (await response.json().catch(() => null)) as {
+      data?: { isPortalLinked?: unknown };
+    } | null;
+    const linked = body?.data?.isPortalLinked;
+    if (typeof linked !== 'boolean') {
+      return 'error';
     }
-    return 'error';
+    return linked ? 'ok' : 'not-linked';
   } catch (error) {
     if (!(error instanceof Error && error.name === 'AbortError')) {
       captureException(error, {
-        tags: { scope: 'session', action: 'probeStudentProfile' },
-        extra: { endpoint: '/api/student/profile', timeoutMs: STUDENT_PROFILE_PROBE_TIMEOUT_MS },
+        tags: { scope: 'session', action: 'probePortalLinkStatus' },
+        extra: { endpoint: '/api/users/me', timeoutMs: PORTAL_LINK_PROBE_TIMEOUT_MS },
       });
     }
     return 'error';
@@ -100,14 +111,15 @@ async function probeStudentProfile(accessToken: string): Promise<ProbeResult> {
 
 // GET /api/session: 클라이언트 하이드레이션 진입점.
 // 1. 쿠키에서 토큰 꺼냄
-// 2. 백엔드 probe 로 유효성 검증
+// 2. 백엔드 probe(GET /api/users/me)로 토큰 유효성 + 연동 상태 판정
 // 3. probe 분기:
 //    - 'ok'                      → isPortalLinked true 로 승격, 200
-//    - 'not-linked'              → 토큰 유효, 학생 프로필만 없음. refresh 없이 false 로 200
+//    - 'not-linked'              → 토큰 유효 + 미연동. refresh 없이 false 로 200
 //    - session 이 unlinked 라고 자체 선언 + probe 가 'unauthorized'/'error'
-//        → fresh signin 직후 백엔드가 spec 외 status 반환하는 케이스 (401, 5xx 등).
-//           토큰 무효 신호가 아니라 미연동 사용자 응답일 뿐이므로 refresh/destroy 없이 false 로 200
-//    - 그 외 'unauthorized'/'error' (linked 상태에서 probe 실패) → 토큰 문제 가능성. refresh 시도
+//        → /me 일시 오류이거나, 만약 백엔드가 미연동에 비-spec 401 을 주더라도 그 토큰은 방금
+//           signin/refresh 로 발급된 fresh 한 것이므로 토큰 무효로 해석하면 안 됨. destroy 없이 false 로
+//           200 (방어적 fallback)
+//    - 그 외 'unauthorized'/'error' (linked/미상 상태에서 probe 실패) → 토큰 문제 가능성. refresh 시도
 // 4. refresh 실패 또는 refresh 후 재-probe 가 'unauthorized' (그리고 unlinked 자체 선언 아니면)
 //    → 세션 폐기 + 401
 //
@@ -115,18 +127,14 @@ async function probeStudentProfile(accessToken: string): Promise<ProbeResult> {
 // probe 가 401 을 못 받고 timeout 으로 'error' 떨어지는 케이스 관측됨 (Sentry CCHAKSA-56).
 // refresh 엔드포인트는 별도 refreshToken 으로 호출되어 expired-token hang 영향 없음 → 새 토큰 발급 가능.
 //
-// 'not-linked' (404, S01) 는 신규/포털 미연동 사용자의 정상 funnel 상태. 이걸 refresh/destroy 로
-// 처리하면 갓 signin 한 미연동 사용자가 /auth/success → GET /api/session → 401 → '/' 리다이렉트로
-// 튕기는 버그가 발생. /portal-login 으로 보내야 하는 신호일 뿐 세션 무효 신호가 아님.
-//
-// 추가: 백엔드가 spec 과 달리 미연동 사용자에게 401/5xx 를 줘도 (실제 production 관측) session 이
-// 자체적으로 isPortalLinked:false 라고 선언한 상태면 — 그 토큰은 방금 signin/refresh 로 발급된
-// 신선한 토큰이므로 토큰 무효 신호로 해석하면 안 됨. destroy 하지 않고 false 로 응답.
+// 'not-linked' 는 신규/포털 미연동 사용자의 정상 funnel 상태. 이걸 refresh/destroy 로 처리하면
+// 갓 signin 한 미연동 사용자가 /auth/success → GET /api/session → 401 → '/' 리다이렉트로 튕기는
+// 버그가 발생. /portal-login 으로 보내야 하는 신호일 뿐 세션 무효 신호가 아님.
 //
 // refresh 실패 시 분기 단순화: probe 가 'unauthorized' 든 'error' 든 무조건 세션 폐기 (단, 위의
 // unlinked 선언 케이스 제외). 사용자가 깨진 화면에 갇히는 것보다 로그인 화면으로 보내는 게 명확.
 //
-// isPortalLinked 는 probe 결과(`'ok'`)로만 true 로 승격 — 클라이언트 임의 값 신뢰 안 함.
+// isPortalLinked 는 probe(/api/users/me) 결과로만 결정 — 클라이언트 임의 값 신뢰 안 함.
 export async function GET() {
   const session = await getSession();
 
@@ -135,7 +143,7 @@ export async function GET() {
   }
 
   // Fast path: 이미 portal-link 승격됐고 토큰이 충분히 남아있으면 백엔드 probe 생략.
-  // 매 GET 마다 도는 probeStudentProfile (~200ms~3s) 이 isPortalLinked 변경 체감 지연의 주범.
+  // 매 GET 마다 도는 probePortalLinkStatus (~200ms~3s) 이 isPortalLinked 변경 체감 지연의 주범.
   // - isPortalLinked === true 일 때만 적용 (false → true 승격은 여전히 probe 필요)
   // - JWT exp 가 충분히 남았으면 만료 가능성 낮음 — backend revoke 케이스는 다음 API 호출의
   //   401 fallback 에서 잡혀 refresh 자동 발동 (이미 그 경로 존재)
@@ -144,9 +152,9 @@ export async function GET() {
     return respondWithAuthenticated(session);
   }
 
-  let probe = await probeStudentProfile(session.accessToken);
+  let probe = await probePortalLinkStatus(session.accessToken);
 
-  // 미연동 사용자 (S01) — 토큰은 유효. refresh/destroy 경로 진입 없이 즉시 응답.
+  // 미연동 사용자 — 토큰은 유효. refresh/destroy 경로 진입 없이 즉시 응답.
   if (probe === 'not-linked') {
     if (session.isPortalLinked !== false) {
       session.isPortalLinked = false;
@@ -154,9 +162,9 @@ export async function GET() {
     return respondWithAuthenticated(session);
   }
 
-  // session 이 unlinked 라고 자체 선언한 상태에서 probe 가 실패하면 — backend 가 spec 외
-  // status (401/5xx) 로 미연동 사용자를 표현했을 가능성이 큼. 토큰은 fresh 한데 destroy 하면
-  // 사용자가 / 로 튕김. 토큰 신뢰하고 false 로 응답.
+  // session 이 unlinked 라고 자체 선언한 상태에서 probe 가 실패하면 — /me 일시 오류이거나, 백엔드가
+  // 미연동 사용자에게 비-spec 401 을 주는 경우라도, 토큰은 fresh 한데 destroy 하면 사용자가 / 로
+  // 튕긴다. 토큰 신뢰하고 false 로 응답 (방어적 fallback).
   if (probe !== 'ok' && session.isPortalLinked === false) {
     return respondWithAuthenticated(session);
   }
@@ -173,10 +181,11 @@ export async function GET() {
     session.refreshToken = refreshed.refreshToken;
 
     // 새 토큰으로 probe 재시도 — 유효성 재확인 + isPortalLinked 판단.
-    probe = await probeStudentProfile(session.accessToken);
+    probe = await probePortalLinkStatus(session.accessToken);
 
     if (probe === 'unauthorized') {
-      // refresh 가 발급한 토큰조차 거부 → 백엔드 상태 이상. 세션 폐기.
+      // refresh 가 발급한 fresh 토큰조차 /me 에서 401 → 미연동이면 'not-linked' 로 왔을 것이므로,
+      // 401 은 진짜 토큰 무효(백엔드 상태 이상)다. 세션 폐기.
       await session.destroy();
       return NextResponse.json({ error: 'SESSION_EXPIRED' }, { status: 401 });
     }
@@ -211,10 +220,10 @@ interface SessionExchangeBody {
 
 // 네이티브 앱이 보유한 ac/re 토큰을 cchaksa_session 쿠키로 익스체인지.
 // 시퀀스: docs/mpa-school-link-handoff.md
-// isPortalLinked 는 요청 바디에서 받지 않고 백엔드 probe 결과로 결정 — 클라이언트 임의 값으로
-// 세션 승격되는 경로 차단. probe 가 만료(401)/일시오류(timeout·5xx)면 refreshToken 으로 재발급 후
-// 재-probe 한다 (GET 과 동일) — cold start 직후 연동 사용자가 미연동으로 오판되는 것을 막는다.
-// TODO(backend): 토큰 진위 검증 엔드포인트가 추가되면 sealData 직전 호출해 위조 토큰 차단.
+// isPortalLinked 는 요청 바디에서 받지 않고 백엔드 probe(GET /api/users/me) 결과로 결정 — 클라이언트
+// 임의 값으로 세션 승격되는 경로 차단. probe 가 만료(401)/일시오류(timeout·5xx)면 refreshToken 으로
+// 재발급 후 재-probe 한다 (GET 과 동일) — cold start 직후 연동 사용자가 미연동으로 오판되는 것을 막는다.
+// /api/users/me 는 @secure 라 200 응답 자체가 토큰 진위 1차 검증을 겸한다 (docs B1).
 export async function POST(request: Request) {
   let body: SessionExchangeBody;
   try {
@@ -237,16 +246,16 @@ export async function POST(request: Request) {
   let activeAccessToken = accessToken;
   let activeRefreshToken = refreshToken;
   let [probe, analyticsId] = await Promise.all([
-    probeStudentProfile(accessToken),
+    probePortalLinkStatus(accessToken),
     fetchAnalyticsIdFromBackend(accessToken),
   ]);
 
   // cold start 등으로 native 가 보유한 accessToken 이 만료(401)거나 백엔드 일시오류(timeout·5xx)면,
-  // 단일 probe 결과로 isPortalLinked=false 를 굳히지 않는다 — refreshToken 으로 재발급 후 재-probe.
+  // 단일 probe 결과로 isPortalLinked 를 굳히지 않는다 — refreshToken 으로 재발급 후 재-probe.
   // 이게 없으면 이미 연동된 사용자가 cold start 직후 미연동으로 오판되고, 그 false 가 세션에 저장돼
-  // 이후 GET 의 'unlinked 자체 선언' 분기(아래 GET 주석 참조)가 refresh 를 건너뛰어 false 가 고착,
+  // 이후 GET 의 'unlinked 자체 선언' 분기(위 GET 주석 참조)가 refresh 를 건너뛰어 false 가 고착,
   // 네이티브가 "학교 연동을 하시겠습니까?" 프롬프트를 잘못 띄운다. (GET 의 refresh+re-probe 와 동일 원리.)
-  // 'not-linked'(404)는 정상 미연동이라 refresh 하지 않는다. refresh 실패/재-probe 불확정이면
+  // 'not-linked'(미연동)는 정상 상태라 refresh 하지 않는다. refresh 실패/재-probe 불확정이면
   // 아래에서 isPortalLinked 를 저장하지 않고 unset 으로 남겨 다음 GET 이 정상 refresh 로 복구한다.
   if (probe !== 'ok' && probe !== 'not-linked') {
     const refreshed = await refreshTokensFromBackend(refreshToken);
@@ -254,7 +263,7 @@ export async function POST(request: Request) {
       activeAccessToken = refreshed.accessToken;
       activeRefreshToken = refreshed.refreshToken;
       [probe, analyticsId] = await Promise.all([
-        probeStudentProfile(activeAccessToken),
+        probePortalLinkStatus(activeAccessToken),
         fetchAnalyticsIdFromBackend(activeAccessToken),
       ]);
     }
