@@ -7,11 +7,8 @@ import {
   getAccessTokenStore,
   refreshAccessTokenStore,
   setAccessTokenStore,
-  setRefreshTransport,
   subscribeAccessTokenStore,
 } from '../tokenStore';
-import { selectStrategy } from '../strategies';
-import type { SessionState } from '../strategies';
 
 interface AuthContextValue {
   accessToken: string | null;
@@ -28,18 +25,39 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+interface SessionState {
+  accessToken: string | null;
+  isPortalLinked: boolean | null;
+  analyticsId: string | null;
+}
+
+async function fetchSessionState(): Promise<SessionState | null> {
+  try {
+    const response = await fetch('/api/session', { credentials: 'include' });
+    if (!response.ok) {
+      return { accessToken: null, isPortalLinked: null, analyticsId: null };
+    }
+    const data = (await response.json()) as {
+      accessToken?: string;
+      isPortalLinked?: boolean;
+      analyticsId?: string;
+    };
+    return {
+      accessToken: data.accessToken ?? null,
+      isPortalLinked: typeof data.isPortalLinked === 'boolean' ? data.isPortalLinked : null,
+      analyticsId: data.analyticsId ?? null,
+    };
+  } catch (error) {
+    console.error('[AuthContext] session fetch failed', error);
+    return null;
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [accessToken, setAccessTokenState] = useState<string | null>(() => getAccessTokenStore());
   const [isPortalLinked, setIsPortalLinked] = useState<boolean | null>(null);
   const [analyticsId, setAnalyticsIdState] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
-
-  // 컨텍스트(브라우저/웹뷰)에 맞는 인증 전략을 1회 선택해 고정한다 (재선택 시 transport churn 방지).
-  const strategyRef = useRef<ReturnType<typeof selectStrategy> | null>(null);
-  if (strategyRef.current === null) {
-    strategyRef.current = selectStrategy();
-  }
-  const strategy = strategyRef.current;
 
   useEffect(() => {
     return subscribeAccessTokenStore(token => setAccessTokenState(token));
@@ -68,12 +86,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // 전략별 refresh 전송 방식을 tokenStore 에 설치 — httpConfig 의 401 자동 refresh 가 이 경유.
-    setRefreshTransport(strategy.refreshTransport);
-
     let cancelled = false;
     (async () => {
-      const result = await strategy.hydrate();
+      const result = await fetchSessionState();
       if (cancelled) {
         return;
       }
@@ -86,33 +101,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [applySessionState, strategy]);
+  }, [applySessionState]);
 
   const clearAuth = useCallback(async () => {
     try {
-      await strategy.clear();
+      await fetch('/api/session', { method: 'DELETE', credentials: 'include' });
     } catch (error) {
-      // clear 가 실패해도 아래 로컬 정리는 항상 수행해 부분 로그아웃 상태를 막는다.
-      console.error('[AuthContext] strategy.clear() failed', error);
-    } finally {
-      // 순서 critical: reset 이 토큰 store 초기화보다 먼저 — reset 이 새 device_id 를 발급하므로
-      // 이후 익명 트래픽이 새 device 로 잡힘. 같은 브라우저에서 다른 계정으로 재로그인해도
-      // 이전 유저 이벤트와 섞이지 않음.
-      resetAnalytics();
-      setAccessTokenStore(null);
-      setIsPortalLinked(null);
-      setAnalyticsIdState(null);
+      console.error('[AuthContext] clearAuth request failed', error);
     }
-  }, [strategy]);
+    // 순서 critical: reset 이 토큰 store 초기화보다 먼저 — reset 이 새 device_id 를 발급하므로
+    // 이후 익명 트래픽이 새 device 로 잡힘. 같은 브라우저에서 다른 계정으로 재로그인해도
+    // 이전 유저 이벤트와 섞이지 않음.
+    resetAnalytics();
+    setAccessTokenStore(null);
+    setIsPortalLinked(null);
+    setAnalyticsIdState(null);
+  }, []);
 
   const refresh = useCallback(() => refreshAccessTokenStore(), []);
 
   const hydrate = useCallback(async () => {
-    const result = await strategy.hydrate();
+    const result = await fetchSessionState();
     if (result !== null) {
       applySessionState(result);
     }
-  }, [applySessionState, strategy]);
+  }, [applySessionState]);
 
   return (
     <AuthContext.Provider value={{ accessToken, isPortalLinked, analyticsId, isReady, clearAuth, refresh, hydrate }}>
