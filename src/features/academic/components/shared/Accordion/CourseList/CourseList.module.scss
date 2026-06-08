@@ -37,6 +37,14 @@
   color: color.$gray-100;
 }
 
+// 선택교양(선교) 과목의 세부 영역 표시 ("{liberalAreaCode}영역"). 학기 텍스트와 동일 톤.
+.area {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+
+  color: color.$gray-100;
+}
+
 .courseGrade {
   display: flex;
   align-items: center;

@@ -35,7 +35,8 @@ export default function AreaProgressSection() {
             title={area.displayName}
             currentCredits={area.earnedCredits}
             requiredCredits={area.requiredCredits}
-            requiredElectiveCredits={area.requiredElectiveCourses}
+            requiredElectiveAreas={area.requiredElectiveCourses}
+            completedElectiveAreas={area.completedElectiveCourses}
             isCompleted={area.isCompleted}
             courses={area.courses}
             trailingAdornment={area.areaType === '일선' ? generalElectiveInfoButton : undefined}
@@ -49,17 +50,15 @@ export default function AreaProgressSection() {
       {/* 복수전공 섹션 */}
       {dualMajorAreas.length > 0 && (
         <>
-          <div className={styles.dualMajorHeader}>
-            <div className={styles.dualMajorTitle}>복수전공 수강내역</div>
-          </div>
-          <div className={styles.dualMajorSpacing}></div>
+          <div className={styles.dualMajorTitle}>복수전공 수강내역</div>
           {dualMajorAreas.map((area, index) => (
             <div key={area.areaType}>
               <CourseAccordion
                 title={area.displayName}
                 currentCredits={area.earnedCredits}
                 requiredCredits={area.requiredCredits}
-                requiredElectiveCredits={area.requiredElectiveCourses}
+                requiredElectiveAreas={area.requiredElectiveCourses}
+                completedElectiveAreas={area.completedElectiveCourses}
                 isCompleted={area.isCompleted}
                 courses={area.courses}
                 trailingAdornment={area.areaType === '일선' ? generalElectiveInfoButton : undefined}

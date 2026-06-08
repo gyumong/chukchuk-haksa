@@ -1,0 +1,87 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/radius.scss' as radius;
+
+.title {
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+
+  margin-top: spacing.$space-28;
+  margin-bottom: spacing.$space-14;
+  color: color.$gray-500;
+}
+
+// '외국어인증제도' 행 카드 — 시험명(좌) + 완료/미완료 상태 + 안내 아이콘.
+.row {
+  display: flex;
+  align-items: center;
+  gap: spacing.$space-8;
+  background-color: color.$white;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid color.$gray-300;
+
+  @include spacing.card-padding;
+  @include radius.card-radius;
+}
+
+// 외국어인증 '완료' 시 — 완료 아코디언 카드(CourseAreaTrigger.completed)와 동일한 다크/퍼플 외형으로 통일.
+.completedCard {
+  background-color: color.$black-100;
+  border-color: color.$black-100;
+}
+
+.completedCard .name {
+  color: color.$purple-200;
+}
+
+// 완료 다크 카드에선 (i) 안내 아이콘을 흰색으로. info.svg 가 stroke 색(#7F71FB) 고정이라
+// color/currentColor 로는 못 바꿔 filter 로 흰색화(다른 info 아이콘 사용처엔 영향 없음).
+.completedCard .infoButton {
+  filter: brightness(0) invert(1);
+}
+
+.name {
+  color: color.$black-100;
+
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+}
+
+.status {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+}
+
+.incomplete {
+  color: color.$gray-100;
+}
+
+// 완료 ✓ 아이콘(check-status-on) — 다른 완료 카드와 동일.
+.check {
+  flex-shrink: 0;
+}
+
+// 완료 상태를 스크린 리더에 알리는 시각적 숨김 텍스트(✓ 아이콘엔 대체 텍스트가 없으므로).
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// info.svg 가 #7F71FB(purple-100) 로 직접 색 지정됨 — AreaProgressSection.infoButton 과 동일 패턴.
+.infoButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: color.$purple-100;
+}

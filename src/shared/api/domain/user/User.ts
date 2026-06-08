@@ -14,6 +14,7 @@ import {
   DeleteUserData,
   ErrorResponseWrapper,
   GetAnalyticsIdData,
+  GetMeData,
   SignInRequest,
   SignInUserData,
 } from "../../data-contracts";
@@ -36,6 +37,23 @@ export class User<
       method: "POST",
       body: data,
       type: ContentType.Json,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description 로그인된 사용자의 포털 연동 여부를 조회합니다.
+   *
+   * @tags User
+   * @name GetMe
+   * @summary 내 사용자 정보 조회
+   * @request GET:/api/users/me
+   * @secure
+   */
+  getMe = (params: RequestParams = {}) =>
+    this.request<GetMeData, ErrorResponseWrapper>({
+      path: `/api/users/me`,
+      method: "GET",
+      secure: true,
       format: "json",
       ...params,
     });

@@ -7,7 +7,8 @@ export default function CourseAccordion({
   title,
   currentCredits,
   requiredCredits,
-  requiredElectiveCredits,
+  requiredElectiveAreas,
+  completedElectiveAreas,
   isCompleted,
   courses = [],
   trailingAdornment,
@@ -22,7 +23,8 @@ export default function CourseAccordion({
         requiredCredits={requiredCredits}
         isCompleted={isCompleted}
         isExpanded={isExpanded}
-        requiredElectiveCredits={requiredElectiveCredits}
+        requiredElectiveAreas={requiredElectiveAreas}
+        completedElectiveAreas={completedElectiveAreas}
         trailingAdornment={trailingAdornment}
         onClick={() => setIsExpanded(!isExpanded)}
       />

@@ -1,0 +1,67 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+.body {
+  display: flex;
+  flex-direction: column;
+}
+
+// 공용 ConfirmDialog .message(가운데 정렬) 안의 부제. "{학부} {YY}학번의 / 외국어인증제도 필요 점수입니다."
+.subtitle {
+  margin: 0 0 spacing.$space-20;
+  text-align: center;
+  color: color.$black-100;
+
+  @include typography.body-md;
+  @include typography.font-weight-medium;
+}
+
+// 부제에서 강조할 부분("{학부} {YY}학번", "외국어인증제도").
+.emphasis {
+  @include typography.font-weight-bold;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-18;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// 시험별 기준 행 — 시험명(좌) / 통과 기준(우, 보라색).
+.row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: spacing.$space-16;
+}
+
+.label {
+  flex-shrink: 0;
+  color: color.$black-100;
+  text-align: left;
+
+  @include typography.body-sm;
+  @include typography.font-weight-bold;
+}
+
+.value {
+  color: color.$purple-100;
+  text-align: right;
+
+  @include typography.body-sm;
+  @include typography.font-weight-bold;
+}
+
+// 미매핑 학과 등 기준 목록이 없을 때의 안내.
+.note {
+  margin: 0;
+  text-align: center;
+  color: color.$gray-500;
+
+  @include typography.body-md;
+  @include typography.font-weight-regular;
+}
