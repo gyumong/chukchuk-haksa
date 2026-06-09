@@ -37,6 +37,9 @@ export default function MpaLayout({ children }: PropsWithChildren) {
         return <GraduationNavigationHeader />;
       case ROUTES.MPA.ME:
         return <TopNavigation.Preset title="설정" type="back" onNavigationClick={() => router.back()} />;
+      case ROUTES.MPA.DELETE:
+        // 탈퇴 확인 페이지. < 는 /mpa/me 로 복귀 (웹 /delete 와 동일한 제목/뒤로가기).
+        return <TopNavigation.Preset title="탈퇴하기" type="back" onNavigationClick={() => router.back()} />;
       case ROUTES.MPA.RESYNC_LOGIN:
         return <TopNavigation.Preset title="" type="back" onNavigationClick={goHome} />;
       default:
