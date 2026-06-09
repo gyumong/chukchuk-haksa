@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { captureException } from '@sentry/nextjs';
 import { FunnelHeadline } from '@/app/(funnel)/components';
 import { FixedButton } from '@/components/ui';
 import { useAuth } from '@/features/auth/contexts/AuthContext';
@@ -31,7 +32,10 @@ const DeleteContent = () => {
       await clearAuth();
       window.location.replace('/');
     } catch (err) {
-      alert(err instanceof Error ? err.message : '탈퇴 중 오류가 발생했습니다.');
+      // 원인은 Sentry 로 추적하고(앱 표준 에러 트래킹), 사용자에겐 raw 에러 대신 일반화된 안내만 노출한다.
+      // (앱에 공용 toast 시스템이 없어 웹 /delete 와 동일하게 alert 사용)
+      captureException(err);
+      alert('탈퇴 중 오류가 발생했어요.\n잠시 후 다시 시도해주세요.');
     }
   };
 

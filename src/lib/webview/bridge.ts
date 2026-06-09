@@ -81,8 +81,9 @@ export const redirectToHome = (): boolean => {
   return postBridgeMessage('redirectToHome');
 };
 
-// /mpa/delete 확인 페이지의 '탈퇴하기' 버튼 → 네이티브에 계정 탈퇴 처리를 위임한다.
-// (/mpa/me '탈퇴하기' 는 이 확인 페이지로 이동하고, 페이지 버튼이 이 이벤트를 송출한다.)
+// /mpa/delete 확인 페이지의 '탈퇴하기' 버튼은 웹에서 실제 백엔드 탈퇴(DELETE /api/users/delete)를
+// 수행한 뒤, 이 'withdraw' 로 네이티브에 '탈퇴 완료'를 통지한다(삭제를 네이티브에 위임하는 게 아님).
+// 네이티브는 이 신호에 웹뷰 dismiss·로그아웃 후처리만 하고, DELETE 를 다시 호출하지 않는다(중복 탈퇴 방지).
 export const withdraw = (): boolean => {
   return postBridgeMessage('withdraw');
 };
