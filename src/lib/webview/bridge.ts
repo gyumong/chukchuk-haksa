@@ -86,3 +86,10 @@ export const redirectToHome = (): boolean => {
 export const withdraw = (): boolean => {
   return postBridgeMessage('withdraw');
 };
+
+// 웹뷰 초기 로딩 시 첫 페인트 직후 네이티브에 렌더 완료를 통지한다. 네이티브는 onPageFinished
+// (HTML 파싱 완료)가 아니라 이 신호에 로더/스플래시를 내려야, CSR 렌더 전까지의 빈 화면 노출이 줄어든다.
+// 송출 시점은 requestAnimationFrame 으로 실제 페인트 이후가 되도록 호출부에서 보장한다.
+export const notifyRendered = (): boolean => {
+  return postBridgeMessage('rendered');
+};
