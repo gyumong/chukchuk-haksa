@@ -3,31 +3,70 @@
 import Image from 'next/image';
 import { FunnelHeadline } from '@/app/(funnel)/components';
 import { FixedButton } from '@/components/ui';
-import { withdraw } from '@/lib/webview';
+import { useAuth } from '@/features/auth/contexts/AuthContext';
+import { useProfileQuery } from '@/features/dashboard/apis/queries/useProfileQuery';
+import { useDeleteUserMutation } from '@/features/user/apis/queries/useDeleteUserMutation';
+import { isInWebView, withdraw } from '@/lib/webview';
+import AsyncBoundary from '@/shared/components/AsyncBoundary';
 // 웹 /delete 와 동일한 확인 화면 레이아웃을 재사용한다.
 import styles from '@/app/(setting)/delete/page.module.scss';
 
-/**
- * MPA 탈퇴 확인 페이지.
- * /mpa/me 의 '탈퇴하기' 가 (네이티브 팝업/직접 bridge 가 아니라) 이 페이지로 이동하고,
- * 여기서 '탈퇴하기' 버튼을 누르면 'withdraw' 브릿지 이벤트를 송출한다. 실제 탈퇴 처리는 네이티브가 수행한다.
- */
-const MpaDeletePage = () => {
+const DeleteContent = () => {
+  const mutation = useDeleteUserMutation();
+  const { data: profile } = useProfileQuery();
+  const { clearAuth } = useAuth();
+
+  const handleDelete = async () => {
+    try {
+      // 실제 백엔드 탈퇴 (DELETE /api/users/delete)
+      await mutation.mutateAsync();
+      // 웹뷰면 네이티브에 탈퇴 완료를 통지해 후처리(웹뷰 dismiss·로그아웃)를 위임한다. withdraw() 의 반환값은
+      // postMessage '전달' 성공일 뿐 네이티브의 dismiss 를 보장하지 않으므로, 이를 dismiss 증거로 신뢰하지 않는다.
+      if (isInWebView()) {
+        withdraw();
+      }
+      // 네이티브 dismiss 여부와 무관하게 항상 세션 + 인메모리 토큰 + React Query 캐시를 폐기하고 랜딩으로
+      // hard navigate 한다. 이렇게 해야 dismiss 실패 시에도 탈퇴된 계정 화면에 유효 세션이 남지 않고,
+      // 즉시 이동(replace)으로 버튼 재탭(중복 탈퇴 호출)도 차단된다. (웹 /delete 의 안전 패턴과 동일)
+      await clearAuth();
+      window.location.replace('/');
+    } catch (err) {
+      alert(err instanceof Error ? err.message : '탈퇴 중 오류가 발생했습니다.');
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className="gap-14" />
       <FunnelHeadline
-        title="척척학사를<br/>떠나시겠어요?"
+        title={`${profile.name}님 <br/>척척학사를 떠나시겠어요?`}
+        highlightText={profile.name}
         description="다음 패치가 있기 전까지 재가입이 불가능합니다.<br/>척척학사에서 수집하는 개인 정보는<br/>탈퇴 즉시 폐기됩니다."
       />
       <div className={styles.imageWrapper}>
         <Image src="/images/illustrations/Leave.png" alt="leave 이미지" width={300} height={300} />
       </div>
-      <FixedButton variant="error" onClick={() => withdraw()}>
+      <FixedButton
+        variant="error"
+        onClick={handleDelete}
+        disabled={mutation.isPending}
+        isLoading={mutation.isPending}
+      >
         탈퇴하기
       </FixedButton>
     </div>
   );
 };
+
+/**
+ * MPA 탈퇴 확인 페이지.
+ * /mpa/me '탈퇴하기' → 이 페이지로 이동(네이티브 팝업/직접 bridge 대체).
+ * 버튼 → 실제 백엔드 탈퇴 + 세션 정리 후, 웹뷰면 'withdraw' 브릿지로 네이티브에 후처리 위임(웹은 / 이동).
+ */
+const MpaDeletePage = () => (
+  <AsyncBoundary>
+    <DeleteContent />
+  </AsyncBoundary>
+);
 
 export default MpaDeletePage;
