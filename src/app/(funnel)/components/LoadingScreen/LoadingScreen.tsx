@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { isInWebView } from '@/lib/webview';
 import styles from './LoadingScreen.module.scss';
 
 const LOADING_STATES = [
@@ -22,6 +23,9 @@ const LoadingScreen = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playCount, setPlayCount] = useState(0);
   const [fadeState, setFadeState] = useState<'in' | 'out'>('in');
+  // 웹뷰에선 OS 가 실제 홈 인디케이터를 그리므로 아래 장식용 가짜 인디케이터는 숨긴다.
+  // SSR/hydration 불일치(서버엔 window 없음)를 피하려 마운트 후에 판별한다.
+  const [isWebView, setIsWebView] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -49,6 +53,10 @@ const LoadingScreen = () => {
     };
   }, [playCount]);
 
+  useEffect(() => {
+    setIsWebView(isInWebView());
+  }, []);
+
   const currentState = LOADING_STATES[playCount % LOADING_STATES.length];
 
   return (
@@ -67,7 +75,7 @@ const LoadingScreen = () => {
       </main>
 
       <div className={styles.bottomBar}>
-        <div className={styles.indicator} />
+        {!isWebView && <div className={styles.indicator} />}
       </div>
     </div>
   );
