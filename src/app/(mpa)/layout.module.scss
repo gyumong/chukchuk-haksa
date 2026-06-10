@@ -9,3 +9,17 @@
   @include utilities.content-padding;
   @include utilities.safe-area-bottom(spacing.$space-36);
 }
+
+// 졸업요건: 웹 /graduation-progress 와 동일하게. GraduationProgressContent 가 자체 패딩(20/16)을
+// 가지므로 content-padding 을 빼 이중 패딩(40px)을 막고, 헤더 아래가 독립 스크롤되도록 한다.
+.contentScroll {
+  flex: 1;
+  overflow-y: auto;
+  @include utilities.safe-area-bottom(spacing.$space-48);
+}
+
+// 탈퇴: 웹 /delete(setting-layout) 와 동일하게. 수평 패딩만 두고, 하단/높이는 페이지(.container)가
+// 직접 처리하므로 레이아웃에서 추가 safe-area-bottom 을 더하지 않는다.
+.contentPlain {
+  @include utilities.content-padding;
+}

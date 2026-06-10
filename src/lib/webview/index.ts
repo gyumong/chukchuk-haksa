@@ -1,1 +1,9 @@
-export { isInWebView, postBridgeMessage, navigateNative, navigateBack, redirectToHome, withdraw } from './bridge';
+export {
+  isInWebView,
+  postBridgeMessage,
+  navigateNative,
+  navigateBack,
+  redirectToHome,
+  withdraw,
+  notifyRendered,
+} from './bridge';

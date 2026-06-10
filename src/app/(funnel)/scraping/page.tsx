@@ -26,13 +26,18 @@ export default function ScrapingPage() {
   const jobStatus = jobStatusData?.status;
   const jobDetail = jobStatusData;
 
-  const { data: summaryData } = usePortalLinkSummary(jobId, jobStatus);
+  // 폴링 succeeded 시(studentInfo 확보) + 3분 타임아웃 회복 확인 시 summary 를 조회한다.
+  const summaryQuery = usePortalLinkSummary(jobId, jobStatus === 'succeeded' || isTimedOut);
+  const summaryData = summaryQuery.data;
   const handledRef = useRef(false);
 
   const { failureMessage } = usePortalLinkFailure({
     jobStatus,
     jobDetail,
     isTimedOut,
+    summaryResolved: summaryQuery.isFetched,
+    // 성공 판정(studentInfo)과 동일 신호로 맞춰, 성공이 확정되면 타임아웃 실패가 절대 안 뜨게 한다.
+    recovered: Boolean(summaryData?.studentInfo),
     loginRoute: ROUTES.FUNNEL.PORTAL_LOGIN,
   });
 
