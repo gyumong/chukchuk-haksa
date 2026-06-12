@@ -40,8 +40,9 @@ export function initAnalytics(): void {
 
 /**
  * 로그인/세션 hydration 직후 호출. analyticsId 는 서버가 발급한 사용자 PK UUID — user_id 로 사용.
- * 학번/학과 등 사용자 식별 속성은 제품 결정에 따라 UserProperty(텍소노미)로 전송한다
- * (userProperties.ts / UserPropertiesSync). 단, 비밀번호·카카오 원본 토큰 등 인증 시크릿은 절대 전달 금지.
+ * 학번/학과 등 개인 식별 속성은 제품 결정에 따라 UserProperty 로 전송하지 않는다 — 웹이 attach 하는
+ * UserProperty 는 `sys_web_version` 뿐(userProperties.ts / AnalyticsProvider). 비밀번호·카카오 원본 토큰
+ * 등 인증 시크릿도 절대 전달 금지.
  *
  * null/undefined 전달 시 user_id 만 클리어 (device_id 는 유지) — 세션 만료 등 *암묵적*
  * 로그아웃 경로에서 사용. 전체 reset 은 clearAuth 의 `resetAnalytics` 가 담당.
