@@ -9,7 +9,6 @@ import {
   SyncUpdateButton,
 } from '@/features/dashboard/components';
 import { useRefreshProfileOnVisible } from '@/features/dashboard/hooks/useRefreshProfileOnVisible';
-import { UserPropertiesSync } from '@/features/dashboard/components/UserPropertiesSync/UserPropertiesSync';
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { navigateNative } from '@/lib/webview';
@@ -37,9 +36,6 @@ const MpaHome = () => {
   // 하지 않고 isPortalLinked:false 로 응답해야 한다 — 동반 수정: src/app/api/session/route.ts)
   return (
     <ProtectedRoute requirePortalLinked={true} portalLinkRedirectTo={ROUTES.MPA.PORTAL_LOGIN}>
-      <AsyncBoundary>
-        <UserPropertiesSync />
-      </AsyncBoundary>
       <AsyncBoundary>
         <ProfileCard />
       </AsyncBoundary>
