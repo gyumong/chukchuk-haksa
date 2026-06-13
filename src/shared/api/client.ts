@@ -51,6 +51,10 @@ export const createApiClient = <T extends new (...args: any) => any>(ApiClass: T
           }
 
           // 예상치 못한 에러 (ex: 네트워크 오류, JSON 파싱 오류 등)
+          // 주의: 여기서 status=500 은 클라이언트가 합성한 값이다(서버 응답이 아예 없었음).
+          // iOS WKWebView 의 `TypeError: Load failed`(전송 계층 실패)도 이 경로로 들어와 500 으로
+          // 표면화되므로, 사용자가 보는 "500"이 곧 백엔드 5xx 를 뜻하지 않는다 — 전송 실패는
+          // httpConfig.ts 의 fetchWithStaleConnRetry 에서 완화한다.
           console.error('API 호출 중 예외 발생:', error);
           throw new ApiError(
             error instanceof Error ? error.message : '네트워크 오류가 발생했습니다',
