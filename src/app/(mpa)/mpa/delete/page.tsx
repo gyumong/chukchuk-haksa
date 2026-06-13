@@ -5,16 +5,24 @@ import { captureException } from '@sentry/nextjs';
 import { FunnelHeadline } from '@/app/(funnel)/components';
 import { FixedButton } from '@/components/ui';
 import { useAuth } from '@/features/auth/contexts/AuthContext';
-import { useProfileQuery } from '@/features/dashboard/apis/queries/useProfileQuery';
+import { useWithdrawDisplayName } from '@/features/dashboard/apis/queries/useWithdrawDisplayName';
 import { useDeleteUserMutation } from '@/features/user/apis/queries/useDeleteUserMutation';
 import { isInWebView, withdraw } from '@/lib/webview';
-import AsyncBoundary from '@/shared/components/AsyncBoundary';
 // 웹 /delete 와 동일한 확인 화면 레이아웃을 재사용한다.
 import styles from '@/app/(setting)/delete/page.module.scss';
 
-const DeleteContent = () => {
+/**
+ * MPA 탈퇴 확인 페이지.
+ * /mpa/me '탈퇴하기' → 이 페이지로 이동(네이티브 팝업/직접 bridge 대체).
+ * 버튼 → 실제 백엔드 탈퇴 + 세션 정리 후, 웹뷰면 'withdraw' 브릿지로 네이티브에 후처리 위임(웹은 / 이동).
+ *
+ * 이름은 인사말 개인화용일 뿐이라 미연동 유저(프로필 없음)도 탈퇴 가능하도록 useWithdrawDisplayName
+ * (비-suspense)으로 옵셔널 조회한다. 과거엔 useProfileQuery(suspense)가 미연동 401/404 로 throw 해
+ * 탈퇴 버튼이 에러화면에 가려졌다.
+ */
+const MpaDeletePage = () => {
   const mutation = useDeleteUserMutation();
-  const { data: profile } = useProfileQuery();
+  const displayName = useWithdrawDisplayName();
   const { clearAuth } = useAuth();
 
   const handleDelete = async () => {
@@ -43,8 +51,8 @@ const DeleteContent = () => {
     <div className={styles.container}>
       <div className="gap-14" />
       <FunnelHeadline
-        title={`${profile.name}님 <br/>척척학사를 떠나시겠어요?`}
-        highlightText={profile.name}
+        title={displayName ? `${displayName}님 <br/>척척학사를 떠나시겠어요?` : '척척학사를 <br/>떠나시겠어요?'}
+        highlightText={displayName}
         description="다음 패치가 있기 전까지 재가입이 불가능합니다.<br/>척척학사에서 수집하는 개인 정보는<br/>탈퇴 즉시 폐기됩니다."
       />
       <div className={styles.imageWrapper}>
@@ -61,16 +69,5 @@ const DeleteContent = () => {
     </div>
   );
 };
-
-/**
- * MPA 탈퇴 확인 페이지.
- * /mpa/me '탈퇴하기' → 이 페이지로 이동(네이티브 팝업/직접 bridge 대체).
- * 버튼 → 실제 백엔드 탈퇴 + 세션 정리 후, 웹뷰면 'withdraw' 브릿지로 네이티브에 후처리 위임(웹은 / 이동).
- */
-const MpaDeletePage = () => (
-  <AsyncBoundary>
-    <DeleteContent />
-  </AsyncBoundary>
-);
 
 export default MpaDeletePage;
