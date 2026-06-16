@@ -19,11 +19,12 @@ export const ROUTES = {
   GRADUATION_PROGRESS: '/graduation-progress',
   SETTING: '/setting',
   DELETE: '/delete',
-  // /mpa/* 는 네이티브 앱이 WebView로 임베드하는 라우트.
-  // HOME/ME, GRADUATION_PROGRESS, RESYNC_LOGIN/RESYNC_SCRAPING, PORTAL_LOGIN/PORTAL_LOGIN_SCRAPING
-  // 은 Next.js 페이지로 실재하며 네이티브가 webview 로 직접 로드한다.
-  // DELETE 는 Next.js 페이지가 없는 JS bridge dispatch key 로, navigateNative()
-  // 송출 시 네이티브가 자체 화면/액션으로 해석한다.
+  // /mpa/* 는 네이티브 앱이 WebView로 임베드하는 라우트로, 전부 Next.js 페이지로 실재하며
+  // 네이티브가 webview 로 직접 로드한다. (HOME/ME, GRADUATION_PROGRESS,
+  // RESYNC_LOGIN/RESYNC_SCRAPING, PORTAL_LOGIN/PORTAL_LOGIN_SCRAPING, DELETE)
+  // DELETE 는 탈퇴 확인 페이지. 버튼이 웹에서 실제 백엔드 탈퇴(DELETE /api/users/delete)를 수행한 뒤
+  // 'withdraw' 브릿지로 네이티브에 '탈퇴 완료'를 통지하면, 네이티브가 웹뷰 dismiss·로그아웃 후처리를 한다.
+  // (삭제는 웹이 1회만 수행 — 네이티브가 다시 DELETE 를 호출하지 않도록 한다.)
   MPA: {
     HOME: '/mpa/home',
     ME: '/mpa/me',

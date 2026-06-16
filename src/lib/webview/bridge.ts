@@ -81,8 +81,16 @@ export const redirectToHome = (): boolean => {
   return postBridgeMessage('redirectToHome');
 };
 
-// /mpa/me 의 '탈퇴하기' → 네이티브에 계정 탈퇴 플로우 진입을 위임한다. 네이티브가 탈퇴 확인/처리
-// 화면을 자체적으로 띄운다 (웹뷰는 라우팅하지 않음). 기존 navigate:/mpa/delete dispatch 를 대체.
+// /mpa/delete 확인 페이지의 '탈퇴하기' 버튼은 웹에서 실제 백엔드 탈퇴(DELETE /api/users/delete)를
+// 수행한 뒤, 이 'withdraw' 로 네이티브에 '탈퇴 완료'를 통지한다(삭제를 네이티브에 위임하는 게 아님).
+// 네이티브는 이 신호에 웹뷰 dismiss·로그아웃 후처리만 하고, DELETE 를 다시 호출하지 않는다(중복 탈퇴 방지).
 export const withdraw = (): boolean => {
   return postBridgeMessage('withdraw');
+};
+
+// 웹뷰 초기 로딩 시 첫 페인트 직후 네이티브에 렌더 완료를 통지한다. 네이티브는 onPageFinished
+// (HTML 파싱 완료)가 아니라 이 신호에 로더/스플래시를 내려야, CSR 렌더 전까지의 빈 화면 노출이 줄어든다.
+// 송출 시점은 requestAnimationFrame 으로 실제 페인트 이후가 되도록 호출부에서 보장한다.
+export const notifyRendered = (): boolean => {
+  return postBridgeMessage('rendered');
 };

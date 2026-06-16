@@ -9,6 +9,7 @@ import { AnalyticsProvider } from '@/lib/analytics';
 import { RemoteConfigProvider } from '@/lib/remote-config';
 import MaintenancePage from '@/components/MaintenancePage';
 import { GlobalErrorReporter } from '@/lib/error-reporting';
+import NotifyRenderedToNative from '@/lib/webview/NotifyRenderedToNative';
 import '../styles/global.scss';
 
 export const metadata: Metadata = {
@@ -81,6 +82,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           </AuthProvider>
         )}
         <GlobalErrorReporter />
+        <NotifyRenderedToNative />
         <Analytics />
         {/* Cloudflare Web Analytics: 스크립트 삽입 */}
         <Script
