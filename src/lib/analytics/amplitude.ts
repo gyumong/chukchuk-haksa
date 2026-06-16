@@ -107,14 +107,27 @@ function clearLegacyAcademicUserProperties(analyticsId: string): void {
   for (const key of LEGACY_ACADEMIC_USER_PROPS) {
     identify.unset(key);
   }
-  amplitude.identify(identify);
 
+  // in-memory 가드는 즉시 세팅 — 같은 세션 내 동시/재호출의 중복 전송을 막는다.
   legacyCleanedThisSession.add(analyticsId);
-  try {
-    localStorage.setItem(flagKey, '1');
-  } catch {
-    // 플래그 저장 실패 — in-memory 가드가 세션 1회를 막아줌. 무시.
-  }
+
+  // localStorage 영구 플래그는 전송이 성공(code 200)한 뒤에만 기록한다. 즉시 기록하면 전송이
+  // 실패해도 "정리 완료" 로 남아 다음 세션에서 재시도되지 않는다 → 레거시 학적 값이 영구히 남는다.
+  amplitude
+    .identify(identify)
+    .promise.then(result => {
+      if (result.code !== 200) {
+        return; // 전송 실패 — 영구 플래그 미기록 → 다음 hydration 에서 재시도
+      }
+      try {
+        localStorage.setItem(flagKey, '1');
+      } catch {
+        // 플래그 저장 실패 — in-memory 가드가 세션 1회를 막아줌. 무시.
+      }
+    })
+    .catch(() => {
+      // 전송 거부 — 영구 플래그 미기록으로 다음 세션 재시도. 무시.
+    });
 }
 
 /**

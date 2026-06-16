@@ -35,5 +35,7 @@ export function useWithdrawDisplayName(): string | undefined {
     staleTime: 5 * 60 * 1000,
   });
 
-  return data?.name;
+  // queryKey 를 useProfileQuery 와 공유하므로, 미연동인데 다른 경로에서 채워둔 캐시가 잡힐 수 있다.
+  // 문서화된 계약(미연동/조회 전이면 undefined)을 보장하기 위해 isPortalLinked 로 한 번 더 가드한다.
+  return isPortalLinked === true ? data?.name : undefined;
 }
