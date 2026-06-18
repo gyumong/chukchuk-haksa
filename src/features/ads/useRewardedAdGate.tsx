@@ -7,8 +7,10 @@ import { AD_UNITS } from './adUnits';
 // 광고 시청 결과.
 // - granted     : 광고를 끝까지 봐서 보상 획득 → 연동 진행
 // - dismissed   : 광고가 떠 있었으나 사용자가 거부/중단 → 보상 미획득 → 연동 진행하지 않음
-// - unavailable : 광고 자체가 없음(미설정/미충전/GPT 미로드) → 막을 수 없으니 그대로 진행
-export type RewardedResult = 'granted' | 'dismissed' | 'unavailable';
+// - exhausted   : 이 페이지에서 광고를 이미 한 번 소진(GPT 는 페이지당 rewarded 1개) → 새 슬롯이 null.
+//                 우회(취소→재클릭→통과) 방지 위해 진행하지 않고, 새로고침 안내로 재장전 유도.
+// - unavailable : 광고 자체가 없음(미설정/미충전/GPT 미로드, 아직 한 번도 안 뜸) → 막을 수 없으니 진행
+export type RewardedResult = 'granted' | 'dismissed' | 'unavailable' | 'exhausted';
 
 // 광고가 '준비(rewardedSlotReady)'될 때까지 대기 한도. 초과 시(충전 실패 등) unavailable 로 보고 진행.
 const READY_TIMEOUT_MS = 5000;
@@ -49,6 +51,12 @@ const getGoogletag = (): Googletag | null => {
   return w.googletag.cmd ? w.googletag : null;
 };
 
+// GPT 제약: 페이지 1회 로드당 rewarded 광고 1개만 가능. 한 번 광고가 떴다 닫히면(취소 포함) 같은
+// 페이지에선 두 번째 defineOutOfPageSlot 가 null 로 떨어진다 → 새로고침 전까지 재시청 불가.
+// "이미 소진(exhausted)" 을 "광고 인프라 없음(unavailable)" 과 구분해, 취소→재클릭 우회를 막는다.
+// 모듈 스코프 = 페이지 로드 단위 수명(SPA 클라 네비게이션으론 리셋 안 됨 — GPT 제약과 일치).
+let adOfferedThisPageView = false;
+
 /**
  * 홈 갱신하기 → 보상형 광고 게이트 훅 (브라우저 전용).
  * - showRewardedAd(): 광고를 요청하고, 준비되면 opt-in 다이얼로그를 띄운 뒤 결과를 Promise 로 반환.
@@ -63,6 +71,12 @@ export function useRewardedAdGate() {
 
   const showRewardedAd = useCallback((): Promise<RewardedResult> => {
     return new Promise<RewardedResult>(resolve => {
+      // 이미 이 페이지에서 rewarded 를 한 번 띄웠으면 GPT 제약상 새 광고 불가(페이지당 1개).
+      // 슬롯 생성·5초 READY_TIMEOUT 을 거치지 않고 즉시 exhausted 로 반환(재클릭 지연 제거).
+      if (adOfferedThisPageView) {
+        resolve('exhausted');
+        return;
+      }
       const adUnitPath = AD_UNITS.RESYNC_REWARDED;
       const googletag = getGoogletag();
       if (!adUnitPath || !googletag) {
@@ -102,7 +116,8 @@ export function useRewardedAdGate() {
       settleRef.current = settle;
 
       // 준비될 때까지의 대기만 가드. 광고가 떠서 시청이 시작되면(onReady) 해제한다.
-      timer = setTimeout(() => settle('unavailable'), READY_TIMEOUT_MS);
+      // 한 번이라도 광고가 떴던 페이지면 'exhausted'(진행X), 아니면 'unavailable'(진행O).
+      timer = setTimeout(() => settle(adOfferedThisPageView ? 'exhausted' : 'unavailable'), READY_TIMEOUT_MS);
 
       googletag.cmd.push(() => {
         if (settled) {
@@ -116,7 +131,8 @@ export function useRewardedAdGate() {
           return;
         }
         if (!slot) {
-          settle('unavailable');
+          // 2번째 클릭 등 — 이미 이 페이지에서 rewarded 소진됨 → null. 우회 방지 위해 exhausted.
+          settle(adOfferedThisPageView ? 'exhausted' : 'unavailable');
           return;
         }
 
@@ -128,6 +144,8 @@ export function useRewardedAdGate() {
           if (event.slot !== definedSlot) {
             return;
           }
+          // 광고가 실제로 떴음 — 이후 같은 페이지의 재요청은 exhausted 로 처리(우회 차단).
+          adOfferedThisPageView = true;
           if (timer) {
             clearTimeout(timer);
             timer = undefined;

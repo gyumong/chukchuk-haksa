@@ -23,6 +23,7 @@ const SyncUpdateButton = ({ onNavigate }: SyncUpdateButtonProps = {}) => {
   const router = useInternalRouter();
   const { showRewardedAd, optInDialog } = useRewardedAdGate();
   const [isRequesting, setIsRequesting] = useState(false);
+  const [reloadPromptOpen, setReloadPromptOpen] = useState(false);
   const parsedLastSyncedAt = data.lastSyncedAt ? parseISO(data.lastSyncedAt) : null;
   const formattedLastSyncedAt =
     parsedLastSyncedAt && isValid(parsedLastSyncedAt) ? format(parsedLastSyncedAt, 'yy년 M월 d일 HH:mm') : '';
@@ -40,11 +41,17 @@ const SyncUpdateButton = ({ onNavigate }: SyncUpdateButtonProps = {}) => {
     setIsRequesting(true);
     try {
       const result = await showRewardedAd();
-      // 광고가 떠 있었는데 거부/중단('dismissed')하면 보상 미획득 → 연동 진행하지 않음(홈 유지).
-      // 광고 자체가 없으면('unavailable') 막을 수 없으니 그대로 진행.
+      // dismissed: 광고 떴는데 거부/중단 → 보상 미획득 → 진행하지 않음(홈 유지).
       if (result === 'dismissed') {
         return;
       }
+      // exhausted: 이 페이지에서 광고 이미 소진(GPT 페이지당 1개) → 우회 방지 위해 진행하지 않고
+      //            새로고침 안내(reload 시 새 광고 1개 재장전).
+      if (result === 'exhausted') {
+        setReloadPromptOpen(true);
+        return;
+      }
+      // granted(시청 완료) | unavailable(광고 자체가 없음) → 진행.
       router.push(ROUTES.RESYNC.LOGIN);
     } finally {
       setIsRequesting(false);
@@ -63,6 +70,15 @@ const SyncUpdateButton = ({ onNavigate }: SyncUpdateButtonProps = {}) => {
         <Icon name="refresh" size={16} />
       </button>
       <ConfirmDialog {...optInDialog} />
+      <ConfirmDialog
+        isOpen={reloadPromptOpen}
+        title="광고 시청이 필요해요"
+        message={'학업 정보 업데이트는 광고 시청 후 진행돼요.\n새로고침하고 다시 시도해주세요.'}
+        confirmText="새로고침"
+        cancelText="닫기"
+        onConfirm={() => window.location.reload()}
+        onClose={() => setReloadPromptOpen(false)}
+      />
     </>
   );
 };
