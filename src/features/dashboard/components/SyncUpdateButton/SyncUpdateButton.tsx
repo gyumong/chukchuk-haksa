@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { format } from 'date-fns/format';
 import { isValid } from 'date-fns/isValid';
@@ -18,17 +18,21 @@ interface SyncUpdateButtonProps {
   onNavigate?: () => void;
 }
 
+// 자동 재개 플래그(sessionStorage). GPT 는 페이지당 rewarded 1개라, 광고가 한 번 소진되면 새 광고는
+// reload 후에만 가능. exhausted 시 이 플래그를 세우고 reload → 재로드 후 마운트에서 광고 흐름을
+// 자동 재개해 "수동 새로고침" 불편을 없앤다(게이트는 유지 — reload 후에도 광고를 봐야 진행).
+const RESUME_AD_KEY = 'resync:resumeAd';
+
 const SyncUpdateButton = ({ onNavigate }: SyncUpdateButtonProps = {}) => {
   const { data } = useProfileQuery();
   const router = useInternalRouter();
   const { showRewardedAd, optInDialog } = useRewardedAdGate();
   const [isRequesting, setIsRequesting] = useState(false);
-  const [reloadPromptOpen, setReloadPromptOpen] = useState(false);
   const parsedLastSyncedAt = data.lastSyncedAt ? parseISO(data.lastSyncedAt) : null;
   const formattedLastSyncedAt =
     parsedLastSyncedAt && isValid(parsedLastSyncedAt) ? format(parsedLastSyncedAt, 'yy년 M월 d일 HH:mm') : '';
 
-  const handleResyncLogin = async () => {
+  const handleResyncLogin = useCallback(async () => {
     track(EVENTS.HOME_UNIV_RESYNC_BTN_TAP);
     // 앱(웹뷰): 네이티브에 위임 — 광고는 네이티브 AdMob 책임이라 여기선 끼우지 않는다.
     if (onNavigate) {
@@ -45,10 +49,11 @@ const SyncUpdateButton = ({ onNavigate }: SyncUpdateButtonProps = {}) => {
       if (result === 'dismissed') {
         return;
       }
-      // exhausted: 이 페이지에서 광고 이미 소진(GPT 페이지당 1개) → 우회 방지 위해 진행하지 않고
-      //            새로고침 안내(reload 시 새 광고 1개 재장전).
+      // exhausted: 이 페이지에서 광고 이미 소진(GPT 페이지당 1개) → 우회 방지 + 수동 새로고침 제거 위해
+      //            의도를 기억하고 자동 reload → 재로드 후 아래 useEffect 가 광고 흐름을 자동 재개.
       if (result === 'exhausted') {
-        setReloadPromptOpen(true);
+        sessionStorage.setItem(RESUME_AD_KEY, '1');
+        window.location.reload();
         return;
       }
       // granted(시청 완료) | unavailable(광고 자체가 없음) → 진행.
@@ -56,7 +61,20 @@ const SyncUpdateButton = ({ onNavigate }: SyncUpdateButtonProps = {}) => {
     } finally {
       setIsRequesting(false);
     }
-  };
+  }, [onNavigate, isRequesting, showRewardedAd, router]);
+
+  // 자동 재개: exhausted 로 reload 된 경우, 재로드 후 광고 흐름을 한 번 자동 시작(수동 새로고침 불필요).
+  // 플래그를 즉시 지워 멱등 — handleResyncLogin 재생성으로 effect 가 재실행돼도 1회만 동작.
+  // 앱 경로(onNavigate)에선 자동 재개하지 않는다(웹 전용).
+  useEffect(() => {
+    if (typeof window === 'undefined' || onNavigate) {
+      return;
+    }
+    if (sessionStorage.getItem(RESUME_AD_KEY) === '1') {
+      sessionStorage.removeItem(RESUME_AD_KEY);
+      void handleResyncLogin();
+    }
+  }, [handleResyncLogin, onNavigate]);
 
   return (
     <>
@@ -70,15 +88,6 @@ const SyncUpdateButton = ({ onNavigate }: SyncUpdateButtonProps = {}) => {
         <Icon name="refresh" size={16} />
       </button>
       <ConfirmDialog {...optInDialog} />
-      <ConfirmDialog
-        isOpen={reloadPromptOpen}
-        title="광고 시청이 필요해요"
-        message={'학업 정보 업데이트는 광고 시청 후 진행돼요.\n새로고침하고 다시 시도해주세요.'}
-        confirmText="새로고침"
-        cancelText="닫기"
-        onConfirm={() => window.location.reload()}
-        onClose={() => setReloadPromptOpen(false)}
-      />
     </>
   );
 };
