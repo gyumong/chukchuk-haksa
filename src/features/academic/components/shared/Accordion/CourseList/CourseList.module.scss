@@ -10,21 +10,30 @@
 
 .courseItem {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 26px;
+  // 과목명이 2~3줄로 길어져도 우측 메타(학기/학점/등급)는 첫 줄에 top 정렬.
+  align-items: flex-start;
+  // 과목명 영역 ↔ 학점/등급 묶음 사이 8px (긴 과목명에서 space-between 이 0으로 붙던 것 방지).
+  gap: spacing.$space-8;
+  // 한 줄이면 기존 26px 유지, 여러 줄이면 늘어남.
+  min-height: 26px;
 }
 
 .courseInfo {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: spacing.$space-8;
+  // 남는 가로폭을 차지해 학점/등급을 우측으로 밀고, min-width:0 으로 과목명 줄바꿈 허용.
+  flex: 1;
+  min-width: 0;
 }
 
 .courseName {
   @include typography.body-md;
   @include typography.font-weight-bold;
   color: color.$black-100;
+  // 긴 과목명을 여러 줄로 줄바꿈 (flex 자식이라 min-width:0 필요).
+  min-width: 0;
+  overflow-wrap: break-word;
 
   .completed & {
     color: color.$white;
@@ -35,6 +44,9 @@
   @include typography.body-sm;
   @include typography.font-weight-medium;
   color: color.$gray-100;
+  // 과목명이 길어도 학기 라벨은 줄이지 않고 첫 줄에 유지.
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 // 선택교양(선교) 과목의 세부 영역 표시 ("{liberalAreaCode}영역"). 학기 텍스트와 동일 톤.
@@ -43,12 +55,16 @@
   @include typography.font-weight-medium;
 
   color: color.$gray-100;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .courseGrade {
   display: flex;
-  align-items: center;
+  // 첫 줄에 top 정렬 + 묶음(학점·등급) 축소 금지로 항상 한 줄 유지.
+  align-items: flex-start;
   gap: spacing.$space-8;
+  flex-shrink: 0;
 }
 
 .credits {
