@@ -1,0 +1,55 @@
+@use '@/styles/color' as colors;
+@use '@/styles/radius' as radius;
+@use '@/styles/spacing' as spacing;
+
+.page {
+  position: relative;
+  min-height: 100dvh;
+  background: colors.$black-100;
+}
+
+.result {
+  position: fixed;
+  right: spacing.$space-20;
+  bottom: spacing.$space-20;
+  z-index: 10;
+  width: min(440px, calc(100% - 40px));
+  max-height: 50dvh;
+  padding: spacing.$space-16;
+  overflow: auto;
+  color: colors.$black-100;
+  background: colors.$white;
+  border: 1px solid colors.$gray-200;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  @include radius.radius-md;
+
+  pre {
+    margin-top: spacing.$space-12;
+    overflow: auto;
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+
+  p {
+    margin-top: spacing.$space-12;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+.resultHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: spacing.$space-12;
+
+  button {
+    padding: spacing.$space-4 spacing.$space-8;
+    color: colors.$gray-500;
+    background: colors.$white;
+    border: 1px solid colors.$gray-200;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+}
