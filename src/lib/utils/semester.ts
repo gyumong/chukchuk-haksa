@@ -89,6 +89,34 @@ export function getSemesterDisplay(semesterCode: number): string {
 }
 
 /**
+ * 학기 코드를 짧은 표시용 라벨로 변환 (throw 없이 안전).
+ * 백엔드가 raw 코드(10/15/20/25)로 내려주는 학기를 화면 표기용 1/2/여름/겨울 로 매핑.
+ * 알 수 없는 코드는 렌더가 깨지지 않도록 원본 숫자를 문자열로 그대로 반환한다.
+ * @param semesterCode 학기 코드 (10, 15, 20, 25)
+ * @returns 짧은 학기 라벨 ('1', '2', '여름', '겨울')
+ *
+ * @example
+ * getSemesterShortLabel(10) // '1'
+ * getSemesterShortLabel(20) // '2'
+ * getSemesterShortLabel(15) // '여름'
+ * getSemesterShortLabel(25) // '겨울'
+ */
+export function getSemesterShortLabel(semesterCode: number): string {
+  switch (semesterCode) {
+    case 10:
+      return '1';
+    case 15:
+      return '여름';
+    case 20:
+      return '2';
+    case 25:
+      return '겨울';
+    default:
+      return String(semesterCode);
+  }
+}
+
+/**
  * 정규학기 여부 확인
  * @param semesterCode 학기 코드
  * @returns 정규학기 여부
