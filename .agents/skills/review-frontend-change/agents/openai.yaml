@@ -1,0 +1,4 @@
+interface:
+  display_name: "프론트엔드 다관점 리뷰"
+  short_description: "프론트엔드 변경을 다관점 검토하고 P2까지 수정"
+  default_prompt: "Use $review-frontend-change to review the current frontend changes and resolve findings through P2."

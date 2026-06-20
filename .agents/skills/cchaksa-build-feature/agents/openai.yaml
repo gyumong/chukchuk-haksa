@@ -1,0 +1,4 @@
+interface:
+  display_name: "척척학사 기능 구현"
+  short_description: "척척학사 기능을 저장소 규칙에 맞게 구현하고 검증"
+  default_prompt: "Use $cchaksa-build-feature to implement this feature according to the repository architecture and verification rules."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR 생성"
+  short_description: "변경사항을 검증하고 이해하기 쉬운 PR을 생성"
+  default_prompt: "Use $create-pr to verify the current branch and create a clear pull request for the team."

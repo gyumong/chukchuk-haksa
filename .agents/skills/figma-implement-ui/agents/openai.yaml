@@ -1,0 +1,4 @@
+interface:
+  display_name: "Figma UI 구현"
+  short_description: "Figma를 토큰·반응형·스크린샷 기준으로 정확히 구현"
+  default_prompt: "Use $figma-implement-ui to implement this Figma screen accurately in the current codebase."
