@@ -49,6 +49,7 @@ yarn-error.log*
 docs/*
 !docs/mpa-school-link-handoff.md
 !docs/playwright-e2e-plan.md
+!docs/e2e-backend-request.md
 
 # reversible-deletion trash (move target instead of permanent rm)
 .trash/
