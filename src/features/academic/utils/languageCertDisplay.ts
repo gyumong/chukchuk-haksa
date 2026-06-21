@@ -1,8 +1,11 @@
 import type { Requirement } from '@/shared/api/data-contracts';
 
+type RequirementTestType = NonNullable<Requirement['testType']>;
+
 // 시험 종류 코드 → 표시 라벨. 백엔드는 testType 코드만 내려주고 표시 라벨은 프론트에서 매핑한다.
+// 키를 Requirement['testType'] 계약으로 제한해 오타·비의도 키를 컴파일 타임에 차단한다.
 // (TORFL_FLEX 등 일부 라벨은 실제 응답 확인 후 디자인과 맞춰 조정 필요)
-export const TEST_TYPE_LABEL: Record<string, string> = {
+export const TEST_TYPE_LABEL: Partial<Record<RequirementTestType, string>> = {
   TOEIC: 'TOEIC',
   TOEFL_IBT: 'TOEFL (IBT)',
   TEPS: 'TEPS',

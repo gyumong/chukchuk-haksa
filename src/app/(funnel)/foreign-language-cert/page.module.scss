@@ -8,6 +8,7 @@
   display: flex;
   flex-direction: column;
   @include utilities.funnel-page-spacing;
+
   // 고정 '다음' 버튼(fixed) 뒤로 마지막 카드가 가리지 않도록 하단 여유 확보.
   padding-bottom: calc(spacing.$space-66 + spacing.$space-48);
 }
