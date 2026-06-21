@@ -1,0 +1,241 @@
+@use '@/styles/color' as colors;
+@use '@/styles/spacing' as spacing;
+@use '@/styles/typography' as typography;
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100dvh;
+  padding: 85px 0 spacing.$space-24;
+  color: colors.$white;
+  background: colors.$black-100;
+}
+
+.introCard {
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 40px);
+  max-width: 375px;
+  min-height: 633px;
+  padding: 0;
+  overflow: hidden;
+  color: inherit;
+  text-align: left;
+  background: colors.$white;
+  border: 0;
+  border-radius: 18px;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid colors.$purple-200;
+    outline-offset: 3px;
+  }
+}
+
+.introHeader {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: center;
+  width: 100%;
+  min-height: 196px;
+  padding-top: spacing.$space-24;
+  overflow: hidden;
+  text-align: center;
+  background: colors.$white;
+
+  &::before {
+    position: absolute;
+    top: -52px;
+    left: 50%;
+    width: 557px;
+    height: 248px;
+    content: '';
+    background: linear-gradient(148deg, #05040c 8%, #171130 58%, #4c3c9b 118%);
+    border-radius: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.eyeSlot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 88px;
+}
+
+.eyes {
+  width: 104px;
+  height: auto;
+}
+
+.courseName {
+  position: relative;
+  z-index: 1;
+  max-width: calc(100% - 40px);
+  overflow: hidden;
+  font-family: var(--paperlogy-font);
+  font-size: 24px;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.courseMeta {
+  position: relative;
+  z-index: 1;
+  margin-top: spacing.$space-4;
+  color: colors.$gray-300;
+  @include typography.body-xs;
+  @include typography.font-weight-semibold;
+}
+
+.introBody {
+  position: relative;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  width: 100%;
+  min-height: 335px;
+  padding: spacing.$space-12 spacing.$space-24 0;
+  color: colors.$gray-200;
+}
+
+.fieldLabel,
+.reviewLabel {
+  display: block;
+  margin-bottom: spacing.$space-6;
+  color: colors.$gray-200;
+  @include typography.body-xs;
+  @include typography.font-weight-extrabold;
+}
+
+.disabledTagGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.disabledTag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 45px;
+  padding: spacing.$space-8;
+  color: colors.$gray-200;
+  border: 1px solid colors.$gray-300;
+  border-radius: 6px;
+  @include typography.body-sm-design;
+  @include typography.font-weight-extrabold;
+  text-align: center;
+}
+
+.tapGuide {
+  position: absolute;
+  z-index: 2;
+  top: 86px;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: colors.$black-100;
+  transform: translateX(-50%);
+}
+
+.pointer {
+  width: 76px;
+  height: 76px;
+}
+
+.tapLabel {
+  width: max-content;
+  margin-top: -2px;
+  font-family: var(--suit-font);
+  font-size: 18px;
+  line-height: 1.5;
+  font-weight: 800;
+}
+
+.reviewLabel {
+  margin-top: spacing.$space-18;
+}
+
+.disabledReview {
+  min-height: 62px;
+  padding: spacing.$space-8 spacing.$space-12;
+  color: colors.$gray-200;
+  border: 1px solid colors.$gray-300;
+  border-radius: 8px;
+  @include typography.body-xs;
+  @include typography.font-weight-medium;
+}
+
+.disabledNext {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+  color: colors.$gray-100;
+  background: colors.$gray-200;
+  border-radius: 10px;
+  @include typography.body-md;
+  @include typography.font-weight-semibold;
+}
+
+.introActions {
+  flex: 0 0 auto;
+  margin-top: spacing.$space-28;
+  padding: 0 spacing.$space-24 spacing.$space-20;
+  background: colors.$white;
+}
+
+.skipArea {
+  margin-top: spacing.$space-16;
+  color: colors.$gray-300;
+  text-align: center;
+  font-family: var(--suit-font);
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.skipButton {
+  color: inherit;
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid colors.$white;
+    outline-offset: 2px;
+  }
+}
+
+@media (max-height: 740px) {
+  .intro {
+    padding-top: spacing.$space-24;
+  }
+}
+
+@media (max-width: 360px) {
+  .introCard {
+    width: calc(100% - 24px);
+  }
+
+  .introBody {
+    padding-right: spacing.$space-16;
+    padding-left: spacing.$space-16;
+  }
+
+  .introActions {
+    padding-right: spacing.$space-16;
+    padding-left: spacing.$space-16;
+  }
+}

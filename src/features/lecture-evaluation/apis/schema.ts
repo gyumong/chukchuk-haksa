@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import { LECTURE_EVALUATION_TAGS } from '../types';
+import { LECTURE_EVALUATION_STATUSES, LECTURE_EVALUATION_TAGS } from '../types';
 
 export const LectureEvaluationTagSchema = z.enum(LECTURE_EVALUATION_TAGS);
+export const LectureEvaluationStatusSchema = z.enum(LECTURE_EVALUATION_STATUSES);
 
 export const LectureEvaluationGradeSchema = z.object({
   courseName: z.string(),
@@ -16,27 +17,27 @@ export const LectureEvaluationGradeSchema = z.object({
   liberalAreaCode: z.number().optional(),
 });
 
-export const LectureEvaluationRequiredSchema = z
+export const LectureEvaluationStatusResponseSchema = z
   .object({
-    lectureEvaluationRequired: z.boolean(),
+    evaluationStatus: LectureEvaluationStatusSchema,
     year: z.number(),
     semester: z.number(),
     grades: z.array(LectureEvaluationGradeSchema),
   })
   .superRefine((value, context) => {
-    if (!value.lectureEvaluationRequired && value.grades.length > 0) {
+    if (value.evaluationStatus !== 'PENDING' && value.grades.length > 0) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['grades'],
-        message: '강의평가가 필요하지 않은 응답의 grades는 비어 있어야 합니다.',
+        message: 'PENDING이 아닌 강의평가 상태의 grades는 비어 있어야 합니다.',
       });
     }
 
-    if (value.lectureEvaluationRequired && value.grades.length === 0) {
+    if (value.evaluationStatus === 'PENDING' && value.grades.length === 0) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['grades'],
-        message: '강의평가가 필요한 응답에는 평가 대상 과목이 있어야 합니다.',
+        message: 'PENDING 상태에는 평가 대상 과목이 있어야 합니다.',
       });
     }
 
@@ -52,12 +53,19 @@ export const LectureEvaluationRequiredSchema = z
 export const SubmitLectureEvaluationsRequestSchema = z.object({
   year: z.number(),
   semester: z.number(),
-  evaluations: z.array(
-    z.object({
-      courseId: z.number(),
-      professorId: z.number(),
-      selectedTags: z.array(LectureEvaluationTagSchema),
-      review: z.string().max(2000).optional(),
-    })
-  ),
+  evaluations: z
+    .array(
+      z.object({
+        courseId: z.number(),
+        professorId: z.number(),
+        selectedTags: z.array(LectureEvaluationTagSchema),
+        review: z.string().max(2000).optional(),
+      })
+    )
+    .min(1),
+});
+
+export const SkipLectureEvaluationRequestSchema = z.object({
+  year: z.number(),
+  semester: z.number(),
 });

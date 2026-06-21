@@ -42,11 +42,11 @@ describe('lecture evaluation draft', () => {
 
   it('태그를 복수 선택하고 다시 누르면 선택 해제한다', () => {
     const initial = createEvaluationDrafts(grades)[0];
-    const selected = toggleEvaluationTag(toggleEvaluationTag(initial, 'LOW_HOMEWORK'), 'INTERESTING_CLASS');
+    const selected = toggleEvaluationTag(toggleEvaluationTag(initial, 'LOW_HOMEWORK'), 'INTERESTING_LECTURE');
     const deselected = toggleEvaluationTag(selected, 'LOW_HOMEWORK');
 
-    expect(selected.selectedTags).toEqual(['LOW_HOMEWORK', 'INTERESTING_CLASS']);
-    expect(deselected.selectedTags).toEqual(['INTERESTING_CLASS']);
+    expect(selected.selectedTags).toEqual(['LOW_HOMEWORK', 'INTERESTING_LECTURE']);
+    expect(deselected.selectedTags).toEqual(['INTERESTING_LECTURE']);
   });
 
   it('후기는 최대 2,000자로 제한한다', () => {

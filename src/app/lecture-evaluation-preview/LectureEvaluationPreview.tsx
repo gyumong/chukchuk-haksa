@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { LectureEvaluationForm } from '@/features/lecture-evaluation/components';
+import { LectureEvaluationIntro } from '@/features/lecture-evaluation/components/LectureEvaluationIntro/LectureEvaluationIntro';
 import type { LectureEvaluationGrade, SubmitLectureEvaluationsRequest } from '@/features/lecture-evaluation/types';
 import styles from './page.module.scss';
 
@@ -43,6 +44,7 @@ const MOCK_GRADES: LectureEvaluationGrade[] = [
 ];
 
 export default function LectureEvaluationPreview() {
+  const [isIntroOpen, setIsIntroOpen] = useState(true);
   const [submittedRequest, setSubmittedRequest] = useState<SubmitLectureEvaluationsRequest | null>(null);
   const [isSkipped, setIsSkipped] = useState(false);
 
@@ -58,13 +60,17 @@ export default function LectureEvaluationPreview() {
 
   return (
     <main className={styles.page}>
-      <LectureEvaluationForm
-        year={2026}
-        semester={10}
-        grades={MOCK_GRADES}
-        onSubmit={handleSubmit}
-        onSkip={handleSkip}
-      />
+      {isIntroOpen ? (
+        <LectureEvaluationIntro grade={MOCK_GRADES[0]} onOpen={() => setIsIntroOpen(false)} onSkip={handleSkip} />
+      ) : (
+        <LectureEvaluationForm
+          year={2026}
+          semester={10}
+          grades={MOCK_GRADES}
+          onSubmit={handleSubmit}
+          onSkip={handleSkip}
+        />
+      )}
 
       {(submittedRequest || isSkipped) && (
         <aside className={styles.result} aria-live="polite">
@@ -81,7 +87,7 @@ export default function LectureEvaluationPreview() {
             </button>
           </div>
           {submittedRequest && <pre>{JSON.stringify(submittedRequest, null, 2)}</pre>}
-          {isSkipped && <p>현재는 미확정 동작이므로 상태 저장이나 화면 이동을 수행하지 않습니다.</p>}
+          {isSkipped && <p>개발용 미리보기에서는 API를 호출하지 않고 건너뛰기 클릭만 확인합니다.</p>}
         </aside>
       )}
     </main>

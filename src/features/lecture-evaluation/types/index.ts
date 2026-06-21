@@ -1,15 +1,19 @@
 export const LECTURE_EVALUATION_TAGS = [
   'LOW_HOMEWORK',
-  'INTERESTING_CLASS',
   'LOW_TEAM_PROJECT',
-  'EXAM_REPLACED_BY_HOMEWORK',
   'ONLINE_EXAM',
-  'PASS_FAIL',
-  'ABSOLUTE_GRADING',
+  'EXAM_REPLACED_BY_HOMEWORK',
+  'INTERESTING_LECTURE',
+  'INFORMATIVE_LECTURE',
+  'ABSOLUTE_EXAM',
   'EASY_GRADE',
 ] as const;
 
 export type LectureEvaluationTag = (typeof LECTURE_EVALUATION_TAGS)[number];
+
+export const LECTURE_EVALUATION_STATUSES = ['NOT_RELEASED', 'PENDING', 'SKIPPED', 'COMPLETED'] as const;
+
+export type LectureEvaluationStatus = (typeof LECTURE_EVALUATION_STATUSES)[number];
 
 export interface LectureEvaluationGrade {
   courseName: string;
@@ -24,11 +28,16 @@ export interface LectureEvaluationGrade {
   liberalAreaCode?: number;
 }
 
-export interface LectureEvaluationRequired {
-  lectureEvaluationRequired: boolean;
+export interface LectureEvaluationStatusResponse {
+  evaluationStatus: LectureEvaluationStatus;
   year: number;
   semester: number;
   grades: LectureEvaluationGrade[];
+}
+
+export interface SkipLectureEvaluationRequest {
+  year: number;
+  semester: number;
 }
 
 export interface LectureEvaluationDraft {
