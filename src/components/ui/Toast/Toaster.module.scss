@@ -1,0 +1,59 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/radius.scss' as radius;
+@use '@/styles/device.scss' as device;
+
+.viewport {
+  position: fixed;
+  left: 50%;
+  bottom: calc(#{spacing.$space-32} + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+
+  // ConfirmDialog overlay(1000) 등 page 내 fixed 요소보다 위에 떠야 함.
+  z-index: 2000;
+
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-8;
+
+  width: 100%;
+  max-width: 360px;
+  padding: 0 spacing.$space-24;
+
+  // 토스트 자체만 포인터 이벤트를 받고, 뒤 화면 조작은 막지 않는다.
+  pointer-events: none;
+
+  @include device.medium-expanded {
+    max-width: 400px;
+  }
+}
+
+.toast {
+  pointer-events: auto;
+  padding: spacing.$space-12 spacing.$space-16;
+
+  background-color: rgba(0, 0, 0, 0.85);
+  color: color.$white;
+  text-align: center;
+  white-space: pre-line;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+  @include radius.radius-md;
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+
+  animation: toast-in 200ms ease-out;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

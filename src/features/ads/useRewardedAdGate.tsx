@@ -200,9 +200,9 @@ export function useRewardedAdGate() {
 
   const optInDialog = {
     isOpen,
-    title: '광고 시청 후 업데이트',
-    message: '짧은 광고를 끝까지 본 뒤\n최신 학업 정보로 업데이트돼요.',
-    confirmText: '광고 보고 업데이트',
+    title: '안내',
+    message: '척척학사를 위한 짧은 광고가 재생된 후,\n최신 학업 정보 업데이트 화면으로 이동합니다.',
+    confirmText: '확인',
     cancelText: '취소',
     onConfirm: acceptOptIn,
     onClose: declineOptIn,

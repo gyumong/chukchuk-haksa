@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { format } from 'date-fns/format';
 import { isValid } from 'date-fns/isValid';
 import { parseISO } from 'date-fns/parseISO';
-import { Icon } from '@/components/ui';
+import { Icon, showToast } from '@/components/ui';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { ROUTES } from '@/constants';
 import { useRewardedAdGate } from '@/features/ads/useRewardedAdGate';
@@ -56,7 +56,13 @@ const SyncUpdateButton = ({ onNavigate }: SyncUpdateButtonProps = {}) => {
         window.location.reload();
         return;
       }
-      // granted(시청 완료) | unavailable(광고 자체가 없음) → 진행.
+      // granted(시청 완료) → 토스트 없이 바로 진행.
+      // unavailable: 광고 매체가 광고를 안 주거나(no-fill) 네트워크 문제 등으로 노출 실패 → 막을 수 없으니
+      //              안내 토스트를 띄우고 학업 정보 업데이트 화면으로 진행. 토스트는 전역(루트 레이아웃)
+      //              이라 화면 전환 후에도 잠시 유지된다.
+      if (result === 'unavailable') {
+        showToast('지금은 광고가 없어 바로 학업 정보 업데이트 화면으로 이동합니다.');
+      }
       router.push(ROUTES.RESYNC.LOGIN);
     } finally {
       setIsRequesting(false);
