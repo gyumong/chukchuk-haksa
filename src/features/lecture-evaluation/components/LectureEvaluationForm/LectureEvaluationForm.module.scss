@@ -13,6 +13,7 @@
 }
 
 .cardWrapper {
+  view-transition-name: lecture-evaluation-card;
   display: flex;
   flex-direction: column;
   width: calc(100% - 40px);
@@ -21,6 +22,7 @@
   overflow: hidden;
   background: colors.$white;
   border-radius: 18px;
+  animation: card-enter 750ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .actions {
@@ -83,5 +85,34 @@
   .actions {
     padding-right: spacing.$space-16;
     padding-left: spacing.$space-16;
+  }
+}
+
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+    filter: brightness(1.18) saturate(1.08);
+  }
+
+  68% {
+    transform: translateY(-1px) scale(1.006);
+    filter: brightness(1.03);
+  }
+
+  to {
+    filter: none;
+  }
+}
+
+@supports (view-transition-name: none) {
+  .cardWrapper {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardWrapper {
+    animation: none;
   }
 }

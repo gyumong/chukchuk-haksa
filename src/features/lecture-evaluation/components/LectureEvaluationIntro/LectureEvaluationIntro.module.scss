@@ -14,6 +14,8 @@
 }
 
 .introCard {
+  position: relative;
+  view-transition-name: lecture-evaluation-card;
   display: flex;
   flex-direction: column;
   width: calc(100% - 40px);
@@ -32,6 +34,80 @@
     outline: 2px solid colors.$purple-200;
     outline-offset: 3px;
   }
+
+  &:active {
+    transform: scale(0.99);
+  }
+
+  &::after {
+    position: absolute;
+    z-index: 5;
+    inset: 0;
+    pointer-events: none;
+    content: '';
+    background:
+      radial-gradient(circle at 50% 34%, rgb(255 255 255 / 90%) 0, rgb(255 255 255 / 0%) 42%),
+      linear-gradient(115deg, transparent 28%, rgb(255 255 255 / 85%) 48%, transparent 68%);
+    opacity: 0;
+    transform: translateX(-80%);
+  }
+}
+
+.highGrade {
+  &::before {
+    position: absolute;
+    z-index: 4;
+    inset: -30%;
+    pointer-events: none;
+    content: '';
+    background:
+      radial-gradient(circle at 50% 30%, rgb(255 226 128 / 0%) 0 18%, rgb(255 159 92 / 0%) 42%),
+      conic-gradient(
+        from 0deg at 50% 34%,
+        transparent,
+        rgb(255 238 170 / 0%),
+        transparent,
+        rgb(255 121 108 / 0%),
+        transparent
+      );
+    opacity: 0;
+  }
+}
+
+.opening {
+  animation: pack-charge 750ms cubic-bezier(0.4, 0, 0.2, 1) both;
+
+  &::after {
+    animation: foil-flash 750ms ease-in-out both;
+  }
+
+  .tapGuide {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.9);
+  }
+}
+
+.highGrade.opening {
+  z-index: 1;
+  animation: high-grade-heartbeat 1250ms linear both;
+  box-shadow:
+    0 0 0 1px rgb(255 222 137 / 60%),
+    0 0 36px rgb(255 83 75 / 55%);
+
+  &::before {
+    animation: high-grade-aura 1250ms ease-in-out both;
+  }
+
+  &::after {
+    animation: high-grade-flash 1250ms ease-in-out both;
+    background:
+      radial-gradient(circle at 50% 34%, rgb(255 247 201 / 100%) 0, rgb(255 148 112 / 45%) 20%, transparent 48%),
+      linear-gradient(115deg, transparent 20%, rgb(255 246 198 / 100%) 48%, transparent 72%);
+  }
+}
+
+.highGrade.opening + .skipArea {
+  animation: surroundings-dim 1250ms ease-in-out both;
 }
 
 .introHeader {
@@ -146,11 +222,15 @@
   align-items: center;
   color: colors.$black-100;
   transform: translateX(-50%);
+  transition:
+    opacity 100ms ease-out,
+    transform 100ms ease-out;
 }
 
 .pointer {
   width: 76px;
   height: 76px;
+  animation: tap-hint 1.8s ease-in-out infinite;
 }
 
 .tapLabel {
@@ -238,4 +318,210 @@
     padding-right: spacing.$space-16;
     padding-left: spacing.$space-16;
   }
+}
+
+@keyframes tap-hint {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  72% {
+    transform: translateY(2px) scale(0.94);
+  }
+
+  84% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pack-charge {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+
+  32% {
+    transform: scale(0.965);
+  }
+
+  68% {
+    transform: scale(0.985);
+    filter: brightness(1.12);
+  }
+
+  to {
+    transform: scale(1.015);
+    filter: brightness(1.28);
+  }
+}
+
+@keyframes high-grade-heartbeat {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+
+  14% {
+    transform: scale(0.975);
+  }
+
+  22% {
+    transform: scale(1.018);
+    filter: brightness(1.06);
+  }
+
+  38% {
+    transform: scale(0.968);
+  }
+
+  46% {
+    transform: scale(1.028);
+    filter: brightness(1.12) saturate(1.05);
+  }
+
+  58% {
+    transform: scale(0.97);
+  }
+
+  64% {
+    transform: scale(1.035);
+    filter: brightness(1.2) saturate(1.1);
+  }
+
+  72% {
+    transform: scale(0.965);
+  }
+
+  77% {
+    transform: scale(1.045);
+    filter: brightness(1.3) saturate(1.15);
+  }
+
+  84% {
+    transform: scale(0.99);
+    filter: brightness(0.9) saturate(0.95);
+  }
+
+  92% {
+    transform: scale(1.01);
+    filter: brightness(1.18) saturate(1.05);
+  }
+
+  to {
+    transform: scale(1.015);
+    filter: brightness(1.3) saturate(1.1);
+  }
+}
+
+@keyframes high-grade-aura {
+  0%,
+  18% {
+    opacity: 0;
+    transform: scale(0.7) rotate(0deg);
+  }
+
+  46% {
+    opacity: 0.25;
+  }
+
+  77% {
+    opacity: 0.72;
+    transform: scale(0.94) rotate(22deg);
+  }
+
+  90% {
+    opacity: 0.2;
+    transform: scale(0.94) rotate(22deg);
+  }
+
+  to {
+    opacity: 0.55;
+    transform: scale(1.12) rotate(36deg);
+  }
+}
+
+@keyframes high-grade-flash {
+  0%,
+  55% {
+    opacity: 0;
+    transform: translateX(-80%);
+  }
+
+  76% {
+    opacity: 0.35;
+  }
+
+  86%,
+  90% {
+    opacity: 0;
+    transform: translateX(-15%);
+  }
+
+  96% {
+    opacity: 1;
+    transform: translateX(24%) scale(1.08);
+  }
+
+  to {
+    opacity: 0.35;
+    transform: translateX(34%) scale(1.04);
+  }
+}
+
+@keyframes surroundings-dim {
+  0%,
+  35% {
+    opacity: 1;
+  }
+
+  84%,
+  94% {
+    opacity: 0.25;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes foil-flash {
+  0%,
+  28% {
+    opacity: 0;
+  }
+
+  62% {
+    opacity: 0.9;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(80%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .introCard {
+    animation: none;
+    transition: none;
+  }
+
+  .pointer {
+    animation: none;
+  }
+
+  .highGrade {
+    box-shadow: none;
+
+    &::before {
+      animation: none;
+    }
+  }
+
+  .highGrade.opening + .skipArea {
+    animation: none;
+  }
+
 }

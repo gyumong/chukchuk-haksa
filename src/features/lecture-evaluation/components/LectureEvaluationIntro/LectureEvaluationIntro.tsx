@@ -1,7 +1,9 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { LECTURE_EVALUATION_TAG_OPTIONS } from '../../constants/tags';
+import { startCardRevealTransition } from '../../utils/startCardRevealTransition';
 import styles from './LectureEvaluationIntro.module.scss';
 
 interface LectureEvaluationIntroProps {
@@ -10,6 +12,7 @@ interface LectureEvaluationIntroProps {
     professor: string;
     areaType: string;
     credits: number;
+    grade: string;
   };
   onOpen: () => void;
   onSkip: () => void;
@@ -17,13 +20,41 @@ interface LectureEvaluationIntroProps {
 }
 
 export function LectureEvaluationIntro({ grade, onOpen, onSkip, isSkipping = false }: LectureEvaluationIntroProps) {
+  const [isOpening, setIsOpening] = useState(false);
+  const isHighGrade = grade.grade === 'A+';
+
+  useEffect(() => {
+    if (!isOpening) {
+      return;
+    }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      onOpen();
+      return;
+    }
+
+    const timer = window.setTimeout(
+      () => startCardRevealTransition(onOpen),
+      isHighGrade ? 1250 : 750
+    );
+
+    return () => window.clearTimeout(timer);
+  }, [isHighGrade, isOpening, onOpen]);
+
+  const handleOpen = () => {
+    if (!isOpening) {
+      setIsOpening(true);
+    }
+  };
+
   return (
     <section className={styles.intro}>
       <button
         type="button"
-        className={styles.introCard}
+        className={`${styles.introCard} ${isHighGrade ? styles.highGrade : ''} ${isOpening ? styles.opening : ''}`}
         aria-label={`${grade.courseName} 성적 카드 열기`}
-        onClick={onOpen}
+        disabled={isOpening}
+        onClick={handleOpen}
       >
         <span className={styles.introHeader}>
           <span className={styles.eyeSlot}>
@@ -53,7 +84,7 @@ export function LectureEvaluationIntro({ grade, onOpen, onSkip, isSkipping = fal
             ))}
           </span>
 
-          <span className={styles.tapGuide}>
+          <span className={styles.tapGuide} aria-hidden={isOpening}>
             <Image
               className={styles.pointer}
               src="/images/lecture-evaluation/tap.png"
