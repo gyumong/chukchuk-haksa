@@ -199,6 +199,79 @@ export interface SuccessResponseMessageOnlyResponse {
   message?: string;
 }
 
+/** 강의평가 제출 응답 */
+export interface LectureEvaluationSubmitApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 메시지 응답 DTO */
+  data: MessageOnlyResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+export interface SubmitEvaluation {
+  /** @format int64 */
+  courseId: number;
+  /** @format int64 */
+  professorId: number;
+  selectedTags: (
+    | "LOW_HOMEWORK"
+    | "LOW_TEAM_PROJECT"
+    | "ONLINE_EXAM"
+    | "EXAM_REPLACED_BY_HOMEWORK"
+    | "INTERESTING_LECTURE"
+    | "INFORMATIVE_LECTURE"
+    | "ABSOLUTE_EXAM"
+    | "EASY_GRADE"
+  )[];
+  /**
+   * @minLength 0
+   * @maxLength 2000
+   */
+  review?: string;
+}
+
+export interface SubmitRequest {
+  /** @format int32 */
+  year: number;
+  /** @format int32 */
+  semester: number;
+  /**
+   * @maxItems 2147483647
+   * @minItems 1
+   */
+  evaluations: SubmitEvaluation[];
+}
+
+/** 강의평가 건너뛰기 응답 */
+export interface LectureEvaluationSkipApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 메시지 응답 DTO */
+  data: MessageOnlyResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+export interface SkipRequest {
+  /** @format int32 */
+  year: number;
+  /** @format int32 */
+  semester: number;
+}
+
 /** Refresh Response DTO */
 export interface RefreshResponse {
   /** 액세스 토큰 */
@@ -494,6 +567,77 @@ export interface SemesterSummaryResponse {
    * @example 92.4
    */
   percentile?: number | null;
+}
+
+/** 성적 카드 목록 */
+export interface GradeCard {
+  courseName?: string;
+  courseCode?: string;
+  /** @format int64 */
+  courseId?: number;
+  areaType?:
+    | "중핵"
+    | "기교"
+    | "선교"
+    | "소교"
+    | "전교"
+    | "전취"
+    | "전핵"
+    | "전선"
+    | "일선"
+    | "복선"
+    | "복핵"
+    | "복교"
+    | "기타";
+  /** @format int32 */
+  credits?: number;
+  professor?: string;
+  /** @format int64 */
+  professorId?: number;
+  grade?: string;
+  /** @format int32 */
+  score?: number;
+  /** @format int32 */
+  liberalAreaCode?: number;
+}
+
+/** 강의평가 상태 응답 */
+export interface LectureEvaluationRequiredApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 응답 데이터 */
+  data: RequiredResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+/** 응답 데이터 */
+export interface RequiredResponse {
+  /** 강의평가 상태 */
+  evaluationStatus?:
+    | "NOT_RELEASED"
+    | "PENDING"
+    | "SKIPPED"
+    | "COMPLETED"
+    | null;
+  /**
+   * 강의평가 대상 연도
+   * @format int32
+   */
+  year?: number;
+  /**
+   * 강의평가 대상 학기 코드
+   * @format int32
+   */
+  semester?: number;
+  /** 성적 카드 목록 */
+  grades?: GradeCard[];
 }
 
 /** 졸업 요건 영역별 이수 현황 */
@@ -932,6 +1076,10 @@ export type SetTargetGpaData = TargetGpaApiResponse;
 
 export type ResetStudentDataData = SuccessResponseMessageOnlyResponse;
 
+export type SubmitData = LectureEvaluationSubmitApiResponse;
+
+export type SkipData = LectureEvaluationSkipApiResponse;
+
 export type RefreshResponseData = RefreshTokenApiResponse;
 
 export type GetJobStatusData = PortalLinkJobStatusApiResponse;
@@ -949,6 +1097,8 @@ export type GetProfileData = StudentProfileApiResponse;
 export type GetSemesterRecordData = StudentSemesterListApiResponse;
 
 export type GetSemesterGradesData = SemesterGradesApiResponse;
+
+export type GetRequiredData = LectureEvaluationRequiredApiResponse;
 
 export type GetGraduationProgressData = GraduationProgressApiResponse;
 

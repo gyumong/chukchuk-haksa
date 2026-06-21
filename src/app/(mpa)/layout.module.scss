@@ -23,3 +23,7 @@
 .contentPlain {
   @include utilities.content-padding;
 }
+
+.contentFull {
+  flex: 1;
+}

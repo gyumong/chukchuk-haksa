@@ -10,6 +10,7 @@ import {
 } from '@/features/dashboard/components';
 import { useRefreshProfileOnVisible } from '@/features/dashboard/hooks/useRefreshProfileOnVisible';
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
+import { LectureEvaluationEntryGate } from '@/features/lecture-evaluation/components';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { navigateNative } from '@/lib/webview';
 import AsyncBoundary from '@/shared/components/AsyncBoundary';
@@ -36,25 +37,27 @@ const MpaHome = () => {
   // 하지 않고 isPortalLinked:false 로 응답해야 한다 — 동반 수정: src/app/api/session/route.ts)
   return (
     <ProtectedRoute requirePortalLinked={true} portalLinkRedirectTo={ROUTES.MPA.PORTAL_LOGIN}>
-      <AsyncBoundary>
-        <ProfileCard />
-      </AsyncBoundary>
-      <div className="gap-16"></div>
-      <AsyncBoundary>
-        <DashboardAcademicSummaryCard />
-      </AsyncBoundary>
-      <div className="gap-8"></div>
-      <AsyncBoundary>
-        <SyncUpdateButton onNavigate={goResync} />
-      </AsyncBoundary>
-      <div className="gap-18"></div>
-      <AsyncBoundary>
-        <GraduationRequirementCard onNavigate={goGraduation} />
-      </AsyncBoundary>
-      <div className="gap-8"></div>
-      <AsyncBoundary>
-        <DualMajorRequirementCard onNavigate={goGraduation} />
-      </AsyncBoundary>
+      <LectureEvaluationEntryGate evaluationRoute={ROUTES.MPA.LECTURE_EVALUATION}>
+        <AsyncBoundary>
+          <ProfileCard />
+        </AsyncBoundary>
+        <div className="gap-16"></div>
+        <AsyncBoundary>
+          <DashboardAcademicSummaryCard />
+        </AsyncBoundary>
+        <div className="gap-8"></div>
+        <AsyncBoundary>
+          <SyncUpdateButton onNavigate={goResync} />
+        </AsyncBoundary>
+        <div className="gap-18"></div>
+        <AsyncBoundary>
+          <GraduationRequirementCard onNavigate={goGraduation} />
+        </AsyncBoundary>
+        <div className="gap-8"></div>
+        <AsyncBoundary>
+          <DualMajorRequirementCard onNavigate={goGraduation} />
+        </AsyncBoundary>
+      </LectureEvaluationEntryGate>
     </ProtectedRoute>
   );
 };
