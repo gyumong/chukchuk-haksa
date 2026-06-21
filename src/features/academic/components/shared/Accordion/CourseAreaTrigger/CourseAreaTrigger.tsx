@@ -19,12 +19,18 @@ export default function CourseAreaTrigger({
       <div className={styles.info}>
         <span className={styles.title}>{title}</span>
         <span className={styles.credits}>
-          {currentCredits} / {requiredCredits}
           {requiredElectiveAreas ? (
-            <span className={styles.areaCount}>
-              {completedElectiveAreas ?? 0}개영역 / {requiredElectiveAreas}개영역
-            </span>
-          ) : null}
+            <>
+              {completedElectiveAreas ?? 0}개 영역 / {requiredElectiveAreas}개 영역
+              <span className={styles.areaCount}>
+                ({currentCredits}/{requiredCredits})
+              </span>
+            </>
+          ) : (
+            <>
+              {currentCredits} / {requiredCredits}
+            </>
+          )}
 
           {isCompleted && <Icon name="check-status-on" className={styles.checkIcon} size={18} />}
         </span>
