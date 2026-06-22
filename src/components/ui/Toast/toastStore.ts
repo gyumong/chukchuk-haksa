@@ -11,7 +11,11 @@ export interface ToastItem {
 type Listener = () => void;
 
 // 메시지를 읽을 시간 확보 + 화면 전환 직후에도 잠시 보이도록 기본값을 넉넉히 둔다.
-const DEFAULT_DURATION_MS = 3000;
+// (느린 사용자도 읽을 수 있게 4초 — 토스트는 화면 전환 후에도 유지되므로 목적지에서도 잠시 보인다.)
+const DEFAULT_DURATION_MS = 4000;
+
+// 동시에 쌓이는 토스트 상한. 초과 시 가장 오래된 것부터 버려 화면을 덮지 않게 한다.
+const MAX_TOASTS = 3;
 
 let toasts: ToastItem[] = [];
 const listeners = new Set<Listener>();
@@ -34,7 +38,8 @@ export const getToastsSnapshot = (): ToastItem[] => toasts;
 
 export const showToast = (message: string, duration: number = DEFAULT_DURATION_MS): number => {
   const id = nextId++;
-  toasts = [...toasts, { id, message, duration }];
+  const next = [...toasts, { id, message, duration }];
+  toasts = next.length > MAX_TOASTS ? next.slice(next.length - MAX_TOASTS) : next;
   emit();
   return id;
 };

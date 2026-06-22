@@ -30,7 +30,8 @@
 }
 
 .toast {
-  pointer-events: auto;
+  // 정보성 토스트는 뒤 화면 조작을 막지 않도록 클릭을 통과시킨다.
+  pointer-events: none;
   padding: spacing.$space-12 spacing.$space-16;
 
   background-color: rgba(0, 0, 0, 0.85);
@@ -55,5 +56,12 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+// 모션 최소화 선호 시 등장 애니메이션(장식)을 끈다.
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
   }
 }

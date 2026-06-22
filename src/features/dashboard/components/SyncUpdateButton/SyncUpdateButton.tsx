@@ -5,8 +5,9 @@ import clsx from 'clsx';
 import { format } from 'date-fns/format';
 import { isValid } from 'date-fns/isValid';
 import { parseISO } from 'date-fns/parseISO';
-import { Icon, showToast } from '@/components/ui';
+import { Icon } from '@/components/ui';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { showToast } from '@/components/ui/Toast';
 import { ROUTES } from '@/constants';
 import { useRewardedAdGate } from '@/features/ads/useRewardedAdGate';
 import { useProfileQuery } from '@/features/dashboard/apis/queries/useProfileQuery';
@@ -89,9 +90,12 @@ const SyncUpdateButton = ({ onNavigate }: SyncUpdateButtonProps = {}) => {
         className={clsx(styles.container, styles.text, '--body-sm-medium')}
         onClick={handleResyncLogin}
         disabled={isRequesting}
+        aria-busy={isRequesting}
       >
         {formattedLastSyncedAt ? `${formattedLastSyncedAt} 업데이트` : '정보 업데이트'}
-        <Icon name="refresh" size={16} />
+        <span className={clsx(styles.iconWrap, isRequesting && styles.spinning)}>
+          <Icon name="refresh" size={16} />
+        </span>
       </button>
       <ConfirmDialog {...optInDialog} />
     </>

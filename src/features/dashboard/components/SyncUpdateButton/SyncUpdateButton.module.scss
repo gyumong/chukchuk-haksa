@@ -11,3 +11,20 @@
 .text {
   color: colors.$gray-600;
 }
+
+.iconWrap {
+  display: inline-flex;
+  align-items: center;
+}
+
+// 광고 슬롯 준비(최대 5초)/요청 진행 동안 회전시켜 "처리 중"임을 알린다.
+// 로딩 피드백은 필수 정보이므로 prefers-reduced-motion 으로 끄지 않는다(대신 aria-busy 로도 전달).
+.spinning {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
