@@ -37,6 +37,12 @@ export function getEnvironment() {
  * API Base URL 가져오기 (환경변수 우선)
  */
 export function getApiBaseUrl() {
+  // Route Handler 등 서버 실행 경로는 비공개 서버 URL을 우선 사용한다.
+  // 로컬 브라우저는 CORS 중복 헤더를 피하기 위해 NEXT_PUBLIC_API_BASE_URL의 same-origin proxy를 사용한다.
+  if (typeof window === 'undefined' && process.env.DEV_SERVER_URL) {
+    return process.env.DEV_SERVER_URL;
+  }
+
   // 환경변수가 설정되어 있으면 사용
   if (process.env.NEXT_PUBLIC_API_BASE_URL) {
     return process.env.NEXT_PUBLIC_API_BASE_URL;
