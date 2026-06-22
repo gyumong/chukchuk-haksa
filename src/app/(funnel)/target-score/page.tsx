@@ -7,13 +7,8 @@ import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { useSetTargetGpaMutation } from '@/features/student/apis/queries/useSetTargetGpaMutation';
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
 import { EVENTS, track } from '@/lib/analytics';
-import { isInWebView, postBridgeMessage } from '@/lib/webview';
 import { FunnelHeadline, ScoreInput } from '../components';
 import styles from './page.module.scss';
-
-// MPA(webview) 진입의 첫 연동 완료 신호. 네이티브가 webview 닫고 dashboard 갱신.
-// 프로토콜: docs/mpa-school-link-handoff.md
-const BRIDGE_DONE_PORTAL_LINK = 'done:portal-link';
 
 export default function TargetScorePage() {
   const [score, setScore] = useState('3.5');
@@ -25,16 +20,9 @@ export default function TargetScorePage() {
     track(EVENTS.UNIV_SYNC_SET_GPA_BTN_TAP, { gpa });
     try {
       await mutation.mutateAsync(gpa);
-      if (isInWebView()) {
-        const posted = postBridgeMessage(BRIDGE_DONE_PORTAL_LINK);
-        if (!posted) {
-          // 브리지 송출 실패(race/예외) 시 사용자가 webview 에 정지하지 않도록
-          // 기존 브라우저 경로와 동일한 fallback 으로 이동. Sentry 캡쳐는 bridge.ts 내부.
-          router.push(`${ROUTES.MAIN}`);
-        }
-      } else {
-        router.push(`${ROUTES.MAIN}`);
-      }
+      // 학점 설정 후 외국어인증제도 확인 단계로 이동. webview 완료 신호(done:portal-link)는
+      // 마지막 단계인 외국어인증제도 화면에서 송출한다(브라우저·webview 공통).
+      router.push(`${ROUTES.FUNNEL.FOREIGN_LANGUAGE_CERT}`);
     } catch (error) {
       console.error('Failed to set target score:', error);
       alert(error instanceof Error ? error.message : '목표 학점 설정에 실패했습니다.');

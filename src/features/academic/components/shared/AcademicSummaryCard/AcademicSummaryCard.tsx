@@ -34,7 +34,14 @@ export default function AcademicSummaryCard({
       <div className={styles.statItem}>
         <span className={styles.label}>{classRank ? '석차' : '백분위'}</span>
         <span className={styles.value}>
-          {classRank ? `${classRank}/${totalStudents}` : `${percentile}%`}
+          {classRank ? (
+            <>
+              {classRank}
+              <span className={styles.rankDenominator}>/{totalStudents}</span>
+            </>
+          ) : (
+            percentile
+          )}
         </span>
       </div>
     </div>

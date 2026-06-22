@@ -7,6 +7,7 @@ export const ROUTES = {
     PORTAL_LOGIN: '/portal-login',
     SCRAPING: '/scraping',
     TARGET_SCORE: '/target-score',
+    FOREIGN_LANGUAGE_CERT: '/foreign-language-cert',
   },
   AUTH: {
     CALLBACK: '/auth/callback',
