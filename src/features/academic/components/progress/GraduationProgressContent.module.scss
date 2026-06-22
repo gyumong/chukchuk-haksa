@@ -5,9 +5,9 @@
   display: flex;
   flex-direction: column;
   padding: spacing.$space-20;
+  margin-bottom: spacing.$space-40;
 
   @include device.compact {
     padding: spacing.$space-16;
   }
-  margin-bottom: spacing.$space-40;
 }
