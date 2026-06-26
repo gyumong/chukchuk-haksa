@@ -63,6 +63,10 @@ jobs:
       # 환경 공통 (Variables 탭 값, Secret 아님)
       NEXT_PUBLIC_MAINTENANCE_MODE: ${{ vars.NEXT_PUBLIC_MAINTENANCE_MODE }}
       NEXT_PUBLIC_MAINTENANCE_MESSAGE: ${{ vars.NEXT_PUBLIC_MAINTENANCE_MESSAGE }}
+
+      # 광고 (GAM rewarded) 네트워크 코드 — 비밀 아님(클라 번들/광고요청에 노출). staging/prod 공통.
+      # rewarded 광고 단위 경로 `/<코드>/cchaksa_resync_rewarded` 구성에 사용(adUnits.ts). 미설정 시 광고 비활성.
+      NEXT_PUBLIC_GAM_NETWORK_CODE: '23358406176'
     steps:
       - name: Checkout
         uses: actions/checkout@v4

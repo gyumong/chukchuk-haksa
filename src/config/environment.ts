@@ -107,6 +107,11 @@ export const ENV = {
   // 에러 웹훅 (서버 전용 시크릿). 미설정 시 /api/client-error 가 no-op — Sentry 와 병행 sink.
   DISCORD_ERROR_WEBHOOK_URL: process.env.DISCORD_ERROR_WEBHOOK_URL ?? '',
 
+  // 광고 (Google Ad Manager) — rewarded 광고 단위 경로 `/<networkCode>/<code>` 구성용 네트워크 코드.
+  // 미설정 시 광고 비활성화 → showRewardedAd 가 'unavailable' 반환(광고 없이 정상 진행).
+  // NEXT_PUBLIC_* 라 클라 번들에 inline → CI 빌드 env 주입 필요(런타임 wrangler var 아님).
+  GAM_NETWORK_CODE: process.env.NEXT_PUBLIC_GAM_NETWORK_CODE ?? '',
+
   // Firebase RemoteConfig (Web 신설, prod 환경만 활성화)
   // 키 미설정 시 SDK init 자체를 silent skip — `useRemoteConfig` 가 defaultValue 그대로 반환.
   FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY ?? '',
