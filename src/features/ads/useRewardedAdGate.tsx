@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from 'react';
 import { captureException } from '@sentry/nextjs';
+import { EVENTS, track } from '@/lib/analytics';
 import { AD_UNITS } from './adUnits';
 
 // 광고 시청 결과.
@@ -159,6 +160,8 @@ export function useRewardedAdGate() {
               settle('unavailable');
             }
           };
+          // 광고 안내 팝업(opt-in 다이얼로그) 실제 노출 시점.
+          track(EVENTS.AD_CONFIRM_POPUP);
           setIsOpen(true);
         };
         const onGranted = (event: RewardedEvent) => {

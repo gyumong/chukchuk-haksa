@@ -4,14 +4,14 @@ import { useEffect, useRef } from 'react';
 import { setUser } from '@sentry/nextjs';
 import { FixedButton } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { useAuth } from '@/features/auth/contexts/AuthContext';
 import { usePortalLinkFailure, usePortalLinkJobPolling, usePortalLinkSummary } from '@/features/portal-link/hooks';
 import { clearRetry } from '@/features/portal-link/utils/credentialRetry';
-import { EVENTS, useTrackView } from '@/lib/analytics';
-import { useFunnelContext } from '../contexts';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
+import { EVENTS, track, useTrackView } from '@/lib/analytics';
 import ErrorScreen from '../components/ErrorScreen/ErrorScreen';
 import LoadingScreen from '../components/LoadingScreen/LoadingScreen';
+import { useFunnelContext } from '../contexts';
 import styles from './error.module.scss';
 
 const MISSING_JOB_MESSAGE = '연동 정보를 찾을 수 없습니다. 다시 시도해주세요.';
@@ -39,6 +39,7 @@ export default function ScrapingPage() {
     // 성공 판정(studentInfo)과 동일 신호로 맞춰, 성공이 확정되면 타임아웃 실패가 절대 안 뜨게 한다.
     recovered: Boolean(summaryData?.studentInfo),
     loginRoute: ROUTES.FUNNEL.PORTAL_LOGIN,
+    onFailure: reason => track(EVENTS.UNIV_SYNC_FAIL, { reason }),
   });
 
   useEffect(() => {

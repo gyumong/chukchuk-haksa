@@ -3,20 +3,21 @@
 import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { captureException } from '@sentry/nextjs';
+import { FunnelHeadline, SchoolCard } from '@/app/(funnel)/components';
+import styles from '@/app/resync/login/page.module.scss';
 import { FixedButton, TextField } from '@/components/ui';
+import { RESYNC_JOB_ID_KEY } from '@/constants/portal-link';
 import { ROUTES } from '@/constants/routes';
-import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { usePortalLinkMutation } from '@/features/portal-link/hooks';
 import { popRetry, stashAttemptUsername } from '@/features/portal-link/utils/credentialRetry';
 import { getMessageByErrorCode } from '@/features/portal-link/utils/errorMapping';
-import { RESYNC_JOB_ID_KEY } from '@/constants/portal-link';
-import { EVENTS, track } from '@/lib/analytics';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
+import { EVENTS, track, useTrackView } from '@/lib/analytics';
 import { ApiError } from '@/shared/api/errors';
 import { generateIdempotencyKey } from '@/shared/utils/idempotency';
-import { FunnelHeadline, SchoolCard } from '@/app/(funnel)/components';
-import styles from '@/app/resync/login/page.module.scss';
 
 export default function MpaResyncLogin() {
+  useTrackView(EVENTS.UNIV_RESYNC_LOGIN_VIEW);
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');

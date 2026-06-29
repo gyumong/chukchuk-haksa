@@ -2,17 +2,17 @@
 
 // /mpa/resync/scraping 과 동일 흐름. portal-login entry point 의 후행 페이지. 프로토콜: docs/mpa-school-link-handoff.md
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FixedButton } from '@/components/ui';
-import { ROUTES } from '@/constants/routes';
-import { useInternalRouter } from '@/hooks/useInternalRouter';
-import { usePortalLinkFailure, usePortalLinkJobPolling, usePortalLinkSummary } from '@/features/portal-link/hooks';
-import { clearRetry } from '@/features/portal-link/utils/credentialRetry';
-import { PORTAL_LOGIN_JOB_ID_KEY } from '@/constants/portal-link';
-import { EVENTS, useTrackView } from '@/lib/analytics';
-import { isInWebView, postBridgeMessage } from '@/lib/webview';
 import ErrorScreen from '@/app/(funnel)/components/ErrorScreen/ErrorScreen';
 import LoadingScreen from '@/app/(funnel)/components/LoadingScreen/LoadingScreen';
 import errorStyles from '@/app/resync/scraping/error.module.scss';
+import { FixedButton } from '@/components/ui';
+import { PORTAL_LOGIN_JOB_ID_KEY } from '@/constants/portal-link';
+import { ROUTES } from '@/constants/routes';
+import { usePortalLinkFailure, usePortalLinkJobPolling, usePortalLinkSummary } from '@/features/portal-link/hooks';
+import { clearRetry } from '@/features/portal-link/utils/credentialRetry';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
+import { EVENTS, track, useTrackView } from '@/lib/analytics';
+import { isInWebView, postBridgeMessage } from '@/lib/webview';
 
 // 잡 완료 시 네이티브로 보내는 신호. webview 환경 아니면 fallback 으로 main 이동.
 // 프로토콜 합의는 docs/mpa-school-link-handoff.md 참조.
@@ -80,6 +80,7 @@ export default function MpaPortalLoginScrapingPage() {
     recovered: isSucceeded,
     loginRoute: ROUTES.MPA.PORTAL_LOGIN,
     onCleanup: clearJobId,
+    onFailure: reason => track(EVENTS.UNIV_SYNC_FAIL, { reason }),
   });
 
   const handleRetry = () => {
