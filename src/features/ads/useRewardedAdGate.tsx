@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { captureException } from '@sentry/nextjs';
 import { EVENTS, track } from '@/lib/analytics';
 import { AD_UNITS } from './adUnits';
@@ -188,6 +188,15 @@ export function useRewardedAdGate() {
         googletag.display(definedSlot);
       });
     });
+  }, []);
+
+  // 진행 중인 광고 플로우가 settle 되기 전에 컴포넌트가 unmount 되면 타이머/pubads 리스너/슬롯이 누수된다.
+  // settleRef 는 현재 플로우의 정리 경로(clearTimeout + removeEventListener + destroySlots)를 가리키므로,
+  // 언마운트 시 dismissed 로 정리해 orphan 상태가 남지 않게 한다.
+  useEffect(() => {
+    return () => {
+      settleRef.current?.('dismissed');
+    };
   }, []);
 
   // 동의: 광고 노출. 결과(granted/dismissed)는 GPT 이벤트로 settle.

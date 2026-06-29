@@ -10,6 +10,10 @@
 // /me/** 는 테스트 계정의 raw accessToken 을 Bearer 로 사용한다.
 import { ADMIN_BASE } from './config';
 
+// dev 백엔드가 연결만 잡고 응답을 멈추는 경우, 바깥쪽 Playwright timeout 까지 가지 않고
+// fixture 단계에서 빠르게 실패하도록 공통 request timeout 을 건다.
+const ADMIN_REQUEST_TIMEOUT_MS = 15000;
+
 export type Role = 'linked' | 'unlinked';
 
 export interface TestUser {
@@ -46,7 +50,7 @@ async function adminFetch<T>(method: Method, path: string, options: AdminCallOpt
     headers.Authorization = `Bearer ${options.token}`;
   }
 
-  const init: RequestInit = { method, headers };
+  const init: RequestInit = { method, headers, signal: AbortSignal.timeout(ADMIN_REQUEST_TIMEOUT_MS) };
   if (method !== 'GET') {
     init.body = JSON.stringify(options.data ?? {});
   }
@@ -64,7 +68,18 @@ async function adminFetch<T>(method: Method, path: string, options: AdminCallOpt
     throw new Error(`[admin] ${method} ${path} 응답이 JSON 이 아님: ${text.slice(0, 200)}`);
   }
 
-  // Spring 래퍼면 data 를, 아니면 그대로 반환.
+  // Spring 래퍼({ success, data, message, error })면 success 를 먼저 검사한다.
+  // 200 + success:false 를 정상값처럼 흘려보내면 후속 테스트가 오염되므로 즉시 throw.
+  if (body && typeof body === 'object' && 'success' in body) {
+    const wrapper = body as { success?: boolean; data?: T; message?: string; error?: unknown };
+    if (wrapper.success === false) {
+      throw new Error(
+        `[admin] ${method} ${path} → success:false ${wrapper.message ?? ''} ${JSON.stringify(wrapper.error ?? null)}`.trim()
+      );
+    }
+    return wrapper.data as T;
+  }
+  // 래퍼가 아니어도 data 키만 있으면 언랩(구버전 호환), 아니면 그대로 반환.
   if (body && typeof body === 'object' && 'data' in body) {
     return (body as { data: T }).data;
   }
@@ -144,16 +159,21 @@ export function addTestCourse(token: string, course: TestCourseInput): Promise<T
 export async function fetchIsPortalLinked(token: string): Promise<boolean> {
   const res = await fetch(`${ADMIN_BASE}/api/users/me`, {
     headers: { Authorization: `Bearer ${token}` },
+    signal: AbortSignal.timeout(ADMIN_REQUEST_TIMEOUT_MS),
   });
   const text = await res.text();
   if (!res.ok) {
     throw new Error(`[admin] GET /api/users/me → ${res.status} ${text.slice(0, 200)}`);
   }
-  let body: { data?: { isPortalLinked?: boolean }; isPortalLinked?: boolean };
+  let body: { success?: boolean; data?: { isPortalLinked?: boolean }; isPortalLinked?: boolean; message?: string };
   try {
     body = JSON.parse(text);
   } catch {
     throw new Error(`[admin] GET /api/users/me 응답이 JSON 이 아님: ${text.slice(0, 200)}`);
+  }
+  // 200 + success:false 를 false 로 축소하지 않고 명확히 실패시킨다.
+  if (body?.success === false) {
+    throw new Error(`[admin] GET /api/users/me → success:false ${body.message ?? ''}`.trim());
   }
   return Boolean(body?.data?.isPortalLinked ?? body?.isPortalLinked);
 }

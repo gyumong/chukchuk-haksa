@@ -35,13 +35,14 @@ export function updateEvaluationReview(draft: LectureEvaluationDraft, review: st
 export function buildSubmitLectureEvaluationsRequest(
   year: number,
   semester: number,
-  drafts: LectureEvaluationDraft[]
+  drafts: readonly LectureEvaluationDraft[]
 ): SubmitLectureEvaluationsRequest {
   return {
     year,
     semester,
     evaluations: drafts.map(draft => {
-      const review = draft.review.trim();
+      // updateEvaluationReview 를 거치지 않은 draft 도 안전하도록 제출 직전 한 번 더 2000자로 제한한다.
+      const review = draft.review.trim().slice(0, 2000);
 
       return {
         courseId: draft.courseId,

@@ -4,8 +4,10 @@ import { createEvaluationDrafts, toggleEvaluationTag, updateEvaluationReview } f
 type Listener = () => void;
 
 export interface LectureEvaluationDraftStore {
-  getDrafts: () => LectureEvaluationDraft[];
-  getSelectedTags: (index: number) => LectureEvaluationTag[];
+  // 내부 배열을 직접 노출하면 호출 측 mutation 이 toggleTag/updateReview 를 우회해 notify 가 안 돌 수 있다.
+  // 외부에는 readonly 로만 노출해 구독 모델(useSyncExternalStore)과 제출 데이터의 정합성을 지킨다.
+  getDrafts: () => readonly LectureEvaluationDraft[];
+  getSelectedTags: (index: number) => readonly LectureEvaluationTag[];
   getReview: (index: number) => string;
   toggleTag: (index: number, tag: LectureEvaluationTag) => void;
   updateReview: (index: number, review: string) => void;
