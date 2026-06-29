@@ -7,6 +7,7 @@ export const EVENTS = {
   UNIV_SYNC_LOGIN_VIEW: 'univ_sync_login_view',
   UNIV_SYNC_BTN_TAP: 'univ_sync_btn_tap',
   UNIV_SYNC_LOADING_VIEW: 'univ_sync_loading_view',
+  UNIV_SYNC_FAIL: 'univ_sync_fail',
   UNIV_SYNC_TERM_AGREE_BOTTOMSHEET_VIEW: 'univ_sync_term_agree_bottomsheet_view',
   UNIV_SYNC_TERM_AGREE_VIEW: 'univ_sync_term_agree_view',
   UNIV_SYNC_COMPLETE_VIEW: 'univ_sync_complete_view',
@@ -17,6 +18,8 @@ export const EVENTS = {
 
   // 학교 재연동 (홈에서 갱신 흐름)
   HOME_UNIV_RESYNC_BTN_TAP: 'home_univ_resync_btn_tap',
+  AD_CONFIRM_POPUP: 'ad_confirm_popup',
+  UNIV_RESYNC_LOGIN_VIEW: 'univ_resync_login_view',
   UNIV_RESYNC_BTN_TAP: 'univ_resync_btn_tap',
   UNIV_RESYNC_LOADING_VIEW: 'univ_resync_loading_view',
   UNIV_RESYNC_COMPLETE: 'univ_resync_complete',
@@ -28,15 +31,21 @@ export interface SetGpaTapProps {
   gpa: number;
 }
 
+export interface SyncFailProps {
+  // 포털 연동 실패 코드 (예: 'T01', 'S04', 'PORTAL_AUTH_FAILED') 또는 'TIMEOUT' / 'UNKNOWN'.
+  reason: string;
+}
+
 export type EventName = (typeof EVENTS)[keyof typeof EVENTS];
 
 // 페이로드 없는 이벤트 — name 만 받음.
-type EventNameWithoutProps = Exclude<EventName, typeof EVENTS.UNIV_SYNC_SET_GPA_BTN_TAP>;
+type EventNameWithoutProps = Exclude<EventName, typeof EVENTS.UNIV_SYNC_SET_GPA_BTN_TAP | typeof EVENTS.UNIV_SYNC_FAIL>;
 
 // 타입 안전 wrapper — amplitude.track 직접 호출 차단. overload 로 페이로드 강제.
 export function track(name: typeof EVENTS.UNIV_SYNC_SET_GPA_BTN_TAP, properties: SetGpaTapProps): void;
+export function track(name: typeof EVENTS.UNIV_SYNC_FAIL, properties: SyncFailProps): void;
 export function track(name: EventNameWithoutProps): void;
-export function track(name: EventName, properties?: SetGpaTapProps): void {
+export function track(name: EventName, properties?: SetGpaTapProps | SyncFailProps): void {
   trackEvent(name, properties as Record<string, unknown> | undefined);
 }
 

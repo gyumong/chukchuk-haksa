@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { captureException } from '@sentry/nextjs';
-import { useInternalRouter, type RoutePath } from '@/hooks/useInternalRouter';
+import { type RoutePath, useInternalRouter } from '@/hooks/useInternalRouter';
 import type { JobStatusResponse } from '@/shared/api/data-contracts';
 import { stashRetryCode } from '../utils/credentialRetry';
 import { classifyPortalLinkFailure, TIMEOUT_ERROR_MESSAGE } from '../utils/errorMapping';
@@ -20,6 +20,11 @@ interface UsePortalLinkFailureParams {
   loginRoute: RoutePath;
   /** 실패 처리 직전 정리 (예: sessionStorage jobId 제거). */
   onCleanup?: () => void;
+  /**
+   * 실패 확정 시 1회 호출. reason = 포털 에러 코드(예: 'T01','S04','PORTAL_AUTH_FAILED') 또는 'TIMEOUT'.
+   * 첫 로그인 흐름에서 텍소노미 univ_sync_fail 발사에 사용 (재연동 호출부는 전달하지 않음).
+   */
+  onFailure?: (reason: string) => void;
 }
 
 /**
@@ -38,6 +43,7 @@ export function usePortalLinkFailure({
   recovered = false,
   loginRoute,
   onCleanup,
+  onFailure,
 }: UsePortalLinkFailureParams) {
   const router = useInternalRouter();
   const [failureMessage, setFailureMessage] = useState<string | null>(null);
@@ -50,6 +56,8 @@ export function usePortalLinkFailure({
     if (jobStatus === 'failed' && jobDetail) {
       handledRef.current = true;
       const { kind, code, message, shouldCapture } = classifyPortalLinkFailure(jobDetail);
+      // 모든 실패 종류(credential/ineligible/system)를 포괄 — credential 의 early-return 전에 발사.
+      onFailure?.(code || 'UNKNOWN');
       onCleanup?.();
 
       if (kind === 'credential') {
@@ -63,7 +71,7 @@ export function usePortalLinkFailure({
       }
       setFailureMessage(message);
     }
-  }, [jobStatus, jobDetail, loginRoute, onCleanup, router]);
+  }, [jobStatus, jobDetail, loginRoute, onCleanup, onFailure, router]);
 
   useEffect(() => {
     if (handledRef.current) {
@@ -73,11 +81,12 @@ export function usePortalLinkFailure({
     // summary 가 성공을 확인하면(recovered) 성공 핸들러가 처리하므로 여기선 실패 처리하지 않는다.
     if (isTimedOut && summaryResolved && !recovered) {
       handledRef.current = true;
+      onFailure?.('TIMEOUT');
       onCleanup?.();
       captureException(new Error('[portal-link] timeout'));
       setFailureMessage(TIMEOUT_ERROR_MESSAGE);
     }
-  }, [isTimedOut, summaryResolved, recovered, onCleanup]);
+  }, [isTimedOut, summaryResolved, recovered, onCleanup, onFailure]);
 
   return { failureMessage };
 }

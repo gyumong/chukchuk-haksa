@@ -1,14 +1,15 @@
+import { reportClientError } from '@/lib/error-reporting/reportClientError';
 import {
   AcademicRecordController as AcademicRecordApi,
   Auth as AuthApi,
   Graduation as GraduationApi,
+  LectureEvaluations as LectureEvaluationsApi,
   PortalLink as PortalLinkApi,
   SemesterController as SemesterRecordApi,
   Student as StudentApi,
   User as UserApi,
 } from '@/shared/api/domain';
 import { getUserMessage } from '../user-messages';
-import { reportClientError } from '@/lib/error-reporting/reportClientError';
 import { createApiConfig } from './configs/httpConfig';
 import type { ErrorResponseWrapper } from './data-contracts';
 import { ApiError } from './errors';
@@ -81,6 +82,7 @@ export const studentApi = createApiClient(StudentApi);
 export const academicRecordApi = createApiClient(AcademicRecordApi);
 export const authApi = createApiClient(AuthApi);
 export const graduationApi = createApiClient(GraduationApi);
+export const lectureEvaluationsApi = createApiClient(LectureEvaluationsApi);
 export const semesterRecordApi = createApiClient(SemesterRecordApi);
 export const portalLinkApi = createApiClient(PortalLinkApi);
 // PortalJobQueryController 가 PortalLink 태그로 병합됨 — getJobStatus/getJobSummary 도 PortalLink 가 보유.

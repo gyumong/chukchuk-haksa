@@ -29,13 +29,18 @@
 .cardBody {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  // 과목명이 여러 줄로 길어져도 성적(등급/점수)은 첫 줄에 top 정렬.
+  align-items: flex-start;
+  gap: spacing.$space-8;
 }
 
 .courseNameWrapper {
   display: flex;
   align-items: center;
   gap: spacing.$space-8;
+  // 남는 가로폭 차지 + 과목명 줄바꿈 허용.
+  flex: 1;
+  min-width: 0;
 }
 
 .courseName {
@@ -43,12 +48,18 @@
   @include typography.body-lg;
   @include typography.font-weight-bold;
   word-wrap: break-word;
+  overflow-wrap: break-word;
+  // flex 자식이라 줄바꿈하려면 min-width:0 필요.
+  min-width: 0;
 }
 
 .gradeWrapper {
   display: flex;
   align-items: center;
   gap: spacing.$space-6;
+  // 등급·점수 묶음은 축소/줄바꿈 없이 우측 첫 줄에 유지.
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .grade {

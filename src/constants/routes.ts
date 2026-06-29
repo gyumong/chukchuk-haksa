@@ -7,6 +7,7 @@ export const ROUTES = {
     PORTAL_LOGIN: '/portal-login',
     SCRAPING: '/scraping',
     TARGET_SCORE: '/target-score',
+    FOREIGN_LANGUAGE_CERT: '/foreign-language-cert',
   },
   AUTH: {
     CALLBACK: '/auth/callback',
@@ -16,6 +17,7 @@ export const ROUTES = {
     SCRAPING: '/resync/scraping',
   },
   ACADEMIC_DETAIL: '/academic-detail',
+  LECTURE_EVALUATION: '/lecture-evaluation',
   GRADUATION_PROGRESS: '/graduation-progress',
   SETTING: '/setting',
   DELETE: '/delete',
@@ -33,6 +35,7 @@ export const ROUTES = {
     RESYNC_SCRAPING: '/mpa/resync/scraping',
     PORTAL_LOGIN: '/mpa/portal-login',
     PORTAL_LOGIN_SCRAPING: '/mpa/portal-login/scraping',
+    LECTURE_EVALUATION: '/mpa/lecture-evaluation',
     DELETE: '/mpa/delete',
   },
 } as const;

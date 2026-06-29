@@ -11,6 +11,8 @@ const hoisted = vi.hoisted(() => ({
     set: (name: string, value: string) => void;
     delete: (name: string) => void;
   },
+  // resetModules 로 매 테스트마다 session 모듈을 재임포트해도 동일 인스턴스를 유지하기 위해 hoisted 에 둔다.
+  captureException: vi.fn(),
 }));
 
 vi.mock('next/headers', () => ({
@@ -18,7 +20,7 @@ vi.mock('next/headers', () => ({
 }));
 
 vi.mock('@sentry/nextjs', () => ({
-  captureException: vi.fn(),
+  captureException: hoisted.captureException,
 }));
 
 function makeCookieStore(initial: Record<string, string>) {
@@ -37,6 +39,7 @@ function makeCookieStore(initial: Record<string, string>) {
 describe('getSession', () => {
   beforeEach(() => {
     vi.resetModules();
+    hoisted.captureException.mockClear();
     // iron-session password 는 32자 이상이어야 getIronSession 이 throw 하지 않는다.
     vi.stubEnv('SESSION_SECRET', 'test-session-secret-at-least-32-characters');
   });
@@ -57,6 +60,8 @@ describe('getSession', () => {
     expect(session.accessToken).toBeUndefined();
     // 손상 쿠키가 제거돼 다음 요청이 같은 500 루프에 빠지지 않는다.
     expect(store.get(SESSION_COOKIE_NAME)).toBeUndefined();
+    // 복구 경로의 관측성: 봉인 해제 실패를 Sentry 로 보고했는지 검증.
+    expect(hoisted.captureException).toHaveBeenCalledTimes(1);
   });
 
   it('쿠키가 없으면 빈 세션을 반환한다', async () => {

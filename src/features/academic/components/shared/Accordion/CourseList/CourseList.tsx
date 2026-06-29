@@ -1,3 +1,4 @@
+import { getSemesterShortLabel } from '@/lib/utils/semester';
 import type { CourseListProps } from '../types';
 import styles from './CourseList.module.scss';
 
@@ -11,7 +12,9 @@ export default function CourseList({ courses, isCompleted }: CourseListProps) {
             {course.liberalAreaCode != null && (
               <span className={styles.area}>{course.liberalAreaCode}영역</span>
             )}
-            <span className={styles.semester}>{course.year}-{course.semester}</span>
+            <span className={styles.semester}>
+              {course.year}-{getSemesterShortLabel(course.semester)}
+            </span>
           </div>
           <div className={styles.courseGrade}>
             <span className={styles.credits}>{course.credits}학점</span>

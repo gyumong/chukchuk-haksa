@@ -43,6 +43,11 @@
     @include typography.body-exlg;
     @include typography.font-weight-bold;
   }
+
+  // 석차 분모(/N)는 회색 — 분자(석차)만 강조색으로. (예: 17/66 에서 "/66")
+  .rankDenominator {
+    color: color.$gray-400;
+  }
 }
 
 .divider {

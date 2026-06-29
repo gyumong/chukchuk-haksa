@@ -1,0 +1,212 @@
+@use '@/styles/color' as colors;
+@use '@/styles/radius' as radius;
+@use '@/styles/spacing' as spacing;
+@use '@/styles/typography' as typography;
+@use 'sass:map';
+
+.card {
+  width: 100%;
+  background: colors.$white;
+
+  @each $band, $theme in colors.$lecture-evaluation-grade-themes {
+    &[data-grade-band='#{$band}'] {
+      --grade-color: #{map.get($theme, 'start')};
+      --grade-color-light: #{map.get($theme, 'end')};
+      --selected-tag-color: #{map.get($theme, 'selected-tag')};
+      --input-focus-border-color: #{map.get($theme, 'input-focus')};
+    }
+  }
+}
+
+.header {
+  position: relative;
+  min-height: 196px;
+  overflow: hidden;
+  text-align: center;
+  color: colors.$white;
+  background: colors.$white;
+}
+
+.headerBackground {
+  position: absolute;
+  top: -52px;
+  left: 50%;
+  width: 557px;
+  height: 248px;
+  background: linear-gradient(163deg, var(--grade-color) 18%, var(--grade-color-light) 95%);
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+.headerContent {
+  position: relative;
+  z-index: 1;
+  padding: spacing.$space-24 spacing.$space-20 0;
+}
+
+.semester {
+  margin-bottom: spacing.$space-6;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--suit-font);
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.gradeRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: spacing.$space-6;
+  height: 60px;
+  margin-bottom: spacing.$space-4;
+  font-family: var(--paperlogy-font);
+  line-height: 1.5;
+}
+
+.grade {
+  font-size: 40px;
+  line-height: 60px;
+}
+
+.score {
+  font-size: 20px;
+  line-height: 30px;
+  font-weight: 700;
+}
+
+.courseName {
+  display: -webkit-box;
+  overflow: hidden;
+  max-height: 72px;
+  margin: 0 auto;
+  font-family: var(--paperlogy-font);
+  font-size: 24px;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.courseMeta {
+  position: relative;
+  z-index: 1;
+  margin-top: spacing.$space-4;
+  font-family: var(--suit-font);
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 600;
+
+  span {
+    margin: 0 spacing.$space-4;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-18;
+  min-height: 335px;
+  padding: spacing.$space-12 spacing.$space-24 0;
+}
+
+.fieldset {
+  flex: 0 0 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  display: block;
+  margin-bottom: spacing.$space-6;
+  color: colors.$black-100;
+  @include typography.body-xs;
+  @include typography.font-weight-extrabold;
+}
+
+.tagGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 5px;
+  row-gap: 5px;
+}
+
+.tagButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 45px;
+  padding: spacing.$space-8;
+  color: colors.$gray-100;
+  background: colors.$white;
+  border: 1px solid colors.$background-color;
+  border-radius: 6px;
+  @include typography.body-sm-design;
+  @include typography.font-weight-extrabold;
+  text-align: center;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--input-focus-border-color);
+    outline-offset: 2px;
+  }
+
+  &[aria-pressed='true'] {
+    color: var(--selected-tag-color);
+    background:
+      linear-gradient(
+        163deg,
+        rgba(255, 255, 255, 0) 20%,
+        color-mix(in srgb, var(--selected-tag-color) 19%, transparent) 95%
+      ),
+      colors.$black-100;
+    border-color: colors.$black-100;
+  }
+}
+
+@media (max-width: 360px) {
+  .headerContent {
+    padding-right: spacing.$space-16;
+    padding-left: spacing.$space-16;
+  }
+
+  .content {
+    padding-right: spacing.$space-16;
+    padding-left: spacing.$space-16;
+  }
+}
+
+.reviewField {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  width: 100%;
+}
+
+.review {
+  width: 100%;
+  min-height: 62px;
+  padding: spacing.$space-8 spacing.$space-12;
+  resize: none;
+  color: colors.$black-100;
+  background: colors.$white;
+  border: 1px solid colors.$background-color;
+  @include radius.input-radius;
+  @include typography.body-sm-design;
+  @include typography.font-weight-medium;
+
+  &::placeholder {
+    color: colors.$gray-100;
+  }
+
+  &:focus {
+    border-color: var(--input-focus-border-color);
+    outline: none;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--input-focus-border-color) 28%, transparent);
+  }
+}

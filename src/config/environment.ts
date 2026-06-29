@@ -37,6 +37,12 @@ export function getEnvironment() {
  * API Base URL 가져오기 (환경변수 우선)
  */
 export function getApiBaseUrl() {
+  // Route Handler 등 서버 실행 경로는 비공개 서버 URL을 우선 사용한다.
+  // 로컬 브라우저는 CORS 중복 헤더를 피하기 위해 NEXT_PUBLIC_API_BASE_URL의 same-origin proxy를 사용한다.
+  if (typeof window === 'undefined' && process.env.DEV_SERVER_URL) {
+    return process.env.DEV_SERVER_URL;
+  }
+
   // 환경변수가 설정되어 있으면 사용
   if (process.env.NEXT_PUBLIC_API_BASE_URL) {
     return process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -100,6 +106,11 @@ export const ENV = {
   AMPLITUDE_API_KEY: process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY ?? '',
   // 에러 웹훅 (서버 전용 시크릿). 미설정 시 /api/client-error 가 no-op — Sentry 와 병행 sink.
   DISCORD_ERROR_WEBHOOK_URL: process.env.DISCORD_ERROR_WEBHOOK_URL ?? '',
+
+  // 광고 (Google Ad Manager) — rewarded 광고 단위 경로 `/<networkCode>/<code>` 구성용 네트워크 코드.
+  // 미설정 시 광고 비활성화 → showRewardedAd 가 'unavailable' 반환(광고 없이 정상 진행).
+  // NEXT_PUBLIC_* 라 클라 번들에 inline → CI 빌드 env 주입 필요(런타임 wrangler var 아님).
+  GAM_NETWORK_CODE: process.env.NEXT_PUBLIC_GAM_NETWORK_CODE ?? '',
 
   // Firebase RemoteConfig (Web 신설, prod 환경만 활성화)
   // 키 미설정 시 SDK init 자체를 silent skip — `useRemoteConfig` 가 defaultValue 그대로 반환.

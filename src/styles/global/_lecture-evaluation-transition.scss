@@ -1,0 +1,50 @@
+::view-transition-group(lecture-evaluation-card) {
+  overflow: hidden;
+  border-radius: 18px;
+  animation-duration: 750ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+::view-transition-old(lecture-evaluation-card) {
+  animation: lecture-evaluation-wrapper-burst 400ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+::view-transition-new(lecture-evaluation-card) {
+  animation: lecture-evaluation-card-reveal 750ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes lecture-evaluation-wrapper-burst {
+  to {
+    opacity: 0;
+    transform: scale(1.025);
+    filter: brightness(1.18) saturate(0.92);
+  }
+}
+
+@keyframes lecture-evaluation-card-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+    filter: brightness(1.18) saturate(1.08);
+  }
+
+  68% {
+    opacity: 1;
+    transform: translateY(-1px) scale(1.006);
+    filter: brightness(1.03) saturate(1.02);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(lecture-evaluation-card),
+  ::view-transition-old(lecture-evaluation-card),
+  ::view-transition-new(lecture-evaluation-card) {
+    animation-duration: 1ms;
+  }
+}

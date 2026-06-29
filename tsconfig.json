@@ -25,5 +25,5 @@
     }
   },
   "include": ["src/types/commons/**/*.d.ts", "next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", ".next", "dist", "codemods"]
+  "exclude": ["node_modules", ".next", "dist", "codemods", "e2e", "playwright.config.ts"]
 }

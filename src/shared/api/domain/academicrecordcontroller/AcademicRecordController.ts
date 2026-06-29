@@ -39,7 +39,7 @@ export class AcademicRecordController<
       ...params,
     });
   /**
-   * @description 지정한 학기(year, semester)에 해당하는 성적 및 수강 과목 정보를 조회합니다.
+   * @description 지정한 학기(year, semester)에 해당하는 성적 및 수강 과목 정보를 조회합니다. courses.liberal[] 중 areaType이 선교인 과목은 liberalAreaCode를 포함할 수 있습니다. areaType이 선교가 아닌 과목은 liberalAreaCode 키가 응답에 포함되지 않습니다.
    *
    * @tags academic-record-controller
    * @name GetAcademicRecord

@@ -59,6 +59,11 @@ const LoadingScreen = () => {
     if (!video) {
       return;
     }
+    // React 는 SSR/hydration 시 <video> 의 muted 를 DOM 에 반영하지 않는 경우가 있어 hydration 후
+    // video.muted 가 false 로 남는다. iOS(WKWebView)는 unmuted 동영상의 제스처 없는 자동재생을 막으므로
+    // play() 가 NotAllowedError 로 거부된다. play() 직전에 muted 를 프로퍼티+속성 양쪽으로 강제한다.
+    video.muted = true;
+    video.setAttribute('muted', '');
     void video.play().catch(captureException);
   }, []);
 
@@ -83,9 +88,7 @@ const LoadingScreen = () => {
         </div>
       </main>
 
-      <div className={styles.bottomBar}>
-        {!isWebView && <div className={styles.indicator} />}
-      </div>
+      <div className={styles.bottomBar}>{!isWebView && <div className={styles.indicator} />}</div>
     </div>
   );
 };

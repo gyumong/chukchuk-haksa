@@ -1,0 +1,78 @@
+@use '@/styles/color.scss' as colors;
+@use '@/styles/radius.scss' as radius;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/utilities.scss' as utilities;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  @include utilities.funnel-page-spacing;
+
+  // 고정 '다음' 버튼(fixed) 뒤로 마지막 카드가 가리지 않도록 하단 여유 확보.
+  padding-bottom: calc(spacing.$space-66 + spacing.$space-48);
+}
+
+.content {
+  flex: 1;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-12;
+  margin: spacing.$space-40 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+// 시험별 기준 카드 — 상단 캡션(학과)·하단 행(시험명/통과 기준).
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-6;
+  padding: spacing.$space-18 spacing.$space-20;
+  background-color: colors.$gray-300;
+
+  @include radius.radius-md;
+}
+
+.caption {
+  color: colors.$gray-500;
+
+  @include typography.body-sm;
+  @include typography.font-weight-regular;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: spacing.$space-16;
+}
+
+.examName {
+  color: colors.$black-100;
+
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+}
+
+.examValue {
+  color: colors.$purple-100;
+  text-align: right;
+  word-break: keep-all;
+
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+}
+
+// 미매핑 학과 등 기준 목록이 없을 때의 안내.
+.note {
+  margin: spacing.$space-40 0 0;
+  text-align: center;
+  color: colors.$gray-500;
+
+  @include typography.body-md;
+  @include typography.font-weight-regular;
+}

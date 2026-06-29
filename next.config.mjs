@@ -10,6 +10,19 @@ const withBundleAnalyzer = withBundleAnalyzerFn({
 
 const nextConfig = {
   reactStrictMode: false,
+  async rewrites() {
+    const proxyTarget = process.env.DEV_API_PROXY_URL;
+    if (!proxyTarget) {
+      return [];
+    }
+
+    return [
+      {
+        source: '/dev-api/:path*',
+        destination: `${proxyTarget.replace(/\/$/, '')}/:path*`,
+      },
+    ];
+  },
   images: {
     unoptimized: true,
   },

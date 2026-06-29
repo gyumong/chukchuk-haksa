@@ -1,6 +1,6 @@
 {
   "name": "chukchuk-haksa",
-  "version": "0.1.0",
+  "version": "1.14.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -14,6 +14,10 @@
     "test:watch": "vitest watch",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:headed": "playwright test --headed",
+    "e2e:report": "playwright show-report",
     "gen": "dotenv -e .env -- bash -c 'npx supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > types/supabase.ts'",
     "api:fetch": "curl -sSL https://dev.api.cchaksa.com/v3/api-docs -o ./swagger/openapi-dev.json",
     "api:gen": "swagger-typescript-api generate -p ./swagger/openapi-dev.json -o ./src/shared/api --modular --module-name-first-tag --templates ./swagger/templates --name index.ts --extract-response-body --extract-request-params",
@@ -51,7 +55,6 @@
     "iron-session": "^8.0.4",
     "lottie-react": "^2.4.0",
     "next": "15.2.8",
-    "playwright": "^1.49.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "sharp": "^0.34.1",
@@ -60,6 +63,7 @@
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^1",
+    "@playwright/test": "^1.61.0",
     "@svgr/webpack": "^8.1.0",
     "@tanstack/eslint-plugin-query": "^5.74.7",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",

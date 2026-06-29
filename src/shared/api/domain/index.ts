@@ -2,6 +2,7 @@ export * from './academicrecordcontroller/AcademicRecordController';
 export * from './auth/Auth';
 export * from './checkcontroller/CheckController';
 export * from './graduation/Graduation';
+export * from './lectureevaluations/LectureEvaluations';
 export * from './portallink/PortalLink';
 export * from './semestercontroller/SemesterController';
 export * from './student/Student';
