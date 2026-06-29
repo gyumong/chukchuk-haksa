@@ -199,6 +199,79 @@ export interface SuccessResponseMessageOnlyResponse {
   message?: string;
 }
 
+/** 강의평가 제출 응답 */
+export interface LectureEvaluationSubmitApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 메시지 응답 DTO */
+  data: MessageOnlyResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+export interface SubmitEvaluation {
+  /** @format int64 */
+  courseId: number;
+  /** @format int64 */
+  professorId: number;
+  selectedTags: (
+    | "LOW_HOMEWORK"
+    | "LOW_TEAM_PROJECT"
+    | "ONLINE_EXAM"
+    | "EXAM_REPLACED_BY_HOMEWORK"
+    | "INTERESTING_LECTURE"
+    | "INFORMATIVE_LECTURE"
+    | "ABSOLUTE_EXAM"
+    | "EASY_GRADE"
+  )[];
+  /**
+   * @minLength 0
+   * @maxLength 2000
+   */
+  review?: string;
+}
+
+export interface SubmitRequest {
+  /** @format int32 */
+  year: number;
+  /** @format int32 */
+  semester: number;
+  /**
+   * @maxItems 2147483647
+   * @minItems 1
+   */
+  evaluations: SubmitEvaluation[];
+}
+
+/** 강의평가 건너뛰기 응답 */
+export interface LectureEvaluationSkipApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 메시지 응답 DTO */
+  data: MessageOnlyResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+export interface SkipRequest {
+  /** @format int32 */
+  year: number;
+  /** @format int32 */
+  semester: number;
+}
+
 /** Refresh Response DTO */
 export interface RefreshResponse {
   /** 액세스 토큰 */
@@ -227,6 +300,246 @@ export interface RefreshTokenApiResponse {
 export interface RefreshRequest {
   /** Refresh Token */
   refreshToken: string;
+}
+
+/** 테스트 계정 생성 요청 */
+export interface CreateTestUserRequest {
+  /**
+   * 테스트 사용자 이름
+   * @example "프론트테스트"
+   */
+  name?: string;
+  /**
+   * 학과 ID
+   * @format int64
+   * @example 1
+   */
+  departmentId?: number;
+  /**
+   * 주전공 학과 ID
+   * @format int64
+   * @example 1
+   */
+  majorId?: number;
+  /**
+   * 복수전공 학과 ID
+   * @format int64
+   * @example 2
+   */
+  secondaryMajorDepartmentId?: number;
+  /**
+   * 입학년도
+   * @format int32
+   * @example 2024
+   */
+  admissionYear?: number;
+  /**
+   * 포털 연동 여부. 비어 있으면 true로 처리합니다.
+   * @example true
+   */
+  isPortalLinked?: boolean;
+}
+
+/** 성공 응답 포맷 */
+export interface SuccessResponseTestUserResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 테스트 계정 생성 응답 */
+  data: TestUserResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+/** 테스트 계정 생성 응답 */
+export interface TestUserResponse {
+  /**
+   * 사용자 ID
+   * @format uuid
+   */
+  userId?: string;
+  /**
+   * 학생 ID
+   * @format uuid
+   */
+  studentId?: string;
+  /** 테스트 계정 이메일 */
+  email?: string;
+  /** 테스트 학번 */
+  studentCode?: string;
+  /** Access Token */
+  accessToken?: string;
+  /** Refresh Token */
+  refreshToken?: string;
+}
+
+/** 현재 인증 계정 테스트 강의 생성 요청 */
+export interface CreateTestCourseRequest {
+  /** 테스트 학수번호. test_ prefix가 없으면 자동으로 붙습니다. */
+  courseCode?: string;
+  /** 테스트 과목명 */
+  courseName?: string;
+  /** 졸업요건 영역 */
+  area?:
+    | "중핵"
+    | "기교"
+    | "선교"
+    | "소교"
+    | "전교"
+    | "전취"
+    | "전핵"
+    | "전선"
+    | "일선"
+    | "복선"
+    | "복핵"
+    | "복교"
+    | "기타";
+  /**
+   * 학과 ID
+   * @format int64
+   */
+  departmentId?: number;
+  /** 개설 학과명. departmentId가 없을 때 사용할 수 있습니다. */
+  hostDepartment?: string;
+  /**
+   * 이수 연도
+   * @format int32
+   */
+  year?: number;
+  /**
+   * 학기
+   * @format int32
+   */
+  semester?: number;
+  /**
+   * 학점
+   * @format int32
+   */
+  credits?: number;
+  /** 성적 */
+  grade?: string;
+  /** 재수강 여부 */
+  isRetake?: boolean;
+  /**
+   * 원점수
+   * @format int32
+   */
+  originalScore?: number;
+}
+
+/** 성공 응답 포맷 */
+export interface SuccessResponseTestCourseResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 현재 인증 계정 테스트 강의 생성 응답 */
+  data: TestCourseResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+/** 현재 인증 계정 테스트 강의 생성 응답 */
+export interface TestCourseResponse {
+  /**
+   * 생성된 학생 수강 row ID
+   * @format int64
+   */
+  studentCourseId?: number;
+  /**
+   * 생성된 개설강의 ID
+   * @format int64
+   */
+  offeringId?: number;
+  /** 생성된 학수번호 */
+  courseCode?: string;
+  /** 생성된 과목명 */
+  courseName?: string;
+  /** 졸업요건 영역 */
+  area?:
+    | "중핵"
+    | "기교"
+    | "선교"
+    | "소교"
+    | "전교"
+    | "전취"
+    | "전핵"
+    | "전선"
+    | "일선"
+    | "복선"
+    | "복핵"
+    | "복교"
+    | "기타";
+}
+
+/** 현재 인증 계정 전공 상태 수정 요청 */
+export interface UpdateMajorRequest {
+  /**
+   * 주전공 학과 ID
+   * @format int64
+   */
+  majorDepartmentId?: number;
+  /** 복수전공 사용 여부 */
+  dualMajorEnabled?: boolean;
+  /**
+   * 복수전공 학과 ID
+   * @format int64
+   */
+  secondaryMajorDepartmentId?: number;
+}
+
+/** 현재 인증 계정 강의 데이터 수정 요청 */
+export interface UpdateGraduationCoursesRequest {
+  /** 수정 대상 졸업요건 영역 */
+  area?:
+    | "중핵"
+    | "기교"
+    | "선교"
+    | "소교"
+    | "전교"
+    | "전취"
+    | "전핵"
+    | "전선"
+    | "일선"
+    | "복선"
+    | "복핵"
+    | "복교"
+    | "기타";
+  /** 추가할 개설강의 ID 목록 */
+  addOfferingIds?: number[];
+  /** 삭제할 학생 수강 row ID 목록 */
+  removeStudentCourseIds?: number[];
+  /**
+   * 성적
+   * @example "A+"
+   */
+  grade?: string;
+  /**
+   * 학점
+   * @format int32
+   * @example 3
+   */
+  points?: number;
+  /**
+   * 재수강 여부
+   * @example false
+   */
+  isRetake?: boolean;
+  /**
+   * 원점수
+   * @format int32
+   * @example 95
+   */
+  originalScore?: number;
 }
 
 /** 스크래핑 job 상태 응답 */
@@ -298,6 +611,36 @@ export interface StudentInfoSummary {
   status?: string;
   /** @format int32 */
   completedSemesterType?: number;
+}
+
+/** 스크래핑 job 소요 시간 응답 */
+export interface JobDurationResponse {
+  job_id?: string;
+  /** @format date-time */
+  started_at?: string;
+  /** @format date-time */
+  ended_at?: string;
+  /** @format int64 */
+  elapsed_millis?: number;
+  elapsed_time?: string;
+  status?: string;
+  success?: boolean;
+}
+
+/** 포털 링크 job 소요 시간 조회 응답 */
+export interface PortalLinkJobDurationApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 스크래핑 job 소요 시간 응답 */
+  data: JobDurationResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
 }
 
 /** 내 사용자 정보 조회 응답 */
@@ -494,6 +837,77 @@ export interface SemesterSummaryResponse {
    * @example 92.4
    */
   percentile?: number | null;
+}
+
+/** 성적 카드 목록 */
+export interface GradeCard {
+  courseName?: string;
+  courseCode?: string;
+  /** @format int64 */
+  courseId?: number;
+  areaType?:
+    | "중핵"
+    | "기교"
+    | "선교"
+    | "소교"
+    | "전교"
+    | "전취"
+    | "전핵"
+    | "전선"
+    | "일선"
+    | "복선"
+    | "복핵"
+    | "복교"
+    | "기타";
+  /** @format int32 */
+  credits?: number;
+  professor?: string;
+  /** @format int64 */
+  professorId?: number;
+  grade?: string;
+  /** @format int32 */
+  score?: number;
+  /** @format int32 */
+  liberalAreaCode?: number;
+}
+
+/** 강의평가 상태 응답 */
+export interface LectureEvaluationRequiredApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 응답 데이터 */
+  data: RequiredResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+/** 응답 데이터 */
+export interface RequiredResponse {
+  /** 강의평가 상태 */
+  evaluationStatus?:
+    | "NOT_RELEASED"
+    | "PENDING"
+    | "SKIPPED"
+    | "COMPLETED"
+    | null;
+  /**
+   * 강의평가 대상 연도
+   * @format int32
+   */
+  year?: number;
+  /**
+   * 강의평가 대상 학기 코드
+   * @format int32
+   */
+  semester?: number;
+  /** 성적 카드 목록 */
+  grades?: GradeCard[];
 }
 
 /** 졸업 요건 영역별 이수 현황 */
@@ -705,6 +1119,130 @@ export interface Requirement {
   sortOrder?: number;
 }
 
+/** 학과 선택지 */
+export interface DepartmentOption {
+  /**
+   * 학과 ID
+   * @format int64
+   */
+  id?: number;
+  /** 학과 코드 */
+  code?: string;
+  /** 학과명 */
+  name?: string;
+}
+
+/** 졸업요건 영역 선택지 */
+export interface GraduationAreaOption {
+  /** 영역 코드 */
+  code?: string;
+  /** 영역 표시명 */
+  name?: string;
+}
+
+/** 성공 응답 포맷 */
+export interface SuccessResponseTestOptionsResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 테스트 조작 옵션 응답 */
+  data: TestOptionsResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+/** 테스트 조작 옵션 응답 */
+export interface TestOptionsResponse {
+  /** 학과 목록 */
+  departments?: DepartmentOption[];
+  /** 졸업요건 영역 목록 */
+  graduationAreas?: GraduationAreaOption[];
+}
+
+/** 성공 응답 포맷 */
+export interface SuccessResponseListDepartmentOption {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 응답 데이터 */
+  data: DepartmentOption[];
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+/** 강의 후보 선택지 */
+export interface CourseOfferingOption {
+  /**
+   * 개설강의 ID
+   * @format int64
+   */
+  offeringId?: number;
+  /** 학수번호 */
+  courseCode?: string;
+  /** 과목명 */
+  courseName?: string;
+  /**
+   * 연도
+   * @format int32
+   */
+  year?: number;
+  /**
+   * 학기
+   * @format int32
+   */
+  semester?: number;
+  /**
+   * 학점
+   * @format int32
+   */
+  credits?: number;
+  /** 졸업요건 영역 */
+  area?:
+    | "중핵"
+    | "기교"
+    | "선교"
+    | "소교"
+    | "전교"
+    | "전취"
+    | "전핵"
+    | "전선"
+    | "일선"
+    | "복선"
+    | "복핵"
+    | "복교"
+    | "기타";
+  /** 포털 원본 영역명 */
+  rawArea?: string;
+  /** 개설 학과명 */
+  departmentName?: string;
+}
+
+/** 성공 응답 포맷 */
+export interface SuccessResponseListCourseOfferingOption {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 응답 데이터 */
+  data: CourseOfferingOption[];
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
 /** 학업 요약 정보 응답 */
 export interface AcademicSummaryApiResponse {
   /**
@@ -829,6 +1367,12 @@ export interface CourseDetailDto {
    * @format int32
    */
   originalScore?: number;
+  /**
+   * 선교 영역 세부 코드 (LiberalArtsAreaCode). areaType 이 선교인 과목에 한해 노출되며, 그 외 영역에서는 응답에서 omit된다.
+   * @format int32
+   * @example 7
+   */
+  liberalAreaCode?: number | null;
   /** 재수강 삭제 과목 여부 */
   isRetakeDelete?: boolean;
 }
@@ -932,11 +1476,42 @@ export type SetTargetGpaData = TargetGpaApiResponse;
 
 export type ResetStudentDataData = SuccessResponseMessageOnlyResponse;
 
+export type SubmitData = LectureEvaluationSubmitApiResponse;
+
+export type SkipData = LectureEvaluationSkipApiResponse;
+
 export type RefreshResponseData = RefreshTokenApiResponse;
+
+export type CreateTestUserData = SuccessResponseTestUserResponse;
+
+export type SetLectureEvaluationSkippedData =
+  SuccessResponseMessageOnlyResponse;
+
+export type SetLectureEvaluationPendingData =
+  SuccessResponseMessageOnlyResponse;
+
+export type SetLectureEvaluationNotReleasedData =
+  SuccessResponseMessageOnlyResponse;
+
+export type SetLectureEvaluationEmptySemesterData =
+  SuccessResponseMessageOnlyResponse;
+
+export type SetLectureEvaluationCompletedData =
+  SuccessResponseMessageOnlyResponse;
+
+export type CreateTestCourseData = SuccessResponseTestCourseResponse;
+
+export type ResetCurrentAccountData = SuccessResponseMessageOnlyResponse;
+
+export type UpdateMajorData = SuccessResponseMessageOnlyResponse;
+
+export type UpdateGraduationCoursesData = SuccessResponseMessageOnlyResponse;
 
 export type GetJobStatusData = PortalLinkJobStatusApiResponse;
 
 export type GetJobSummaryData = PortalLinkJobSummaryApiResponse;
+
+export type GetJobDurationData = PortalLinkJobDurationApiResponse;
 
 export type HealthData = string;
 
@@ -950,9 +1525,45 @@ export type GetSemesterRecordData = StudentSemesterListApiResponse;
 
 export type GetSemesterGradesData = SemesterGradesApiResponse;
 
+export type GetRequiredData = LectureEvaluationRequiredApiResponse;
+
 export type GetGraduationProgressData = GraduationProgressApiResponse;
 
 export type GetLanguageCertRequirementData = LanguageCertRequirementApiResponse;
+
+export type GetTestOptionsData = SuccessResponseTestOptionsResponse;
+
+export interface SearchDepartmentsParams {
+  keyword?: string;
+}
+
+export type SearchDepartmentsData = SuccessResponseListDepartmentOption;
+
+export interface SearchCourseOfferingsParams {
+  keyword?: string;
+  area?:
+    | "중핵"
+    | "기교"
+    | "선교"
+    | "소교"
+    | "전교"
+    | "전취"
+    | "전핵"
+    | "전선"
+    | "일선"
+    | "복선"
+    | "복핵"
+    | "복교"
+    | "기타";
+  /** @format int32 */
+  year?: number;
+  /** @format int32 */
+  semester?: number;
+  /** @format int64 */
+  departmentId?: number;
+}
+
+export type SearchCourseOfferingsData = SuccessResponseListCourseOfferingOption;
 
 export type GetAcademicSummaryData = AcademicSummaryApiResponse;
 

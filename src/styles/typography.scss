@@ -36,8 +36,26 @@
   line-height: 1.6;
 }
 
+@mixin body-xs {
+  font-family: var(--suit-font);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+}
+
+@mixin body-sm-design {
+  font-family: var(--suit-font);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+}
+
 @mixin font-weight-bold {
   font-weight: 700;
+}
+
+@mixin font-weight-extrabold {
+  font-weight: 800;
 }
 
 @mixin font-weight-semibold {

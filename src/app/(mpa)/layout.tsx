@@ -38,6 +38,8 @@ export default function MpaLayout({ children }: PropsWithChildren) {
         return styles.contentScroll;
       case ROUTES.MPA.DELETE:
         return styles.contentPlain;
+      case ROUTES.MPA.LECTURE_EVALUATION:
+        return styles.contentFull;
       default:
         return styles.content;
     }

@@ -3,14 +3,14 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/react';
-import QueryProvider from '@/shared/providers/queryProvider';
-import { AuthProvider } from '@/features/auth/contexts/AuthContext';
-import { AnalyticsProvider } from '@/lib/analytics';
-import { RemoteConfigProvider } from '@/lib/remote-config';
 import MaintenancePage from '@/components/MaintenancePage';
 import { Toaster } from '@/components/ui/Toast';
+import { AuthProvider } from '@/features/auth/contexts/AuthContext';
+import { AnalyticsProvider } from '@/lib/analytics';
 import { GlobalErrorReporter } from '@/lib/error-reporting';
+import { RemoteConfigProvider } from '@/lib/remote-config';
 import NotifyRenderedToNative from '@/lib/webview/NotifyRenderedToNative';
+import QueryProvider from '@/shared/providers/queryProvider';
 import '../styles/global.scss';
 
 export const metadata: Metadata = {
@@ -50,16 +50,8 @@ const paperlogy = localFont({
   display: 'swap',
 });
 const suit = localFont({
-  src: [
-    {
-      path: './fonts/SUIT-subset-Regular.woff2',
-      weight: '400',
-    },
-    {
-      path: './fonts/SUIT-subset-SemiBold.woff2',
-      weight: '600',
-    },
-  ],
+  src: './fonts/SUIT-Variable.woff2',
+  weight: '100 900',
   variable: '--suit-font',
   display: 'swap',
 });

@@ -31,6 +31,47 @@ $grade-c: #1fce8e;
 $grade-d: #a3a2b1;
 $grade-f: #ff5751;
 
+// 강의평가 카드 성적별 테마.
+// B/C/D/P 값은 Figma Selection colors 최종 확인 후 이 map만 갱신한다.
+$lecture-evaluation-grade-themes: (
+  'a': (
+    start: #d80f16,
+    end: #e95754,
+    selected-tag: #ff908c,
+    input-focus: $red-400,
+  ),
+  'b': (
+    start: #f7941d,
+    end: #f9b259,
+    selected-tag: #ffd096,
+    input-focus: #f7941d,
+  ),
+  'c': (
+    start: #0eb875,
+    end: #51d5a5,
+    selected-tag: #8aebc8,
+    input-focus: #0eb875,
+  ),
+  'd': (
+    start: #797986,
+    end: #aaa9b5,
+    selected-tag: $gray-300,
+    input-focus: #797986,
+  ),
+  'p': (
+    start: #6d5ee8,
+    end: #9c91f8,
+    selected-tag: $purple-300,
+    input-focus: #6d5ee8,
+  ),
+  'fallback': (
+    start: $gray-400,
+    end: $gray-100,
+    selected-tag: $gray-300,
+    input-focus: $gray-400,
+  ),
+);
+
 // Brand Colors (Temporary - will be replaced by Figma tokens)
 $kakao-yellow: #f9e000;
 $kakao-text: #371d1e;

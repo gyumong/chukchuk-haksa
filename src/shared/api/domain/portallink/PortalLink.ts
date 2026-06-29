@@ -13,6 +13,7 @@
 import {
   CreatePortalLinkJobData,
   ErrorResponseWrapper,
+  GetJobDurationData,
   GetJobStatusData,
   GetJobSummaryData,
   HandleCallbackData,
@@ -88,6 +89,23 @@ export class PortalLink<
   getJobSummary = (jobId: string, params: RequestParams = {}) =>
     this.request<GetJobSummaryData, ErrorResponseWrapper>({
       path: `/portal/link/jobs/${jobId}/summary`,
+      method: "GET",
+      secure: true,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description 요청된 job_id의 서버 기준 연동 시작/종료 시각과 소요 시간을 제공합니다.
+   *
+   * @tags Portal Link
+   * @name GetJobDuration
+   * @summary 비동기 job 소요 시간 조회
+   * @request GET:/portal/link/jobs/{jobId}/duration
+   * @secure
+   */
+  getJobDuration = (jobId: string, params: RequestParams = {}) =>
+    this.request<GetJobDurationData, ErrorResponseWrapper>({
+      path: `/portal/link/jobs/${jobId}/duration`,
       method: "GET",
       secure: true,
       format: "json",

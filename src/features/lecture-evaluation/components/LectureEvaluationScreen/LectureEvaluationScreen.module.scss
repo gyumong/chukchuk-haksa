@@ -1,0 +1,26 @@
+@use '@/styles/color' as colors;
+@use '@/styles/spacing' as spacing;
+@use '@/styles/typography' as typography;
+
+.screen {
+  position: relative;
+  min-height: 100dvh;
+  background: colors.$black-100;
+}
+
+.error {
+  position: fixed;
+  z-index: 20;
+  right: spacing.$space-20;
+  bottom: calc(env(safe-area-inset-bottom) + #{spacing.$space-20});
+  left: spacing.$space-20;
+  max-width: 335px;
+  margin: 0 auto;
+  padding: spacing.$space-12 spacing.$space-16;
+  color: colors.$white;
+  background: colors.$error;
+  border-radius: 8px;
+  @include typography.body-sm;
+  @include typography.font-weight-semibold;
+  text-align: center;
+}
