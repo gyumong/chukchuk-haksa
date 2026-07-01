@@ -43,6 +43,19 @@ interface AdminCallOptions {
   data?: unknown;
 }
 
+// Spring 래퍼({ success, data, message, error })에서 success:false 면 message/error 를 붙여 즉시 throw.
+// adminFetch 와 fetchIsPortalLinked 가 동일 계약을 공유하므로 검사 로직을 한 곳에 둔다.
+function assertWrapperSuccess(
+  context: string,
+  wrapper: { success?: boolean; message?: string; error?: unknown }
+): void {
+  if (wrapper.success === false) {
+    throw new Error(
+      `[admin] ${context} → success:false ${wrapper.message ?? ''} ${JSON.stringify(wrapper.error ?? null)}`.trim()
+    );
+  }
+}
+
 // 래퍼 언랩 + 실패/비JSON 응답은 상태코드·본문을 그대로 노출해 디버깅이 쉽도록 한다.
 async function adminFetch<T>(method: Method, path: string, options: AdminCallOptions = {}): Promise<T> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -55,7 +68,15 @@ async function adminFetch<T>(method: Method, path: string, options: AdminCallOpt
     init.body = JSON.stringify(options.data ?? {});
   }
 
-  const res = await fetch(`${ADMIN_BASE}${path}`, init);
+  let res: Response;
+  try {
+    res = await fetch(`${ADMIN_BASE}${path}`, init);
+  } catch (err) {
+    if (err instanceof Error && err.name === 'TimeoutError') {
+      throw new Error(`[admin] ${method} ${path} → ${ADMIN_REQUEST_TIMEOUT_MS}ms 타임아웃`);
+    }
+    throw err;
+  }
   const text = await res.text();
   if (!res.ok) {
     throw new Error(`[admin] ${method} ${path} → ${res.status} ${text.slice(0, 300)}`);
@@ -72,11 +93,7 @@ async function adminFetch<T>(method: Method, path: string, options: AdminCallOpt
   // 200 + success:false 를 정상값처럼 흘려보내면 후속 테스트가 오염되므로 즉시 throw.
   if (body && typeof body === 'object' && 'success' in body) {
     const wrapper = body as { success?: boolean; data?: T; message?: string; error?: unknown };
-    if (wrapper.success === false) {
-      throw new Error(
-        `[admin] ${method} ${path} → success:false ${wrapper.message ?? ''} ${JSON.stringify(wrapper.error ?? null)}`.trim()
-      );
-    }
+    assertWrapperSuccess(`${method} ${path}`, wrapper);
     return wrapper.data as T;
   }
   // 래퍼가 아니어도 data 키만 있으면 언랩(구버전 호환), 아니면 그대로 반환.
@@ -172,8 +189,6 @@ export async function fetchIsPortalLinked(token: string): Promise<boolean> {
     throw new Error(`[admin] GET /api/users/me 응답이 JSON 이 아님: ${text.slice(0, 200)}`);
   }
   // 200 + success:false 를 false 로 축소하지 않고 명확히 실패시킨다.
-  if (body?.success === false) {
-    throw new Error(`[admin] GET /api/users/me → success:false ${body.message ?? ''}`.trim());
-  }
+  assertWrapperSuccess('GET /api/users/me', body);
   return Boolean(body?.data?.isPortalLinked ?? body?.isPortalLinked);
 }
