@@ -61,14 +61,21 @@ const LoadingScreen = () => {
   // (문구 순환은 위 타이머가 유지하므로 화면이 멈춰 보이지 않는다).
   useEffect(() => {
     let cancelled = false;
-    fetch(LOADING_ANIMATION_PATH)
-      .then(res => res.json())
-      .then(data => {
+    const load = async () => {
+      try {
+        const res = await fetch(LOADING_ANIMATION_PATH);
+        if (!res.ok) {
+          throw new Error(`Failed to load loading animation: ${res.status}`);
+        }
+        const data = await res.json();
         if (!cancelled) {
           setAnimationData(data);
         }
-      })
-      .catch(captureException);
+      } catch (error) {
+        captureException(error);
+      }
+    };
+    void load();
 
     return () => {
       cancelled = true;
@@ -85,7 +92,7 @@ const LoadingScreen = () => {
     <div className={styles.wrapper}>
       <main className={styles.main}>
         <div className={styles.animationContainer}>
-          {!!animationData && (
+          {Boolean(animationData) && (
             <Lottie animationData={animationData} loop autoplay className={styles.animation} />
           )}
         </div>
