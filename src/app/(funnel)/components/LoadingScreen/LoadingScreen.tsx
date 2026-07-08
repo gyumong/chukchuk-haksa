@@ -1,9 +1,16 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { captureException } from '@sentry/nextjs';
 import { isInWebView } from '@/lib/webview';
 import styles from './LoadingScreen.module.scss';
+
+// lottie-react 는 브라우저 전용(window 참조)이라 SSR 을 끄고 클라에서만 로드한다.
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
+
+// 로딩 애니메이션(Lottie). ~1MB 라 JS 번들에 넣지 않고 public 정적 자산으로 런타임 fetch 한다(CDN 캐시).
+const LOADING_ANIMATION_PATH = '/videos/chuck_loading2.json';
 
 const LOADING_STATES = [
   {
@@ -25,16 +32,14 @@ const TEXT_ROTATE_INTERVAL_MS = 2500;
 const FADE_DURATION_MS = 300;
 
 const LoadingScreen = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
   const [stateIndex, setStateIndex] = useState(0);
   const [fadeState, setFadeState] = useState<'in' | 'out'>('in');
   // 웹뷰에선 OS 가 실제 홈 인디케이터를 그리므로 아래 장식용 가짜 인디케이터는 숨긴다.
   // SSR/hydration 불일치(서버엔 window 없음)를 피하려 마운트 후에 판별한다.
   const [isWebView, setIsWebView] = useState(false);
+  const [animationData, setAnimationData] = useState<unknown>(null);
 
-  // 안내 문구 순환 — video 의 'ended' 이벤트가 아니라 독립 타이머로 구동한다.
-  // (iOS WKWebView 는 사용자 제스처 없는 자동재생을 막을 수 있는데, 과거엔 문구 전환이 video.play()→'ended'
-  //  에 종속돼 있어 재생이 거부되면 로고와 함께 문구까지 첫 상태로 얼어붙었다. 텍스트를 비디오와 분리한다.)
+  // 안내 문구 순환 — 애니메이션과 무관하게 독립 타이머로 구동한다(문구가 멈춰 보이지 않도록).
   useEffect(() => {
     let fadeTimer: ReturnType<typeof setTimeout>;
     const interval = setInterval(() => {
@@ -51,20 +56,30 @@ const LoadingScreen = () => {
     };
   }, []);
 
-  // 로고 비디오 자동재생. 마크업의 autoPlay/loop 로 1차 시도하되, 일부 웹뷰는 명시적 play() 가 필요해
-  // 한 번 더 호출한다. iOS 자동재생 정책으로 거부(NotAllowedError)되면 Sentry 로만 추적하고 조용히 넘긴다
-  // — 문구 순환은 위 타이머가 독립적으로 유지하므로 화면이 멈춰 보이지 않는다.
+  // 로딩 애니메이션 로드. Lottie(SVG/JS 구동)는 video 와 달리 iOS 자동재생 정책의 영향을 받지 않아
+  // 과거의 video.muted/play() 우회가 필요 없다. fetch 실패는 Sentry 로만 남기고 조용히 넘긴다
+  // (문구 순환은 위 타이머가 유지하므로 화면이 멈춰 보이지 않는다).
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) {
-      return;
-    }
-    // React 는 SSR/hydration 시 <video> 의 muted 를 DOM 에 반영하지 않는 경우가 있어 hydration 후
-    // video.muted 가 false 로 남는다. iOS(WKWebView)는 unmuted 동영상의 제스처 없는 자동재생을 막으므로
-    // play() 가 NotAllowedError 로 거부된다. play() 직전에 muted 를 프로퍼티+속성 양쪽으로 강제한다.
-    video.muted = true;
-    video.setAttribute('muted', '');
-    void video.play().catch(captureException);
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const res = await fetch(LOADING_ANIMATION_PATH);
+        if (!res.ok) {
+          throw new Error(`Failed to load loading animation: ${res.status}`);
+        }
+        const data = await res.json();
+        if (!cancelled) {
+          setAnimationData(data);
+        }
+      } catch (error) {
+        captureException(error);
+      }
+    };
+    void load();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -76,10 +91,10 @@ const LoadingScreen = () => {
   return (
     <div className={styles.wrapper}>
       <main className={styles.main}>
-        <div className={styles.videoContainer}>
-          <video ref={videoRef} className={styles.video} playsInline muted loop autoPlay preload="auto">
-            <source src="/videos/chuck_loading.mp4" type="video/mp4" />
-          </video>
+        <div className={styles.animationContainer}>
+          {Boolean(animationData) && (
+            <Lottie animationData={animationData} loop autoplay className={styles.animation} />
+          )}
         </div>
 
         <div className={`${styles.textContainer} ${styles[fadeState]}`}>
