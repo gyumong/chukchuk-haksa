@@ -1,0 +1,25 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/device.scss' as device;
+@use '@/styles/spacing.scss' as spacing;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: color.$background-color;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-16;
+  width: 100%;
+  padding: spacing.$space-16;
+
+  // 어드민은 표(강의 후보·수강 목록)를 많이 보므로 앱 화면보다 넓게 쓴다.
+  @include device.medium-expanded {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: spacing.$space-24;
+  }
+}

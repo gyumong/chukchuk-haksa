@@ -1,0 +1,123 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/radius.scss' as radius;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: spacing.$space-8;
+}
+
+.count {
+  color: color.$gray-500;
+
+  @include typography.body-xs;
+  @include typography.font-weight-medium;
+}
+
+.actions {
+  display: flex;
+  gap: spacing.$space-6;
+}
+
+.empty {
+  margin: 0;
+  padding: spacing.$space-12;
+  color: color.$gray-500;
+  text-align: center;
+  background-color: color.$gray-300;
+
+  @include typography.body-sm;
+  @include typography.font-weight-regular;
+  @include radius.radius-sm;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-6;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  min-width: 0;
+  border: 1px solid color.$gray-200;
+
+  @include radius.radius-sm;
+}
+
+.details {
+  min-width: 0;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: spacing.$space-6;
+  padding: spacing.$space-8;
+  cursor: pointer;
+
+  @include typography.body-xs;
+  @include typography.font-weight-regular;
+}
+
+.time {
+  color: color.$gray-500;
+  font-family: monospace;
+}
+
+.method {
+  color: color.$black-100;
+  font-family: monospace;
+
+  @include typography.font-weight-bold;
+}
+
+.path {
+  color: color.$gray-600;
+  font-family: monospace;
+  word-break: break-all;
+}
+
+.badge {
+  flex-shrink: 0;
+  padding: spacing.$space-1 spacing.$space-6;
+  color: color.$white;
+
+  @include typography.font-weight-semibold;
+  @include radius.radius-full;
+}
+
+.badgeSuccess {
+  background-color: color.$success;
+}
+
+.badgeError {
+  background-color: color.$error;
+}
+
+.message {
+  min-width: 0;
+  color: color.$gray-600;
+  word-break: break-word;
+}
+
+// 응답 본문은 길고 줄바꿈이 의미를 가진다 → 자체 스크롤 박스에 가둬 페이지 가로 스크롤을 막는다.
+.payload {
+  max-height: 240px;
+  margin: 0;
+  padding: spacing.$space-8;
+  overflow-x: auto;
+  overflow-y: auto;
+  color: color.$black-100;
+  background-color: color.$gray-300;
+  font-family: monospace;
+  white-space: pre;
+
+  @include typography.body-xs;
+}

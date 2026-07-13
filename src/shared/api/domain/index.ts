@@ -1,4 +1,5 @@
 export * from './academicrecordcontroller/AcademicRecordController';
+export * from './admintest/AdminTest';
 export * from './auth/Auth';
 export * from './checkcontroller/CheckController';
 export * from './graduation/Graduation';

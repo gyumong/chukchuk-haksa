@@ -1,0 +1,86 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/device.scss' as device;
+@use '@/styles/radius.scss' as radius;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+// $purple-100(#7f71fb)은 진한 보라라 배경으로 깔면 그 위 흰 글자가 3.6:1 밖에 안 나온다(AA 미달).
+// 배경은 옅은 틴트($purple-400)로 두고 글자는 $black-100 으로, 강조는 좌측 보더로 준다.
+
+.banner {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-12;
+  padding: spacing.$space-16;
+  background-color: color.$purple-400;
+  border: 1px solid color.$purple-200;
+  border-left: 4px solid color.$purple-100;
+
+  @include radius.radius-md;
+
+  @include device.medium-expanded {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.envGroup {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-4;
+  min-width: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: spacing.$space-6;
+  min-width: 0;
+}
+
+.key {
+  flex-shrink: 0;
+  color: color.$gray-600;
+
+  @include typography.body-xs;
+  @include typography.font-weight-bold;
+}
+
+.value {
+  padding: spacing.$space-2 spacing.$space-6;
+  color: color.$black-100;
+  background-color: color.$white;
+  font-family: monospace;
+  word-break: break-all;
+
+  @include typography.body-xs;
+  @include radius.radius-sm;
+}
+
+.note {
+  margin: 0;
+  color: color.$gray-600;
+
+  @include typography.body-xs;
+  @include typography.font-weight-regular;
+}
+
+.sessionGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: spacing.$space-8;
+
+  @include device.medium-expanded {
+    flex-shrink: 0;
+    justify-content: flex-end;
+  }
+}
+
+.sessionText {
+  color: color.$black-100;
+
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+}

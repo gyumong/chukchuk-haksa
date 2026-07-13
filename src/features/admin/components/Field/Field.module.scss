@@ -1,0 +1,72 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/radius.scss' as radius;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+// 팔레트 주의: $gray-100(#a3a2b1)은 중간 회색이라 배경으로 못 쓴다(옅은 배경은 $gray-300).
+// $purple-300/$purple-400 은 거의 흰색에 가까운 옅은 틴트라 focus ring·accent 로 쓰면 안 보인다
+// → 강조가 필요한 곳은 진한 $purple-100 을 쓴다.
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-4;
+  min-width: 0;
+}
+
+.label {
+  color: color.$gray-600;
+
+  @include typography.body-xs;
+  @include typography.font-weight-medium;
+}
+
+.input,
+.select {
+  width: 100%;
+  min-width: 0;
+  padding: spacing.$space-8;
+  color: color.$black-100;
+  background-color: color.$white;
+  border: 1px solid color.$gray-200;
+
+  @include typography.body-sm;
+  @include radius.radius-sm;
+
+  &:focus {
+    outline: 2px solid color.$purple-100;
+    outline-offset: -1px;
+  }
+
+  &:disabled {
+    color: color.$gray-500;
+    background-color: color.$gray-300;
+  }
+}
+
+.checkboxField {
+  display: flex;
+  align-items: center;
+  gap: spacing.$space-6;
+}
+
+// 전역 리셋(styles/global/_reset.scss)이 모든 input 에 appearance:none 을 걸어 체크박스가 아예
+// 안 그려진다(폼 컨트롤이 없는 앱이라 복원 규칙도 없다). 어드민에서만 네이티브 렌더링을 되살린다.
+.checkbox {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  -moz-appearance: checkbox;
+  accent-color: color.$purple-100;
+  cursor: pointer;
+}
+
+.checkboxLabel {
+  color: color.$black-100;
+  cursor: pointer;
+
+  @include typography.body-sm;
+  @include typography.font-weight-regular;
+}

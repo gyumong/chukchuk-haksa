@@ -47,6 +47,15 @@
 }
 
 // Sizes
+// size="sm" 은 cva(Button.tsx)가 예전부터 노출하던 값인데 대응 클래스가 없어, 쓰면 height·padding 이
+// 통째로 비어 글자가 버튼 밖으로 삐져나왔다. API 가 광고하는 크기를 실제로 채운다(md=64, lg=72 스케일에 맞춘 40).
+.size-sm {
+  height: 40px;
+  padding: 0 spacing.$space-12;
+  @include typography.body-sm;
+  @include typography.font-weight-semibold;
+}
+
 .size-md {
   height: 64px;
   padding: 0 spacing.$space-18;

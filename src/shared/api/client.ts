@@ -1,6 +1,7 @@
 import { reportClientError } from '@/lib/error-reporting/reportClientError';
 import {
   AcademicRecordController as AcademicRecordApi,
+  AdminTest as AdminTestApi,
   Auth as AuthApi,
   Graduation as GraduationApi,
   LectureEvaluations as LectureEvaluationsApi,
@@ -85,6 +86,9 @@ export const graduationApi = createApiClient(GraduationApi);
 export const lectureEvaluationsApi = createApiClient(LectureEvaluationsApi);
 export const semesterRecordApi = createApiClient(SemesterRecordApi);
 export const portalLinkApi = createApiClient(PortalLinkApi);
+// dev 전용 Admin Test API (/api/admin/**). 프로덕션 백엔드엔 존재하지 않으며, 소비부는
+// /admin 페이지뿐이다(getEnvironment() === 'production' 이면 notFound 로 차단).
+export const adminTestApi = createApiClient(AdminTestApi);
 // PortalJobQueryController 가 PortalLink 태그로 병합됨 — getJobStatus/getJobSummary 도 PortalLink 가 보유.
 // 호환용 alias — 새 인스턴스 대신 portalLinkApi 를 재사용해 클라이언트 상태(보안 등)를 공유한다.
 export const portalJobQueryApi = portalLinkApi;

@@ -1,0 +1,40 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+// auto-fill + minmax 로 컬럼 수를 뷰포트에 맡긴다 — 모바일에서는 자연히 1열이 되므로
+// 브레이크포인트를 따로 잡지 않는다.
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: spacing.$space-12;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-4;
+  min-width: 0;
+}
+
+// 체크박스는 라벨이 위가 아니라 옆에 붙어 다른 셀보다 짧다 → 아래쪽 정렬로 입력 줄을 맞춘다.
+.checkboxCell {
+  display: flex;
+  align-items: flex-end;
+  min-width: 0;
+  padding-bottom: spacing.$space-8;
+}
+
+.helper {
+  margin: 0;
+  color: color.$gray-500;
+  word-break: keep-all;
+
+  @include typography.body-xs;
+  @include typography.font-weight-regular;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}

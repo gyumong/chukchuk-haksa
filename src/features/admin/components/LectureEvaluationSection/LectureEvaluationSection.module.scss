@@ -1,0 +1,41 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+// $warning(#f6b645 앰버)은 흰 배경 위 글자색으로 쓰면 대비가 2:1 대라 못 읽는다.
+// 경고 신호는 ⚠ 기호와 굵기로 주고, 글자는 읽히는 색으로 둔다.
+.warning {
+  color: color.$black-100;
+
+  @include typography.font-weight-semibold;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: spacing.$space-8;
+}
+
+// Button 의 size="sm" 은 대응 클래스가 없어 높이/패딩이 비고, variant="secondary" 는 gray-200 배경에
+// gray-100 글자라 읽히지 않는다 → 그리드 안에서만 크기·색을 다시 잡는다(전역 Button 은 건드리지 않음).
+.grid .stateButton {
+  flex-direction: column;
+  gap: spacing.$space-2;
+  min-height: 64px;
+  padding: spacing.$space-8;
+  color: color.$black-100;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.stateLabel {
+  @include typography.body-sm;
+  @include typography.font-weight-bold;
+}
+
+.stateDescription {
+  color: color.$gray-600;
+
+  @include typography.body-xs;
+  @include typography.font-weight-regular;
+}

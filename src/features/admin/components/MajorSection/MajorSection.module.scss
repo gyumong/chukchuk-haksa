@@ -1,0 +1,15 @@
+@use '@/styles/spacing.scss' as spacing;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-12;
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: spacing.$space-8;
+  margin-top: spacing.$space-4;
+}

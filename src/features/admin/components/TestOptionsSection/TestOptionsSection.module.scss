@@ -1,0 +1,96 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/radius.scss' as radius;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+// 팔레트 주의: $gray-100(#a3a2b1)은 중간 회색이라 배경으로 쓰면 그 위 글자가 안 읽힌다.
+// 옅은 배경은 $gray-300(#eff0f7).
+
+.actions {
+  display: flex;
+  gap: spacing.$space-8;
+}
+
+.summary {
+  margin: 0;
+  color: color.$gray-600;
+
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+}
+
+.error {
+  margin: 0;
+  color: color.$error;
+
+  @include typography.body-sm;
+}
+
+.areaList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: spacing.$space-6;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.areaItem {
+  padding: spacing.$space-4 spacing.$space-8;
+  color: color.$black-100;
+  background-color: color.$gray-300;
+
+  @include typography.body-xs;
+  @include radius.radius-sm;
+}
+
+.meta {
+  color: color.$gray-500;
+}
+
+.details {
+  border: 1px solid color.$gray-200;
+
+  @include radius.radius-sm;
+}
+
+.summaryToggle {
+  padding: spacing.$space-8;
+  color: color.$gray-600;
+  cursor: pointer;
+
+  @include typography.body-sm;
+}
+
+.tableWrapper {
+  max-height: 320px;
+  overflow: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  @include typography.body-xs;
+
+  th,
+  td {
+    padding: spacing.$space-6 spacing.$space-8;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid color.$gray-200;
+  }
+
+  th {
+    position: sticky;
+    top: 0;
+    color: color.$gray-600;
+    background-color: color.$gray-300;
+
+    @include typography.font-weight-semibold;
+  }
+
+  td {
+    color: color.$black-100;
+  }
+}

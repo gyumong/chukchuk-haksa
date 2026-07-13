@@ -1,0 +1,139 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/radius.scss' as radius;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-12;
+
+  // 추가/삭제 블록 경계. 두 블록이 한 카드 안에 있어 시각적 구분이 없으면 삭제 폼을 추가 폼으로 착각한다.
+  & + & {
+    padding-top: spacing.$space-16;
+    border-top: 1px solid color.$gray-200;
+  }
+}
+
+.blockTitle {
+  margin: 0;
+  color: color.$black-100;
+
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  align-items: end;
+  gap: spacing.$space-12;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: spacing.$space-8;
+}
+
+// gray-100 은 #a3a2b1(중간 회색)이라 배경으로 깔면 안 된다 — 옅은 회색은 gray-300.
+// 본문을 $warning(앰버)으로 칠하면 어떤 밝은 배경에서도 대비가 2:1 을 못 넘어 읽히지 않으므로,
+// 경고 색은 왼쪽 보더로만 쓰고 글자는 black-100 으로 둔다.
+.warning {
+  margin: 0;
+  padding: spacing.$space-8;
+  color: color.$black-100;
+  background-color: color.$gray-300;
+  border-left: 3px solid color.$warning;
+
+  @include typography.body-xs;
+  @include typography.font-weight-regular;
+  @include radius.radius-sm;
+}
+
+.status {
+  margin: 0;
+  color: color.$gray-500;
+
+  @include typography.body-sm;
+  @include typography.font-weight-regular;
+}
+
+.error {
+  margin: 0;
+  color: color.$error;
+
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+}
+
+.summary {
+  margin: 0;
+  color: color.$gray-600;
+
+  @include typography.body-xs;
+  @include typography.font-weight-medium;
+}
+
+.muted {
+  color: color.$gray-400;
+}
+
+// 열이 8개라 모바일에서 페이지 자체가 가로로 늘어나지 않도록 표만 스크롤시킨다.
+.tableWrapper {
+  overflow-x: auto;
+  border: 1px solid color.$gray-200;
+
+  @include radius.radius-sm;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+
+  @include typography.body-xs;
+
+  th,
+  td {
+    padding: spacing.$space-6 spacing.$space-8;
+    text-align: left;
+    // 구분선은 바깥 테두리(.tableWrapper)와 같은 gray-200. gray-100 은 프레임보다 어두워 행선이 튄다.
+    border-bottom: 1px solid color.$gray-200;
+  }
+
+  th {
+    color: color.$gray-600;
+    background-color: color.$gray-300;
+
+    @include typography.font-weight-medium;
+  }
+
+  td {
+    color: color.$black-100;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  // th/td 의 text-align: left 를 이기려면 같은 블록 안에서 더 구체적으로 선언해야 한다.
+  th.checkboxCell,
+  td.checkboxCell {
+    width: 36px;
+    text-align: center;
+  }
+}
+
+// 전역 리셋이 모든 input 에 appearance:none 을 걸어 체크박스가 안 그려진다 → 네이티브 렌더링 복원.
+// accent-color 도 옅은 $purple-400 이면 체크 표시가 배경에 묻히므로 진한 $purple-100 을 쓴다.
+.checkbox {
+  width: 16px;
+  height: 16px;
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  -moz-appearance: checkbox;
+  accent-color: color.$purple-100;
+  cursor: pointer;
+}

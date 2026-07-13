@@ -1,0 +1,73 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/radius.scss' as radius;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+// 팔레트 주의: 이 레포의 gray 스케일은 단조롭지 않다. $gray-100(#a3a2b1)은 "옅은 회색"이 아니라
+// 중간 회색이라 배경으로 깔면 그 위 글자 대비가 무너진다. 옅은 배경은 $gray-300(#eff0f7)을 쓴다.
+// 마찬가지로 $purple-100(#7f71fb)은 진한 보라(강조색)이고, 옅은 보라는 $purple-300/$purple-400 이다.
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-12;
+  padding: spacing.$space-16;
+  background-color: color.$white;
+  border: 1px solid color.$gray-200;
+
+  @include radius.radius-md;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: spacing.$space-8;
+}
+
+.title {
+  margin: 0;
+  color: color.$black-100;
+
+  @include typography.body-lg;
+  @include typography.font-weight-bold;
+}
+
+.endpoint {
+  padding: spacing.$space-2 spacing.$space-6;
+  color: color.$gray-600;
+  background-color: color.$gray-300;
+  font-family: monospace;
+  word-break: break-all;
+
+  @include typography.body-xs;
+  @include radius.radius-sm;
+}
+
+.description {
+  margin: 0;
+  color: color.$gray-500;
+  white-space: pre-line;
+
+  @include typography.body-sm;
+  @include typography.font-weight-regular;
+}
+
+// 경고색($warning, #f6b645 앰버)은 밝은 배경 위 글자색으로 쓰면 대비가 2:1 을 못 넘는다.
+// 색은 좌측 보더로 옮기고 글자는 $black-100 으로 읽히게 한다.
+.disabledReason {
+  margin: 0;
+  padding: spacing.$space-8;
+  color: color.$black-100;
+  background-color: color.$gray-300;
+  border-left: 3px solid color.$warning;
+
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+  @include radius.radius-sm;
+}
+
+.disabledBody {
+  opacity: 0.5;
+  pointer-events: none;
+}
