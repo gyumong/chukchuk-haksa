@@ -47,7 +47,6 @@
   color: color.$black-100;
   @include typography.body-lg;
   @include typography.font-weight-bold;
-  word-wrap: break-word;
   overflow-wrap: break-word;
   // flex 자식이라 줄바꿈하려면 min-width:0 필요.
   min-width: 0;

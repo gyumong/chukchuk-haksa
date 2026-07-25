@@ -42,7 +42,7 @@ export function LectureEvaluationIntro({ grade, onOpen, onSkip, isSkipping = fal
   }, [isHighGrade, isOpening, onOpen]);
 
   const handleOpen = () => {
-    if (!isOpening) {
+    if (!isOpening && !isSkipping) {
       setIsOpening(true);
     }
   };
@@ -53,7 +53,7 @@ export function LectureEvaluationIntro({ grade, onOpen, onSkip, isSkipping = fal
         type="button"
         className={`${styles.introCard} ${isHighGrade ? styles.highGrade : ''} ${isOpening ? styles.opening : ''}`}
         aria-label={`${grade.courseName} 성적 카드 열기`}
-        disabled={isOpening}
+        disabled={isOpening || isSkipping}
         onClick={handleOpen}
       >
         <span className={styles.introHeader}>
@@ -110,7 +110,7 @@ export function LectureEvaluationIntro({ grade, onOpen, onSkip, isSkipping = fal
       </button>
 
       <div className={styles.skipArea}>
-        <button type="button" className={styles.skipButton} disabled={isSkipping} onClick={onSkip}>
+        <button type="button" className={styles.skipButton} disabled={isSkipping || isOpening} onClick={onSkip}>
           강의평가 건너뛰기
         </button>
         <p>*수강랭킹은 강의평가 참여 유저만 제공됩니다.</p>

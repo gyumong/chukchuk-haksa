@@ -1,5 +1,6 @@
 import * as amplitude from '@amplitude/analytics-browser';
-import { ENV } from '@/config/environment';
+import { sessionReplayPlugin } from '@amplitude/plugin-session-replay-browser';
+import { ENV, getEnvironment } from '@/config/environment';
 
 // SDK 직접 import 는 이 모듈에서만. 다른 코드는 setAnalyticsUser/resetAnalytics/initAnalytics 만 사용.
 // 향후 PostHog 등 다른 분석 도구로 교체할 때 한 곳만 수정하면 됨.
@@ -21,6 +22,22 @@ function ensureInit(): void {
     initialized = true; // 재시도 막기 위해 표시
     return;
   }
+  // Session Replay — DOM 녹화 플러그인. SDK 직접 의존은 이 모듈에만 둔다. init() 보다 *먼저* add 해야 한다.
+  // 마스킹: 학생 PII(이름·학번·학과·성적)는 화면에 평문(<div>/<td>)으로 렌더되는데, 기본값 medium 은
+  // <input> 만 마스킹하고 일반 텍스트는 평문 녹화한다 → conservative 로 전체 텍스트+폼을 마스킹.
+  // 안전한 UI chrome 만 노출하려면 추후 unmaskSelector(['[data-amp-unmask]']) 로 선택 해제.
+  // ⚠️ Amplitude 대시보드의 Session Replay Settings(원격 설정)가 이 privacyConfig 보다 우선하므로
+  //    대시보드 마스킹도 동일하게 conservative 로 맞춰야 코드 의도가 보장된다.
+  // sampleRate: 세션 단위 비율(0~1). 기본 0(아무것도 안 잡힘)이라 환경별로 명시한다. 운영은 낮게 시작해
+  //   점진 상향(재배포 없이 Remote Config 로도 조정 가능). prod 외(dev/preview)는 100% 로 디버깅 편의.
+  amplitude.add(
+    sessionReplayPlugin({
+      sampleRate: getEnvironment() === 'production' ? 0.1 : 1,
+      privacyConfig: {
+        defaultMaskLevel: 'conservative',
+      },
+    }),
+  );
   amplitude.init(ENV.AMPLITUDE_API_KEY, undefined, {
     // forms/fileDownloads/elementInteractions 는 의도적으로 OFF — 이벤트 양 과다 방지
     defaultTracking: {

@@ -25,14 +25,17 @@ export function LectureEvaluationScreen({ exitRoute }: LectureEvaluationScreenPr
   const [isIntroOpen, setIsIntroOpen] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const isPending = data.evaluationStatus === 'PENDING';
+  // PENDING 이어도 평가할 성적이 없으면 머무를 화면이 없으므로 종료 경로로 보낸다.
+  // (이 케이스를 redirect 조건에서 빼면 영구 공백 화면에 갇힌다.)
+  const shouldExit = !isPending || data.grades.length === 0;
 
   useEffect(() => {
-    if (!isPending) {
+    if (shouldExit) {
       router.replace(exitRoute);
     }
-  }, [exitRoute, isPending, router]);
+  }, [exitRoute, shouldExit, router]);
 
-  if (!isPending || data.grades.length === 0) {
+  if (shouldExit) {
     return null;
   }
 
