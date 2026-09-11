@@ -25,7 +25,7 @@ export class PortalLink<
   SecurityDataType = unknown,
 > extends HttpClient<SecurityDataType> {
   /**
-   * @description 포털 자격 증명을 받아 비동기 스크래핑 job을 생성하고 polling endpoint를 반환합니다.
+   * @description 포털 자격 증명으로 비동기 스크래핑 job을 생성하고 polling endpoint를 반환합니다. 포털 로그인 실패는 job 상태 조회로 확인합니다.
    *
    * @tags Portal Link
    * @name CreatePortalLinkJob
