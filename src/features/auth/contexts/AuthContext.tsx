@@ -16,6 +16,8 @@ interface AuthContextValue {
   /** Amplitude 등 분석 도구 식별자 (사용자 PK UUID). 미응답 시 null. */
   analyticsId: string | null;
   isReady: boolean;
+  sessionExpired: boolean;
+  notifySessionExpired: () => void;
   clearAuth: () => Promise<void>;
   refresh: () => Promise<string | null>;
   // 외부에서 명시적으로 /api/session 재호출이 필요할 때 (e.g. 학교 연동 완료 직후 isPortalLinked
@@ -58,6 +60,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isPortalLinked, setIsPortalLinked] = useState<boolean | null>(null);
   const [analyticsId, setAnalyticsIdState] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [sessionExpired, setSessionExpired] = useState(false);
+
+  const notifySessionExpired = useCallback(() => {
+    setSessionExpired(true);
+  }, []);
 
   useEffect(() => {
     return subscribeAccessTokenStore(token => setAccessTokenState(token));
@@ -116,6 +123,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAccessTokenStore(null);
     setIsPortalLinked(null);
     setAnalyticsIdState(null);
+    setSessionExpired(false);
   }, []);
 
   const refresh = useCallback(() => refreshAccessTokenStore(), []);
@@ -128,7 +136,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [applySessionState]);
 
   return (
-    <AuthContext.Provider value={{ accessToken, isPortalLinked, analyticsId, isReady, clearAuth, refresh, hydrate }}>
+    <AuthContext.Provider value={{ accessToken, isPortalLinked, analyticsId, isReady, sessionExpired, notifySessionExpired, clearAuth, refresh, hydrate }}>
       {children}
     </AuthContext.Provider>
   );
