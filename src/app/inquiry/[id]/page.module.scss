@@ -1,0 +1,76 @@
+@use '@/styles/color' as color;
+@use '@/styles/typography' as typography;
+@use '@/styles/spacing' as spacing;
+@use '@/styles/radius' as radius;
+@use '@/styles/utilities' as utilities;
+
+.title {
+  @include typography.body-md;
+  @include typography.font-weight-semibold;
+  margin-top: spacing.$space-12;
+}
+
+.date {
+  @include typography.body-xs;
+  color: color.$gray-500;
+  margin-top: spacing.$space-4;
+}
+
+.content {
+  @include typography.body-sm;
+  margin-top: spacing.$space-16;
+  white-space: pre-line;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.answerCard {
+  margin-top: spacing.$space-24;
+  width: 100%;
+  @include utilities.card-base;
+  background-color: color.$gray-300;
+}
+
+.answerHeader {
+  display: flex;
+  align-items: center;
+  gap: spacing.$space-8;
+}
+
+.answerAvatar {
+  width: spacing.$space-40;
+  height: spacing.$space-40;
+  border-radius: radius.$radius-full;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.answerAuthorInfo {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-4;
+}
+
+.answerAuthor {
+  @include typography.body-sm;
+  @include typography.font-weight-semibold;
+}
+
+.answerDate {
+  @include typography.body-xs;
+  color: color.$gray-500;
+}
+
+.answerContent {
+  @include typography.body-sm;
+  margin-top: spacing.$space-12;
+  white-space: pre-line;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.notFound {
+  @include typography.body-md;
+  text-align: center;
+  margin-top: spacing.$space-48;
+}

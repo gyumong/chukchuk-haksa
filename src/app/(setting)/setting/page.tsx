@@ -10,6 +10,11 @@ const SettingPage = () => {
 
   const menuItems = [
     {
+      label: '문의하기',
+      icon: <Icon name="arrow-right" size={24} />,
+      onClick: () => router.push(ROUTES.INQUIRY.HOME),
+    },
+    {
       label: '탈퇴하기',
       color: '#FF5751',
       icon: <Icon name="arrow-right" size={24} />,
