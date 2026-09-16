@@ -3,12 +3,13 @@
 @use '@/styles/spacing' as spacing;
 
 .container {
+  width: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: spacing.$space-12;
-  padding: spacing.$space-66 0;
 }
 
 .text {
