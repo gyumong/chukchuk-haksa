@@ -38,4 +38,9 @@ export const ROUTES = {
     LECTURE_EVALUATION: '/mpa/lecture-evaluation',
     DELETE: '/mpa/delete',
   },
+  INQUIRY: {
+    HOME: '/inquiry',
+    NEW: '/inquiry/new',
+    DETAIL: '/inquiry',
+  },
 } as const;

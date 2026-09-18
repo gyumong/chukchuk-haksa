@@ -1,0 +1,29 @@
+@use '@/styles/utilities' as utilities;
+@use '@/styles/typography' as typography;
+@use '@/styles/color' as color;
+@use '@/styles/spacing' as spacing;
+
+.card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  @include utilities.card-base;
+  border: 1px solid color.$gray-300;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+}
+
+.description {
+  @include typography.body-sm;
+  color: color.$gray-500;
+  margin-top: spacing.$space-6;
+}
