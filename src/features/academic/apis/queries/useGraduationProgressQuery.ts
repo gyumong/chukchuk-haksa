@@ -25,3 +25,15 @@ export function useLanguageCertStatusQuery() {
     }),
   });
 }
+
+/**
+ * 편입생 부분 진단 결과. 일반 학생(REGULAR)이거나 백엔드가 아직 채우지 않았으면 null.
+ * null 이면 소비부는 기존 영역별 이수현황(graduationProgress)으로 렌더한다.
+ */
+export function useTransferProgressQuery() {
+  return useSuspenseQuery({
+    queryKey: academicQueryKeys.graduationProgress(),
+    queryFn: fetchGraduationProgressResponse,
+    select: response => (response.analysisType === 'TRANSFER' ? (response.transferProgress ?? null) : null),
+  });
+}

@@ -11,26 +11,41 @@ export default function CourseAreaTrigger({
   requiredElectiveAreas,
   completedElectiveAreas,
   trailingAdornment,
+  creditsLabel,
   onClick,
 }: CourseAreaTriggerProps) {
   // TODO 선교 의존성 들어내기
+  // 학점 표기 우선순위: creditsLabel(통째 대체) > 선교(영역 수) > 기준 없음("N학점") > "이수 / 기준".
+  const renderCredits = () => {
+    if (creditsLabel != null) {
+      return creditsLabel;
+    }
+    if (requiredElectiveAreas) {
+      return (
+        <>
+          {completedElectiveAreas ?? 0}개 영역 / {requiredElectiveAreas}개 영역
+          <span className={styles.areaCount}>
+            ({currentCredits}/{requiredCredits})
+          </span>
+        </>
+      );
+    }
+    if (requiredCredits == null) {
+      return <>{currentCredits}학점</>;
+    }
+    return (
+      <>
+        {currentCredits} / {requiredCredits}
+      </>
+    );
+  };
+
   return (
     <div className={`${styles.container} ${isCompleted ? styles.completed : ''}`} onClick={onClick}>
       <div className={styles.info}>
         <span className={styles.title}>{title}</span>
         <span className={styles.credits}>
-          {requiredElectiveAreas ? (
-            <>
-              {completedElectiveAreas ?? 0}개 영역 / {requiredElectiveAreas}개 영역
-              <span className={styles.areaCount}>
-                ({currentCredits}/{requiredCredits})
-              </span>
-            </>
-          ) : (
-            <>
-              {currentCredits} / {requiredCredits}
-            </>
-          )}
+          {renderCredits()}
 
           {isCompleted && <Icon name="check-status-on" className={styles.checkIcon} size={18} />}
         </span>
