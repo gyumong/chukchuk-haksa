@@ -19,6 +19,10 @@
 /blob-report/
 /playwright/.cache/
 
+# e2e-ai (reticulum) 세션 색인 — trace 파싱 결과에 토큰·쿠키·응답 본문이 들어가므로 절대 커밋 금지.
+# (도구가 .e2e-ai/.gitignore 도 자동 생성하지만, 첫 실행 전부터 막아둔다.) docs/e2e-ai.md
+/.e2e-ai/
+
 # next.js
 /.next/
 /out/
@@ -50,6 +54,7 @@ docs/*
 !docs/mpa-school-link-handoff.md
 !docs/playwright-e2e-plan.md
 !docs/e2e-backend-request.md
+!docs/e2e-ai.md
 
 # reversible-deletion trash (move target instead of permanent rm)
 .trash/

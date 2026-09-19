@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "e2e-ai": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${E2E_AI_HOME:-../../reticulum/reticulum}/packages/mcp-server/dist/index.js", "--workspace", "."]
+    }
+  }
+}
