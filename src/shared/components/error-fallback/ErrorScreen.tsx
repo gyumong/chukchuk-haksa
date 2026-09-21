@@ -12,6 +12,8 @@ interface ErrorScreenProps {
   onRetry?: () => void;
   onInquiry?: () => void;
   onBack?: () => void;
+  linkLabel?: string;
+  onLinkClick?: () => void;
 }
 
 export function ErrorScreen({
@@ -23,12 +25,14 @@ export function ErrorScreen({
   onRetry,
   onInquiry,
   onBack,
+  linkLabel,
+  onLinkClick,
 }: ErrorScreenProps) {
-    // 카드 단위(fullPage=false)에서는 순수 안내만 하고 버튼을 아예 보여주지 않는다.
-    // // 버튼(재시도/문의하기)은 화면 전체를 덮는 fullPage일 때만 노출한다.
-    const showButtons = Boolean(fullPage);
-    
-    return (
+  // 카드 단위(fullPage=false)에서는 순수 안내만 하고 버튼을 아예 보여주지 않는다.
+  // 버튼(재시도/문의하기)은 화면 전체를 덮는 fullPage일 때만 노출한다.
+  const showButtons = Boolean(fullPage);
+
+  return (
     <div className={clsx(styles.container, fullPage && styles.fullPage)}>
       {fullPage && onBack && (
         <div className={styles.backNav}>
@@ -58,6 +62,12 @@ export function ErrorScreen({
             </div>
           )}
         </div>
+      )}
+
+      {showButtons && onLinkClick && (
+        <button type="button" className={styles.linkButton} onClick={onLinkClick}>
+          {linkLabel}
+        </button>
       )}
     </div>
   );

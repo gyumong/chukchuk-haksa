@@ -61,3 +61,19 @@
 .buttonItem {
   flex: 1;
 }
+
+.linkButton {
+  margin-top: spacing.$space-8;
+  padding: spacing.$space-4;
+  background: none;
+  border: none;
+  color: color.$gray-500;
+  cursor: pointer;
+  @include typography.body-md;
+  @include typography.font-weight-medium;
+
+  &:hover {
+    color: color.$black-100;
+    text-decoration: underline;
+  }
+}
