@@ -25,9 +25,24 @@ export default class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
+  componentDidMount() {
+    // 이 바운더리가 새로 마운트될 때마다 react-query의 "이미 에러 던졌으니 재요청 안 함" 플래그를
+    // 선제적으로 풀어준다. 뒤로가기 등 언마운트가 보장되지 않는 경로로 화면을 나갔다 다시 들어와도
+    // 정상적으로 재요청되도록 하기 위함.
+    this.props.onReset?.();
+  }
+
   componentDidUpdate(prev: Props) {
     if (this.state.hasError && !isSameArray(prev.keys, this.props.keys)) {
       this.reset();
+    }
+  }
+
+  componentWillUnmount() {
+    // 에러 상태로 언마운트되는 경우(다른 페이지로 이탈 등), react-query의
+    // "재요청 금지" 마킹을 풀어줘야 다음에 이 화면에 재진입했을 때 다시 fetch를 시도한다.
+    if (this.state.hasError) {
+      this.props.onReset?.();
     }
   }
 

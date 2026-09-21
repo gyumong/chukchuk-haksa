@@ -1,20 +1,23 @@
-import type { FallbackProps } from '../ErrorBoundary';
+'use client';
+
+import { ROUTES } from '@/constants/routes';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
+import type { AsyncFallbackProps } from '@/shared/components/AsyncBoundary';
+import { ErrorScreen } from './ErrorScreen';
 
 /**
- * 일반 에러 처리를 위한 기본 Fallback 컴포넌트
+ * ApiError가 아닌 예상치 못한 에러(JS 런타임 에러 등)를 위한 기본 Fallback.
  */
-const DefaultErrorFallback = ({ error, reset }: FallbackProps) => {
-  // 에러 메시지 추출
-  const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다';
+const DefaultErrorFallback = ({ reset, fullPage }: AsyncFallbackProps) => {
+  const router = useInternalRouter();
 
   return (
-    <div className="error-container">
-      <h2>오류가 발생했습니다</h2>
-      <p className="error-message">{errorMessage}</p>
-      <button onClick={reset} className="retry-button">
-        다시 시도
-      </button>
-    </div>
+    <ErrorScreen
+      message={'알 수 없는 오류가 발생했어요.\n잠시 후 다시 시도해주세요.'}
+      fullPage={fullPage}
+      onRetry={reset}
+      onInquiry={() => router.push(ROUTES.INQUIRY.HOME)}
+    />
   );
 };
 
