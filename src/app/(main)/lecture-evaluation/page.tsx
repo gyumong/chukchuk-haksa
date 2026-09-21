@@ -8,7 +8,7 @@ import AsyncBoundary from '@/shared/components/AsyncBoundary';
 export default function LectureEvaluationPage() {
   return (
     <ProtectedRoute requirePortalLinked={true} portalLinkRedirectTo={ROUTES.FUNNEL.PORTAL_LOGIN}>
-      <AsyncBoundary>
+      <AsyncBoundary fullPage>
         <LectureEvaluationScreen exitRoute={ROUTES.MAIN} />
       </AsyncBoundary>
     </ProtectedRoute>

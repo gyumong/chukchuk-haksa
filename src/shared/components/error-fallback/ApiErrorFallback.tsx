@@ -1,35 +1,44 @@
-import { useAuth } from '@/features/auth/contexts/AuthContext';
-import type { ApiError } from '@/shared/api/errors';
-import { getUserMessage } from '@/shared/user-messages';
-import type { FallbackProps } from '../ErrorBoundary';
-import { useEffect } from 'react';
+'use client';
 
-const ApiErrorFallback = ({ error, reset }: FallbackProps) => {
+import { useEffect } from 'react';
+import { ROUTES } from '@/constants/routes';
+import { useAuth } from '@/features/auth/contexts/AuthContext';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
+import type { ApiError } from '@/shared/api/errors';
+import type { AsyncFallbackProps } from '@/shared/components/AsyncBoundary';
+import { getErrorTreatment } from '@/shared/error-severity';
+import { getUserMessage } from '@/shared/user-messages';
+import { ErrorScreen } from './ErrorScreen';
+
+const ApiErrorFallback = ({ error, reset, fullPage }: AsyncFallbackProps) => {
   const apiError = error as ApiError;
   const { notifySessionExpired } = useAuth();
+  const router = useInternalRouter();
 
-  // 401 = 인증 만료. 카드를 여기서 그리지 않고 전역에 알리기만 함 — 실제 화면은
-  // ProtectedRoute 가 sessionExpired 를 보고 한 번만 그림 (위젯별 중복 노출 방지).
+  const treatment = getErrorTreatment(apiError.appCode, 'query');
+  const isGlobalAuthError = apiError.status === 401 || treatment?.severity === 'global';
+
   useEffect(() => {
-    if(apiError.status === 401){
+    if (isGlobalAuthError) {
       notifySessionExpired();
     }
-  }, [apiError.status, notifySessionExpired]);
+  }, [isGlobalAuthError, notifySessionExpired]);
 
-  if (apiError.status === 401) {
+  if (isGlobalAuthError) {
     return null;
   }
 
-  return (
-    <div>
-      <h2>오류가 발생했습니다</h2>
-      <p>{getUserMessage(apiError.status, apiError.code, apiError.message)}</p>
+  const message = getUserMessage(apiError.status, apiError.appCode, apiError.message);
 
-      {apiError.code && <p>에러 코드: {apiError.code}</p>}
-      {apiError.status > 0 && <p>상태 코드: {apiError.status}</p>}
-
-      <button onClick={reset}>다시 시도</button>
-    </div>
+    return (
+    <ErrorScreen
+      message={message}
+      code={apiError.appCode || undefined}
+      fullPage={fullPage}
+      onBack={() => router.back()}
+      onRetry={reset}
+      onInquiry={() => router.push(ROUTES.INQUIRY.NEW)}
+    />
   );
 };
 

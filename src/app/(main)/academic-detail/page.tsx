@@ -75,7 +75,7 @@ function AcademicDetailContent() {
 
 export default function AcademicDetailPage() {
   return (
-    <AsyncBoundary suspenseFallback={<LoadingFallback />}>
+    <AsyncBoundary suspenseFallback={<LoadingFallback />} fullPage>
       <AcademicDetailContent />
     </AsyncBoundary>
   );
