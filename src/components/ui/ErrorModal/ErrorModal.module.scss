@@ -39,28 +39,28 @@
   color: color.$gray-400;
 }
 
-.title {
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: spacing.$space-4;
   margin: 0 0 spacing.$space-12;
-  text-align: center;
+}
+
+.title {
+  margin: 0;
   color: color.$red-300;
   @include typography.body-lg;
   @include typography.font-weight-bold;
 }
 
 .message {
-  margin: 0 0 spacing.$space-8;
+  margin: 0 0 spacing.$space-20;
   text-align: center;
   color: color.$gray-500;
   white-space: pre-line;
   @include typography.body-md;
   @include typography.font-weight-regular;
-}
-
-.code {
-  margin: 0 0 spacing.$space-20;
-  text-align: center;
-  color: color.$gray-300;
-  @include typography.body-xs;
 }
 
 .buttons {
