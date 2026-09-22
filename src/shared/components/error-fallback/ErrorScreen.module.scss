@@ -37,12 +37,6 @@
   @include typography.font-weight-medium;
 }
 
-.code {
-  text-align: center;
-  color: color.$gray-300;
-  @include typography.body-xs;
-}
-
 .buttons {
   width: 100%;
   max-width: 320px;

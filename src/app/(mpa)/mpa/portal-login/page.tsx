@@ -3,8 +3,7 @@
 // /mpa/resync/login 과 동일 폼. portal-link 별도 entry point. 프로토콜: docs/mpa-school-link-handoff.md
 import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
-import { captureException } from '@sentry/nextjs';
-import { ConfirmDialog, FixedButton, TextField } from '@/components/ui';
+import { ConfirmDialog, ErrorModal, FixedButton, TextField } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { usePortalLinkMutation } from '@/features/portal-link/hooks';
@@ -12,7 +11,7 @@ import { popRetry, stashAttemptUsername } from '@/features/portal-link/utils/cre
 import { getMessageByErrorCode } from '@/features/portal-link/utils/errorMapping';
 import { PORTAL_LOGIN_JOB_ID_KEY } from '@/constants/portal-link';
 import { EVENTS, track, useTrackView } from '@/lib/analytics';
-import { ApiError } from '@/shared/api/errors';
+import { useMutationErrorHandler } from '@/shared/hooks/useMutationErrorHandler';
 import { generateIdempotencyKey } from '@/shared/utils/idempotency';
 import { isInWebView, redirectToHome } from '@/lib/webview';
 import { FunnelHeadline, SchoolCard } from '@/app/(funnel)/components';
@@ -27,6 +26,7 @@ export default function MpaPortalLogin() {
   const [isUnavailableDialogOpen, setIsUnavailableDialogOpen] = useState<boolean>(false);
   const router = useInternalRouter();
   const linkMutation = usePortalLinkMutation();
+  const { handleMutationError, modalState, closeModal, retry, goToInquiry } = useMutationErrorHandler();
 
   const handleUnavailableConfirm = () => {
     setIsUnavailableDialogOpen(false);
@@ -51,15 +51,11 @@ export default function MpaPortalLogin() {
     }
   }, []);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    track(EVENTS.UNIV_SYNC_BTN_TAP);
+  const submitPortalLink = async () => {
+    const idempotencyKey = generateIdempotencyKey();
+    stashAttemptUsername(username);
 
     try {
-      setErrorMessage('');
-
-      const idempotencyKey = generateIdempotencyKey();
-      stashAttemptUsername(username);
       const result = await linkMutation.mutateAsync({ username, password, idempotencyKey });
       const jobId = result?.job_id;
 
@@ -67,18 +63,18 @@ export default function MpaPortalLogin() {
         sessionStorage.setItem(PORTAL_LOGIN_JOB_ID_KEY, jobId);
         router.push(ROUTES.MPA.PORTAL_LOGIN_SCRAPING);
       } else {
-        setErrorMessage('연동 요청에 실패했습니다. 다시 시도해주세요.');
+        handleMutationError(new Error('연동 요청에 실패했습니다. 다시 시도해주세요.'), submitPortalLink);
       }
     } catch (err: unknown) {
-      captureException(err);
-      const message =
-        err instanceof ApiError
-          ? err.userMessage
-          : err instanceof Error && err.message
-            ? err.message
-            : '알 수 없는 오류가 발생했어요\n잠시후 다시 시도해주세요';
-      setErrorMessage(message);
+      handleMutationError(err, submitPortalLink);
     }
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    track(EVENTS.UNIV_SYNC_BTN_TAP);
+    setErrorMessage('');
+    void submitPortalLink();
   };
 
   return (
@@ -134,6 +130,17 @@ export default function MpaPortalLogin() {
         message={`학교 연동없이 이용시\n'시간표 만들기'만 이용 가능합니다.`}
         onConfirm={handleUnavailableConfirm}
         onClose={() => setIsUnavailableDialogOpen(false)}
+      />
+      <ErrorModal
+        isOpen={modalState.isOpen}
+        message={modalState.message}
+        code={modalState.code}
+        onRetry={modalState.showRetry ? retry : undefined}
+        onInquiry={() => {
+          closeModal();
+          goToInquiry();
+        }}
+        onClose={closeModal}
       />
     </div>
   );

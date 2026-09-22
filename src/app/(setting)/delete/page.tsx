@@ -2,10 +2,11 @@
 
 import Image from 'next/image';
 import { FunnelHeadline } from '@/app/(funnel)/components';
-import { FixedButton } from '@/components/ui';
+import { ErrorModal, FixedButton } from '@/components/ui';
 import { useWithdrawDisplayName } from '@/features/dashboard/apis/queries/useWithdrawDisplayName';
 import { useAuth } from '@/features/auth/contexts/AuthContext';
 import { useDeleteUserMutation } from '@/features/user/apis/queries/useDeleteUserMutation';
+import { useMutationErrorHandler } from '@/shared/hooks/useMutationErrorHandler';
 import styles from './page.module.scss';
 
 const DeletePage = () => {
@@ -13,6 +14,7 @@ const DeletePage = () => {
   // 이름은 '인사말 개인화'용일 뿐 탈퇴의 필수 조건이 아니다. 미연동 유저는 프로필이 없어 undefined.
   const displayName = useWithdrawDisplayName();
   const { clearAuth } = useAuth();
+  const { handleMutationError, modalState, closeModal, retry, goToInquiry } = useMutationErrorHandler();
 
   const handleDelete = async () => {
     if (!confirm('정말 탈퇴하시겠습니까?')) {
@@ -27,7 +29,7 @@ const DeletePage = () => {
       alert('탈퇴가 완료되었습니다.');
       window.location.replace('/');
     } catch (err) {
-      alert(err instanceof Error ? err.message : '탈퇴 중 오류가 발생했습니다.');
+      handleMutationError(err, handleDelete);
     }
   };
 
@@ -45,6 +47,17 @@ const DeletePage = () => {
       <FixedButton variant="error" onClick={handleDelete} disabled={mutation.isPending} isLoading={mutation.isPending}>
         탈퇴하기
       </FixedButton>
+      <ErrorModal
+        isOpen={modalState.isOpen}
+        message={modalState.message}
+        code={modalState.code}
+        onRetry={modalState.showRetry ? retry : undefined}
+        onInquiry={() => {
+          closeModal();
+          goToInquiry();
+        }}
+        onClose={closeModal}
+      />
     </div>
   );
 };

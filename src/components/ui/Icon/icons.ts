@@ -6,6 +6,7 @@ import CheckStatusOffIcon from '@/assets/icons/check-status-off.svg';
 import CheckStatusOnIcon from '@/assets/icons/check-status-on.svg';
 import CloseIcon from '@/assets/icons/close.svg';
 import DeleteIcon from '@/assets/icons/delete.svg';
+import ErrorCircleIcon from '@/assets/icons/error-circle.svg';
 import InfoIcon from '@/assets/icons/info.svg';
 import KakaoIcon from '@/assets/icons/kakao.svg';
 import RefreshIcon from '@/assets/icons/refresh.svg';
@@ -26,4 +27,5 @@ export {
   SettingIcon,
   RefreshIcon,
   KakaoIcon,
+  ErrorCircleIcon,
 };

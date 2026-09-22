@@ -47,22 +47,24 @@ export function ErrorModal({ isOpen, message, code, onRetry, onInquiry, onClose 
         <button type="button" className={styles.closeButton} onClick={onClose} aria-label="닫기">
           <Icon name="close" size={20} />
         </button>
-        <h2 id={titleId} className={styles.title}>
-          오류
-        </h2>
+        <div className={styles.titleRow}>
+          <Icon name="error-circle" size={20} />
+          <h2 id={titleId} className={styles.title}>
+            오류
+          </h2>
+        </div>
         <p className={styles.message}>{message}</p>
-        {code && <p className={styles.code}>에러 코드: {code}</p>}
         <div className={styles.buttons}>
           {onRetry && (
             <div className={styles.buttonItem}>
-              <Button variant="secondary" width="full" onClick={onRetry}>
+              <Button type="button" variant="secondary" width="full" onClick={onRetry}>
                 다시 시도하기
               </Button>
             </div>
           )}
           {onInquiry && (
             <div className={styles.buttonItem}>
-              <Button variant="error" width="full" onClick={onInquiry}>
+              <Button type="button" variant="error" width="full" onClick={onInquiry}>
                 문의하기
               </Button>
             </div>

@@ -1,13 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import { captureException } from '@sentry/nextjs';
 import { FunnelHeadline } from '@/app/(funnel)/components';
-import { FixedButton } from '@/components/ui';
+import { ErrorModal, FixedButton } from '@/components/ui';
 import { useAuth } from '@/features/auth/contexts/AuthContext';
 import { useWithdrawDisplayName } from '@/features/dashboard/apis/queries/useWithdrawDisplayName';
 import { useDeleteUserMutation } from '@/features/user/apis/queries/useDeleteUserMutation';
 import { isInWebView, withdraw } from '@/lib/webview';
+import { useMutationErrorHandler } from '@/shared/hooks/useMutationErrorHandler';
 // 웹 /delete 와 동일한 확인 화면 레이아웃을 재사용한다.
 import styles from '@/app/(setting)/delete/page.module.scss';
 
@@ -24,6 +24,7 @@ const MpaDeletePage = () => {
   const mutation = useDeleteUserMutation();
   const displayName = useWithdrawDisplayName();
   const { clearAuth } = useAuth();
+  const { handleMutationError, modalState, closeModal, retry, goToInquiry } = useMutationErrorHandler();
 
   const handleDelete = async () => {
     try {
@@ -40,10 +41,7 @@ const MpaDeletePage = () => {
       await clearAuth();
       window.location.replace('/');
     } catch (err) {
-      // 원인은 Sentry 로 추적하고(앱 표준 에러 트래킹), 사용자에겐 raw 에러 대신 일반화된 안내만 노출한다.
-      // (앱에 공용 toast 시스템이 없어 웹 /delete 와 동일하게 alert 사용)
-      captureException(err);
-      alert('탈퇴 중 오류가 발생했어요.\n잠시 후 다시 시도해주세요.');
+      handleMutationError(err, handleDelete);
     }
   };
 
@@ -66,6 +64,17 @@ const MpaDeletePage = () => {
       >
         탈퇴하기
       </FixedButton>
+      <ErrorModal
+        isOpen={modalState.isOpen}
+        message={modalState.message}
+        code={modalState.code}
+        onRetry={modalState.showRetry ? retry : undefined}
+        onInquiry={() => {
+          closeModal();
+          goToInquiry();
+        }}
+        onClose={closeModal}
+      />
     </div>
   );
 };

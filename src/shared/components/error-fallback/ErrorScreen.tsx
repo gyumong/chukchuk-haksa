@@ -43,7 +43,6 @@ export function ErrorScreen({
       <Image src="/images/illustrations/CommonError.png" alt="" width={160} height={160} />
       <p className={styles.title}>{title}</p>
       <p className={styles.message}>{message}</p>
-      {code && <p className={styles.code}>에러 코드: {code}</p>}
 
       {showButtons && (onRetry || onInquiry) && (
         <div className={styles.buttons}>
