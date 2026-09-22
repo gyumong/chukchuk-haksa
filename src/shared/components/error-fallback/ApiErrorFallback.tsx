@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { captureException } from '@sentry/nextjs';
 import { ROUTES } from '@/constants/routes';
 import { useAuth } from '@/features/auth/contexts/AuthContext';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
@@ -20,9 +21,10 @@ const ApiErrorFallback = ({ error, reset, fullPage }: AsyncFallbackProps) => {
 
   useEffect(() => {
     if (isGlobalAuthError) {
+      captureException(apiError, { tags: { errorCode: apiError.appCode || 'UNKNOWN' } });
       notifySessionExpired();
     }
-  }, [isGlobalAuthError, notifySessionExpired]);
+  }, [isGlobalAuthError, apiError, notifySessionExpired]);
 
   if (isGlobalAuthError) {
     return null;
@@ -30,7 +32,7 @@ const ApiErrorFallback = ({ error, reset, fullPage }: AsyncFallbackProps) => {
 
   const message = getUserMessage(apiError.status, apiError.appCode, apiError.message);
 
-    return (
+  return (
     <ErrorScreen
       message={message}
       code={apiError.appCode || undefined}

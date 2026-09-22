@@ -50,6 +50,7 @@ export function useMutationErrorHandler() {
       const isGlobalAuthError = error.status === 401 || treatment?.severity === 'global';
 
       if (isGlobalAuthError) {
+        captureException(error, { tags: { errorCode: error.appCode || 'UNKNOWN' } });
         notifySessionExpired();
         return;
       }
