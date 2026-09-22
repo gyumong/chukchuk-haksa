@@ -199,6 +199,55 @@ export interface SuccessResponseMessageOnlyResponse {
   message?: string;
 }
 
+/** 응답 데이터 */
+export interface CreateResponse {
+  /**
+   * 문의 식별자
+   * @format uuid
+   */
+  id?: string;
+  /** 답변 상태 */
+  status?: "PENDING" | "ANSWERED";
+  /**
+   * 생성 시각
+   * @format date-time
+   */
+  createdAt?: string;
+}
+
+/** 문의 생성 응답 */
+export interface ReportCreateApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 응답 데이터 */
+  data: CreateResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+export interface CreateRequest {
+  /**
+   * 문의 제목
+   * @minLength 0
+   * @maxLength 100
+   * @example "졸업 요건 확인이 불가능합니다."
+   */
+  title: string;
+  /**
+   * 문의 본문
+   * @minLength 0
+   * @maxLength 5000
+   * @example "졸업 요건 화면을 확인할 수 없습니다."
+   */
+  content: string;
+}
+
 /** 강의평가 제출 응답 */
 export interface LectureEvaluationSubmitApiResponse {
   /**
@@ -837,6 +886,119 @@ export interface SemesterSummaryResponse {
    * @example 92.4
    */
   percentile?: number | null;
+}
+
+/** 문의 목록 */
+export interface ListItem {
+  /**
+   * 문의 식별자
+   * @format uuid
+   */
+  id?: string;
+  /** 답변 상태 */
+  status?: "PENDING" | "ANSWERED";
+  /** 문의 제목 */
+  title?: string;
+  /**
+   * 생성 시각
+   * @format date-time
+   */
+  createdAt?: string;
+  /**
+   * 답변 완료 시각
+   * @format date-time
+   */
+  answeredAt?: string | null;
+}
+
+/** 응답 데이터 */
+export interface PageResponse {
+  /** 문의 목록 */
+  items?: ListItem[];
+  /**
+   * 현재 페이지
+   * @format int32
+   * @min 0
+   */
+  page?: number;
+  /**
+   * 페이지 크기
+   * @format int32
+   * @min 1
+   * @max 100
+   */
+  size?: number;
+  /**
+   * 전체 문의 수
+   * @format int64
+   */
+  totalElements?: number;
+  /**
+   * 전체 페이지 수
+   * @format int32
+   */
+  totalPages?: number;
+  /** 다음 페이지 존재 여부 */
+  hasNext?: boolean;
+}
+
+/** 문의 목록 응답 */
+export interface ReportListApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 응답 데이터 */
+  data: PageResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+/** 응답 데이터 */
+export interface DetailResponse {
+  /**
+   * 문의 식별자
+   * @format uuid
+   */
+  id?: string;
+  /** 답변 상태 */
+  status?: "PENDING" | "ANSWERED";
+  /** 문의 제목 */
+  title?: string;
+  /** 문의 본문 */
+  content?: string;
+  /**
+   * 생성 시각
+   * @format date-time
+   */
+  createdAt?: string;
+  /** 관리자 답변 */
+  answer?: string | null;
+  /**
+   * 답변 완료 시각
+   * @format date-time
+   */
+  answeredAt?: string | null;
+}
+
+/** 문의 상세 응답 */
+export interface ReportDetailApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 응답 데이터 */
+  data: DetailResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
 }
 
 /** 성적 카드 목록 */
@@ -1625,6 +1787,28 @@ export type SetTargetGpaData = TargetGpaApiResponse;
 
 export type ResetStudentDataData = SuccessResponseMessageOnlyResponse;
 
+export interface GetMyReportsParams {
+  /**
+   * 0부터 시작하는 페이지
+   * @format int32
+   * @min 0
+   * @default 0
+   */
+  page?: number;
+  /**
+   * 페이지 크기(1~100)
+   * @format int32
+   * @min 1
+   * @max 100
+   * @default 20
+   */
+  size?: number;
+}
+
+export type GetMyReportsData = ReportListApiResponse;
+
+export type CreateData = ReportCreateApiResponse;
+
 export type SubmitData = LectureEvaluationSubmitApiResponse;
 
 export type SkipData = LectureEvaluationSkipApiResponse;
@@ -1673,6 +1857,8 @@ export type GetProfileData = StudentProfileApiResponse;
 export type GetSemesterRecordData = StudentSemesterListApiResponse;
 
 export type GetSemesterGradesData = SemesterGradesApiResponse;
+
+export type GetDetailData = ReportDetailApiResponse;
 
 export type GetRequiredData = LectureEvaluationRequiredApiResponse;
 
