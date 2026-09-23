@@ -1,0 +1,148 @@
+@use '@/styles/color' as color;
+@use '@/styles/typography' as typography;
+@use '@/styles/spacing' as spacing;
+@use '@/styles/radius' as radius;
+@use '@/styles/utilities' as utilities;
+
+.formContent {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  @include typography.body-md;
+  @include typography.font-weight-semibold;
+  margin-top: spacing.$space-12;
+}
+
+.meta {
+  @include typography.body-xs;
+  color: color.$gray-500;
+  margin-top: spacing.$space-4;
+}
+
+.date {
+  @include typography.body-xs;
+  color: color.$gray-500;
+  margin-top: spacing.$space-4;
+}
+
+.content {
+  @include typography.body-sm;
+  margin-top: spacing.$space-16;
+  margin-bottom: spacing.$space-24;
+  white-space: pre-line;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.label {
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+  margin-bottom: spacing.$space-8;
+}
+
+.answerInput {
+  width: 100%;
+  min-height: max(200px, 33vh);
+  max-height: 50vh;
+  box-sizing: border-box;
+  margin-bottom: spacing.$space-8;
+  @include spacing.padding-sm;
+  border: 1px solid color.$gray-300;
+  @include radius.input-radius;
+  @include typography.body-md;
+  resize: none;
+
+  &::placeholder {
+    white-space: pre-line;
+    font-size: 0.875rem;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: color.$purple-100;
+  }
+}
+
+.bottomSection {
+  width: 100%;
+  margin-top: auto;
+  margin-bottom: spacing.$space-40;
+}
+
+.bottomSectionStatic {
+  width: 100%;
+  margin-top: auto;
+  margin-bottom: spacing.$space-40;
+}
+
+.notFound {
+  @include typography.body-md;
+  text-align: center;
+  margin-top: spacing.$space-48;
+}
+
+.answerCard {
+  margin-top: spacing.$space-24;
+  margin-bottom: spacing.$space-24;
+  width: 100%;
+  @include utilities.card-base;
+  background-color: color.$gray-300;
+}
+
+.answerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.answerAuthorRow {
+  display: flex;
+  align-items: center;
+  gap: spacing.$space-8;
+}
+
+.answerAvatar {
+  width: spacing.$space-40;
+  height: spacing.$space-40;
+  border-radius: radius.$radius-full;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.answerAuthorInfo {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-4;
+}
+
+.answerAuthor {
+  @include typography.body-sm;
+  @include typography.font-weight-semibold;
+}
+
+.answerDate {
+  @include typography.body-xs;
+  color: color.$gray-500;
+}
+
+.answerContent {
+  @include typography.body-sm;
+  margin-top: spacing.$space-8;
+  white-space: pre-line;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.deleteText {
+  @include typography.body-sm;
+  color: color.$red-400;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}

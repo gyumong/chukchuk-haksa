@@ -3,6 +3,7 @@
 @use '@/styles/spacing' as spacing;
 @use '@/styles/radius' as radius;
 @use '@/styles/utilities' as utilities;
+@use '@/styles/device' as device;
 
 .title {
   @include typography.body-md;
@@ -19,16 +20,26 @@
 .content {
   @include typography.body-sm;
   margin-top: spacing.$space-16;
+  margin-bottom: spacing.$space-20;
   white-space: pre-line;
   word-break: keep-all;
   overflow-wrap: anywhere;
+
+  @include device.compact {
+    margin-bottom: spacing.$space-16;
+  }
 }
 
 .answerCard {
   margin-top: spacing.$space-24;
+  margin-bottom: spacing.$space-20;
   width: 100%;
   @include utilities.card-base;
   background-color: color.$gray-300;
+
+  @include device.compact {
+    margin-bottom: spacing.$space-16;
+  }
 }
 
 .answerHeader {

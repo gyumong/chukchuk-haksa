@@ -1,0 +1,47 @@
+@use '@/styles/utilities' as utilities;
+@use '@/styles/typography' as typography;
+@use '@/styles/color' as color;
+@use '@/styles/spacing' as spacing;
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-12;
+  width: 100%;
+  margin-bottom: spacing.$space-12;
+}
+
+.empty {
+  @include typography.body-md;
+  color: color.$gray-500;
+}
+
+.item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  @include utilities.card-base;
+  border: 1px solid color.$gray-300;
+}
+
+.title {
+  @include typography.body-md;
+  @include typography.font-weight-semibold;
+  margin-top: spacing.$space-8;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.meta {
+  @include typography.body-xs;
+  color: color.$gray-500;
+  margin-top: spacing.$space-4;
+}
+
+.date {
+  @include typography.body-xs;
+  color: color.$gray-500;
+  margin-top: spacing.$space-4;
+}

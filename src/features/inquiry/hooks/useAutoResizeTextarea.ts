@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'react';
 
 const MIN_GAP_PX = 8;
+const MIN_GROWTH_PX = 180; // 최소 7줄(body-md 기준)만큼은 항상 늘어날 수 있도록 보장
 
 export function useAutoResizeTextarea(content: string) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -17,7 +18,9 @@ export function useAutoResizeTextarea(content: string) {
       }
 
       textarea.style.height = ''; // 인라인 높이 제거 → CSS min-height 기준으로 자연 높이 측정
-      const availableHeight = container.clientHeight - textarea.offsetTop - bottom.offsetHeight - MIN_GAP_PX;
+      const collapsedHeight = textarea.clientHeight;
+      const rawAvailableHeight = container.clientHeight - textarea.offsetTop - bottom.offsetHeight - MIN_GAP_PX;
+      const availableHeight = Math.max(rawAvailableHeight, collapsedHeight + MIN_GROWTH_PX);
       const naturalHeight = textarea.scrollHeight;
 
       if (naturalHeight <= availableHeight) {

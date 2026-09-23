@@ -12,5 +12,7 @@ export interface Inquiry {
   content: string;
   status: InquiryStatus;
   createdAt: string;
+  studentCode: string;
+  studentName: string;
   answer?: InquiryAnswer;
 }
