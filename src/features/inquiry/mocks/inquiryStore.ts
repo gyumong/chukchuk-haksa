@@ -1,6 +1,7 @@
 import type { Inquiry } from '../types';
 
 // API 연동 전까지 화면 확인용 임시 저장소. 새로고침하면 초기화됨 (별도 이슈에서 실제 API로 대체).
+// 사용자 화면과 어드민 화면이 같은 데이터를 보도록 이 스토어 하나를 공유한다.
 let inquiries: Inquiry[] = [
   {
     id: '4',
@@ -9,6 +10,8 @@ let inquiries: Inquiry[] = [
       '내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용',
     status: 'answered',
     createdAt: '2026/09/10 16:17:32',
+    studentCode: '20201234',
+    studentName: '테스트 학생',
     answer: {
       authorName: '척척학사 관리자',
       answeredAt: '2026/09/11 10:34:12',
@@ -22,6 +25,8 @@ let inquiries: Inquiry[] = [
     content: '내용내용내용내용내용내용내용내용',
     status: 'pending',
     createdAt: '2026/09/10 16:17:32',
+    studentCode: '20201234',
+    studentName: '테스트 학생',
   },
   {
     id: '2',
@@ -29,6 +34,8 @@ let inquiries: Inquiry[] = [
     content: '내용내용내용내용내용내용내용내용',
     status: 'answered',
     createdAt: '2026/09/10 16:17:32',
+    studentCode: '20201234',
+    studentName: '테스트 학생',
     answer: {
       authorName: '척척학사 관리자',
       answeredAt: '2026/09/11 10:34:12',
@@ -41,6 +48,8 @@ let inquiries: Inquiry[] = [
     content: '내용내용내용내용내용내용내용내용',
     status: 'pending',
     createdAt: '2026/09/10 16:17:32',
+    studentCode: '20201234',
+    studentName: '테스트 학생',
   },
 ];
 
@@ -59,7 +68,39 @@ export function addInquiry(title: string, content: string): Inquiry {
     content,
     status: 'pending',
     createdAt: new Date().toLocaleString('ko-KR'),
+    studentCode: '20201234',
+    studentName: '테스트 학생',
   };
   inquiries = [newInquiry, ...inquiries];
   return newInquiry;
+}
+
+export function answerInquiry(id: string, content: string): Inquiry | undefined {
+  inquiries = inquiries.map(item =>
+    item.id === id
+      ? {
+          ...item,
+          status: 'answered' as const,
+          answer: {
+            authorName: '척척학사 관리자',
+            answeredAt: new Date().toLocaleString('ko-KR'),
+            content,
+          },
+        }
+      : item
+  );
+  return getInquiryById(id);
+}
+
+export function deleteInquiryAnswer(id: string): Inquiry | undefined {
+  inquiries = inquiries.map(item =>
+    item.id === id
+      ? {
+          ...item,
+          status: 'pending' as const,
+          answer: undefined,
+        }
+      : item
+  );
+  return getInquiryById(id);
 }
