@@ -5,6 +5,7 @@ import {
   Graduation as GraduationApi,
   LectureEvaluations as LectureEvaluationsApi,
   PortalLink as PortalLinkApi,
+  Reports as ReportsApi,
   SemesterController as SemesterRecordApi,
   Student as StudentApi,
   User as UserApi,
@@ -88,6 +89,7 @@ export const portalLinkApi = createApiClient(PortalLinkApi);
 // PortalJobQueryController 가 PortalLink 태그로 병합됨 — getJobStatus/getJobSummary 도 PortalLink 가 보유.
 // 호환용 alias — 새 인스턴스 대신 portalLinkApi 를 재사용해 클라이언트 상태(보안 등)를 공유한다.
 export const portalJobQueryApi = portalLinkApi;
+export const reportsApi = createApiClient(ReportsApi);
 
 // 응답 검증 유틸리티 (필요하면 사용)
 export function assertValidResponse<TData>(

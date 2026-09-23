@@ -1,9 +1,9 @@
-import type { Inquiry } from '../../types';
+import type { InquirySummary } from '../../types';
 import { InquiryStatusBadge } from '../InquiryStatusBadge/InquiryStatusBadge';
 import styles from './InquiryListItem.module.scss';
 
 interface InquiryListItemProps {
-  inquiry: Inquiry;
+  inquiry: InquirySummary;
   onClick: () => void;
 }
 
