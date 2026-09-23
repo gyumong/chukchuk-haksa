@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { TopNavigation } from '@/components/ui/TopNavigation';
-import { Button, Icon } from '@/components/ui';
+import { Button, ErrorModal, Icon } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
-import { addInquiry } from '@/features/inquiry/mocks/inquiryStore';
+import { useCreateReportMutation } from '@/features/inquiry/apis/queries/useCreateReportMutation';
 import { useAutoResizeTextarea } from '@/features/inquiry/hooks/useAutoResizeTextarea';
+import { useMutationErrorHandler } from '@/shared/hooks/useMutationErrorHandler';
 import layoutStyles from '../layout.module.scss';
 import styles from './page.module.scss';
 
@@ -15,15 +16,21 @@ export default function InquiryNewPage() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const { containerRef, textareaRef, bottomRef } = useAutoResizeTextarea(content);
+  const mutation = useCreateReportMutation();
+  const { handleMutationError, modalState, closeModal, retry, goToInquiry } = useMutationErrorHandler();
 
   const isFilled = title.trim().length > 0 && content.trim().length > 0;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!isFilled) {
-        return;
+      return;
     }
-    const created = addInquiry(title.trim(), content.trim());
-    router.replace(ROUTES.INQUIRY.DETAIL, { params: [created.id] });
+    try {
+      const created = await mutation.mutateAsync({ title: title.trim(), content: content.trim() });
+      router.replace(ROUTES.INQUIRY.DETAIL, { params: [created.id ?? ''] });
+    } catch (error) {
+      handleMutationError(error, handleSubmit);
+    }
   };
 
   return (
@@ -62,11 +69,29 @@ export default function InquiryNewPage() {
 
         <div ref={bottomRef} className={styles.bottomSection}>
           <p className={styles.helperText}>답변에는 평균 1-2일이 소요됩니다.</p>
-          <Button variant="primary" width="full" onClick={handleSubmit} disabled={!isFilled}>
+          <Button
+            variant="primary"
+            width="full"
+            onClick={handleSubmit}
+            disabled={!isFilled || mutation.isPending}
+            isLoading={mutation.isPending}
+          >
             문의사항 등록하기
           </Button>
         </div>
       </div>
+
+      <ErrorModal
+        isOpen={modalState.isOpen}
+        message={modalState.message}
+        code={modalState.code}
+        onRetry={modalState.showRetry ? retry : undefined}
+        onInquiry={() => {
+          closeModal();
+          goToInquiry();
+        }}
+        onClose={closeModal}
+      />
     </div>
   );
 }

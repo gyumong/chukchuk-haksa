@@ -4,6 +4,7 @@ export * from './checkcontroller/CheckController';
 export * from './graduation/Graduation';
 export * from './lectureevaluations/LectureEvaluations';
 export * from './portallink/PortalLink';
+export * from './reports/Reports';
 export * from './semestercontroller/SemesterController';
 export * from './student/Student';
 export * from './user/User';

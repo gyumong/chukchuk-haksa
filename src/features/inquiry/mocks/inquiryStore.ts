@@ -61,15 +61,22 @@ export function getInquiryById(id: string): Inquiry | undefined {
   return inquiries.find(item => item.id === id);
 }
 
-export function addInquiry(title: string, content: string): Inquiry {
+export function addInquiry(params: {
+  title: string;
+  content: string;
+  id?: string;
+  createdAt?: string;
+  studentCode?: string;
+  studentName?: string;
+}): Inquiry {
   const newInquiry: Inquiry = {
-    id: String(Date.now()),
-    title,
-    content,
+    id: params.id ?? String(Date.now()),
+    title: params.title,
+    content: params.content,
     status: 'pending',
-    createdAt: new Date().toLocaleString('ko-KR'),
-    studentCode: '20201234',
-    studentName: '테스트 학생',
+    createdAt: params.createdAt ?? new Date().toLocaleString('ko-KR'),
+    studentCode: params.studentCode ?? '20201234',
+    studentName: params.studentName ?? '테스트 학생',
   };
   inquiries = [newInquiry, ...inquiries];
   return newInquiry;
