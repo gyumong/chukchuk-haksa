@@ -15,7 +15,7 @@ export default function CourseAreaTrigger({
   onClick,
 }: CourseAreaTriggerProps) {
   // TODO 선교 의존성 들어내기
-  // 학점 표기 우선순위: creditsLabel(통째 대체) > 선교(영역 수) > 기준 없음("N학점") > "이수 / 기준".
+  // 학점 표기 우선순위: creditsLabel(통째 대체) > 선교(영역 수) > 기준 없음(숫자만) > "이수 / 기준".
   const renderCredits = () => {
     if (creditsLabel != null) {
       return creditsLabel;
@@ -31,7 +31,7 @@ export default function CourseAreaTrigger({
       );
     }
     if (requiredCredits == null) {
-      return <>{currentCredits}학점</>;
+      return <>{currentCredits}</>;
     }
     return (
       <>

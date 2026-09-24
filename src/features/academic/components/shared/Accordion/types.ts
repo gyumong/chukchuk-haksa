@@ -6,7 +6,7 @@ type Course = CourseDto;
 interface CourseAreaProps {
   title: string;
   currentCredits: number;
-  /** 기준(필요) 학점. 생략하면 "{currentCredits}학점" 단독 표시 (편입생 취득학점만 보이는 영역). */
+  /** 기준(필요) 학점. 생략하면 취득학점 숫자만 단독 표시 (편입생 취득학점만 보이는 영역). */
   requiredCredits?: number;
   isCompleted: boolean;
   /** 이수해야 하는 선택 영역 수 (선교: requiredElectiveCourses). */
@@ -25,7 +25,7 @@ interface CourseAreaProps {
 interface CourseAreaTriggerProps {
   title: string;
   currentCredits: number;
-  /** 기준(필요) 학점. 생략하면 "{currentCredits}학점" 단독 표시. */
+  /** 기준(필요) 학점. 생략하면 취득학점 숫자만 단독 표시. */
   requiredCredits?: number;
   isCompleted: boolean;
   isExpanded: boolean;

@@ -7,7 +7,7 @@
 // 검증 항목(종건님 전달 스펙):
 //  1) 맨 위 '지정과목 | 이수한 학점' 카드 + 드롭다운으로 지정과목별 이수 여부
 //  2) 전핵·전선은 "이수 / 기준"(기준은 50% 라 소수점 가능) 그대로
-//  3) 그 외 영역은 "N학점" 만
+//  3) 그 외 영역은 숫자만(학점 접미사 없이)
 //  4) (i) 클릭 시 편입생 표시 형식 안내 팝업
 import { expect, test } from '../fixtures/auth';
 import { seedLinkedAcademics, verifyLinkedReady } from '../fixtures/seed';
@@ -124,10 +124,10 @@ test.describe('편입생 졸업요건 표시', () => {
 
     await page.goto('/graduation-progress', { waitUntil: 'domcontentloaded' });
 
-    // 1) 지정과목 카드가 영역 카드들보다 위에, 이수한 지정과목 학점과 함께 ("지정과목" + "3학점" 만 담은 헤더).
+    // 1) 지정과목 카드가 영역 카드들보다 위에, 이수한 지정과목 학점과 함께 ("지정과목" + "3" 만 담은 헤더).
     const designatedHeader = page
       .locator('div')
-      .filter({ hasText: /^지정과목3학점$/ })
+      .filter({ hasText: /^지정과목3$/ })
       .first();
     await expect(designatedHeader).toBeVisible();
 
@@ -138,9 +138,14 @@ test.describe('편입생 졸업요건 표시', () => {
     await expect(page.getByText('12 / 10.5')).toBeVisible();
     await expect(page.getByText('9 / 16.5')).toBeVisible();
 
-    // 3) 그 외 영역은 "N학점" 만 — 기준 표기가 없어야 한다.
-    await expect(page.getByText('9학점', { exact: true })).toBeVisible();
-    await expect(page.getByText('4학점', { exact: true })).toBeVisible();
+    // 3) 그 외 영역은 숫자만 — "학점" 접미사도 기준 표기도 없어야 한다.
+    const bareCreditHeader = (title: string, credits: number) =>
+      page
+        .locator('div')
+        .filter({ hasText: new RegExp(`^${title}${credits}$`) })
+        .first();
+    await expect(bareCreditHeader('중핵교양', 9)).toBeVisible();
+    await expect(bareCreditHeader('선택교양', 4)).toBeVisible();
     await expect(page.getByText(/^9 \/ /)).toHaveCount(1); // 전선 한 곳만
 
     // 4) 드롭다운 → 지정과목별 이수 여부.
@@ -162,7 +167,8 @@ test.describe('편입생 졸업요건 표시', () => {
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
     await expect(dialog).toContainText('편입생 졸업요건 안내');
-    await expect(dialog).toContainText('학생마다 인정학점과 지정과목이 달라');
+    await expect(dialog).toContainText('공통적으로 통용되는 기준을 적용하였습니다');
+    await expect(dialog).toContainText('학과 사무실에서 확인해주시기 바랍니다');
     await dialog.getByRole('button', { name: '확인' }).click();
     await expect(dialog).toHaveCount(0);
 
