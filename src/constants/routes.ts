@@ -43,8 +43,4 @@ export const ROUTES = {
     NEW: '/inquiry/new',
     DETAIL: '/inquiry',
   },
-  ADMIN: {
-    HOME: '/admin',
-    DETAIL: '/admin',
-  },
 } as const;
