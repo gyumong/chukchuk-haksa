@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Icon } from '@/components/ui';
 import { useTransferAreaProgress } from '../../hooks/useAcademicProgress';
 import type { TransferProgress } from '../../types/graduation';
-import { isDesignatedCoursesCompleted } from '../../utils/transferProgressUtils';
+import { formatRecognizedTransferCredits, isDesignatedCoursesCompleted } from '../../utils/transferProgressUtils';
 import { CourseAccordion } from '../shared/Accordion';
 import styles from './AreaProgressSection.module.scss';
 import DesignatedCourseList from './DesignatedCourseList/DesignatedCourseList';
@@ -18,6 +18,7 @@ interface TransferAreaProgressSectionProps {
 //  1) 맨 위 '지정과목 | 이수한 학점' 카드 — 펼치면 지정과목별 이수 여부, 학점 옆 (i) 로 표시 형식 안내.
 //  2) 전핵·전선(COMPARISON) 은 기존과 같은 "이수 / 기준" 표시.
 //  3) 그 외(EARNED_ONLY·UNAVAILABLE) 는 이수한 학점만 표시.
+//  4) 맨 아래 '기타' 그룹 — 전적대 인정학점. 화면에서만 묶는 그룹이며 전공·교양·일선으로 재분류하지 않는다.
 // 카드 외형·간격은 AreaProgressSection 과 같은 SCSS 모듈을 공유해 일반 학생 화면과 동일하게 유지한다.
 export default function TransferAreaProgressSection({ progress }: TransferAreaProgressSectionProps) {
   const { mainMajorAreas, dualMajorAreas } = useTransferAreaProgress(progress.areas);
@@ -91,6 +92,17 @@ export default function TransferAreaProgressSection({ progress }: TransferAreaPr
           ))}
         </>
       )}
+
+      {/* 기타 — 전적대 인정학점 (totalEarnedCredits 에 이미 포함, 합산하지 않음) */}
+      <div className={styles.dualMajorTitle}>기타</div>
+      <CourseAccordion
+        title="전적대 인정학점"
+        currentCredits={progress.recognizedTransferCredits ?? 0}
+        creditsLabel={formatRecognizedTransferCredits(progress.recognizedTransferCredits)}
+        isCompleted={false}
+      >
+        <p className={styles.note}>편입 시 인정받은 학점이며, 총 취득학점에 포함돼요.</p>
+      </CourseAccordion>
 
       <TransferProgressInfoDialog isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} />
     </>
