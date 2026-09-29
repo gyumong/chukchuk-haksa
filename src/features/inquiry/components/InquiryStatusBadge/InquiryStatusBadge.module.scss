@@ -1,0 +1,21 @@
+@use '@/styles/color' as color;
+@use '@/styles/typography' as typography;
+
+.pending,
+.answered {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  @include typography.body-xs;
+  @include typography.font-weight-medium;
+}
+
+.pending {
+  background-color: color.$gray-300;
+  color: color.$gray-500;
+}
+
+.answered {
+  background-color: color.$purple-400;
+  color: color.$purple-100;
+}

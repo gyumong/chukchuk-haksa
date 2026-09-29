@@ -7,6 +7,7 @@ import {
   CheckStatusOnIcon,
   CloseIcon,
   DeleteIcon,
+  ErrorCircleIcon,
   InfoIcon,
   KakaoIcon,
   RefreshIcon,
@@ -27,7 +28,8 @@ export type IconType =
   | 'setting'
   | 'refresh'
   | 'arrow-top'
-  | 'kakao';
+  | 'kakao'
+  | 'error-circle';
 
 const iconMapping = {
   delete: DeleteIcon,
@@ -43,6 +45,7 @@ const iconMapping = {
   refresh: RefreshIcon,
   'arrow-top': ArrowTopIcon,
   kakao: KakaoIcon,
+  'error-circle': ErrorCircleIcon,
 } as const;
 
 interface IconProps {

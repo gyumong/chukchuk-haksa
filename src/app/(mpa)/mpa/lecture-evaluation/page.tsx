@@ -8,7 +8,7 @@ import AsyncBoundary from '@/shared/components/AsyncBoundary';
 export default function MpaLectureEvaluationPage() {
   return (
     <ProtectedRoute requirePortalLinked={true} portalLinkRedirectTo={ROUTES.MPA.PORTAL_LOGIN}>
-      <AsyncBoundary>
+      <AsyncBoundary fullPage>
         <LectureEvaluationScreen exitRoute={ROUTES.MPA.HOME} />
       </AsyncBoundary>
     </ProtectedRoute>

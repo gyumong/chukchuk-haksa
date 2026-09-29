@@ -1,7 +1,7 @@
 import AsyncBoundary from '@/shared/components/AsyncBoundary';
 import GraduationProgressHeader from './GraduationProgressHeader';
 import AcademicSummarySection from './AcademicSummarySection';
-import AreaProgressSection from './AreaProgressSection';
+import GraduationAreaSection from './GraduationAreaSection';
 import RequiredCompletionSection from './RequiredCompletionSection';
 import styles from './GraduationProgressContent.module.scss';
 
@@ -15,7 +15,7 @@ function GraduationProgressContent() {
         <AcademicSummarySection />
       </AsyncBoundary>
       <AsyncBoundary>
-        <AreaProgressSection />
+        <GraduationAreaSection />
       </AsyncBoundary>
       <AsyncBoundary>
         <RequiredCompletionSection />

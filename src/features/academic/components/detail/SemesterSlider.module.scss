@@ -12,6 +12,11 @@
   overflow-x: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
 
   &::-webkit-scrollbar {
     display: none;

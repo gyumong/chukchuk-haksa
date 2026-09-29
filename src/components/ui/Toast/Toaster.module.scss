@@ -7,7 +7,7 @@
 .viewport {
   position: fixed;
   left: 50%;
-  bottom: calc(#{spacing.$space-32} + env(safe-area-inset-bottom, 0px));
+  bottom: calc(#{spacing.$space-36} + 72px + #{spacing.$space-16} + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
 
   // ConfirmDialog overlay(1000) 등 page 내 fixed 요소보다 위에 떠야 함.

@@ -153,13 +153,13 @@ export interface SignInResponse {
 
 /** 소셜 로그인 요청 정보 */
 export interface SignInRequest {
+  /** OIDC Provider에서 발급받은 ID 토큰 */
+  id_token: string;
   /**
    * OIDC Provider
    * @example "KAKAO"
    */
   provider: "KAKAO" | "APPLE";
-  /** OIDC Provider에서 발급받은 ID 토큰 */
-  id_token: string;
   /**
    * 로그인 시 사용한 nonce 값
    * @example "random_nonce_value"
@@ -197,6 +197,55 @@ export interface SuccessResponseMessageOnlyResponse {
    * @example "요청 성공"
    */
   message?: string;
+}
+
+/** 응답 데이터 */
+export interface CreateResponse {
+  /**
+   * 문의 식별자
+   * @format uuid
+   */
+  id?: string;
+  /** 답변 상태 */
+  status?: "PENDING" | "ANSWERED";
+  /**
+   * 생성 시각
+   * @format date-time
+   */
+  createdAt?: string;
+}
+
+/** 문의 생성 응답 */
+export interface ReportCreateApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 응답 데이터 */
+  data: CreateResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+export interface CreateRequest {
+  /**
+   * 문의 제목
+   * @minLength 0
+   * @maxLength 100
+   * @example "졸업 요건 확인이 불가능합니다."
+   */
+  title: string;
+  /**
+   * 문의 본문
+   * @minLength 0
+   * @maxLength 5000
+   * @example "졸업 요건 화면을 확인할 수 없습니다."
+   */
+  content: string;
 }
 
 /** 강의평가 제출 응답 */
@@ -839,6 +888,119 @@ export interface SemesterSummaryResponse {
   percentile?: number | null;
 }
 
+/** 문의 목록 */
+export interface ListItem {
+  /**
+   * 문의 식별자
+   * @format uuid
+   */
+  id?: string;
+  /** 답변 상태 */
+  status?: "PENDING" | "ANSWERED";
+  /** 문의 제목 */
+  title?: string;
+  /**
+   * 생성 시각
+   * @format date-time
+   */
+  createdAt?: string;
+  /**
+   * 답변 완료 시각
+   * @format date-time
+   */
+  answeredAt?: string | null;
+}
+
+/** 응답 데이터 */
+export interface PageResponse {
+  /** 문의 목록 */
+  items?: ListItem[];
+  /**
+   * 현재 페이지
+   * @format int32
+   * @min 0
+   */
+  page?: number;
+  /**
+   * 페이지 크기
+   * @format int32
+   * @min 1
+   * @max 100
+   */
+  size?: number;
+  /**
+   * 전체 문의 수
+   * @format int64
+   */
+  totalElements?: number;
+  /**
+   * 전체 페이지 수
+   * @format int32
+   */
+  totalPages?: number;
+  /** 다음 페이지 존재 여부 */
+  hasNext?: boolean;
+}
+
+/** 문의 목록 응답 */
+export interface ReportListApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 응답 데이터 */
+  data: PageResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
+/** 응답 데이터 */
+export interface DetailResponse {
+  /**
+   * 문의 식별자
+   * @format uuid
+   */
+  id?: string;
+  /** 답변 상태 */
+  status?: "PENDING" | "ANSWERED";
+  /** 문의 제목 */
+  title?: string;
+  /** 문의 본문 */
+  content?: string;
+  /**
+   * 생성 시각
+   * @format date-time
+   */
+  createdAt?: string;
+  /** 관리자 답변 */
+  answer?: string | null;
+  /**
+   * 답변 완료 시각
+   * @format date-time
+   */
+  answeredAt?: string | null;
+}
+
+/** 문의 상세 응답 */
+export interface ReportDetailApiResponse {
+  /**
+   * 성공 여부
+   * @example true
+   */
+  success: boolean;
+  /** 응답 데이터 */
+  data: DetailResponse;
+  /**
+   * 메시지
+   * @example "요청 성공"
+   */
+  message?: string;
+}
+
 /** 성적 카드 목록 */
 export interface GradeCard {
   courseName?: string;
@@ -999,6 +1161,28 @@ export interface CourseDto {
   liberalAreaCode?: number | null;
 }
 
+/** 편입생 지정과목 이수 현황 */
+export interface DesignatedCourseProgressDto {
+  /**
+   * 과목 코드
+   * @example "C101"
+   */
+  courseCode?: string;
+  /**
+   * 과목명
+   * @example "자료구조"
+   */
+  courseName?: string;
+  /**
+   * 지정과목 원본 학점
+   * @format int32
+   * @example 3
+   */
+  credits?: number | null;
+  /** 지정과목 이수 상태 */
+  status?: "COMPLETED" | "NOT_COMPLETED" | "UNKNOWN";
+}
+
 /** 졸업 요건 진행 상황 응답 */
 export interface GraduationProgressApiResponse {
   /**
@@ -1017,6 +1201,10 @@ export interface GraduationProgressApiResponse {
 
 /** 졸업 요건 진행 상황 응답 */
 export interface GraduationProgressResponse {
+  /** 졸업진단 학생 유형 */
+  analysisType: "REGULAR" | "TRANSFER";
+  /** 졸업진단 분석 상태 */
+  analysisStatus: "CALCULATED" | "MANUAL_REVIEW_REQUIRED";
   /** 졸업 요건 영역별 이수 현황 */
   graduationProgress: AreaProgressDto[];
   /** 외국어 졸업 인증 통과 여부. 새 크롤러 동기화 전이면 null */
@@ -1025,7 +1213,130 @@ export interface GraduationProgressResponse {
   languageCertNeedsRefresh: boolean;
   /** 특정 학과/연도 예외로 기존과 다른 졸업요건이 적용되는지 여부 */
   hasDifferentGraduationRequirement: boolean;
+  /** 편입생 졸업요건 부분 진단 결과 */
+  transferProgress?: TransferGraduationProgressDto;
 }
+
+/** 편입생 영역별 이수 현황 */
+export interface TransferAreaProgressDto {
+  /**
+   * 영역 유형
+   * @example "전선"
+   */
+  areaType?:
+    | "중핵"
+    | "기교"
+    | "선교"
+    | "소교"
+    | "전교"
+    | "전취"
+    | "전핵"
+    | "전선"
+    | "일선"
+    | "복선"
+    | "복핵"
+    | "복교"
+    | "기타";
+  /** 편입생 영역별 평가 방식 */
+  evaluationType?: "COMPARISON" | "EARNED_ONLY" | "UNAVAILABLE";
+  /**
+   * 영역 전체 취득학점
+   * @format int32
+   */
+  earnedCredits?: number | null;
+  /**
+   * 기준 비교에 포함되는 취득학점
+   * @format int32
+   */
+  countedCredits?: number | null;
+  /** 편입연도에서 2년 전 일반 학생 전핵·전선 기준학점의 50%. 소수점 기준을 유지한다. */
+  requiredCredits?: number | null;
+  /** 영역 기준 충족 여부 */
+  fulfilled?: boolean | null;
+  /** 영역에 포함된 이수 과목 */
+  courses?: CourseDto[];
+  /** 기존 응답 호환용 필드. 전핵·전선은 학점으로 비교하므로 빈 목록을 반환한다. */
+  requiredCourses?: DesignatedCourseProgressDto[];
+  /** 영역 평가가 불가능한 사유 코드 */
+  unavailableReasons?: string[];
+}
+
+/** 편입생 졸업요건 부분 진단 결과 */
+export type TransferGraduationProgressDto = {
+  /**
+   * 졸업 필요 총학점
+   * @format int32
+   * @example 130
+   */
+  requiredTotalCredits?: number;
+  /**
+   * 포털 누적 취득학점
+   * @format int32
+   * @example 112
+   */
+  totalEarnedCredits?: number | null;
+  /**
+   * 졸업까지 남은 학점
+   * @format int32
+   * @example 18
+   */
+  remainingCredits?: number | null;
+  /** 총 취득학점 충족 여부 */
+  creditsFulfilled?: boolean | null;
+  /**
+   * 편입 인정학점
+   * @format int32
+   * @example 65
+   */
+  recognizedTransferCredits?: number | null;
+  /**
+   * 누적 GPA
+   * @example 3.2
+   */
+  cumulativeGpa?: number | null;
+  /**
+   * 적용 최소 GPA
+   * @example 2
+   */
+  requiredGpa?: number;
+  /** GPA 충족 여부 */
+  gpaFulfilled?: boolean | null;
+  /**
+   * 저장된 이수 학기 수
+   * @format int32
+   * @example 3
+   */
+  completedSemesters?: number | null;
+  /** 지정과목 스냅샷 새로고침 필요 여부 */
+  designatedCoursesNeedsRefresh?: boolean;
+  /** 지정과목 이수 현황 */
+  designatedCourses?: DesignatedCourseProgressDto[];
+  /** 자동 판정할 수 없는 요건 존재 여부 */
+  manualReviewRequired?: boolean;
+  /** 수동 확인이 필요한 요건 목록 */
+  manualReviewReasons?: (
+    | "TRANSFER_ENTRY_GRADE_UNKNOWN"
+    | "REGISTERED_SEMESTERS_NOT_VERIFIED"
+    | "REQUIRED_COURSES_NOT_ASSESSABLE"
+    | "ELECTIVE_RATIO_NOT_ASSESSABLE"
+    | "MINOR_OR_LINKED_MAJOR_NOT_ASSESSABLE"
+    | "GRADUATION_REVIEW_NOT_AVAILABLE"
+    | "ACADEMIC_SUMMARY_INCOMPLETE"
+    | "GRADUATION_REQUIREMENTS_NOT_FOUND"
+    | "RECOGNIZED_CREDITS_INCOMPLETE"
+    | "LANGUAGE_CERT_NOT_VERIFIED"
+    | "DESIGNATED_COURSES_NOT_VERIFIED"
+  )[];
+  /** 편입생 영역별 이수 현황 */
+  areas?: TransferAreaProgressDto[];
+  /**
+   * 실제 이수한 지정과목의 취득학점
+   * @format int32
+   */
+  designatedEarnedCredits?: number | null;
+  /** 지정과목 취득학점을 계산할 수 없는 사유 */
+  designatedCreditUnavailableReasons?: string[];
+};
 
 /** 외국어 인증 기준 조회 응답 */
 export interface LanguageCertRequirementApiResponse {
@@ -1476,6 +1787,28 @@ export type SetTargetGpaData = TargetGpaApiResponse;
 
 export type ResetStudentDataData = SuccessResponseMessageOnlyResponse;
 
+export interface GetMyReportsParams {
+  /**
+   * 0부터 시작하는 페이지
+   * @format int32
+   * @min 0
+   * @default 0
+   */
+  page?: number;
+  /**
+   * 페이지 크기(1~100)
+   * @format int32
+   * @min 1
+   * @max 100
+   * @default 20
+   */
+  size?: number;
+}
+
+export type GetMyReportsData = ReportListApiResponse;
+
+export type CreateData = ReportCreateApiResponse;
+
 export type SubmitData = LectureEvaluationSubmitApiResponse;
 
 export type SkipData = LectureEvaluationSkipApiResponse;
@@ -1524,6 +1857,8 @@ export type GetProfileData = StudentProfileApiResponse;
 export type GetSemesterRecordData = StudentSemesterListApiResponse;
 
 export type GetSemesterGradesData = SemesterGradesApiResponse;
+
+export type GetDetailData = ReportDetailApiResponse;
 
 export type GetRequiredData = LectureEvaluationRequiredApiResponse;
 

@@ -1,0 +1,16 @@
+@use '@/styles/typography' as typography;
+@use '@/styles/spacing' as spacing;
+
+.sectionTitle {
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+  margin-bottom: spacing.$space-12;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-12;
+  width: 100%;
+  margin-bottom: spacing.$space-12;
+}
