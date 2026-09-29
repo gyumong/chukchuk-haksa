@@ -101,3 +101,11 @@ export function getDesignatedCourseStatusLabel(status: DesignatedCourseStatus | 
 export function isDesignatedCoursesCompleted(courses: DesignatedCourseProgress[]): boolean {
   return courses.length > 0 && courses.every(course => course.status === 'COMPLETED');
 }
+
+/**
+ * 전적대 인정학점 표시 문자열. null/누락은 '확인 필요', 0 은 '0학점'.
+ * totalEarnedCredits 에 이미 포함된 값이라 표시만 하고 다른 학점에 합산하지 않는다.
+ */
+export function formatRecognizedTransferCredits(credits: number | null | undefined): string {
+  return credits == null ? '확인 필요' : `${credits}학점`;
+}

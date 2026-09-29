@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { TransferAreaProgress } from '../../types/graduation';
 import {
   buildTransferAreaViews,
+  formatRecognizedTransferCredits,
   getDesignatedCourseStatusLabel,
   isDesignatedCoursesCompleted,
   sortTransferAreas,
@@ -126,5 +127,20 @@ describe('isDesignatedCoursesCompleted', () => {
     expect(isDesignatedCoursesCompleted([])).toBe(false);
     expect(isDesignatedCoursesCompleted([{ status: 'COMPLETED' }, { status: 'COMPLETED' }])).toBe(true);
     expect(isDesignatedCoursesCompleted([{ status: 'COMPLETED' }, { status: 'UNKNOWN' }])).toBe(false);
+  });
+});
+
+describe('formatRecognizedTransferCredits', () => {
+  it('인정학점을 N학점으로 표시한다', () => {
+    expect(formatRecognizedTransferCredits(65)).toBe('65학점');
+  });
+
+  it('0 은 확인 필요가 아니라 0학점으로 표시한다', () => {
+    expect(formatRecognizedTransferCredits(0)).toBe('0학점');
+  });
+
+  it('null·누락은 확인 필요로 표시한다', () => {
+    expect(formatRecognizedTransferCredits(null)).toBe('확인 필요');
+    expect(formatRecognizedTransferCredits(undefined)).toBe('확인 필요');
   });
 });

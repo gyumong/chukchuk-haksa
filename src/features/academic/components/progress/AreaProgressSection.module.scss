@@ -16,6 +16,15 @@
   color: color.$gray-500;
 }
 
+// 펼침 본문 안내 문구 (편입생 '전적대 인정학점' 등) — 지정과목 안내와 같은 톤.
+.note {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+
+  margin: 0;
+  color: color.$gray-500;
+}
+
 // '일반선택' 학점 뒤 정보 아이콘 버튼 — 버튼 기본 스타일 제거 + 아이콘 수직 정렬.
 // info.svg 가 20x20(viewBox 0 0 20)로 제작돼 size={20} 이면 1:1 렌더 → 다운스케일 잘림 없음.
 // 아이콘 색은 info.svg 에 #7F71FB(=purple-100) 로 직접 지정됨. (svg 를 currentColor 로 바꾸면 아래 color 적용)
