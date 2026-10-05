@@ -1,0 +1,13 @@
+@use '@/styles/utilities' as utilities;
+
+.container {
+  @include utilities.app-layout;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  @include utilities.content-padding-responsive;
+}

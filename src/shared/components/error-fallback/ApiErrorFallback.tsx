@@ -1,34 +1,46 @@
+'use client';
+
+import { useEffect } from 'react';
+import { captureException } from '@sentry/nextjs';
+import { ROUTES } from '@/constants/routes';
 import { useAuth } from '@/features/auth/contexts/AuthContext';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import type { ApiError } from '@/shared/api/errors';
+import type { AsyncFallbackProps } from '@/shared/components/AsyncBoundary';
+import { getErrorTreatment } from '@/shared/error-severity';
 import { getUserMessage } from '@/shared/user-messages';
-import type { FallbackProps } from '../ErrorBoundary';
+import { ErrorScreen } from './ErrorScreen';
 
-const ApiErrorFallback = ({ error, reset }: FallbackProps) => {
+const ApiErrorFallback = ({ error, reset, fullPage }: AsyncFallbackProps) => {
   const apiError = error as ApiError;
-  const { clearAuth } = useAuth();
+  const { notifySessionExpired } = useAuth();
+  const router = useInternalRouter();
 
-  // 401 = 인증 만료. 일반 재시도가 의미 없으므로 세션 정리 + 로그인 페이지 안내.
-  // (refresh 가 가능했다면 customFetch / GET /api/session 단계에서 이미 처리됐을 것)
-  if (apiError.status === 401) {
-    return (
-      <div>
-        <h2>세션이 만료되었습니다</h2>
-        <p>보안을 위해 자동 로그아웃되었어요.{'\n'}다시 로그인해주세요.</p>
-        <button onClick={() => clearAuth()}>로그인하러 가기</button>
-      </div>
-    );
+  const treatment = getErrorTreatment(apiError.appCode, 'query');
+  const isGlobalAuthError = apiError.status === 401 || treatment?.severity === 'global';
+
+  useEffect(() => {
+    if (isGlobalAuthError) {
+      captureException(apiError, { tags: { errorCode: apiError.appCode || 'UNKNOWN' } });
+      notifySessionExpired();
+    }
+  }, [isGlobalAuthError, apiError, notifySessionExpired]);
+
+  if (isGlobalAuthError) {
+    return null;
   }
 
+  const message = getUserMessage(apiError.status, apiError.appCode, apiError.message);
+
   return (
-    <div>
-      <h2>오류가 발생했습니다</h2>
-      <p>{getUserMessage(apiError.status, apiError.code, apiError.message)}</p>
-
-      {apiError.code && <p>에러 코드: {apiError.code}</p>}
-      {apiError.status > 0 && <p>상태 코드: {apiError.status}</p>}
-
-      <button onClick={reset}>다시 시도</button>
-    </div>
+    <ErrorScreen
+      message={message}
+      code={apiError.appCode || undefined}
+      fullPage={fullPage}
+      onBack={() => router.back()}
+      onRetry={reset}
+      onInquiry={() => router.push(ROUTES.INQUIRY.NEW)}
+    />
   );
 };
 

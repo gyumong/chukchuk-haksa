@@ -4,7 +4,8 @@ import { ROUTES } from '@/constants/routes';
 import { getAcademicPeriod, getLatestSemester } from '../utils/semesterUtils';
 import { getCourseAreaDisplayName, isAreaCompleted, sortAreasByCompletion } from '../utils/courseAreaUtils';
 import { isDualMajorArea } from '../utils/dualMajorUtils';
-import type { SemesterGrade, AreaProgress } from '../types/graduation';
+import { buildTransferAreaViews } from '../utils/transferProgressUtils';
+import type { SemesterGrade, AreaProgress, TransferAreaProgress } from '../types/graduation';
 
 /**
  * 학기 진도 관련 비즈니스 로직을 처리하는 훅
@@ -56,4 +57,12 @@ export function useAreaProgress(areaProgress: AreaProgress[]) {
   }, [areaProgress]);
 
   return { mainMajorAreas, dualMajorAreas };
+}
+
+/**
+ * 편입생 영역별 진도 — 카드 순서(전핵·전선 → 취득학점만 → 기준 미확정)와 주/복수전공 분리.
+ * areas 가 아직 없으면(백엔드 부분 진단 미완) 빈 목록.
+ */
+export function useTransferAreaProgress(areas: TransferAreaProgress[] | undefined) {
+  return useMemo(() => buildTransferAreaViews(areas ?? []), [areas]);
 }

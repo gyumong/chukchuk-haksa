@@ -2,8 +2,7 @@
 
 import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
-import { captureException } from '@sentry/nextjs';
-import { FixedButton, TextField } from '@/components/ui';
+import { ErrorModal, FixedButton, TextField } from '@/components/ui';
 import { RESYNC_JOB_ID_KEY } from '@/constants/portal-link';
 import { ROUTES } from '@/constants/routes';
 import { usePortalLinkMutation } from '@/features/portal-link/hooks';
@@ -11,7 +10,7 @@ import { popRetry, stashAttemptUsername } from '@/features/portal-link/utils/cre
 import { getMessageByErrorCode } from '@/features/portal-link/utils/errorMapping';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { EVENTS, track, useTrackView } from '@/lib/analytics';
-import { ApiError } from '@/shared/api/errors';
+import { useMutationErrorHandler } from '@/shared/hooks/useMutationErrorHandler';
 import { generateIdempotencyKey } from '@/shared/utils/idempotency';
 import { FunnelHeadline, SchoolCard } from '../../(funnel)/components';
 import styles from './page.module.scss';
@@ -23,6 +22,7 @@ export default function PortalLogin() {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const router = useInternalRouter();
   const linkMutation = usePortalLinkMutation();
+  const { handleMutationError, modalState, closeModal, retry, goToInquiry } = useMutationErrorHandler();
 
   useEffect(() => {
     const { username: retriedUsername, code } = popRetry();
@@ -34,15 +34,11 @@ export default function PortalLogin() {
     }
   }, []);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    track(EVENTS.UNIV_RESYNC_BTN_TAP);
+  const submitPortalLink = async () => {
+    const idempotencyKey = generateIdempotencyKey();
+    stashAttemptUsername(username);
 
     try {
-      setErrorMessage('');
-
-      const idempotencyKey = generateIdempotencyKey();
-      stashAttemptUsername(username);
       const result = await linkMutation.mutateAsync({ username, password, idempotencyKey });
       const jobId = result?.job_id;
 
@@ -50,18 +46,18 @@ export default function PortalLogin() {
         sessionStorage.setItem(RESYNC_JOB_ID_KEY, jobId);
         router.push(`${ROUTES.RESYNC.SCRAPING}`);
       } else {
-        setErrorMessage('연동 요청에 실패했습니다. 다시 시도해주세요.');
+        handleMutationError(new Error('연동 요청에 실패했습니다. 다시 시도해주세요.'), submitPortalLink);
       }
     } catch (err: unknown) {
-      captureException(err);
-      const message =
-        err instanceof ApiError
-          ? err.userMessage
-          : err instanceof Error && err.message
-            ? err.message
-            : '알 수 없는 오류가 발생했어요\n잠시후 다시 시도해주세요';
-      setErrorMessage(message);
+      handleMutationError(err, submitPortalLink);
     }
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    track(EVENTS.UNIV_RESYNC_BTN_TAP);
+    setErrorMessage('');
+    void submitPortalLink();
   };
 
   return (
@@ -105,6 +101,17 @@ export default function PortalLogin() {
           학업 이력 동기화하기
         </FixedButton>
       </form>
+      <ErrorModal
+        isOpen={modalState.isOpen}
+        message={modalState.message}
+        code={modalState.code}
+        onRetry={modalState.showRetry ? retry : undefined}
+        onInquiry={() => {
+          closeModal();
+          goToInquiry();
+        }}
+        onClose={closeModal}
+      />
     </div>
   );
 }

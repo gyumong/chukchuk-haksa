@@ -24,7 +24,10 @@ export default defineConfig({
   use: {
     baseURL: BASE_URL,
     // 실패 원인 추적용 아티팩트 (.gitignore 처리됨).
-    trace: 'on-first-retry',
+    // 로컬은 retries=0 이라 'on-first-retry' 로는 trace 가 남지 않는다 → 항상 기록해
+    // e2e-ai(reticulum) 가 test-results/**/trace.zip 을 색인할 수 있게 한다. (docs/e2e-ai.md)
+    // CI 는 기존처럼 재시도 때만 기록해 아티팩트 크기를 억제.
+    trace: IS_CI ? 'on-first-retry' : 'on',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },

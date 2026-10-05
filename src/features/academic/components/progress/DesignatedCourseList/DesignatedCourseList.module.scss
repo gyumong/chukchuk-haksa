@@ -1,0 +1,101 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+// CourseList 와 같은 행 리듬(16px 간격·26px 최소 높이)으로 맞춰 다른 영역 카드와 이질감이 없게 한다.
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-16;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: spacing.$space-8;
+  min-height: 26px;
+}
+
+.info {
+  display: flex;
+  align-items: flex-start;
+  gap: spacing.$space-8;
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+
+  color: color.$black-100;
+  min-width: 0;
+  overflow-wrap: break-word;
+
+  .completed & {
+    color: color.$white;
+  }
+}
+
+// 과목 코드 — 학기 라벨과 동일 톤(작은 회색).
+.code {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+
+  color: color.$gray-100;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.meta {
+  display: flex;
+  align-items: flex-start;
+  gap: spacing.$space-8;
+  flex-shrink: 0;
+}
+
+.credits {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+
+  color: color.$purple-100;
+
+  .completed & {
+    color: #c8c3f7; // CourseList.credits 완료 색과 동일 (토큰 없음)
+  }
+}
+
+// 이수 상태 — 이수(초록) / 미이수(빨강) / 확인 필요(회색). 성적 등급 색상 규약을 따른다.
+.status {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+
+  min-width: 44px;
+  text-align: right;
+
+  &[data-status='COMPLETED'] {
+    color: color.$success;
+  }
+
+  &[data-status='NOT_COMPLETED'] {
+    color: color.$error;
+  }
+
+  &[data-status='UNKNOWN'] {
+    color: color.$gray-100;
+  }
+}
+
+.notice,
+.empty {
+  @include typography.body-sm;
+  @include typography.font-weight-medium;
+
+  margin: 0;
+  color: color.$gray-500;
+
+  .completed &,
+  &.completed {
+    color: color.$gray-200;
+  }
+}
