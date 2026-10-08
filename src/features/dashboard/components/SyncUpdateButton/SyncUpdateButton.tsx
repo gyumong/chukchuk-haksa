@@ -9,8 +9,10 @@ import { Icon } from '@/components/ui';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { showToast } from '@/components/ui/Toast';
 import { ROUTES } from '@/constants';
+import { PORTAL_LINK_DISABLED } from '@/constants/portal-link';
 import { useRewardedAdGate } from '@/features/ads/useRewardedAdGate';
 import { useProfileQuery } from '@/features/dashboard/apis/queries/useProfileQuery';
+import { PortalLinkDisabledDialog } from '@/features/portal-link/components';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { EVENTS, track } from '@/lib/analytics';
 import styles from './SyncUpdateButton.module.scss';
@@ -29,12 +31,18 @@ const SyncUpdateButton = ({ onNavigate }: SyncUpdateButtonProps = {}) => {
   const router = useInternalRouter();
   const { showRewardedAd, optInDialog } = useRewardedAdGate();
   const [isRequesting, setIsRequesting] = useState(false);
+  const [isPortalNoticeOpen, setIsPortalNoticeOpen] = useState(false);
   const parsedLastSyncedAt = data.lastSyncedAt ? parseISO(data.lastSyncedAt) : null;
   const formattedLastSyncedAt =
     parsedLastSyncedAt && isValid(parsedLastSyncedAt) ? format(parsedLastSyncedAt, 'yy년 M월 d일 HH:mm') : '';
 
   const handleResyncLogin = useCallback(async () => {
     track(EVENTS.HOME_UNIV_RESYNC_BTN_TAP);
+    // 포털 연동 비활성화 중엔 광고·네이티브 위임 전에 막는다(광고를 다 보고 막히는 일 방지).
+    if (PORTAL_LINK_DISABLED) {
+      setIsPortalNoticeOpen(true);
+      return;
+    }
     // 앱(웹뷰): 네이티브에 위임 — 광고는 네이티브 AdMob 책임이라 여기선 끼우지 않는다.
     if (onNavigate) {
       onNavigate();
@@ -98,6 +106,7 @@ const SyncUpdateButton = ({ onNavigate }: SyncUpdateButtonProps = {}) => {
         </span>
       </button>
       <ConfirmDialog {...optInDialog} />
+      <PortalLinkDisabledDialog isOpen={isPortalNoticeOpen} onClose={() => setIsPortalNoticeOpen(false)} />
     </>
   );
 };
