@@ -1,15 +1,16 @@
 'use client';
 
+import { ROUTES } from '@/constants/routes';
 import {
   DashboardAcademicSummaryCard,
-  GraduationRequirementCard,
   DualMajorRequirementCard,
+  GraduationRequirementCard,
   ProfileCard,
   SyncUpdateButton,
 } from '@/features/dashboard/components';
-import { ROUTES } from '@/constants/routes';
-import { LectureEvaluationEntryGate } from '@/features/lecture-evaluation/components';
 import { useRefreshProfileOnVisible } from '@/features/dashboard/hooks/useRefreshProfileOnVisible';
+import { LectureEvaluationEntryGate } from '@/features/lecture-evaluation/components';
+import { PortalLinkDisabledHomeNotice } from '@/features/portal-link/components';
 import AsyncBoundary from '@/shared/components/AsyncBoundary';
 
 const Home = () => {
@@ -36,6 +37,7 @@ const Home = () => {
       <AsyncBoundary>
         <DualMajorRequirementCard />
       </AsyncBoundary>
+      <PortalLinkDisabledHomeNotice />
     </LectureEvaluationEntryGate>
   );
 };
