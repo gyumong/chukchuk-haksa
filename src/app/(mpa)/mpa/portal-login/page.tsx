@@ -3,19 +3,19 @@
 // /mpa/resync/login 과 동일 폼. portal-link 별도 entry point. 프로토콜: docs/mpa-school-link-handoff.md
 import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
+import { FunnelHeadline, SchoolCard } from '@/app/(funnel)/components';
+import sharedStyles from '@/app/resync/login/page.module.scss';
 import { ConfirmDialog, ErrorModal, FixedButton, TextField } from '@/components/ui';
+import { PORTAL_LINK_DISABLED, PORTAL_LINK_DISABLED_MESSAGE, PORTAL_LOGIN_JOB_ID_KEY } from '@/constants/portal-link';
 import { ROUTES } from '@/constants/routes';
-import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { usePortalLinkMutation } from '@/features/portal-link/hooks';
 import { popRetry, stashAttemptUsername } from '@/features/portal-link/utils/credentialRetry';
 import { getMessageByErrorCode } from '@/features/portal-link/utils/errorMapping';
-import { PORTAL_LOGIN_JOB_ID_KEY } from '@/constants/portal-link';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { EVENTS, track, useTrackView } from '@/lib/analytics';
+import { isInWebView, redirectToHome } from '@/lib/webview';
 import { useMutationErrorHandler } from '@/shared/hooks/useMutationErrorHandler';
 import { generateIdempotencyKey } from '@/shared/utils/idempotency';
-import { isInWebView, redirectToHome } from '@/lib/webview';
-import { FunnelHeadline, SchoolCard } from '@/app/(funnel)/components';
-import sharedStyles from '@/app/resync/login/page.module.scss';
 import styles from './page.module.scss';
 
 export default function MpaPortalLogin() {
@@ -77,6 +77,9 @@ export default function MpaPortalLogin() {
     void submitPortalLink();
   };
 
+  // 포털 연동 비활성화 중엔 입력 오류 대신 비활성화 안내를 보여준다.
+  const visibleMessage = PORTAL_LINK_DISABLED ? PORTAL_LINK_DISABLED_MESSAGE : errorMessage;
+
   return (
     <div className={sharedStyles.container}>
       <FunnelHeadline
@@ -102,9 +105,9 @@ export default function MpaPortalLogin() {
           error={Boolean(errorMessage)}
         />
 
-        {errorMessage && (
+        {visibleMessage && (
           <div className={sharedStyles.errorMessage} role="alert" aria-live="polite">
-            {errorMessage.split('\n').map((line, i) => (
+            {visibleMessage.split('\n').map((line, i) => (
               <p key={i}>{line}</p>
             ))}
           </div>
@@ -118,7 +121,7 @@ export default function MpaPortalLogin() {
 
         <FixedButton
           type="submit"
-          disabled={!username || !password || linkMutation.isPending}
+          disabled={!username || !password || linkMutation.isPending || PORTAL_LINK_DISABLED}
           isLoading={linkMutation.isPending}
         >
           학업 이력 동기화하기
