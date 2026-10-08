@@ -1,7 +1,7 @@
 'use client';
 
 import { ConfirmDialog } from '@/components/ui';
-import { PORTAL_LINK_DISABLED_MESSAGE } from '@/constants/portal-link';
+import { PORTAL_LINK_DISABLED_NOTICE, PORTAL_LINK_DISABLED_NOTICE_TITLE } from '@/constants/portal-link';
 
 interface PortalLinkDisabledDialogProps {
   isOpen: boolean;
@@ -13,8 +13,8 @@ export function PortalLinkDisabledDialog({ isOpen, onClose }: PortalLinkDisabled
   return (
     <ConfirmDialog
       isOpen={isOpen}
-      title="안내"
-      message={PORTAL_LINK_DISABLED_MESSAGE}
+      title={PORTAL_LINK_DISABLED_NOTICE_TITLE}
+      message={PORTAL_LINK_DISABLED_NOTICE}
       hideCancel
       onConfirm={onClose}
       onClose={onClose}
