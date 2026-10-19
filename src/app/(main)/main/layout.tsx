@@ -3,7 +3,9 @@
 import type { PropsWithChildren } from 'react';
 import Script from 'next/script';
 import { TopNavigation } from '@/components/ui/TopNavigation';
+import { WEB_UNSUPPORTED } from '@/constants/app-store';
 import { ROUTES } from '@/constants/routes';
+import { WebUnsupportedScreen } from '@/features/app-only/components';
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import styles from './layout.module.scss';
@@ -13,6 +15,11 @@ export default function FunnelLayout({ children }: PropsWithChildren) {
   const handleRightIconClick = () => {
     router.push(ROUTES.SETTING);
   };
+
+  // 웹 서비스 종료: 인증·연동 게이트와 광고 스크립트보다 먼저 막아 대시보드 API 호출 없이 앱 설치 안내만 보여준다.
+  if (WEB_UNSUPPORTED) {
+    return <WebUnsupportedScreen />;
+  }
 
   return (
     <ProtectedRoute requirePortalLinked={true} portalLinkRedirectTo={ROUTES.FUNNEL.PORTAL_LOGIN}>
