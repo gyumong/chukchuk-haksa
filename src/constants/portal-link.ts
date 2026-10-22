@@ -3,7 +3,7 @@ export const PORTAL_LOGIN_JOB_ID_KEY = 'portal_login_job_id';
 
 // 포털 연동 일시 비활성화 스위치. true 면 홈 진입 시 공지 모달을 띄우고, 연동/재연동 진입점과
 // submitPortalLink 를 모두 막는다. 복구 시 false 로 바꿔 배포하면 원래 동작으로 돌아온다.
-export const PORTAL_LINK_DISABLED = true;
+export const PORTAL_LINK_DISABLED = false;
 
 // 홈 진입·정보 업데이트 탭 시 뜨는 공지 모달.
 export const PORTAL_LINK_DISABLED_NOTICE_TITLE = '포털 연동 일시 중단 안내';
