@@ -23,7 +23,7 @@
     "api:gen": "swagger-typescript-api generate -p ./swagger/openapi-dev.json -o ./src/shared/api --modular --module-name-first-tag --templates ./swagger/templates --name index.ts --extract-response-body --extract-request-params",
     "api:move": "node scripts/move-api-domains.mjs",
     "api:update": "yarn api:fetch && yarn api:gen && yarn api:move",
-    "build:worker": "opennextjs-cloudflare build",
+    "build:worker": "opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion",
     "preview:cf": "yarn build && yarn build:worker && opennextjs-cloudflare preview",
     "deploy:cf": "yarn build && yarn build:worker && opennextjs-cloudflare deploy",
     "env:pull": "vercel env pull",
