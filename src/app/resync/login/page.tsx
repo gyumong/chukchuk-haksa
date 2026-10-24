@@ -3,7 +3,7 @@
 import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { ErrorModal, FixedButton, TextField } from '@/components/ui';
-import { RESYNC_JOB_ID_KEY } from '@/constants/portal-link';
+import { PORTAL_LINK_DISABLED, PORTAL_LINK_DISABLED_MESSAGE, RESYNC_JOB_ID_KEY } from '@/constants/portal-link';
 import { ROUTES } from '@/constants/routes';
 import { usePortalLinkMutation } from '@/features/portal-link/hooks';
 import { popRetry, stashAttemptUsername } from '@/features/portal-link/utils/credentialRetry';
@@ -60,6 +60,9 @@ export default function PortalLogin() {
     void submitPortalLink();
   };
 
+  // 포털 연동 비활성화 중엔 입력 오류 대신 비활성화 안내를 보여준다.
+  const visibleMessage = PORTAL_LINK_DISABLED ? PORTAL_LINK_DISABLED_MESSAGE : errorMessage;
+
   return (
     <div className={styles.container}>
       <FunnelHeadline
@@ -85,9 +88,9 @@ export default function PortalLogin() {
           error={Boolean(errorMessage)}
         />
 
-        {errorMessage && (
+        {visibleMessage && (
           <div className={styles.errorMessage}>
-            {errorMessage.split('\n').map((line, i) => (
+            {visibleMessage.split('\n').map((line, i) => (
               <p key={i}>{line}</p>
             ))}
           </div>
@@ -95,7 +98,7 @@ export default function PortalLogin() {
 
         <FixedButton
           type="submit"
-          disabled={!username || !password || linkMutation.isPending}
+          disabled={!username || !password || linkMutation.isPending || PORTAL_LINK_DISABLED}
           isLoading={linkMutation.isPending}
         >
           학업 이력 동기화하기

@@ -1,9 +1,6 @@
+import { PORTAL_LINK_DISABLED, PORTAL_LINK_DISABLED_MESSAGE } from '@/constants/portal-link';
 import { portalJobQueryApi, portalLinkApi } from '@/shared/api/client';
-import type {
-  AcceptedResponse,
-  JobStatusResponse,
-  JobSummaryResponse,
-} from '@/shared/api/data-contracts';
+import type { AcceptedResponse, JobStatusResponse, JobSummaryResponse } from '@/shared/api/data-contracts';
 import { ApiResponseHandler } from '@/shared/api/utils/response-handler';
 
 interface SubmitPortalLinkParams {
@@ -33,6 +30,11 @@ export function unwrapData<T>(response: MaybeWrapped<T>): T {
 }
 
 export async function submitPortalLink({ username, password, idempotencyKey }: SubmitPortalLinkParams) {
+  // 화면 단 차단을 우회해 들어와도 연동 요청 자체를 보내지 않는다.
+  if (PORTAL_LINK_DISABLED) {
+    throw new Error(PORTAL_LINK_DISABLED_MESSAGE);
+  }
+
   const response = await ApiResponseHandler.handleAsyncResponse<MaybeWrapped<AcceptedResponse>>(
     portalLinkApi.createPortalLinkJob(
       { portal_type: 'suwon', username, password },

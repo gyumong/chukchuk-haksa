@@ -1,16 +1,17 @@
 'use client';
 
 import { ROUTES } from '@/constants/routes';
+import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
 import {
   DashboardAcademicSummaryCard,
-  GraduationRequirementCard,
   DualMajorRequirementCard,
+  GraduationRequirementCard,
   ProfileCard,
   SyncUpdateButton,
 } from '@/features/dashboard/components';
 import { useRefreshProfileOnVisible } from '@/features/dashboard/hooks/useRefreshProfileOnVisible';
-import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
 import { LectureEvaluationEntryGate } from '@/features/lecture-evaluation/components';
+import { PortalLinkDisabledHomeNotice } from '@/features/portal-link/components';
 import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { navigateNative } from '@/lib/webview';
 import AsyncBoundary from '@/shared/components/AsyncBoundary';
@@ -57,6 +58,7 @@ const MpaHome = () => {
         <AsyncBoundary>
           <DualMajorRequirementCard onNavigate={goGraduation} />
         </AsyncBoundary>
+        <PortalLinkDisabledHomeNotice />
       </LectureEvaluationEntryGate>
     </ProtectedRoute>
   );

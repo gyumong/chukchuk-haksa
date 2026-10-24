@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { ErrorModal, FixedButton, TextField } from '@/components/ui';
+import { PORTAL_LINK_DISABLED, PORTAL_LINK_DISABLED_MESSAGE } from '@/constants/portal-link';
 import { usePortalLinkMutation } from '@/features/portal-link/hooks';
 import { popRetry, stashAttemptUsername } from '@/features/portal-link/utils/credentialRetry';
 import { getMessageByErrorCode } from '@/features/portal-link/utils/errorMapping';
@@ -66,6 +67,9 @@ export function PortalLoginForm({ onSuccess, onError }: PortalLoginFormProps) {
 
   const isLoading = linkMutation.isPending;
 
+  // 포털 연동 비활성화 중엔 입력 오류 대신 비활성화 안내를 보여준다.
+  const visibleMessage = PORTAL_LINK_DISABLED ? PORTAL_LINK_DISABLED_MESSAGE : errorMessage;
+
   return (
     <>
       <form onSubmit={handleSubmit} className={styles.formContainer}>
@@ -86,14 +90,18 @@ export function PortalLoginForm({ onSuccess, onError }: PortalLoginFormProps) {
           error={Boolean(errorMessage)}
           disabled={isLoading}
         />
-        {errorMessage && (
+        {visibleMessage && (
           <div className={styles.errorMessage}>
-            {errorMessage.split('\n').map((line: string, i: number) => (
+            {visibleMessage.split('\n').map((line: string, i: number) => (
               <p key={i}>{line}</p>
             ))}
           </div>
         )}
-        <FixedButton type="submit" disabled={!username || !password || isLoading} isLoading={isLoading}>
+        <FixedButton
+          type="submit"
+          disabled={!username || !password || isLoading || PORTAL_LINK_DISABLED}
+          isLoading={isLoading}
+        >
           학교 연동하기
         </FixedButton>
       </form>
