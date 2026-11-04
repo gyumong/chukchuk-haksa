@@ -11,6 +11,9 @@ import type {
   LanguageCertRequirementResponse
 } from '@/shared/api/data-contracts';
 import type { AcademicRecordData, AcademicSummary, SemesterGrade } from '../types/graduation';
+import { referenceRankSchema } from '../types/referenceRank';
+import type { ReferenceRank } from '../types/referenceRank';
+import { referenceRankApi } from './referenceRankClient';
 
 /**
  * 학기별 성적 및 수강 과목 정보를 API로부터 가져온다.
@@ -89,4 +92,15 @@ export async function fetchLanguageCertRequirement(): Promise<LanguageCertRequir
   );
 
   return response.data;
+}
+
+/**
+ * 선택 학기의 참고 석차를 가져온다. 계산 불가도 200 으로 내려오며 status 로 구분한다.
+ */
+export async function fetchReferenceRank(year: number, semester: number): Promise<ReferenceRank> {
+  const response = await ApiResponseHandler.handleAsyncResponse<{ data: unknown }>(
+    referenceRankApi.getReferenceRank({ year, semester })
+  );
+
+  return referenceRankSchema.parse(response.data);
 }

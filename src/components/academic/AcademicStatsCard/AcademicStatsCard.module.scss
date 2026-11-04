@@ -36,8 +36,26 @@
     @include typography.font-weight-regular;
   }
 
+  .labelRow {
+    display: inline-flex;
+    align-items: center;
+    gap: spacing.$space-4;
+  }
+
+  // info.svg 가 #7F71FB 로 직접 색 지정돼 있어 어두운 카드 위에서는 흰색으로 바꾼다.
+  .infoButton {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    filter: brightness(0) invert(1);
+  }
+
   .value {
     color: color.$purple-200;
+    white-space: nowrap;
     @include typography.body-exlg;
     @include typography.font-weight-bold;
   }

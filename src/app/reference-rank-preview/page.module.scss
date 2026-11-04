@@ -1,0 +1,25 @@
+@use '@/styles/color' as colors;
+@use '@/styles/spacing' as spacing;
+@use '@/styles/typography' as typography;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-20;
+  max-width: 430px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: spacing.$space-20 spacing.$space-16;
+  box-sizing: border-box;
+}
+
+.scenario {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-8;
+}
+
+.label {
+  color: colors.$gray-500;
+  @include typography.body-xs;
+}

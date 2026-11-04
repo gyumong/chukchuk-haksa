@@ -1,13 +1,17 @@
+import type { ReactNode } from 'react';
+import { Icon } from '@/components/ui/Icon';
 import styles from './AcademicStatsCard.module.scss';
 
 const AcademicStatsCard = ({
   earnedCredits,
   gpa,
-  rankInfo,
+  rankValue,
+  onRankInfoClick,
 }: {
   earnedCredits: number;
   gpa: number;
-  rankInfo: { type: 'percentile'; value: number } | { type: 'classRank'; rank: number; total: number };
+  rankValue: ReactNode;
+  onRankInfoClick: () => void;
 }) => {
   return (
     <div className={styles.container}>
@@ -19,17 +23,20 @@ const AcademicStatsCard = ({
       <div className={styles.divider} />
 
       <div className={styles.statItem}>
-        <span className={styles.label}>평점평균</span>
+        <span className={styles.label}>평점 평균</span>
         <span className={styles.value}>{gpa.toFixed(2)}</span>
       </div>
 
       <div className={styles.divider} />
 
       <div className={styles.statItem}>
-        <span className={styles.label}>{rankInfo.type === 'classRank' ? '석차' : '백분위'}</span>
-        <span className={styles.value}>
-          {rankInfo.type === 'classRank' ? `${rankInfo.rank}/${rankInfo.total}` : rankInfo.value}
+        <span className={styles.labelRow}>
+          <span className={styles.label}>석차</span>
+          <button type="button" className={styles.infoButton} aria-label="석차 기준 안내 보기" onClick={onRankInfoClick}>
+            <Icon name="info" size={20} />
+          </button>
         </span>
+        <span className={styles.value}>{rankValue}</span>
       </div>
     </div>
   );
