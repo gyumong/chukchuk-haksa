@@ -24,7 +24,8 @@
 
 .statItem {
   flex: 1;
-  min-width: 0;
+  // 평소엔 세 칸이 같은 폭이고, 값이 길면 그 칸만 넓어져 글자를 줄이지 않아도 된다.
+  min-width: max-content;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -42,15 +43,22 @@
     gap: spacing.$space-4;
   }
 
-  // info.svg 가 #7F71FB 로 직접 색 지정돼 있어 어두운 카드 위에서는 흰색으로 바꾼다.
   .infoButton {
+    position: relative;
     display: inline-flex;
     align-items: center;
     padding: 0;
+    color: color.$white;
     background: none;
     border: none;
     cursor: pointer;
-    filter: brightness(0) invert(1);
+
+    // 아이콘이 작아도 손가락으로 누르기 쉽도록 터치 영역만 넓힌다.
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -12px;
+    }
   }
 
   .value {

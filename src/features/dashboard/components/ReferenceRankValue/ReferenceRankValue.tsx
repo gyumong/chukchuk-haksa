@@ -10,12 +10,17 @@ import {
 import AsyncBoundary from '@/shared/components/AsyncBoundary';
 import styles from './ReferenceRankValue.module.scss';
 
-const COMPACT_LENGTH = 5;
+const COMPACT_LENGTH = 7;
+const COMPACT_RANGE_LENGTH = 6;
 
 const EmptyValue = () => <>{REFERENCE_RANK_EMPTY}</>;
 
+// 범위 값의 '위'는 숫자보다 폭이 넓어 더 짧은 길이부터 줄인다.
+const isCompactValue = (value: string) =>
+  value.length > (value.endsWith('위') ? COMPACT_RANGE_LENGTH : COMPACT_LENGTH);
+
 export const ReferenceRankText = ({ value }: { value: string }) => (
-  <span className={value.length > COMPACT_LENGTH ? styles.compact : undefined}>{value}</span>
+  <span className={isCompactValue(value) ? styles.compact : undefined}>{value}</span>
 );
 
 function TermRankValue({ year, semester }: { year: number; semester: number }) {

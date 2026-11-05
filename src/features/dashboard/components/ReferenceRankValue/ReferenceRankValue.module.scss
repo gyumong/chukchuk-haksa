@@ -1,7 +1,11 @@
 @use '@/styles/typography.scss' as typography;
 
-// 석차 칸은 폭이 좁아 세 자리 순위·범위는 기본 크기로 넘친다.
+// 긴 값이 기본 크기로 넘치는 화면 폭. 더 넓은 화면은 값 칸이 넓어져 그대로 들어간다.
+$narrow-screen: 340px;
+
 .compact {
-  @include typography.body-sm;
-  @include typography.font-weight-bold;
+  @media (max-width: $narrow-screen) {
+    @include typography.body-lg;
+    @include typography.font-weight-bold;
+  }
 }
