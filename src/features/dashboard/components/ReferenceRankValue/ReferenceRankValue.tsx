@@ -19,7 +19,7 @@ const EmptyValue = () => <>{REFERENCE_RANK_EMPTY}</>;
 const isCompactValue = (value: string) =>
   value.length > (value.endsWith('위') ? COMPACT_RANGE_LENGTH : COMPACT_LENGTH);
 
-export const ReferenceRankText = ({ value }: { value: string }) => (
+const ReferenceRankText = ({ value }: { value: string }) => (
   <span className={isCompactValue(value) ? styles.compact : undefined}>{value}</span>
 );
 
