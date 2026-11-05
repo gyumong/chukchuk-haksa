@@ -1,0 +1,36 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-16;
+  text-align: center;
+}
+
+.paragraph {
+  margin: 0;
+  color: color.$black-100;
+
+  @include typography.body-md;
+  @include typography.font-weight-regular;
+}
+
+.strong {
+  @include typography.font-weight-bold;
+}
+
+.accent {
+  color: color.$purple-100;
+
+  @include typography.font-weight-bold;
+}
+
+.note {
+  margin: 0;
+  color: color.$gray-500;
+
+  @include typography.body-sm;
+  @include typography.font-weight-regular;
+}
