@@ -29,13 +29,14 @@ describe('getReferenceRankValue', () => {
   it('미확정은 확정 순위처럼 보이지 않게 범위로 표시한다', () => {
     const data = makeRank({ status: 'UNRESOLVED', rank: null, rankFrom: 5, rankTo: 7, tiedCount: null });
 
-    expect(getReferenceRankValue(data)).toBe('5~7위');
+    expect(getReferenceRankValue(data)).toBe('5~7/50');
   });
 
   it.each([
     ['UNAVAILABLE', makeRank({ status: 'UNAVAILABLE', rank: null, participantCount: null, tiedCount: null })],
     ['INSUFFICIENT_PEERS', makeRank({ status: 'INSUFFICIENT_PEERS', rank: null, participantCount: 1, tiedCount: null })],
     ['순위가 빠진 EXACT', makeRank({ rank: null })],
+    ['비교 인원이 빠진 UNRESOLVED', makeRank({ status: 'UNRESOLVED', rank: null, rankFrom: 5, rankTo: 7, participantCount: null })],
   ])('%s 는 순위를 지어내지 않고 - 로 표시한다', (_, data) => {
     expect(getReferenceRankValue(data)).toBe('-');
   });

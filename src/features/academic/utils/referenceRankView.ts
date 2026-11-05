@@ -25,9 +25,8 @@ export function getReferenceRankValue({ status, rank, rankFrom, rankTo, particip
     return `${rank}/${participantCount}`;
   }
 
-  // 칸 폭이 좁아 분모를 뺀다. 세 자리 순위 범위에 분모까지 붙이면 넘친다.
-  if (status === 'UNRESOLVED' && rankFrom !== null && rankTo !== null) {
-    return `${rankFrom}~${rankTo}위`;
+  if (status === 'UNRESOLVED' && rankFrom !== null && rankTo !== null && participantCount !== null) {
+    return `${rankFrom}~${rankTo}/${participantCount}`;
   }
 
   return REFERENCE_RANK_EMPTY;

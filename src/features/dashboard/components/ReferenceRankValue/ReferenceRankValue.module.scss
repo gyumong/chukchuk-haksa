@@ -1,7 +1,7 @@
 @use '@/styles/typography.scss' as typography;
 
 // 긴 값이 기본 크기로 넘치는 화면 폭. 더 넓은 화면은 값 칸이 넓어져 그대로 들어간다.
-$narrow-screen: 340px;
+$narrow-screen: 350px;
 
 .compact {
   @media (max-width: $narrow-screen) {

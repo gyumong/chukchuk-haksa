@@ -79,4 +79,9 @@
   @include device.compact {
     margin: 0 spacing.$space-12;
   }
+
+  // 작은 폰에서 긴 석차 범위가 들어갈 자리를 확보한다.
+  @media (max-width: 370px) {
+    margin: 0 spacing.$space-8;
+  }
 }
