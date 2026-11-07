@@ -5,16 +5,31 @@ import { useProfileQuery } from '@/features/dashboard/apis/queries/useProfileQue
 import { getProfileImagePath } from '../../../../app/(main)/utils/getProfileImagePath';
 import styles from './ProfileCard.module.scss';
 
-const ProfileCard = () => {
-  const { data } = useProfileQuery();
+export interface ProfileCardViewProps {
+  name: string;
+  majorName: string;
+  studentCode: string;
+  gradeLevel: number;
+  currentSemester: number;
+  status: string;
+}
 
-  const profileImagePath = getProfileImagePath(data.status, data.gradeLevel);
+export const ProfileCardView = ({
+  name,
+  majorName,
+  studentCode,
+  gradeLevel,
+  currentSemester,
+  status,
+}: ProfileCardViewProps) => {
+  const profileImagePath = getProfileImagePath(status, gradeLevel);
+
   return (
     <div className={styles.container}>
       <div className={styles.profileImage}>
         <Image
           src={profileImagePath}
-          alt={`${data.status} ${data.gradeLevel}학년 프로필 이미지`}
+          alt={`${status} ${gradeLevel}학년 프로필 이미지`}
           width={102}
           height={102}
           className={styles.image}
@@ -23,26 +38,41 @@ const ProfileCard = () => {
 
       <div className={styles.info}>
         <div className={styles.nameWrapper}>
-          <span className={styles.name}>{data.name}</span>
+          <span className={styles.name}>{name}</span>
           <span className={styles.suffix}>님</span>
         </div>
 
         <div className={styles.details}>
-          <span>{data.majorName}</span>
+          <span>{majorName}</span>
           <span className={styles.divider}>I</span>
-          <span>{data.studentCode}</span>
+          <span>{studentCode}</span>
         </div>
 
         <div className={styles.gradeWrapper}>
           <span className={styles.grade}>
-            {data.gradeLevel}학년 {data.currentSemester}학기
+            {gradeLevel}학년 {currentSemester}학기
           </span>
           <div className={styles.statusBadge}>
-            <span>{data.status}</span>
+            <span>{status}</span>
           </div>
         </div>
       </div>
     </div>
+  );
+};
+
+const ProfileCard = () => {
+  const { data } = useProfileQuery();
+
+  return (
+    <ProfileCardView
+      name={data.name}
+      majorName={data.majorName}
+      studentCode={data.studentCode}
+      gradeLevel={data.gradeLevel}
+      currentSemester={data.currentSemester}
+      status={data.status}
+    />
   );
 };
 
