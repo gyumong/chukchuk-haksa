@@ -24,7 +24,8 @@
 
 .statItem {
   flex: 1;
-  min-width: 0;
+  // 평소엔 세 칸이 같은 폭이고, 값이 길면 그 칸만 넓어져 글자를 줄이지 않아도 된다.
+  min-width: max-content;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -36,8 +37,33 @@
     @include typography.font-weight-regular;
   }
 
+  .labelRow {
+    display: inline-flex;
+    align-items: center;
+    gap: spacing.$space-4;
+  }
+
+  .infoButton {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    color: color.$white;
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    // 아이콘이 작아도 손가락으로 누르기 쉽도록 터치 영역만 넓힌다.
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -12px;
+    }
+  }
+
   .value {
     color: color.$purple-200;
+    white-space: nowrap;
     @include typography.body-exlg;
     @include typography.font-weight-bold;
   }
@@ -52,5 +78,10 @@
 
   @include device.compact {
     margin: 0 spacing.$space-12;
+  }
+
+  // 작은 폰에서 긴 석차 범위가 들어갈 자리를 확보한다.
+  @media (max-width: 370px) {
+    margin: 0 spacing.$space-8;
   }
 }
