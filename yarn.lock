@@ -8233,6 +8233,9 @@ __metadata:
     vitest: "npm:^3.0.5"
     wrangler: "npm:4.81.1"
     zod: "npm:^3.24.4"
+  dependenciesMeta:
+    supabase:
+      built: false
   languageName: unknown
   linkType: soft
 
