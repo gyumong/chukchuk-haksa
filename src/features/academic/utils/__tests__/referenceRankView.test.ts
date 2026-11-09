@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { referenceRankSchema } from '../../types/referenceRank';
 import type { ReferenceRank } from '../../types/referenceRank';
-import { getLatestRegularSemester, getReferenceRankValue, isReferenceRankSemester } from '../referenceRankView';
+import { getReferenceRankValue, isReferenceRankSemester } from '../referenceRankView';
 
 function makeRank(overrides: Partial<ReferenceRank> = {}): ReferenceRank {
   return {
@@ -34,28 +34,17 @@ describe('getReferenceRankValue', () => {
 
   it.each([
     ['UNAVAILABLE', makeRank({ status: 'UNAVAILABLE', rank: null, participantCount: null, tiedCount: null })],
-    ['INSUFFICIENT_PEERS', makeRank({ status: 'INSUFFICIENT_PEERS', rank: null, participantCount: 1, tiedCount: null })],
+    [
+      'INSUFFICIENT_PEERS',
+      makeRank({ status: 'INSUFFICIENT_PEERS', rank: null, participantCount: 1, tiedCount: null }),
+    ],
     ['순위가 빠진 EXACT', makeRank({ rank: null })],
-    ['비교 인원이 빠진 UNRESOLVED', makeRank({ status: 'UNRESOLVED', rank: null, rankFrom: 5, rankTo: 7, participantCount: null })],
+    [
+      '비교 인원이 빠진 UNRESOLVED',
+      makeRank({ status: 'UNRESOLVED', rank: null, rankFrom: 5, rankTo: 7, participantCount: null }),
+    ],
   ])('%s 는 순위를 지어내지 않고 - 로 표시한다', (_, data) => {
     expect(getReferenceRankValue(data)).toBe('-');
-  });
-});
-
-describe('getLatestRegularSemester', () => {
-  it('계절학기를 건너뛰고 가장 최근 정규학기를 고른다', () => {
-    const terms = [
-      { year: 2026, semester: 15 },
-      { year: 2025, semester: 20 },
-      { year: 2026, semester: 10 },
-      { year: 2025, semester: 25 },
-    ];
-
-    expect(getLatestRegularSemester(terms)).toEqual({ year: 2026, semester: 10 });
-  });
-
-  it('정규학기가 없으면 null 이다', () => {
-    expect(getLatestRegularSemester([{ year: 2026, semester: 15 }])).toBeNull();
   });
 });
 

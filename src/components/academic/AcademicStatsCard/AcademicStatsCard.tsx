@@ -1,17 +1,15 @@
-import type { ReactNode } from 'react';
-import { Icon } from '@/components/ui/Icon';
 import styles from './AcademicStatsCard.module.scss';
+
+const PERCENTILE_EMPTY = '-';
 
 const AcademicStatsCard = ({
   earnedCredits,
   gpa,
-  rankValue,
-  onRankInfoClick,
+  percentile,
 }: {
   earnedCredits: number;
   gpa: number;
-  rankValue: ReactNode;
-  onRankInfoClick: () => void;
+  percentile?: number | null;
 }) => {
   return (
     <div className={styles.container}>
@@ -30,13 +28,8 @@ const AcademicStatsCard = ({
       <div className={styles.divider} />
 
       <div className={styles.statItem}>
-        <span className={styles.labelRow}>
-          <span className={styles.label}>석차</span>
-          <button type="button" className={styles.infoButton} aria-label="석차 기준 안내 보기" onClick={onRankInfoClick}>
-            <Icon name="info-small" size={16} />
-          </button>
-        </span>
-        <span className={styles.value}>{rankValue}</span>
+        <span className={styles.label}>백분위</span>
+        <span className={styles.value}>{percentile ?? PERCENTILE_EMPTY}</span>
       </div>
     </div>
   );
