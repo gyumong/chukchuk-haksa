@@ -1,13 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-import { TopNavigation } from '@/components/ui/TopNavigation';
+import { useRef, useState } from 'react';
 import { Button, ErrorModal, Icon } from '@/components/ui';
+import { TopNavigation } from '@/components/ui/TopNavigation';
 import { ROUTES } from '@/constants/routes';
-import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { useCreateReportMutation } from '@/features/inquiry/apis/queries/useCreateReportMutation';
 import { useAutoResizeTextarea } from '@/features/inquiry/hooks/useAutoResizeTextarea';
+import { resolveReportSubmission } from '@/features/inquiry/utils/submissionKey';
+import type { ReportSubmission } from '@/features/inquiry/utils/submissionKey';
+import { useInternalRouter } from '@/hooks/useInternalRouter';
 import { useMutationErrorHandler } from '@/shared/hooks/useMutationErrorHandler';
+import { generateIdempotencyKey } from '@/shared/utils/idempotency';
 import layoutStyles from '../layout.module.scss';
 import styles from './page.module.scss';
 
@@ -17,6 +20,8 @@ export default function InquiryNewPage() {
   const [content, setContent] = useState('');
   const { containerRef, textareaRef, bottomRef } = useAutoResizeTextarea(content);
   const mutation = useCreateReportMutation();
+  // 성공 전까지 남겨 두는 진행 중 제출. 같은 본문 재시도는 이 키를 재사용해 문의가 중복 저장되지 않는다.
+  const pendingSubmissionRef = useRef<ReportSubmission | null>(null);
   const { handleMutationError, modalState, closeModal, retry, goToInquiry } = useMutationErrorHandler();
 
   const isFilled = title.trim().length > 0 && content.trim().length > 0;
@@ -25,8 +30,16 @@ export default function InquiryNewPage() {
     if (!isFilled) {
       return;
     }
+    const submission = resolveReportSubmission(
+      pendingSubmissionRef.current,
+      { title: title.trim(), content: content.trim() },
+      generateIdempotencyKey
+    );
+    pendingSubmissionRef.current = submission;
+
     try {
-      const created = await mutation.mutateAsync({ title: title.trim(), content: content.trim() });
+      const created = await mutation.mutateAsync(submission);
+      pendingSubmissionRef.current = null;
       router.replace(ROUTES.INQUIRY.DETAIL, { params: [created.id ?? ''] });
     } catch (error) {
       handleMutationError(error, handleSubmit);
