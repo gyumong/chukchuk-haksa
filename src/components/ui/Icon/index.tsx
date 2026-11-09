@@ -8,6 +8,7 @@ import {
   CloseIcon,
   DeleteIcon,
   ErrorCircleIcon,
+  FlowerIcon,
   InfoIcon,
   InfoSmallIcon,
   KakaoIcon,
@@ -31,7 +32,8 @@ export type IconType =
   | 'refresh'
   | 'arrow-top'
   | 'kakao'
-  | 'error-circle';
+  | 'error-circle'
+  | 'flower';
 
 const iconMapping = {
   delete: DeleteIcon,
@@ -49,6 +51,7 @@ const iconMapping = {
   'arrow-top': ArrowTopIcon,
   kakao: KakaoIcon,
   'error-circle': ErrorCircleIcon,
+  flower: FlowerIcon,
 } as const;
 
 interface IconProps {
