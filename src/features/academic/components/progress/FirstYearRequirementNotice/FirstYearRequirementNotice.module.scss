@@ -1,0 +1,63 @@
+@use '@/styles/color.scss' as color;
+@use '@/styles/spacing.scss' as spacing;
+@use '@/styles/typography.scss' as typography;
+@use '@/styles/radius.scss' as radius;
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$space-8;
+  margin-bottom: spacing.$space-16;
+  background-color: color.$white;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid color.$gray-300;
+
+  @include spacing.card-padding;
+  @include radius.card-radius;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: spacing.$space-4;
+}
+
+.icon {
+  flex-shrink: 0;
+}
+
+.title {
+  flex: 1;
+  margin: 0;
+  color: color.$black-100;
+
+  @include typography.body-md;
+  @include typography.font-weight-bold;
+}
+
+.closeButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  color: color.$black-100;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  // 아이콘이 작아도 손가락으로 누르기 쉽도록 터치 영역만 넓힌다.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -12px;
+  }
+}
+
+.message {
+  margin: 0;
+  color: color.$black-100;
+  word-break: keep-all;
+
+  @include typography.body-md;
+  @include typography.font-weight-regular;
+}
