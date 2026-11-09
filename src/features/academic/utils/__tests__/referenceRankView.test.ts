@@ -21,9 +21,12 @@ function makeRank(overrides: Partial<ReferenceRank> = {}): ReferenceRank {
 }
 
 describe('getReferenceRankValue', () => {
-  it('확정·공동 석차는 순위/비교 인원으로 표시한다', () => {
+  it('확정 석차는 순위/비교 인원으로 표시한다', () => {
     expect(getReferenceRankValue(makeRank())).toBe('32/50');
-    expect(getReferenceRankValue(makeRank({ status: 'TIED', tiedCount: 3 }))).toBe('32/50');
+  });
+
+  it('공동 석차는 rank 를 그대로 써서 공동 n위로 표시한다', () => {
+    expect(getReferenceRankValue(makeRank({ status: 'TIED', rank: 2, tiedCount: 2 }))).toBe('공동 2/50');
   });
 
   it('미확정은 확정 순위처럼 보이지 않게 범위로 표시한다', () => {
@@ -39,6 +42,7 @@ describe('getReferenceRankValue', () => {
       makeRank({ status: 'INSUFFICIENT_PEERS', rank: null, participantCount: 1, tiedCount: null }),
     ],
     ['순위가 빠진 EXACT', makeRank({ rank: null })],
+    ['순위가 빠진 TIED', makeRank({ status: 'TIED', rank: null, tiedCount: 2 })],
     [
       '비교 인원이 빠진 UNRESOLVED',
       makeRank({ status: 'UNRESOLVED', rank: null, rankFrom: 5, rankTo: 7, participantCount: null }),
