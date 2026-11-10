@@ -1,6 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { useAcademicRecordQuery } from '@/features/academic/apis/queries/useAcademicRecordQuery';
+import { ReferenceRankInfoDialog } from '@/features/academic/components/detail/ReferenceRankInfoDialog/ReferenceRankInfoDialog';
+import ReferenceRankValue from '@/features/academic/components/detail/ReferenceRankValue/ReferenceRankValue';
 import SectionCourses from '@/features/academic/components/detail/SectionCourses';
 import SemesterSlider from '@/features/academic/components/detail/SemesterSlider';
 import AcademicSummaryCard from '@/features/academic/components/shared/AcademicSummaryCard/AcademicSummaryCard';
@@ -14,16 +17,19 @@ function LoadingFallback() {
 
 function AcademicRecordContent({ year, semester }: { year: number; semester: number }) {
   const { data: academicRecord } = useAcademicRecordQuery(year, semester);
+  const [isRankInfoOpen, setIsRankInfoOpen] = useState(false);
 
   return (
     <>
       <AcademicSummaryCard
         earnedCredits={academicRecord.semesterGrade.earnedCredits}
         gpa={academicRecord.semesterGrade.semesterGpa}
-        classRank={academicRecord.semesterGrade.classRank || undefined}
-        totalStudents={academicRecord.semesterGrade.totalStudents || undefined}
-        percentile={academicRecord.semesterGrade.percentile || undefined}
+        rank={{
+          value: <ReferenceRankValue year={year} semester={semester} />,
+          onInfoClick: () => setIsRankInfoOpen(true),
+        }}
       />
+      <ReferenceRankInfoDialog isOpen={isRankInfoOpen} onClose={() => setIsRankInfoOpen(false)} />
 
       <div className={styles.spacingLarge}></div>
       <SectionCourses title="전공" courses={academicRecord.courses.major} />

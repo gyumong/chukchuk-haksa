@@ -8,12 +8,9 @@ const DashboardAcademicSummaryCard = () => {
     return null;
   }
 
-  const rankInfo = {
-    type: 'percentile' as const,
-    value: data.percentile ?? '-',
-  };
-
-  return <AcademicStatsCard earnedCredits={data.totalEarnedCredits} gpa={data.cumulativeGpa} rankInfo={rankInfo} />;
+  return (
+    <AcademicStatsCard earnedCredits={data.totalEarnedCredits} gpa={data.cumulativeGpa} percentile={data.percentile} />
+  );
 };
 
 export default DashboardAcademicSummaryCard;

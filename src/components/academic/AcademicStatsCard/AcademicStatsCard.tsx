@@ -1,13 +1,15 @@
 import styles from './AcademicStatsCard.module.scss';
 
+const PERCENTILE_EMPTY = '-';
+
 const AcademicStatsCard = ({
   earnedCredits,
   gpa,
-  rankInfo,
+  percentile,
 }: {
   earnedCredits: number;
   gpa: number;
-  rankInfo: { type: 'percentile'; value: number } | { type: 'classRank'; rank: number; total: number };
+  percentile?: number | null;
 }) => {
   return (
     <div className={styles.container}>
@@ -19,17 +21,15 @@ const AcademicStatsCard = ({
       <div className={styles.divider} />
 
       <div className={styles.statItem}>
-        <span className={styles.label}>평점평균</span>
+        <span className={styles.label}>평점 평균</span>
         <span className={styles.value}>{gpa.toFixed(2)}</span>
       </div>
 
       <div className={styles.divider} />
 
       <div className={styles.statItem}>
-        <span className={styles.label}>{rankInfo.type === 'classRank' ? '석차' : '백분위'}</span>
-        <span className={styles.value}>
-          {rankInfo.type === 'classRank' ? `${rankInfo.rank}/${rankInfo.total}` : rankInfo.value}
-        </span>
+        <span className={styles.label}>백분위</span>
+        <span className={styles.value}>{percentile ?? PERCENTILE_EMPTY}</span>
       </div>
     </div>
   );

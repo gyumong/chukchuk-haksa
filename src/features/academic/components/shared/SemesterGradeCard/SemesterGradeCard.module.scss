@@ -40,3 +40,28 @@
   border: none;
   cursor: pointer;
 }
+
+// 성적 조회를 아직 할 수 없는 상태(1학년 첫 학기 등). 누를 수 없음을 회색 톤으로 보여준다.
+.disabled {
+  height: auto;
+  min-height: 103px;
+  background: color.$gray-300;
+  box-shadow: none;
+  cursor: default;
+
+  .title {
+    color: color.$gray-500;
+  }
+
+  .semester {
+    word-break: keep-all;
+  }
+
+  .button {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: color.$gray-500;
+    cursor: default;
+    opacity: 0.4;
+  }
+}

@@ -7,7 +7,9 @@ import CheckStatusOnIcon from '@/assets/icons/check-status-on.svg';
 import CloseIcon from '@/assets/icons/close.svg';
 import DeleteIcon from '@/assets/icons/delete.svg';
 import ErrorCircleIcon from '@/assets/icons/error-circle.svg';
+import FlowerIcon from '@/assets/icons/flower.svg';
 import InfoIcon from '@/assets/icons/info.svg';
+import InfoSmallIcon from '@/assets/icons/info-small.svg';
 import KakaoIcon from '@/assets/icons/kakao.svg';
 import RefreshIcon from '@/assets/icons/refresh.svg';
 import SchoolIcon from '@/assets/icons/school.svg';
@@ -24,8 +26,10 @@ export {
   ArrowLeftIcon,
   ArrowDownIcon,
   InfoIcon,
+  InfoSmallIcon,
   SettingIcon,
   RefreshIcon,
   KakaoIcon,
   ErrorCircleIcon,
+  FlowerIcon,
 };

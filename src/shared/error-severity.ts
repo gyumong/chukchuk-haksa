@@ -43,6 +43,9 @@ const ERROR_CODE_CONFIG: Record<string, ErrorCodeConfig> = {
   T13: { category: 'B', query: { severity: 'screen', action: 'inquiry' }, mutation: { severity: 'modal', action: 'inquiry' } },
   G02: { category: 'B', query: { severity: 'screen', action: 'inquiry' }, mutation: { severity: 'modal', action: 'inquiry' } },
   A03: { category: 'B', query: { severity: 'screen', action: 'inquiry' }, mutation: { severity: 'modal', action: 'inquiry' } },
+  // 현재 1학년이라 적용할 졸업요건(G03)·저장된 성적(A09)이 아직 없음. 졸업요건 화면은 안내 UI 로 대체하고, 그 외 화면은 안내 화면으로 보여준다.
+  G03: { category: 'B', query: { severity: 'screen', action: 'inquiry' } },
+  A09: { category: 'B', query: { severity: 'screen', action: 'inquiry' } },
   U03: { category: 'B', query: { severity: 'screen', action: 'inquiry' }, mutation: { severity: 'modal', action: 'inquiry' } },
   U04: { category: 'B', query: { severity: 'screen', action: 'inquiry' }, mutation: { severity: 'modal', action: 'inquiry' } },
   A07: { category: 'B', query: { severity: 'screen', action: 'inquiry' }, mutation: { severity: 'modal', action: 'inquiry' } },

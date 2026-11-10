@@ -24,7 +24,8 @@
 
 .statItem {
   flex: 1;
-  min-width: 0;
+  // 평소엔 세 칸이 같은 폭이고, 값이 길면 그 칸만 넓어져 글자를 줄이지 않아도 된다.
+  min-width: max-content;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,6 +39,7 @@
 
   .value {
     color: color.$purple-200;
+    white-space: nowrap;
     @include typography.body-exlg;
     @include typography.font-weight-bold;
   }

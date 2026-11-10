@@ -1,17 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { ReportSubmission } from '../../utils/submissionKey';
 import { inquiryQueryKeys } from '../queryKey';
 import { createReport } from '../service';
-
-interface CreateReportVariables {
-  title: string;
-  content: string;
-}
 
 export function useCreateReportMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (variables: CreateReportVariables) => createReport(variables),
+    mutationFn: ({ idempotencyKey, ...body }: ReportSubmission) => createReport(body, idempotencyKey),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: inquiryQueryKeys.list });
     },

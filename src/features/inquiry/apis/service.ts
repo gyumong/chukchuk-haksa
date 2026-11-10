@@ -15,8 +15,14 @@ export async function getMyReports(params: GetMyReportsParams = { page: 0, size:
   return response.data;
 }
 
-export async function createReport(data: CreateRequest) {
-  const response = await ApiResponseHandler.handleAsyncResponse<ReportCreateApiResponse>(reportsApi.create(data));
+/**
+ * 문의를 등록한다. 같은 제출의 재시도에는 최초 요청과 같은 키·본문을 넘겨야
+ * 서버가 새 문의를 만들지 않고 기존 문의 ID 를 돌려준다.
+ */
+export async function createReport(data: CreateRequest, idempotencyKey: string) {
+  const response = await ApiResponseHandler.handleAsyncResponse<ReportCreateApiResponse>(
+    reportsApi.create(data, { headers: { 'Idempotency-Key': idempotencyKey } })
+  );
   return response.data;
 }
 

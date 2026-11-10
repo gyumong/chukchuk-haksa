@@ -89,6 +89,11 @@
     "vitest": "^3.0.5",
     "wrangler": "4.81.1"
   },
+  "dependenciesMeta": {
+    "supabase": {
+      "built": false
+    }
+  },
   "packageManager": "yarn@4.5.0",
   "resolutions": {
     "@types/react": "19.1.0",
